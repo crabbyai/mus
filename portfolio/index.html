@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Adeel Rahman, MBA — Luxury Real Estate Consultant | Islamabad & Lahore | DHA, Bahria, Gulberg</title>
-<meta name="description" content="Adeel Rahman, MBA (Carleton University, Canada) — trusted luxury real estate consultant in Islamabad & Lahore. 120+ homes sold across DHA, Bahria Town, Gulberg, F-7 & Model Town. MBA-backed market analysis, negotiation and end-to-end deal management. Free valuation." />
-<meta name="keywords" content="real estate Islamabad, real estate Lahore, MBA realtor Pakistan, DHA Islamabad houses, DHA Lahore property, Bahria Town house for sale, 1 kanal house Islamabad, 10 marla house Lahore, 5 marla house, Gulberg Greens farmhouse, property dealer Islamabad, luxury homes Pakistan, Adeel Rahman MBA, Carleton University MBA" />
+<title>Adeel Rahman, MBA — Luxury Real Estate Agent | Islamabad & Lahore | DHA, Bahria, Gulberg</title>
+<meta name="description" content="Adeel Rahman, MBA (Carleton University, Canada) — trusted luxury real estate agent in Islamabad & Lahore. 120+ homes sold across DHA, Bahria Town, Gulberg, F-7 & Model Town. MBA-backed market analysis, negotiation and end-to-end deal management. Free valuation." />
+<meta name="keywords" content="real estate Islamabad, real estate Lahore, MBA real estate agent Pakistan, DHA Islamabad houses, DHA Lahore property, Bahria Town house for sale, 1 kanal house Islamabad, 10 marla house Lahore, 5 marla house, Gulberg Greens farmhouse, property dealer Islamabad, luxury homes Pakistan, Adeel Rahman MBA, Carleton University MBA" />
 <meta name="author" content="Adeel Ahmed Rahman" />
 <meta name="robots" content="index, follow, max-image-preview:large" />
 <meta name="theme-color" content="#0a0f1e" />
@@ -16,7 +16,7 @@
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Adeel Rahman Estates" />
 <meta property="og:title" content="Adeel Rahman, MBA — Luxury Real Estate | Islamabad & Lahore" />
-<meta property="og:description" content="MBA-credentialed (Carleton University, Canada) luxury real estate consultant. 120+ homes sold across DHA, Bahria Town, Gulberg & Model Town. From 5 Marla residences to 2 Kanal estates — discretion, diligence, and a deal you'll never regret." />
+<meta property="og:description" content="MBA-credentialed (Carleton University, Canada) luxury real estate agent. 120+ homes sold across DHA, Bahria Town, Gulberg & Model Town. From 5 Marla residences to 2 Kanal estates — discretion, diligence, and a deal you'll never regret." />
 <meta property="og:url" content="https://assassin1961.github.io/Androgenic/" />
 <meta property="og:image" content="https://assassin1961.github.io/Androgenic/.preview/01-hero.png" />
 <meta property="og:locale" content="en_PK" />
@@ -35,7 +35,7 @@
     "@type": "Person",
     "name": "Adeel Ahmed Rahman",
     "honorificSuffix": "MBA",
-    "jobTitle": "Realtor",
+    "jobTitle": "Real Estate Agent",
     "alumniOf": {
       "@type": "CollegeOrUniversity",
       "name": "Carleton University",
@@ -138,6 +138,7 @@
     <a href="#about" data-magnetic>About</a>
     <a href="#credentials" data-magnetic>Credentials</a>
     <a href="#services" data-magnetic>Services</a>
+    <a href="#tools" data-magnetic>Calculator</a>
     <a href="#deals" data-magnetic>Available</a>
     <a href="#featured" data-magnetic>Featured</a>
     <a href="#portfolio" data-magnetic>Sold</a>
@@ -155,6 +156,7 @@
   <a href="#about">About</a>
   <a href="#credentials">Credentials</a>
   <a href="#services">Services</a>
+  <a href="#tools">Finance Calculator</a>
   <a href="#process">How I Work</a>
   <a href="#featured">Featured Listing</a>
   <a href="#deals">Available Now</a>
@@ -227,7 +229,7 @@
       </div>
       <div class="about__badge glass" data-reveal>
         <strong>Top 1%</strong>
-        <span>Realtor, Twin Cities & Lahore</span>
+        <span>Real Estate Agent, Twin Cities & Lahore</span>
       </div>
     </div>
     <div class="about__copy">
@@ -315,12 +317,76 @@
     </div>
   </section>
 
+  <!-- ======= FINANCE TOOLS ======= -->
+  <section class="tools" id="tools">
+    <div class="tools__head">
+      <p class="section-eyebrow" data-reveal>Plan Before You Buy</p>
+      <h2 class="section-title" data-reveal>Run the <em class="gold-italic">numbers</em> yourself</h2>
+      <p class="portfolio__intro" data-reveal>Estimate a monthly home-finance instalment and see any price in your home currency — instantly, no sign-up.</p>
+    </div>
+
+    <div class="tools__grid">
+      <!-- EMI / Mortgage calculator -->
+      <article class="tool-card glass" data-reveal>
+        <h3 class="tool-card__title">Home-Finance EMI Calculator</h3>
+        <div class="tool-field">
+          <label>Property Price <output id="emiPriceOut">PKR 4.00 Crore</output></label>
+          <input type="range" id="emiPrice" min="2500000" max="400000000" step="500000" value="40000000" />
+        </div>
+        <div class="tool-field">
+          <label>Down Payment <output id="emiDownOut">30%</output></label>
+          <input type="range" id="emiDown" min="0" max="80" step="1" value="30" />
+        </div>
+        <div class="tool-field">
+          <label>Markup / Interest Rate <output id="emiRateOut">18.0% p.a.</output></label>
+          <input type="range" id="emiRate" min="5" max="36" step="0.5" value="18" />
+        </div>
+        <div class="tool-field">
+          <label>Tenure <output id="emiYearsOut">20 years</output></label>
+          <input type="range" id="emiYears" min="3" max="25" step="1" value="20" />
+        </div>
+        <div class="tool-result">
+          <div class="tool-result__main">
+            <span>Estimated Monthly Instalment</span>
+            <strong id="emiMonthly">—</strong>
+          </div>
+          <div class="tool-result__row">
+            <div><span>Finance Amount</span><b id="emiLoan">—</b></div>
+            <div><span>Down Payment</span><b id="emiDownAmt">—</b></div>
+            <div><span>Total Interest</span><b id="emiInterest">—</b></div>
+            <div><span>Total Payable</span><b id="emiTotal">—</b></div>
+          </div>
+        </div>
+        <p class="tool-note">Indicative only. Actual markup, tenure and eligibility are confirmed by the bank against your profile.</p>
+      </article>
+
+      <!-- Currency converter -->
+      <article class="tool-card glass" data-reveal>
+        <h3 class="tool-card__title">Currency Converter</h3>
+        <p class="tool-card__sub">For overseas buyers — convert any PKR price into your home currency.</p>
+        <div class="tool-field">
+          <label>Amount in PKR <output id="fxPkrOut">PKR 4.00 Crore</output></label>
+          <input type="range" id="fxPkr" min="1000000" max="400000000" step="500000" value="40000000" />
+        </div>
+        <div class="fx-grid" id="fxGrid">
+          <div class="fx-cell"><span>🇺🇸 USD</span><strong data-fx="USD">—</strong></div>
+          <div class="fx-cell"><span>🇬🇧 GBP</span><strong data-fx="GBP">—</strong></div>
+          <div class="fx-cell"><span>🇦🇪 AED</span><strong data-fx="AED">—</strong></div>
+          <div class="fx-cell"><span>🇨🇦 CAD</span><strong data-fx="CAD">—</strong></div>
+          <div class="fx-cell"><span>🇸🇦 SAR</span><strong data-fx="SAR">—</strong></div>
+          <div class="fx-cell"><span>🇪🇺 EUR</span><strong data-fx="EUR">—</strong></div>
+        </div>
+        <p class="tool-note">Indicative mid-market rates for guidance — confirm live rates with your bank before transferring.</p>
+      </article>
+    </div>
+  </section>
+
   <!-- ======= SERVICES ======= -->
   <section class="services" id="services">
     <div class="services__head">
       <p class="section-eyebrow" data-reveal>What I Do</p>
       <h2 class="section-title" data-reveal>Full-service, <em class="gold-italic">start to keys</em></h2>
-      <p class="portfolio__intro" data-reveal>One consultant for the entire journey — no handoffs, no surprises.</p>
+      <p class="portfolio__intro" data-reveal>One agent for the entire journey — no handoffs, no surprises.</p>
     </div>
     <div class="services__grid">
       <article class="service" data-reveal>
@@ -391,7 +457,7 @@
     <div class="compare__head">
       <p class="section-eyebrow" data-reveal>Why It Matters</p>
       <h2 class="section-title" data-reveal>The <em class="gold-italic">MBA difference</em></h2>
-      <p class="portfolio__intro" data-reveal>The same home, two very different outcomes. Here's how working with an MBA-trained consultant compares to a typical agent.</p>
+      <p class="portfolio__intro" data-reveal>The same home, two very different outcomes. Here's how working with an MBA-trained real estate agent compares to a typical property dealer.</p>
     </div>
     <div class="compare__table" data-reveal>
       <div class="compare__row compare__row--head">
@@ -1089,6 +1155,7 @@
 </script>
 <script type="module" src="js/estate3d.js"></script>
 <script src="js/interior.js"></script>
+<script src="js/tools.js" defer></script>
 <script src="js/enhance.js" defer></script>
 </body>
 </html>
