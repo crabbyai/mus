@@ -1,0 +1,879 @@
+/* ============================================================
+   ESTATE 3D — procedural Pakistani designer houses (Three.js)
+   Styled after modern DHA/Bahria elevations: charcoal render,
+   cream feature frames, vertical gold light strips, glass
+   balcony railings, steel gate, paver driveway.
+   ============================================================ */
+import * as THREE from "three";
+
+const GOLD = 0xc9a45c;
+const CHARCOAL = 0x3a3f4a;
+const CHARCOAL_DARK = 0x272c36;
+const CREAM = 0xd9d0bc;
+const WOOD = 0x8a5a33;
+const GATE_BLACK = 0x14171d;
+const PAVER = 0xa3674a;
+const PLINTH = 0x141f3a;
+const GREEN_DARK = 0x12241a;
+const STRIP_WARM = 0xffd98e;
+
+/* ---------- procedural textures (no external assets) ---------- */
+const texCache = {};
+function canvasTex(key, draw, repeat = [2, 2], size = 256) {
+  if (texCache[key]) return texCache[key];
+  const c = document.createElement("canvas");
+  c.width = c.height = size;
+  draw(c.getContext("2d"), size);
+  const t = new THREE.CanvasTexture(c);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  t.repeat.set(repeat[0], repeat[1]);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return (texCache[key] = t);
+}
+const hexCss = (h) => `#${h.toString(16).padStart(6, "0")}`;
+// stucco / render: base colour + fine speckle + faint trowel streaks
+function stuccoTex(color) {
+  return canvasTex(`stucco-${color}`, (ctx, s) => {
+    ctx.fillStyle = hexCss(color);
+    ctx.fillRect(0, 0, s, s);
+    for (let i = 0; i < 5200; i++) {
+      const v = Math.random();
+      ctx.fillStyle = v > 0.5 ? "rgba(255,255,255,0.045)" : "rgba(0,0,0,0.06)";
+      ctx.fillRect(Math.random() * s, Math.random() * s, 1.4, 1.4);
+    }
+    ctx.strokeStyle = "rgba(0,0,0,0.04)";
+    for (let i = 0; i < 26; i++) {
+      ctx.beginPath();
+      const y = Math.random() * s;
+      ctx.moveTo(0, y);
+      ctx.bezierCurveTo(s * 0.3, y + 9, s * 0.6, y - 9, s, y + 4);
+      ctx.stroke();
+    }
+  });
+}
+// running-bond brick courses with light mortar
+function brickTex(color) {
+  return canvasTex(`brick-${color}`, (ctx, s) => {
+    ctx.fillStyle = "#cfc4ad";
+    ctx.fillRect(0, 0, s, s);
+    const bh = 18, bw = 52, m = 3;
+    for (let row = 0; row * bh < s + bh; row++) {
+      const off = row % 2 ? -bw / 2 : 0;
+      for (let col = 0; col * bw + off < s + bw; col++) {
+        const shade = 0.86 + Math.random() * 0.26;
+        const r = ((color >> 16) & 255) * shade, g = ((color >> 8) & 255) * shade, b = (color & 255) * shade;
+        ctx.fillStyle = `rgb(${r | 0},${g | 0},${b | 0})`;
+        ctx.fillRect(col * bw + off + m, row * bh + m, bw - m * 2, bh - m * 2);
+      }
+    }
+  }, [2.4, 2.4]);
+}
+// terracotta paver grid
+function paverTex(color) {
+  return canvasTex(`paver-${color}`, (ctx, s) => {
+    ctx.fillStyle = hexCss(color);
+    ctx.fillRect(0, 0, s, s);
+    for (let i = 0; i < 2600; i++) {
+      ctx.fillStyle = Math.random() > 0.5 ? "rgba(255,235,200,0.05)" : "rgba(0,0,0,0.08)";
+      ctx.fillRect(Math.random() * s, Math.random() * s, 2, 2);
+    }
+    ctx.strokeStyle = "rgba(20,10,6,0.65)";
+    ctx.lineWidth = 3;
+    for (let i = 0; i <= 4; i++) {
+      ctx.beginPath(); ctx.moveTo(0, i * s / 4); ctx.lineTo(s, i * s / 4); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(i * s / 4, 0); ctx.lineTo(i * s / 4, s); ctx.stroke();
+    }
+  }, [3, 2]);
+}
+// roof tiles: horizontal courses
+function tileTex(color) {
+  return canvasTex(`tile-${color}`, (ctx, s) => {
+    ctx.fillStyle = hexCss(color);
+    ctx.fillRect(0, 0, s, s);
+    ctx.strokeStyle = "rgba(0,0,0,0.35)";
+    ctx.lineWidth = 2.5;
+    for (let y = 0; y < s; y += 16) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(s, y); ctx.stroke();
+      ctx.strokeStyle = "rgba(0,0,0,0.18)";
+      for (let x = (y / 16) % 2 ? 14 : 0; x < s; x += 28) {
+        ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y + 16); ctx.stroke();
+      }
+      ctx.strokeStyle = "rgba(0,0,0,0.35)";
+    }
+  }, [3, 3]);
+}
+
+/* ---------- material / geometry helpers ---------- */
+const WALL_COLORS = new Set([0x3a3f4a, 0xd9d0bc, 0xe6dfcd, 0xe2dccb, 0x4d5360, 0x4d5460, 0x272c36, 0x2a2e38]);
+const matCache = {};
+function mat(color, rough = 0.85, metal = 0.12) {
+  const key = `${color}-${rough}-${metal}`;
+  if (matCache[key]) return matCache[key];
+  const params = { color, roughness: rough, metalness: metal };
+  if (color === 0x8e4f38) { params.map = brickTex(color); params.color = 0xffffff; }
+  else if (color === 0xa3674a) { params.map = paverTex(color); params.color = 0xffffff; }
+  else if (color === 0x9c4f33) { params.map = tileTex(color); params.color = 0xffffff; }
+  else if (WALL_COLORS.has(color)) { params.map = stuccoTex(color); params.color = 0xffffff; }
+  return (matCache[key] = new THREE.MeshStandardMaterial(params));
+}
+const winMat = new THREE.MeshBasicMaterial({ color: STRIP_WARM });
+const glassMat = new THREE.MeshStandardMaterial({
+  color: 0x9fc4e8, roughness: 0.1, metalness: 0.4, transparent: true, opacity: 0.32
+});
+const edgeMat = new THREE.LineBasicMaterial({ color: GOLD, transparent: true, opacity: 0.4 });
+
+function edged(geo, color = CHARCOAL, rough = 0.85, metal = 0.12) {
+  const m = new THREE.Mesh(geo, mat(color, rough, metal));
+  m.castShadow = m.receiveShadow = true;
+  m.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo, 20), edgeMat));
+  return m;
+}
+function box(w, h, d, color = CHARCOAL) {
+  const g = new THREE.BoxGeometry(w, h, d);
+  g.translate(0, h / 2, 0);
+  return edged(g, color);
+}
+function windowPane(w, h) {
+  const g = new THREE.Group();
+  const frame = new THREE.Mesh(new THREE.PlaneGeometry(w + 0.1, h + 0.1), mat(0x11151c, 0.7, 0.2));
+  const pane = new THREE.Mesh(new THREE.PlaneGeometry(w, h), winMat);
+  pane.position.z = 0.006;
+  g.add(frame, pane);
+  return g;
+}
+function windowGrid(parent, { cols, rows, w = 0.42, h = 0.5, gx = 0.3, gy = 0.42, x = 0, y = 1, z = 0, rotY = 0 }) {
+  const g = new THREE.Group();
+  const totW = cols * w + (cols - 1) * gx;
+  for (let r = 0; r < rows; r++)
+    for (let c = 0; c < cols; c++) {
+      const p = windowPane(w, h);
+      p.position.set(-totW / 2 + w / 2 + c * (w + gx), r * (h + gy) + h / 2, 0);
+      g.add(p);
+    }
+  g.position.set(x, y, z);
+  g.rotation.y = rotY;
+  parent.add(g);
+  return g;
+}
+// signature vertical gold light strip (like OREAL-style elevations)
+function lightStrip(x, y, z, h = 2.6) {
+  const s = new THREE.Mesh(new THREE.BoxGeometry(0.07, h, 0.07), winMat);
+  s.position.set(x, y + h / 2, z);
+  return s;
+}
+// vertical wood-slat feature panel
+function woodSlats(w, h, n = 7) {
+  const g = new THREE.Group();
+  const sw = w / (n * 1.7);
+  for (let i = 0; i < n; i++) {
+    const slat = new THREE.Mesh(new THREE.BoxGeometry(sw, h, 0.06), mat(WOOD, 0.75, 0.05));
+    slat.position.set(-w / 2 + sw / 2 + i * (w / n) + (w / n - sw) / 2, h / 2, 0);
+    g.add(slat);
+  }
+  return g;
+}
+// glass-railing balcony with cream slab (dark=true → wrought-iron style)
+function balcony(w, d = 0.85, dark = false) {
+  const g = new THREE.Group();
+  const slabGeo = new THREE.BoxGeometry(w, 0.12, d);
+  slabGeo.translate(0, 0.06, 0);
+  g.add(edged(slabGeo, dark ? CHARCOAL_DARK : CREAM));
+  if (dark) {
+    for (let i = 0; i <= Math.round(w / 0.22); i++) {
+      const bar = new THREE.Mesh(new THREE.BoxGeometry(0.025, 0.42, 0.025), mat(GATE_BLACK, 0.6, 0.4));
+      bar.position.set(-w / 2 + i * 0.22, 0.12 + 0.21, d / 2 - 0.02);
+      g.add(bar);
+    }
+  } else {
+    const rail = new THREE.Mesh(new THREE.BoxGeometry(w, 0.42, 0.04), glassMat);
+    rail.position.set(0, 0.12 + 0.21, d / 2 - 0.02);
+    g.add(rail);
+  }
+  const railTop = new THREE.Mesh(new THREE.BoxGeometry(w, 0.035, 0.05), mat(GOLD, 0.45, 0.7));
+  railTop.position.set(0, 0.12 + 0.44, d / 2 - 0.02);
+  g.add(railTop);
+  return g;
+}
+function parapet(w, d, color = CREAM) {
+  const g = new THREE.Group();
+  const lip = (len, x, z, rot) => {
+    const p = new THREE.Mesh(new THREE.BoxGeometry(len, 0.22, 0.12), mat(color, 0.85, 0.08));
+    p.position.set(x, 0.11, z);
+    p.rotation.y = rot;
+    g.add(p);
+  };
+  lip(w, 0, d / 2 - 0.06, 0); lip(w, 0, -d / 2 + 0.06, 0);
+  lip(d, w / 2 - 0.06, 0, Math.PI / 2); lip(d, -w / 2 + 0.06, 0, Math.PI / 2);
+  return g;
+}
+// boundary wall + black steel gate + pillar lamps + paver driveway
+function frontage({ width = 8.4, gateX = 0.9, z = 3.2 } = {}) {
+  const g = new THREE.Group();
+  const wallH = 0.78;
+  const mkWall = (len, x) => {
+    const w = box(len, wallH, 0.16, CREAM);
+    w.position.set(x, 0, z);
+    g.add(w);
+  };
+  const side = (width / 2 - gateX - 0.28);
+  mkWall(side, -(gateX + 0.28 + side / 2));
+  mkWall(side, gateX + 0.28 + side / 2);
+  [-1, 1].forEach((s) => {
+    const pillar = box(0.34, wallH + 0.34, 0.34, CHARCOAL_DARK);
+    pillar.position.set(s * (gateX + 0.11), 0, z);
+    g.add(pillar);
+    const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.07, 10, 10), winMat);
+    bulb.position.set(s * (gateX + 0.11), wallH + 0.45, z);
+    g.add(bulb);
+  });
+  const gate = new THREE.Group();
+  const panel = box(gateX * 2 - 0.1, wallH + 0.22, 0.07, GATE_BLACK);
+  gate.add(panel);
+  for (let i = 0; i < 6; i++) {
+    const bar = new THREE.Mesh(new THREE.BoxGeometry(0.03, wallH + 0.18, 0.1), mat(GOLD, 0.5, 0.65));
+    bar.position.set(-gateX + 0.32 + i * ((gateX * 2 - 0.6) / 5), (wallH + 0.18) / 2, 0);
+    gate.add(bar);
+  }
+  gate.position.set(0, 0, z);
+  g.add(gate);
+  // terracotta paver driveway from gate to porch
+  const driveGeo = new THREE.BoxGeometry(gateX * 2 + 0.5, 0.05, z - 1.4);
+  driveGeo.translate(0, 0.025, 0);
+  const drive = edged(driveGeo, PAVER, 0.95, 0.02);
+  drive.position.set(0, 0.22, 1.4 + (z - 1.4) / 2 - 0.7);
+  g.add(drive);
+  // lawn pads either side of the driveway
+  [-1, 1].forEach((s) => {
+    const lawnGeo = new THREE.BoxGeometry(side - 0.3, 0.04, z - 1.6);
+    lawnGeo.translate(0, 0.02, 0);
+    const lawn = new THREE.Mesh(lawnGeo, mat(GREEN_DARK, 0.98, 0));
+    lawn.position.set(s * (gateX + 0.5 + (side - 0.3) / 2), 0.22, 1.5 + (z - 1.6) / 2 - 0.8);
+    g.add(lawn);
+  });
+  return g;
+}
+function cypress(x, z, s = 1) {
+  const g = new THREE.ConeGeometry(0.26 * s, 1.6 * s, 8);
+  g.translate(0, 0.8 * s, 0);
+  const m = edged(g, GREEN_DARK);
+  m.position.set(x, 0.22, z);
+  return m;
+}
+function tree(x, z, s = 1) {
+  const grp = new THREE.Group();
+  const trunkGeo = new THREE.CylinderGeometry(0.07 * s, 0.1 * s, 0.7 * s, 6);
+  trunkGeo.translate(0, 0.35 * s, 0);
+  grp.add(new THREE.Mesh(trunkGeo, mat(0x2c2620)));
+  [[0, 1.05, 0, 0.55], [-0.35, 0.8, 0.1, 0.38], [0.33, 0.85, -0.08, 0.4]].forEach(([dx, dy, dz, r]) => {
+    const c = new THREE.Mesh(new THREE.IcosahedronGeometry(r * s, 1), mat(GREEN_DARK, 0.95, 0.02));
+    c.position.set(dx * s, dy * s, dz * s);
+    grp.add(c);
+  });
+  grp.position.set(x, 0.22, z);
+  return grp;
+}
+function planter(x, z) {
+  const g = new THREE.Group();
+  const potGeo = new THREE.BoxGeometry(0.5, 0.32, 0.5);
+  potGeo.translate(0, 0.16, 0);
+  g.add(edged(potGeo, CREAM));
+  const bush = new THREE.Mesh(new THREE.IcosahedronGeometry(0.24, 1), mat(GREEN_DARK, 0.95, 0));
+  bush.position.y = 0.48;
+  g.add(bush);
+  g.position.set(x, 0.22, z);
+  return g;
+}
+function pool(w, d, x, z) {
+  const waterGeo = new THREE.BoxGeometry(w, 0.1, d);
+  waterGeo.translate(0, 0.05, 0);
+  const water = edged(waterGeo, 0x1d4066, 0.15, 0.85);
+  water.position.set(x, 0.24, z);
+  return water;
+}
+function plinth(r) {
+  const grp = new THREE.Group();
+  const baseGeo = new THREE.CylinderGeometry(r, r * 1.02, 0.22, 56);
+  baseGeo.translate(0, 0.11, 0);
+  grp.add(new THREE.Mesh(baseGeo, mat(PLINTH, 0.95, 0.05)));
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(r, 0.022, 8, 72), mat(GOLD, 0.4, 0.8));
+  ring.rotation.x = Math.PI / 2;
+  ring.position.y = 0.22;
+  grp.add(ring);
+  return grp;
+}
+function hipRoof(w, d, tw, td, h, color = CHARCOAL_DARK) {
+  const [x, z, tx, tz] = [w / 2, d / 2, tw / 2, td / 2];
+  const v = [
+    [-x, 0, -z], [x, 0, -z], [x, 0, z], [-x, 0, z],
+    [-tx, h, -tz], [tx, h, -tz], [tx, h, tz], [-tx, h, tz]
+  ];
+  const faces = [
+    [0, 1, 5], [0, 5, 4], [1, 2, 6], [1, 6, 5],
+    [2, 3, 7], [2, 7, 6], [3, 0, 4], [3, 4, 7],
+    [4, 5, 6], [4, 6, 7]
+  ];
+  const pos = [];
+  faces.forEach((f) => f.forEach((i) => pos.push(...v[i])));
+  const g = new THREE.BufferGeometry();
+  g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+  g.computeVertexNormals();
+  const m = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color, roughness: 0.8, metalness: 0.1, flatShading: true }));
+  m.add(new THREE.LineSegments(new THREE.EdgesGeometry(g, 20), edgeMat));
+  return m;
+}
+
+/* ---------- part registration for staggered assembly ---------- */
+function part(group, obj, order, lift = 0) {
+  obj.userData.order = order;
+  obj.userData.lift = lift;
+  obj.userData.baseY = obj.position.y;
+  group.add(obj);
+  return obj;
+}
+
+/* ---------- archetypes ---------- */
+// The signature: modern charcoal designer house with cream entrance
+// frame, gold light strips, balcony and gated frontage.
+function buildDesigner({ grand = true, cream = false, withPool = false } = {}) {
+  const g = new THREE.Group();
+  const BODY = cream ? CREAM : CHARCOAL;
+  const ACCENT = cream ? CHARCOAL : CREAM;
+  part(g, plinth(grand ? 5.9 : 5.1), 0);
+
+  // left double-storey volume
+  const volA = box(grand ? 3.4 : 2.9, 3.5, 3.3, BODY);
+  volA.position.set(grand ? -1.6 : -1.35, 0.22, -0.6);
+  part(g, volA, 0.1, 0.7);
+  windowGrid(volA, { cols: 2, rows: 2, w: 0.62, h: 0.72, gx: 0.4, gy: 0.7, y: 0.55, z: 1.66 });
+
+  // right volume with balcony
+  const volB = box(grand ? 3 : 2.5, 2.8, 3.1, BODY);
+  volB.position.set(grand ? 1.75 : 1.45, 0.22, -0.5);
+  part(g, volB, 0.2, 0.7);
+  windowGrid(volB, { cols: 2, rows: 1, w: 0.85, h: 0.8, gx: 0.3, y: 0.5, z: 1.56 });
+
+  const bal = balcony(grand ? 2.5 : 2.1);
+  bal.position.set(volB.position.x, 1.95, 1.18);
+  part(g, bal, 0.36, 0.4);
+  windowGrid(volB, { cols: 2, rows: 1, w: 0.7, h: 0.85, gx: 0.5, y: 1.85, z: 1.56 });
+
+  // cream double-height entrance frame between volumes
+  const tower = box(1.45, 3.9, 0.62, ACCENT);
+  tower.position.set(0.05, 0.22, 1.05);
+  part(g, tower, 0.3, 0.9);
+  const doorPane = windowPane(0.62, 1.5);
+  doorPane.position.set(0.05, 1, 1.37);
+  part(g, doorPane, 0.4);
+  // signature gold strips flanking the entrance + on volA
+  part(g, lightStrip(-0.62, 0.35, 1.37, 3.4), 0.46);
+  part(g, lightStrip(0.72, 0.35, 1.37, 3.4), 0.48);
+  part(g, lightStrip(volA.position.x - (grand ? 1.55 : 1.3), 0.4, 1.06, 2.9), 0.5);
+
+  // wood-slat feature panel on left volume
+  const slats = woodSlats(1.5, 2.7, 6);
+  slats.position.set(volA.position.x + 0.65, 0.55, 1.06);
+  part(g, slats, 0.42, 0.4);
+
+  // parapets
+  const parA = parapet(grand ? 3.5 : 3, 3.4, ACCENT);
+  parA.position.set(volA.position.x, 3.72, -0.6);
+  part(g, parA, 0.54, 0.5);
+  const parB = parapet(grand ? 3.1 : 2.6, 3.2, ACCENT);
+  parB.position.set(volB.position.x, 3.02, -0.5);
+  part(g, parB, 0.58, 0.5);
+
+  // gated frontage with driveway + lawns
+  const front = frontage({ width: grand ? 9.4 : 8.2, z: 3.3 });
+  front.position.y = 0.22;
+  part(g, front, 0.66, 0.3);
+
+  part(g, planter(-1.15, 1.75), 0.74);
+  part(g, planter(1.3, 1.75), 0.76);
+  if (withPool) part(g, pool(2.2, 1.1, grand ? 3.9 : 3.3, 1.1), 0.8);
+  part(g, tree(grand ? -4.3 : -3.8, 1.4, 0.95), 0.84);
+  part(g, cypress(grand ? 4.6 : 4, -0.6, 1), 0.88);
+  return g;
+}
+function buildPalazzo() {
+  const g = new THREE.Group();
+  part(g, plinth(5.6), 0);
+  const main = box(5.6, 3, 3.8, CREAM);
+  main.position.y = 0.22;
+  part(g, main, 0.12, 0.7);
+  windowGrid(main, { cols: 2, rows: 2, w: 0.5, h: 0.62, gx: 2.6, gy: 0.6, y: 0.6, z: 1.91 });
+  const doorArch = windowPane(0.7, 1.3);
+  doorArch.position.set(0, 0.88, 1.92);
+  part(g, doorArch, 0.3);
+  for (let i = 0; i < 4; i++) {
+    const colGeo = new THREE.CylinderGeometry(0.14, 0.16, 2.6, 12);
+    colGeo.translate(0, 1.3, 0);
+    const col = edged(colGeo, CHARCOAL);
+    col.position.set(-1.8 + i * 1.2, 0.24, 2.2);
+    part(g, col, 0.34 + i * 0.05, 0.4);
+  }
+  const shape = new THREE.Shape();
+  shape.moveTo(-3.1, 0); shape.lineTo(3.1, 0); shape.lineTo(0, 1.25); shape.closePath();
+  const pedGeo = new THREE.ExtrudeGeometry(shape, { depth: 4.4, bevelEnabled: false });
+  pedGeo.translate(0, 0, -2.2);
+  const pediment = edged(pedGeo, CHARCOAL_DARK);
+  pediment.position.y = 3.24;
+  part(g, pediment, 0.58, 0.7);
+  const front = frontage({ width: 9, z: 3.4 });
+  front.position.y = 0.22;
+  part(g, front, 0.68, 0.3);
+  part(g, cypress(-3.7, 1.4, 1.1), 0.78);
+  part(g, cypress(3.7, 1.4, 1.1), 0.82);
+  return g;
+}
+function buildColonial({ atrium = false } = {}) {
+  const g = new THREE.Group();
+  part(g, plinth(6), 0);
+  const main = box(6, 2.7, 4, CREAM);
+  main.position.y = 0.22;
+  part(g, main, 0.12, 0.7);
+  for (let i = 0; i < 3; i++) {
+    const arch = windowPane(0.95, 1.35);
+    arch.position.set(-1.9 + i * 1.9, 0.95, 2.21);
+    part(g, arch, 0.28 + i * 0.04);
+  }
+  // veranda colonnade
+  for (let i = 0; i < 4; i++) {
+    const cGeo = new THREE.CylinderGeometry(0.09, 0.1, 2.1, 10);
+    cGeo.translate(0, 1.05, 0);
+    const c = edged(cGeo, CREAM);
+    c.position.set(-2.85 + i * 1.9, 0.22, 2.2);
+    part(g, c, 0.34 + i * 0.04, 0.3);
+  }
+  windowGrid(main, { cols: 3, rows: 1, w: 0.6, h: 0.5, gx: 1.3, y: 1.95, z: 2.01 });
+  const roof = hipRoof(6.9, 4.8, 2.6, 1.4, 1.3);
+  roof.position.y = 2.92;
+  part(g, roof, 0.52, 0.7);
+  if (atrium) {
+    const glass = box(2, 1.9, 2, 0x21385c);
+    glass.position.set(4.1, 0.22, 0.4);
+    part(g, glass, 0.62, 0.5);
+    windowGrid(glass, { cols: 3, rows: 2, w: 0.44, h: 0.55, gx: 0.14, gy: 0.2, y: 0.25, z: 1.01 });
+  } else {
+    part(g, tree(4.4, 1.2, 1.15), 0.64);
+  }
+  part(g, tree(-4.3, 1, 1.3), 0.72);
+  const front = frontage({ width: 9.6, z: 3.6 });
+  front.position.y = 0.22;
+  part(g, front, 0.8, 0.3);
+  return g;
+}
+function buildFarmhouse({ linear = false } = {}) {
+  const g = new THREE.Group();
+  part(g, plinth(6.4), 0);
+  const main = box(linear ? 7.2 : 6.6, linear ? 1.9 : 2.2, 3.4, linear ? CHARCOAL : CREAM);
+  main.position.y = 0.22;
+  part(g, main, 0.12, 0.6);
+  windowGrid(main, { cols: linear ? 5 : 4, rows: 1, w: 0.85, h: 1.05, gx: 0.35, y: 0.55, z: 1.71 });
+  const slabGeo = new THREE.BoxGeometry(linear ? 7.9 : 7.3, 0.16, 4);
+  slabGeo.translate(0, 0.08, 0);
+  const slab = edged(slabGeo, CHARCOAL_DARK);
+  slab.position.y = 0.22 + (linear ? 1.9 : 2.2);
+  part(g, slab, 0.36, 0.5);
+  const slats = woodSlats(2.2, linear ? 1.8 : 2.1, 8);
+  slats.position.set(linear ? -2.4 : -2.1, 0.28, 1.73);
+  part(g, slats, 0.42, 0.3);
+  for (let i = 0; i < 4; i++) {
+    const postGeo = new THREE.CylinderGeometry(0.05, 0.05, linear ? 1.9 : 2.2, 8);
+    postGeo.translate(0, (linear ? 1.9 : 2.2) / 2, 0);
+    const post = new THREE.Mesh(postGeo, mat(WOOD, 0.7, 0.1));
+    post.position.set(-0.6 + i * 1.5, 0.22, 2.1);
+    part(g, post, 0.46 + i * 0.04, 0.3);
+  }
+  part(g, tree(-4.8, 1.6, 1.1), 0.6);
+  part(g, tree(4.9, 1.8, 0.95), 0.66);
+  part(g, tree(5.6, 0.6, 0.75), 0.7);
+  if (linear) part(g, pool(2.2, 1.2, 2.6, 2.7), 0.78);
+  part(g, planter(-3.4, 2.6), 0.84);
+  return g;
+}
+
+// Spanish villa — white render, twin terracotta hip roofs, wrought balcony
+function buildSpanish() {
+  const g = new THREE.Group();
+  const WHITE = 0xe6dfcd, TERRA = 0x9c4f33;
+  part(g, plinth(5.4), 0);
+  const main = box(4.6, 2.5, 3.5, WHITE);
+  main.position.set(-0.7, 0.22, 0);
+  part(g, main, 0.1, 0.7);
+  windowGrid(main, { cols: 3, rows: 1, w: 0.55, h: 0.95, gx: 0.55, y: 0.6, z: 1.76 });
+  const roofMain = hipRoof(5.2, 4.1, 2.4, 1.5, 1.1, TERRA);
+  roofMain.position.set(-0.7, 2.72, 0);
+  part(g, roofMain, 0.42, 0.6);
+  const tower = box(2, 3.5, 2.2, WHITE);
+  tower.position.set(2.1, 0.22, 0.3);
+  part(g, tower, 0.22, 0.8);
+  windowGrid(tower, { cols: 1, rows: 1, w: 0.7, h: 1, y: 2.1, z: 1.11 });
+  const roofTower = hipRoof(2.5, 2.7, 1, 1, 0.85, TERRA);
+  roofTower.position.set(2.1, 3.72, 0.3);
+  part(g, roofTower, 0.52, 0.6);
+  const bal = balcony(1.7, 0.8, true);
+  bal.position.set(2.1, 1.95, 1.5);
+  part(g, bal, 0.36, 0.4);
+  const doorPane = windowPane(0.6, 1.4);
+  doorPane.position.set(-0.7, 0.95, 1.77);
+  part(g, doorPane, 0.3);
+  part(g, lightStrip(-2.6, 0.35, 1.77, 2.1), 0.46);
+  const front = frontage({ width: 8.6, z: 3.2 });
+  front.position.y = 0.22;
+  part(g, front, 0.62, 0.3);
+  part(g, planter(-1.7, 2), 0.7);
+  part(g, planter(0.3, 2), 0.72);
+  part(g, tree(-4, 1.2, 1.05), 0.78);
+  part(g, cypress(4.2, 0.4, 0.95), 0.84);
+  return g;
+}
+// grey graphite-texture elevation with wide glazing + wood slats
+function buildGreyTexture() {
+  const g = new THREE.Group();
+  const GREY = 0x4d5360, GRAPHITE = 0x2a2e38;
+  part(g, plinth(5.3), 0);
+  const main = box(4.9, 3.4, 3.4, GREY);
+  main.position.set(-0.4, 0.22, -0.2);
+  part(g, main, 0.1, 0.7);
+  const band = box(1.25, 3.6, 0.18, GRAPHITE);
+  band.position.set(-2, 0.22, 1.55);
+  part(g, band, 0.24, 0.6);
+  part(g, lightStrip(-1.32, 0.3, 1.68, 3.2), 0.3);
+  windowGrid(main, { cols: 2, rows: 1, w: 1, h: 0.95, gx: 0.35, y: 0.55, z: 1.71, x: 0.5 });
+  windowGrid(main, { cols: 2, rows: 1, w: 0.8, h: 0.8, gx: 0.55, y: 2.2, z: 1.71, x: 0.5 });
+  const bal = balcony(2.5, 0.85);
+  bal.position.set(0.55, 1.95, 1.95);
+  part(g, bal, 0.4, 0.4);
+  const slats = woodSlats(1.4, 2.9, 6);
+  slats.position.set(1.95, 0.42, 1.42);
+  part(g, slats, 0.46, 0.4);
+  const par = parapet(4.9, 3.4, GRAPHITE);
+  par.position.set(-0.4, 3.62, -0.2);
+  part(g, par, 0.54, 0.5);
+  const front = frontage({ width: 8.8, z: 3.3 });
+  front.position.y = 0.22;
+  part(g, front, 0.64, 0.3);
+  part(g, planter(1.5, 2.2), 0.74);
+  part(g, cypress(-4.1, 1, 1.05), 0.8);
+  part(g, tree(4.3, 0.8, 0.95), 0.86);
+  return g;
+}
+// narrow 5-marla with stacked balconies (classic Bahria street house)
+function buildCube5Marla() {
+  const g = new THREE.Group();
+  const WHITE = 0xe2dccb;
+  part(g, plinth(4.4), 0);
+  const main = box(2.9, 4.1, 3.3, WHITE);
+  main.position.set(-0.4, 0.22, 0);
+  part(g, main, 0.1, 0.9);
+  const accent = box(0.85, 4.3, 0.2, CHARCOAL_DARK);
+  accent.position.set(1.35, 0.22, 1.6);
+  part(g, accent, 0.24, 0.7);
+  part(g, lightStrip(1.95, 0.3, 1.7, 3.9), 0.3);
+  windowGrid(main, { cols: 2, rows: 1, w: 0.62, h: 0.85, gx: 0.4, y: 0.55, z: 1.66 });
+  [1.62, 2.96].forEach((y, i) => {
+    const bal = balcony(2.3, 0.75);
+    bal.position.set(-0.4, y, 1.95);
+    part(g, bal, 0.36 + i * 0.1, 0.4);
+    windowGrid(main, { cols: 2, rows: 1, w: 0.55, h: 0.7, gx: 0.5, y: y - 0.12, z: 1.66 });
+  });
+  const par = parapet(2.9, 3.3, CHARCOAL_DARK);
+  par.position.set(-0.4, 4.32, 0);
+  part(g, par, 0.56, 0.5);
+  const front = frontage({ width: 7, gateX: 0.8, z: 3.1 });
+  front.position.y = 0.22;
+  part(g, front, 0.64, 0.3);
+  part(g, planter(-1.75, 2), 0.74);
+  part(g, cypress(3.4, 0.6, 0.85), 0.8);
+  return g;
+}
+// corner plot with wraparound glass balcony on two faces
+function buildCornerGlass() {
+  const g = new THREE.Group();
+  part(g, plinth(5.5), 0);
+  const volA = box(4.4, 3.3, 3.2, CHARCOAL);
+  volA.position.set(-0.6, 0.22, -0.3);
+  part(g, volA, 0.1, 0.7);
+  const volB = box(2.4, 2.7, 2.6, CREAM);
+  volB.position.set(2.1, 0.22, 0.6);
+  part(g, volB, 0.2, 0.7);
+  windowGrid(volA, { cols: 3, rows: 1, w: 0.72, h: 0.95, gx: 0.34, y: 0.5, z: 1.61 });
+  windowGrid(volA, { cols: 3, rows: 1, w: 0.62, h: 0.8, gx: 0.45, y: 2.1, z: 1.61 });
+  windowGrid(volB, { cols: 2, rows: 2, w: 0.5, h: 0.6, gx: 0.3, gy: 0.5, y: 0.4, z: 1.31 });
+  const balFront = balcony(3.6, 0.8);
+  balFront.position.set(-0.6, 1.92, 1.7);
+  part(g, balFront, 0.36, 0.4);
+  const balSide = balcony(2.6, 0.8);
+  balSide.position.set(-3.2, 1.92, 0);
+  balSide.rotation.y = Math.PI / 2;
+  part(g, balSide, 0.42, 0.4);
+  part(g, lightStrip(1.1, 0.3, 1.62, 3), 0.3);
+  const par = parapet(4.4, 3.2, CREAM);
+  par.position.set(-0.6, 3.52, -0.3);
+  part(g, par, 0.52, 0.5);
+  const front = frontage({ width: 9, z: 3.2 });
+  front.position.y = 0.22;
+  part(g, front, 0.62, 0.3);
+  part(g, planter(0.9, 2.1), 0.72);
+  part(g, tree(4.4, 1.6, 1), 0.78);
+  part(g, cypress(-4.4, 1.2, 1), 0.84);
+  return g;
+}
+// face-brick modern with cream banding
+function buildBrick() {
+  const g = new THREE.Group();
+  const BRICK = 0x8e4f38;
+  part(g, plinth(5), 0);
+  const main = box(4.5, 3.1, 3.4, BRICK);
+  main.position.set(-0.3, 0.22, 0);
+  part(g, main, 0.1, 0.7);
+  [1.35, 2.55].forEach((y, i) => {
+    const bandGeo = new THREE.BoxGeometry(4.7, 0.14, 3.6);
+    bandGeo.translate(0, 0.07, 0);
+    const band = edged(bandGeo, CREAM);
+    band.position.set(-0.3, y, 0);
+    part(g, band, 0.26 + i * 0.08, 0.4);
+  });
+  windowGrid(main, { cols: 3, rows: 1, w: 0.6, h: 0.85, gx: 0.5, y: 0.45, z: 1.71 });
+  windowGrid(main, { cols: 3, rows: 1, w: 0.55, h: 0.75, gx: 0.55, y: 1.75, z: 1.71 });
+  const doorPane = windowPane(0.6, 1.1);
+  doorPane.position.set(1.6, 0.77, 1.72);
+  part(g, doorPane, 0.34);
+  part(g, lightStrip(-2.55, 0.3, 1.72, 2.7), 0.4);
+  const par = parapet(4.5, 3.4, CREAM);
+  par.position.set(-0.3, 3.32, 0);
+  part(g, par, 0.5, 0.5);
+  const front = frontage({ width: 8.2, z: 3.1 });
+  front.position.y = 0.22;
+  part(g, front, 0.6, 0.3);
+  part(g, planter(1.6, 2.1), 0.7);
+  part(g, tree(-3.9, 1.3, 1), 0.78);
+  return g;
+}
+
+const ARCHETYPES = {
+  manor: () => buildDesigner({ grand: true, withPool: true }),
+  modern: () => buildDesigner({ grand: false }),
+  modernWhite: () => buildDesigner({ grand: false, cream: true }),
+  palazzo: () => buildPalazzo(),
+  colonial: () => buildColonial(),
+  colonialAtrium: () => buildColonial({ atrium: true }),
+  farmhouse: () => buildFarmhouse(),
+  linear: () => buildFarmhouse({ linear: true }),
+  spanish: () => buildSpanish(),
+  greyTexture: () => buildGreyTexture(),
+  cube5: () => buildCube5Marla(),
+  corner: () => buildCornerGlass(),
+  brick: () => buildBrick()
+};
+
+// property index (matches PROPERTIES in main.js) -> archetype
+// every sold home gets a distinct model
+const PROPERTY_MODELS = [
+  "manor", "modern", "greyTexture", "cube5", "farmhouse", "corner",
+  "palazzo", "colonialAtrium", "modernWhite", "colonial", "linear", "brick"
+];
+
+/* ---------- scene factory ---------- */
+function makeScene() {
+  const scene = new THREE.Scene();
+  scene.fog = new THREE.Fog(0x0a0f1e, 17, 36);
+  scene.add(new THREE.AmbientLight(0x5a6a96, 1.7));
+  const key = new THREE.DirectionalLight(0xffd9a0, 2.3);
+  key.position.set(6, 9, 5);
+  key.castShadow = true;
+  key.shadow.mapSize.set(2048, 2048);
+  key.shadow.camera.left = key.shadow.camera.bottom = -11;
+  key.shadow.camera.right = key.shadow.camera.top = 11;
+  key.shadow.camera.near = 1;
+  key.shadow.camera.far = 32;
+  key.shadow.bias = -0.0008;
+  scene.add(key);
+  const rim = new THREE.DirectionalLight(0x4466cc, 1.05);
+  rim.position.set(-7, 5, -6);
+  scene.add(rim);
+  return scene;
+}
+function cinematic(renderer) {
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.2;
+}
+const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+function applyAssembly(house, p) {
+  house.traverse((o) => {
+    if (o.userData.order === undefined) return;
+    const k = Math.min(Math.max((p * 1.45 - o.userData.order * 0.62) / 0.32, 0), 1);
+    const e = easeOutCubic(k);
+    const s = Math.max(e, 0.0001);
+    o.scale.setScalar(s);
+    o.position.y = o.userData.baseY + (1 - e) * (o.userData.lift || 0);
+    o.visible = k > 0.001;
+  });
+}
+
+/* ============================================================
+   SCROLL SHOWCASE
+   ============================================================ */
+function initShowcase() {
+  const section = document.getElementById("showcase3d");
+  const canvas = document.getElementById("estateCanvas");
+  if (!section || !canvas || typeof gsap === "undefined" || typeof ScrollTrigger === "undefined") {
+    if (section) section.style.display = "none";
+    return;
+  }
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  } catch {
+    section.style.display = "none";
+    return;
+  }
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
+  cinematic(renderer);
+
+  const scene = makeScene();
+  const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 60);
+  const rig = new THREE.Group();
+  scene.add(rig);
+
+  const SHOWCASE_TYPES = ["manor", "palazzo", "colonial"];
+  const houses = SHOWCASE_TYPES.map((t) => {
+    const h = ARCHETYPES[t]();
+    h.visible = false;
+    rig.add(h);
+    return h;
+  });
+
+  const captions = Array.from(section.querySelectorAll(".showcase3d__caption"));
+  const counter = section.querySelector(".showcase3d__counter");
+
+  function size() {
+    const w = section.clientWidth, h = section.clientHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  size();
+  window.addEventListener("resize", size);
+
+  let progress = 0, inView = true, lastSeg = -1;
+  ScrollTrigger.create({
+    trigger: section,
+    start: "top top",
+    end: "+=2800",
+    pin: true,
+    scrub: true,
+    onUpdate(self) { progress = self.progress; }
+  });
+  new IntersectionObserver(([e]) => { inView = e.isIntersecting; }).observe(section);
+
+  function frame() {
+    if (!inView) return;
+    const segF = Math.min(progress * 3, 2.999);
+    const seg = Math.floor(segF);
+    const local = segF - seg;
+
+    if (seg !== lastSeg) {
+      houses.forEach((h, i) => (h.visible = i === seg));
+      captions.forEach((c, i) => c.classList.toggle("is-active", i === seg));
+      if (counter) counter.textContent = `0${seg + 1} / 03`;
+      lastSeg = seg;
+    }
+    applyAssembly(houses[seg], Math.min(0.12 + local * 1.9, 1));
+    houses[seg].rotation.y = -0.55 + local * 1.45;
+
+    const camAngle = -0.18 + local * 0.22;
+    camera.position.set(Math.sin(camAngle) * 14.5, 5 - local * 1.1, Math.cos(camAngle) * 14.5);
+    camera.lookAt(0, 1.6, 0);
+    renderer.render(scene, camera);
+  }
+  gsap.ticker.add(frame);
+}
+
+/* ============================================================
+   LIGHTBOX VIEWER (drag to rotate, auto-spin)
+   ============================================================ */
+let viewer = null;
+function ensureViewer(container) {
+  if (viewer) return viewer;
+  const canvas = document.createElement("canvas");
+  canvas.className = "lightbox__3d";
+  container.appendChild(canvas);
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  } catch {
+    return null;
+  }
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
+  cinematic(renderer);
+  const scene = makeScene();
+  const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 60);
+  camera.position.set(0, 4.6, 12.8);
+  camera.lookAt(0, 1.4, 0);
+
+  viewer = { renderer, scene, camera, canvas, house: null, rotY: 0, targetRotY: 0, dragging: false, open: false, built: 0, type: null };
+
+  canvas.addEventListener("pointerdown", (e) => {
+    viewer.dragging = true;
+    viewer.lastX = e.clientX;
+    canvas.setPointerCapture(e.pointerId);
+  });
+  canvas.addEventListener("pointermove", (e) => {
+    if (!viewer.dragging) return;
+    viewer.targetRotY += (e.clientX - viewer.lastX) * 0.012;
+    viewer.lastX = e.clientX;
+  });
+  ["pointerup", "pointercancel"].forEach((ev) =>
+    canvas.addEventListener(ev, () => (viewer.dragging = false)));
+
+  function loop() {
+    if (!viewer.open) return;
+    requestAnimationFrame(loop);
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    if (canvas.width !== w * renderer.getPixelRatio()) {
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
+    if (!viewer.dragging) viewer.targetRotY += 0.0035;
+    viewer.rotY += (viewer.targetRotY - viewer.rotY) * 0.08;
+    if (viewer.house) {
+      viewer.house.rotation.y = viewer.rotY;
+      viewer.built = Math.min(viewer.built + 0.016, 1);
+      applyAssembly(viewer.house, easeOutCubic(viewer.built));
+    }
+    renderer.render(scene, camera);
+  }
+  viewer.loop = loop;
+  return viewer;
+}
+
+function openViewer(index, container) {
+  return openViewerByType(PROPERTY_MODELS[index] || "modern", container);
+}
+function openViewerByType(type, container) {
+  const v = ensureViewer(container);
+  if (!v) return false;
+  if (!ARCHETYPES[type]) type = "modern";
+  if (v.type !== type) {
+    if (v.house) v.scene.remove(v.house);
+    v.house = ARCHETYPES[type]();
+    v.scene.add(v.house);
+    v.type = type;
+  }
+  v.built = 0;
+  v.rotY = v.targetRotY = -0.4;
+  v.open = true;
+  v.canvas.style.display = "block";
+  requestAnimationFrame(v.loop);
+  return true;
+}
+function closeViewer() {
+  if (viewer) viewer.open = false;
+}
+
+window.Estate3D = { openViewer, openViewerByType, closeViewer };
+initShowcase();

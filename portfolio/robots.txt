@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://assassin1961.github.io/Androgenic/sitemap.xml

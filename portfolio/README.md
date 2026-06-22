@@ -1,0 +1,72 @@
+# Adeel Ahmed Rahman — Luxury Real Estate Portfolio
+
+A highly interactive, single-page portfolio showcasing luxury homes sold across
+**Islamabad** and **Lahore** — 5 Marla, 10 Marla, 1 Kanal and beyond.
+
+**Stack:** Pure HTML/CSS/JS · Three.js 3D · GSAP + ScrollTrigger · Lenis smooth scroll · No build step.
+**Fully self-hosted** — all libraries, fonts and artwork are vendored locally; zero external requests, works offline.
+
+**Highlights**
+
+- **Walk-through virtual show-home (PlayCanvas)** — a fully-furnished interior
+  (foyer, living, dining, open kitchen, master bedroom) you explore in
+  first-person: WASD + mouse on desktop, on-screen joystick + drag on mobile.
+  The engine is lazy-loaded only when a tour is opened.
+- **Scroll-driven 3D showcase** — three signature homes built as procedural
+  Three.js maquettes that assemble piece-by-piece and orbit as you scroll
+  through a pinned section
+- **Interactive 3D model in every property lightbox** — drag to rotate,
+  gentle auto-spin, assembled on open (all 12 homes mapped to 8 archetypes)
+- 12 bespoke "blue-hour" architectural illustrations — one per sold home, each
+  accurate to its story (Margalla Hills, infinity pool, colonial verandas, orchard…)
+- Hand-drawn SVG panoramas: Faisal Mosque dusk skyline (hero) and
+  Badshahi Mosque / Minar-e-Pakistan night skyline (contact)
+- Cinematic preloader, custom cursor, magnetic buttons, scroll-progress bar
+- Hero with staggered headline reveal, parallax background and animated counters
+- Filterable sold-homes gallery (city + plot size) with animated transitions
+- Story lightbox for every home, auto-playing testimonial slider, marquee of addresses
+- WhatsApp lead-capture button, fully responsive, zero external image dependencies
+- SEO-ready: JSON-LD RealEstateAgent structured data, Open Graph & Twitter cards,
+  canonical URL, sitemap.xml, robots.txt, SVG favicon
+
+## Run it
+
+Open `index.html` in a browser, or serve the folder:
+
+```bash
+cd portfolio && python3 -m http.server 8000
+```
+
+To publish on **GitHub Pages**: Settings → Pages → deploy from this branch,
+folder `/portfolio` (or copy this folder to the repo root of a `gh-pages` branch).
+
+## Preview
+
+### Hero
+![Hero](.preview/01-hero.png)
+
+### 3D Showcase — homes assemble & orbit on scroll
+![3D Manor](.preview/09-3d-manor.png)
+![3D Palazzo](.preview/10-3d-palazzo.png)
+![3D Colonial](.preview/11-3d-colonial.png)
+
+### About
+![About](.preview/02-about.png)
+
+### Sold Portfolio — bespoke illustration per home
+![Portfolio](.preview/03-portfolio.png)
+
+### Filtered — Lahore
+![Filter](.preview/04-filter-lahore.png)
+
+### Property Story Lightbox
+![Lightbox](.preview/05-lightbox.png)
+
+### Quote Band
+![Quote](.preview/06-quote.png)
+
+### Contact
+![Contact](.preview/07-contact.png)
+
+### Mobile
+![Mobile](.preview/08-mobile-hero.png)
