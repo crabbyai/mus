@@ -67,7 +67,7 @@
   calcEmi();
 
   /* ---------- currency converter ---------- */
-  // Indicative PKR per 1 unit of foreign currency.
+  // PKR per 1 unit of foreign currency — seeded with indicative fallbacks.
   const RATES = { USD: 278, GBP: 355, AED: 75.7, CAD: 204, SAR: 74, EUR: 300 };
   const SYM = { USD: "$", GBP: "£", AED: "AED ", CAD: "C$", SAR: "SAR ", EUR: "€" };
 
@@ -80,6 +80,7 @@
   const fxInput = $("fxPkr");
   const fxOut = $("fxPkrOut");
   const fxCells = document.querySelectorAll("#fxGrid [data-fx]");
+  const fxNote = $("fxNote");
 
   function calcFx() {
     if (!fxInput) return;
@@ -90,6 +91,31 @@
       el.textContent = SYM[cur] + fmtFx(pkr / RATES[cur]);
     });
   }
+
+  // Fetch live PKR rates from open.er-api.com (free tier, no key required).
+  // Response: { rates: { USD: 0.003597, GBP: ..., ... } } (units: 1 PKR = X foreign)
+  // We store the inverse (PKR per 1 foreign unit) to match our RATES convention.
+  (function loadLiveRates() {
+    fetch("https://open.er-api.com/v6/latest/PKR")
+      .then(function (res) { return res.ok ? res.json() : Promise.reject(res.status); })
+      .then(function (data) {
+        if (!data || !data.rates) return;
+        Object.keys(RATES).forEach(function (cur) {
+          const ratePerPkr = data.rates[cur]; // 1 PKR = ratePerPkr units of cur
+          if (ratePerPkr && ratePerPkr > 0) RATES[cur] = 1 / ratePerPkr;
+        });
+        calcFx();
+        if (fxNote) {
+          const now = new Date();
+          fxNote.textContent = "Rates live as of " +
+            now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }) + " today.";
+        }
+      })
+      .catch(function () {
+        // Network failure or API down — silently keep fallback rates.
+        if (fxNote) fxNote.textContent = "Using approximate rates (live fetch unavailable).";
+      });
+  })();
 
   if (fxInput) fxInput.addEventListener("input", calcFx);
   calcFx();
