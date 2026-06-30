@@ -80,4 +80,46 @@
       card.style.setProperty("--my", ((e.clientY - r.top) / r.height * 100) + "%");
     }, { passive: true });
   }
+
+  /* ---------- Exit-intent popup ---------- */
+  if (!sessionStorage.getItem("exitShown")) {
+    const popup   = document.getElementById("exitPopup");
+    const exitBd  = document.getElementById("exitPopupBd");
+    const exitX   = document.getElementById("exitPopupClose");
+    const exitFrm = document.getElementById("exitForm");
+    let exitFired = false;
+
+    function openExit() {
+      if (exitFired || !popup) return;
+      exitFired = true;
+      sessionStorage.setItem("exitShown", "1");
+      popup.classList.add("is-open");
+      popup.setAttribute("aria-hidden", "false");
+    }
+    function closeExit() {
+      if (!popup) return;
+      popup.classList.remove("is-open");
+      popup.setAttribute("aria-hidden", "true");
+    }
+
+    if (exitBd)  exitBd.addEventListener("click", closeExit);
+    if (exitX)   exitX.addEventListener("click", closeExit);
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeExit(); });
+
+    if (canHover) {
+      document.addEventListener("mouseleave", (e) => { if (e.clientY < 8) openExit(); });
+    } else {
+      setTimeout(openExit, 40000);
+    }
+
+    if (exitFrm) {
+      exitFrm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const d = new FormData(exitFrm);
+        const msg = `Hello Adeel! My name is ${d.get("name")}. I'm interested in: ${d.get("intent")}. Please reach me on this WhatsApp number.`;
+        window.open(`https://wa.me/16134083945?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
+        closeExit();
+      });
+    }
+  }
 })();

@@ -66,6 +66,45 @@
   });
   calcEmi();
 
+  /* ---------- Rental yield / ROI calculator ---------- */
+  const roi = {
+    price: $("roiPrice"), rent: $("roiRent"), appreciation: $("roiAppreciation"),
+    priceOut: $("roiPriceOut"), rentOut: $("roiRentOut"), appreciationOut: $("roiApprecOut"),
+    yieldEl: $("roiYield"), annualRent: $("roiAnnualRent"),
+    breakeven: $("roiBreakeven"), fiveYr: $("roi5yr"), gain: $("roiGain")
+  };
+
+  function calcRoi() {
+    if (!roi.price) return;
+    const price = +roi.price.value;
+    const monthlyRent = +roi.rent.value;
+    const appreciationRate = +roi.appreciation.value / 100;
+
+    const annualRent = monthlyRent * 12;
+    const yieldPct = price > 0 ? (annualRent / price) * 100 : 0;
+    const fiveYrValue = price * Math.pow(1 + appreciationRate, 5);
+    const totalRent5yr = annualRent * 5;
+    const gain = fiveYrValue - price + totalRent5yr;
+    const breakeven = (annualRent + price * appreciationRate) > 0
+      ? price / (annualRent + price * appreciationRate)
+      : 99;
+
+    roi.priceOut.textContent = fmtShort(price);
+    roi.rentOut.textContent = fmtShort(monthlyRent);
+    roi.appreciationOut.textContent = roi.appreciation.value + "%";
+
+    roi.yieldEl.textContent = yieldPct.toFixed(2) + "% p.a.";
+    roi.annualRent.textContent = fmtShort(annualRent);
+    roi.breakeven.textContent = breakeven.toFixed(1) + " yrs";
+    roi.fiveYr.textContent = fmtShort(fiveYrValue);
+    roi.gain.textContent = fmtShort(gain);
+  }
+
+  ["price", "rent", "appreciation"].forEach((k) => {
+    if (roi[k]) roi[k].addEventListener("input", calcRoi);
+  });
+  calcRoi();
+
   /* ---------- currency converter ---------- */
   // PKR per 1 unit of foreign currency — seeded with indicative fallbacks.
   const RATES = { USD: 278, GBP: 355, AED: 75.7, CAD: 204, SAR: 74, EUR: 300 };

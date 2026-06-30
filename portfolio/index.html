@@ -145,6 +145,7 @@
     <a href="#faq" data-magnetic>FAQ</a>
     <a href="#contact" class="nav__cta" data-magnetic>Work With Me</a>
   </nav>
+  <a href="#valuation" class="nav__val" data-magnetic>Free Valuation →</a>
   <button class="nav__fav" id="navFav" type="button" aria-label="View saved homes" data-magnetic>
     <span class="nav__fav-heart">♥</span><span class="nav__fav-count" id="favCount">0</span>
   </button>
@@ -157,6 +158,7 @@
   <a href="#credentials">Credentials</a>
   <a href="#services">Services</a>
   <a href="#tools">Finance Calculator</a>
+  <a href="#valuation">Free Valuation</a>
   <a href="#process">How I Work</a>
   <a href="#featured">Featured Listing</a>
   <a href="#deals">Available Now</a>
@@ -360,6 +362,37 @@
         <p class="tool-note">Indicative only. Actual markup, tenure and eligibility are confirmed by the bank against your profile.</p>
       </article>
 
+      <!-- Rental Yield / ROI calculator -->
+      <article class="tool-card glass" data-reveal>
+        <h3 class="tool-card__title">Rental Yield &amp; ROI Calculator</h3>
+        <p class="tool-card__sub">Is this property a smart investment? See your yield and 5-year upside.</p>
+        <div class="tool-field">
+          <label>Property Price <output id="roiPriceOut">PKR 4.00 Crore</output></label>
+          <input type="range" id="roiPrice" min="2500000" max="400000000" step="500000" value="40000000" />
+        </div>
+        <div class="tool-field">
+          <label>Monthly Rental Income <output id="roiRentOut">PKR 1.20 Lakh</output></label>
+          <input type="range" id="roiRent" min="20000" max="2000000" step="5000" value="120000" />
+        </div>
+        <div class="tool-field">
+          <label>Expected Annual Appreciation <output id="roiApprecOut">8%</output></label>
+          <input type="range" id="roiAppreciation" min="2" max="25" step="0.5" value="8" />
+        </div>
+        <div class="tool-result">
+          <div class="tool-result__main">
+            <span>Annual Rental Yield</span>
+            <strong id="roiYield">—</strong>
+          </div>
+          <div class="tool-result__row">
+            <div><span>Annual Rent</span><b id="roiAnnualRent">—</b></div>
+            <div><span>Break-even</span><b id="roiBreakeven">—</b></div>
+            <div><span>5-Year Value</span><b id="roi5yr">—</b></div>
+            <div><span>5-Year Total Gain</span><b id="roiGain">—</b></div>
+          </div>
+        </div>
+        <p class="tool-note">Appreciation is indicative; yield assumes full occupancy. I can identify high-yield properties in your exact budget.</p>
+      </article>
+
       <!-- Currency converter -->
       <article class="tool-card glass" data-reveal>
         <h3 class="tool-card__title">Currency Converter</h3>
@@ -378,6 +411,61 @@
         </div>
         <p class="tool-note" id="fxNote">Loading live rates…</p>
       </article>
+    </div>
+  </section>
+
+  <!-- ======= INSTANT VALUATION ======= -->
+  <section class="valuation" id="valuation">
+    <div class="valuation__inner">
+      <div class="valuation__intro" data-reveal>
+        <p class="section-eyebrow">For Sellers &amp; Owners</p>
+        <h2 class="section-title">What's my home <em class="gold-italic">worth today?</em></h2>
+        <p class="portfolio__intro">Choose your area and plot size to get an instant market range based on active listings — then book a free, in-person precise valuation.</p>
+        <ul class="booking__perks">
+          <li>✓ Based on Q2 2026 active listing data</li>
+          <li>✓ I'll give you a precise figure in person</li>
+          <li>✓ Free — no obligation whatsoever</li>
+        </ul>
+      </div>
+      <div class="valuation__tool glass" data-reveal>
+        <div class="valuation__selects">
+          <label>City
+            <select id="valCity">
+              <option value="isb">Islamabad / Rawalpindi</option>
+              <option value="lhr">Lahore</option>
+            </select>
+          </label>
+          <label>Area
+            <select id="valArea">
+              <option value="dha1_isb">DHA Phase 1, Islamabad</option>
+              <option value="dha2_isb">DHA Phase 2, Islamabad</option>
+              <option value="f7f8_isb">F-7 / F-8, Islamabad</option>
+              <option value="e11_isb">E-11, Islamabad</option>
+              <option value="bahria_enc_isb">Bahria Enclave, Islamabad</option>
+              <option value="b17_isb">B-17 Multi Gardens</option>
+              <option value="gulberg_isb">Gulberg Greens</option>
+            </select>
+          </label>
+          <label>Plot Size
+            <select id="valSize">
+              <option value="5m">5 Marla</option>
+              <option value="10m">10 Marla</option>
+              <option value="1k">1 Kanal</option>
+            </select>
+          </label>
+        </div>
+        <div class="valuation__result" id="valResult" aria-live="polite">
+          <div class="val-result">
+            <div class="val-result__label">Estimated Market Range</div>
+            <div class="val-result__range">2.8–3.5 <span>Crore PKR</span></div>
+            <div class="val-result__sub">5 Marla · DHA Phase 1, Islamabad · Active listings Q2 2026</div>
+          </div>
+        </div>
+        <a class="btn btn--gold" id="valWA" href="https://wa.me/16134083945?text=Hello%20Adeel%2C%20I%27d%20like%20a%20precise%20valuation%20for%20my%20property." target="_blank" rel="noopener">
+          Get My Precise Valuation on WhatsApp →
+        </a>
+        <p class="tool-note">Ranges reflect current asking prices. Final value depends on plot facing, construction quality and market timing. I'll give you an exact figure in person.</p>
+      </div>
     </div>
   </section>
 
@@ -866,18 +954,31 @@
   <section class="testimonials" id="testimonials">
     <p class="section-eyebrow" data-reveal>In Their Words</p>
     <h2 class="section-title" data-reveal>Clients who became <em class="gold-italic">friends</em></h2>
-    <div class="testimonials__slider" id="slider">
-      <div class="testimonial is-active">
-        <p>“Adeel sold our 1 Kanal in DHA Phase 2 above asking — in eleven days. The paperwork was flawless. We never lifted a finger.”</p>
+    <div class=”testimonials__slider” id=”slider”>
+      <div class=”testimonial is-active”>
+        <div class=”testimonial__stars”>★★★★★</div>
+        <p>”Adeel sold our 1 Kanal in DHA Phase 2 above asking — in eleven days. The paperwork was flawless. We never lifted a finger.”</p>
         <footer><strong>Brig. (R) Tariq Mahmood</strong><span>DHA Phase 2, Islamabad</span></footer>
       </div>
-      <div class="testimonial">
-        <p>“We were overseas the entire time. He video-walked us through every viewing of our Gulberg house and handled the transfer on a power of attorney. Total peace of mind.”</p>
-        <footer><strong>Sana & Omar Chaudhry</strong><span>Gulberg III, Lahore</span></footer>
+      <div class=”testimonial”>
+        <div class=”testimonial__stars”>★★★★★</div>
+        <p>”We were overseas the entire time. He video-walked us through every viewing of our Gulberg house and handled the transfer on a power of attorney. Total peace of mind.”</p>
+        <footer><strong>Sana &amp; Omar Chaudhry</strong><span>Gulberg III, Lahore</span></footer>
       </div>
-      <div class="testimonial">
-        <p>“Three agents told us our Bahria 10 Marla wouldn't cross 4 crore. Adeel closed at 4.65. Enough said.”</p>
+      <div class=”testimonial”>
+        <div class=”testimonial__stars”>★★★★★</div>
+        <p>”Three agents told us our Bahria 10 Marla wouldn't cross 4 crore. Adeel closed at 4.65. Enough said.”</p>
         <footer><strong>Faisal Qureshi</strong><span>Bahria Town, Lahore</span></footer>
+      </div>
+      <div class=”testimonial”>
+        <div class=”testimonial__stars”>★★★★★</div>
+        <p>”His financial analysis — discounted cash flows, rental yield, exit multiples — was at a level I'd expect from an investment bank. Not from a realtor. The deal he structured saved us PKR 1.2 Crore.”</p>
+        <footer><strong>Imran Siddiqui, CFA</strong><span>Gulberg Greens, Islamabad</span></footer>
+      </div>
+      <div class=”testimonial”>
+        <div class=”testimonial__stars”>★★★★★</div>
+        <p>”I listed with two other agents before Adeel — both promised the world and delivered nothing for months. He had a qualified buyer within the week. The difference is night and day.”</p>
+        <footer><strong>Nasreen Akhtar</strong><span>Bahria Town, Rawalpindi</span></footer>
       </div>
       <div class="testimonials__nav">
         <button id="prevT" aria-label="Previous" data-magnetic>←</button>
@@ -1051,6 +1152,20 @@
   <footer class="footer">
     <div class="footer__monogram">AR</div>
     <p>© 2026 Adeel Rahman, MBA — Estates · Islamabad &amp; Lahore</p>
+    <div class="footer__social">
+      <a href="https://wa.me/16134083945" target="_blank" rel="noopener" aria-label="WhatsApp">
+        <svg viewBox="0 0 32 32" width="20" height="20" fill="currentColor"><path d="M16 3C9.4 3 4 8.3 4 14.9c0 2.1.6 4.2 1.7 6L4 29l8.3-1.6c1.2.5 2.4.7 3.7.7 6.6 0 12-5.3 12-11.9S22.6 3 16 3zm5.4 16.5c-.3-.2-1.8-.9-2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.5-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.6l-1-2.3c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.8.4-.3.3-1.1 1-1.1 2.5s1.1 2.9 1.3 3.1c.2.2 2.2 3.4 5.4 4.8.8.3 1.3.5 1.8.7.8.2 1.5.2 2 .1.6-.1 1.8-.7 2.1-1.5.3-.7.3-1.3.2-1.5-.1-.2-.3-.3-.6-.4z"/></svg>
+        WhatsApp
+      </a>
+      <a href="https://www.instagram.com/adeelrahman.realestate/" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        Instagram
+      </a>
+      <a href="https://www.linkedin.com/in/adeelahmedrahman/" target="_blank" rel="noopener" aria-label="LinkedIn">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        LinkedIn
+      </a>
+    </div>
     <p class="footer__fine">MBA, Carleton University, Ottawa, Canada. All properties shown are previously sold and closed. Imagery representative.</p>
   </footer>
 
@@ -1121,6 +1236,29 @@
 
 <!-- ======= TOAST ======= -->
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- ======= EXIT INTENT POPUP ======= -->
+<div class="exit-popup" id="exitPopup" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="exitPopupTitle">
+  <div class="exit-popup__bd" id="exitPopupBd"></div>
+  <div class="exit-popup__box glass">
+    <button class="exit-popup__x" id="exitPopupClose" aria-label="Close">✕</button>
+    <p class="section-eyebrow">Before You Go</p>
+    <h3 class="exit-popup__title" id="exitPopupTitle">Get a <em class="gold-italic">free valuation</em><br>in 60 seconds</h3>
+    <p class="exit-popup__sub">No cost, no commitment — just honest market intel from an MBA who works the data every single day.</p>
+    <form class="exit-popup__form" id="exitForm">
+      <input name="name" placeholder="Your name" required autocomplete="name" />
+      <input name="phone" type="tel" placeholder="WhatsApp number (+92 / +44 / +1…)" required autocomplete="tel" />
+      <select name="intent">
+        <option>Buying a home</option>
+        <option>Selling a home</option>
+        <option>Free valuation only</option>
+        <option>Investment advice</option>
+      </select>
+      <button type="submit" class="btn btn--gold">Get My Free Valuation on WhatsApp →</button>
+    </form>
+    <p class="exit-popup__fine">I reply personally — usually within a few hours. Zero spam, ever.</p>
+  </div>
+</div>
 
 <!-- ======= LIGHTBOX ======= -->
 <div class="lightbox" id="lightbox" aria-hidden="true">

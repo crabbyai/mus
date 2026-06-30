@@ -1098,3 +1098,71 @@ if (alertForm) {
 
   render();
 })();
+
+/* ============================================================
+   INSTANT VALUATION WIDGET
+   ============================================================ */
+(function () {
+  const VALDATA = {
+    dha1_isb:       { "5m": "2.8–3.5", "10m": "5–7",    "1k": "12–18" },
+    dha2_isb:       { "5m": "2.4–3.2", "10m": "4.5–6",  "1k": "13–16" },
+    f7f8_isb:       { "5m": null,       "10m": "14–20",  "1k": "28–45" },
+    e11_isb:        { "5m": "3.5–5",   "10m": "8–12",   "1k": "18–25" },
+    bahria_enc_isb: { "5m": "1.8–2.5", "10m": "3.5–5.5","1k": "7–10"  },
+    b17_isb:        { "5m": "1.4–2",   "10m": "2.8–4",  "1k": "6–9"   },
+    gulberg_isb:    { "5m": null,       "10m": null,     "1k": "5.5–9" },
+    dha5_lhr:       { "5m": "3.5–5",   "10m": "8–14",   "1k": "22–35" },
+    dha6_lhr:       { "5m": "2.5–4",   "10m": "5.5–9",  "1k": "13–20" },
+    bahria_lhr:     { "5m": "2–3.5",   "10m": "4–7",    "1k": "9–15"  },
+    gulberg3_lhr:   { "5m": null,       "10m": null,     "1k": "28–45" },
+    modeltown_lhr:  { "5m": null,       "10m": null,     "1k": "18–35" },
+    lakecity_lhr:   { "5m": "2.5–3.5", "10m": "4–6",    "1k": "9–14"  }
+  };
+  const ISB_AREAS = ["dha1_isb","dha2_isb","f7f8_isb","e11_isb","bahria_enc_isb","b17_isb","gulberg_isb"];
+  const LHR_AREAS = ["dha5_lhr","dha6_lhr","bahria_lhr","gulberg3_lhr","modeltown_lhr","lakecity_lhr"];
+  const LABELS = {
+    dha1_isb:"DHA Phase 1, Islamabad", dha2_isb:"DHA Phase 2, Islamabad",
+    f7f8_isb:"F-7 / F-8, Islamabad",  e11_isb:"E-11, Islamabad",
+    bahria_enc_isb:"Bahria Enclave, Islamabad", b17_isb:"B-17 Multi Gardens",
+    gulberg_isb:"Gulberg Greens",
+    dha5_lhr:"DHA Phase 5, Lahore",   dha6_lhr:"DHA Phase 6, Lahore",
+    bahria_lhr:"Bahria Town, Lahore", gulberg3_lhr:"Gulberg III, Lahore",
+    modeltown_lhr:"Model Town, Lahore", lakecity_lhr:"Lake City, Lahore"
+  };
+  const SIZE_LBL = { "5m":"5 Marla", "10m":"10 Marla", "1k":"1 Kanal" };
+
+  const valCity   = document.getElementById("valCity");
+  const valArea   = document.getElementById("valArea");
+  const valSize   = document.getElementById("valSize");
+  const valResult = document.getElementById("valResult");
+  const valWA     = document.getElementById("valWA");
+  if (!valCity) return;
+
+  function syncAreaOptions() {
+    var list = valCity.value === "isb" ? ISB_AREAS : LHR_AREAS;
+    valArea.innerHTML = list.map(function (k) {
+      return '<option value="' + k + '">' + LABELS[k] + '</option>';
+    }).join("");
+    updateResult();
+  }
+
+  function updateResult() {
+    var area  = valArea.value;
+    var size  = valSize.value;
+    var range = (VALDATA[area] || {})[size];
+    var aLbl  = LABELS[area] || area;
+    var sLbl  = SIZE_LBL[size];
+    if (!range) {
+      valResult.innerHTML = '<p class="val-result__msg">No current data for ' + sLbl + ' in ' + aLbl + '. <a href="#contact">Contact me</a> for a precise valuation.</p>';
+    } else {
+      valResult.innerHTML = '<div class="val-result"><div class="val-result__label">Estimated Market Range</div><div class="val-result__range">' + range + ' <span>Crore PKR</span></div><div class="val-result__sub">' + sLbl + ' · ' + aLbl + ' · Active listings Q2 2026</div></div>';
+    }
+    var msg = "Hello Adeel, I'd like a precise valuation for my " + sLbl + " in " + aLbl + ". The market estimate shows " + (range || "unknown") + " Crore PKR.";
+    if (valWA) valWA.href = "https://wa.me/16134083945?text=" + encodeURIComponent(msg);
+  }
+
+  valCity.addEventListener("change", syncAreaOptions);
+  valArea.addEventListener("change", updateResult);
+  valSize.addEventListener("change", updateResult);
+  syncAreaOptions();
+})();
