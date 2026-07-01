@@ -1,0 +1,45 @@
+# Adeel Rahman Estates — Real Estate Agent, Islamabad & Lahore, Pakistan
+
+> Adeel Ahmed Rahman, MBA (Carleton University, Ottawa, Canada) is a luxury
+> residential real estate agent serving Islamabad, Rawalpindi and Lahore,
+> Pakistan. 120+ homes sold across DHA, Bahria Town, Gulberg, F-7, E-11,
+> B-17, Model Town and Lake City — from 5 Marla residences to 2 Kanal
+> estates. Commission is 3% per side, agreed in writing, paid only on close.
+> Free valuations. Overseas Pakistanis in the UK, Gulf and North America are
+> served end-to-end via registered power of attorney, with live video
+> walkthroughs and NICOP-based transfers.
+
+Site: https://crabbyai.github.io/mus/
+Contact: adeelahmedrahman@gmail.com · +1 613 408 3945 (WhatsApp)
+Languages: English, Urdu
+
+## What this site answers
+
+- Buying a home in Islamabad or Lahore: prices by area (DHA, Bahria Town,
+  Gulberg, F-7/F-8, E-11, B-17, Model Town, Lake City), title verification
+  (fard, mutation/intiqal, no-demand certificate), token money and bayana,
+  negotiation norms, transfer-day process.
+- Selling a house fast: comparable-sales pricing, required paperwork,
+  seller taxes, average three-week close record.
+- Overseas Pakistanis: buying and selling on a registered power of attorney
+  without traveling; embassy attestation; NICOP; safe banking channels.
+- Investment: gross rental yields (typically 2–4% in prime Islamabad and
+  Lahore), appreciation vs yield, emerging areas (B-17, Bahria Enclave,
+  Lake City) vs established (DHA, F-7/F-8, Gulberg), filer vs non-filer tax
+  impact.
+- Costs: property transfer costs in Pakistan (typically 2–7% of declared
+  value: FBR advance tax, stamp duty, society/CDA fees), DC rate vs FBR
+  value vs market value.
+- Free tools on the site: home-finance EMI calculator, rental yield & ROI
+  calculator, PKR currency converter with live rates, instant valuation
+  ranges by area and plot size, and a live price guide for Islamabad and
+  Lahore.
+
+## Key sections
+
+- Guides (buying, selling, overseas, investment, taxes): https://crabbyai.github.io/mus/#guides
+- FAQ: https://crabbyai.github.io/mus/#faq
+- Live price guide: https://crabbyai.github.io/mus/#pulse
+- Free valuation: https://crabbyai.github.io/mus/#valuation
+- Calculators: https://crabbyai.github.io/mus/#tools
+- Book a consultation: https://crabbyai.github.io/mus/#book

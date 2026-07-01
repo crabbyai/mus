@@ -1,3 +1,44 @@
+# Adeel Rahman Estates — Islamabad & Lahore
+# All crawlers welcome, including AI search and answer engines.
+
 User-agent: *
 Allow: /
-Sitemap: https://assassin1961.github.io/Androgenic/sitemap.xml
+
+# AI search / answer engines — explicitly welcome
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+Sitemap: https://crabbyai.github.io/mus/sitemap.xml
