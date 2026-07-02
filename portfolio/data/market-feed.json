@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-02T14:27:19.092Z",
+  "updated": "2026-07-02T19:49:47.774Z",
   "channels": {
     "msj": {
       "name": "MSJ Real Estate",
@@ -13,6 +13,15 @@
     }
   },
   "items": [
+    {
+      "channel": "oreal",
+      "channelName": "OREAL Properties",
+      "videoId": "D-TE_Pey54c",
+      "title": "10 Marla Neo Classical Luxury House Tour | Home Cinema Basement | Bahria Town Phase 8 Rawalpindi",
+      "published": "2026-07-02T16:55:48+00:00",
+      "url": "https://www.youtube.com/watch?v=D-TE_Pey54c",
+      "thumb": "https://i.ytimg.com/vi/D-TE_Pey54c/hqdefault.jpg"
+    },
     {
       "channel": "oreal",
       "channelName": "OREAL Properties",
@@ -111,15 +120,6 @@
       "published": "2026-06-25T17:24:29+00:00",
       "url": "https://www.youtube.com/watch?v=M2vYLIa3YQU",
       "thumb": "https://i.ytimg.com/vi/M2vYLIa3YQU/hqdefault.jpg"
-    },
-    {
-      "channel": "oreal",
-      "channelName": "OREAL Properties",
-      "videoId": "nvVq3XSzXCI",
-      "title": "Urgent Sale! 5 Marla Fully Furnished Luxury House | Home Cinema | Bahria Town Rawalpindi",
-      "published": "2026-06-24T18:03:47+00:00",
-      "url": "https://www.youtube.com/watch?v=nvVq3XSzXCI",
-      "thumb": "https://i.ytimg.com/vi/nvVq3XSzXCI/hqdefault.jpg"
     }
   ]
 }
