@@ -218,6 +218,7 @@
 
 <!-- ======= MOBILE MENU ======= -->
 <div class="mobile-menu" id="mobileMenu">
+  <a href="#marketwatch">Live Listings</a>
   <a href="#about">About</a>
   <a href="#credentials">Credentials</a>
   <a href="#services">Services</a>
@@ -288,6 +289,17 @@
       <span>DHA Islamabad ✦ Bahria Town ✦ F-7 Markaz ✦ Gulberg Greens ✦ DHA Lahore ✦ Model Town ✦ Emaar Canyon Views ✦ Lake City ✦</span>
     </div>
   </div>
+
+  <!-- ======= LIVE MARKET WATCH (auto-refreshed from YouTube feeds) ======= -->
+  <section class="marketwatch" id="marketwatch" hidden>
+    <div class="marketwatch__head">
+      <p class="section-eyebrow"><span class="feed-live-dot"></span> Live Market Watch</p>
+      <h2 class="section-title">See a listing you like? <em class="gold-italic">I'll get it for less.</em></h2>
+      <p class="portfolio__intro">These are live listings from <strong>MSJ Real Estate</strong> and <strong>OREAL Properties</strong> — updated automatically as they post. Here's what they won't tell you: <strong>asking prices in this market carry 5–12% of negotiating room</strong>, and the agent marketing a house works for the seller, not you. Send me any listing — theirs or anyone's — and I'll dig up the comparable closed sales, expose what it's really worth, and negotiate on <em>your</em> side of the table. On a 3 Crore house, that's routinely <strong>15–30 Lakh back in your pocket</strong>.</p>
+    </div>
+    <div class="feed-grid" id="feedGrid"></div>
+    <p class="marketwatch__note" id="feedUpdated"></p>
+  </section>
 
   <!-- ======= ABOUT ======= -->
   <section class="about" id="about">
@@ -926,17 +938,6 @@
     </div>
 
     <p class="pulse__note" data-reveal>All figures in PKR Crore. Prices vary by plot facing, condition and market timing. <a href="#contact">Contact me for a precise valuation.</a></p>
-  </section>
-
-  <!-- ======= LIVE MARKET WATCH (auto-refreshed from YouTube feeds) ======= -->
-  <section class="marketwatch" id="marketwatch" hidden>
-    <div class="marketwatch__head">
-      <p class="section-eyebrow"><span class="feed-live-dot"></span> Live Market Watch</p>
-      <h2 class="section-title">Fresh from the <em class="gold-italic">market — today</em></h2>
-      <p class="portfolio__intro">The latest listings and market updates from Pakistan's most-followed property channels — <strong>MSJ Real Estate</strong> and <strong>OREAL Properties</strong> — pulled in automatically as they post. See something you like? Send it to me and I'll vet the deal, the paperwork and the price before you commit.</p>
-    </div>
-    <div class="feed-grid" id="feedGrid"></div>
-    <p class="marketwatch__note" id="feedUpdated"></p>
   </section>
 
   <!-- ======= TOP PORTALS ======= -->

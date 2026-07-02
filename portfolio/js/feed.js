@@ -35,7 +35,7 @@
   function card(item) {
     const badge = BADGE[item.channel] || item.channelName || "";
     const wa = "https://wa.me/16134083945?text=" + encodeURIComponent(
-      "Hello Adeel — I saw this listing/update and want your honest read on it: " + item.url
+      "Hello Adeel — I found this listing. What's it really worth, and can you get me a better price? " + item.url
     );
     return `
       <article class="feedcard glass">
@@ -50,7 +50,7 @@
             <span class="feedcard__time">${esc(timeAgo(item.published))}</span>
           </div>
           <h3 class="feedcard__title"><a href="${esc(item.url)}" target="_blank" rel="noopener">${esc(item.title)}</a></h3>
-          <a class="feedcard__vet" href="${wa}" target="_blank" rel="noopener">Ask me to vet this deal →</a>
+          <a class="feedcard__vet" href="${wa}" target="_blank" rel="noopener">Get me a better price on this →</a>
         </div>
       </article>`;
   }
