@@ -55,10 +55,20 @@ jobs:
             return m[1];
           }
 
+          const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+          // YouTube's RSS endpoint intermittently 500s on runner IPs — retry.
           async function fetchFeedXml(id) {
-            const res = await fetch(`https://www.youtube.com/feeds/videos.xml?channel_id=${id}`, { headers: UA });
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
-            return res.text();
+            let lastErr;
+            for (const delay of [0, 3000, 8000, 15000]) {
+              if (delay) await sleep(delay);
+              try {
+                const res = await fetch(`https://www.youtube.com/feeds/videos.xml?channel_id=${id}`, { headers: UA });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                return await res.text();
+              } catch (e) { lastErr = e; }
+            }
+            throw lastErr;
           }
 
           async function fetchChannel(ch) {
@@ -98,6 +108,9 @@ jobs:
           }
 
           (async () => {
+            let prev = { channels: {}, items: [] };
+            try { prev = JSON.parse(fs.readFileSync("portfolio/data/market-feed.json", "utf8")); } catch {}
+
             const out = { updated: new Date().toISOString(), channels: {}, items: [] };
             let ok = 0;
             for (const ch of CHANNELS) {
@@ -108,7 +121,13 @@ jobs:
                 ok++;
                 console.log(`${ch.key}: ${items.length} videos`);
               } catch (err) {
-                console.error(`WARN ${err.message}`);
+                console.error(`WARN ${ch.key}: ${err.message} — keeping previous items for this channel`);
+                const kept = (prev.items || []).filter((it) => it.channel === ch.key);
+                if (kept.length) {
+                  out.channels[ch.key] = (prev.channels || {})[ch.key] ||
+                    { name: ch.name, handle: ch.handle, url: `https://www.youtube.com/${ch.handle}` };
+                  out.items.push(...kept);
+                }
               }
             }
             if (!ok) {
