@@ -5,6 +5,11 @@ on:
     branches:
       - claude/portfolio-website-setup-rpyerk
   workflow_dispatch:
+  # Self-heal: GitHub's Pages deployment queue sometimes stalls for hours
+  # (deployment_queued -> timeout). Retry on a schedule until it lands;
+  # concurrency below stops attempts from stacking up.
+  schedule:
+    - cron: "*/30 * * * *"
 
 permissions:
   contents: read
@@ -39,6 +44,6 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
         with:
-          # ride out backed-up Pages deployment queues instead of aborting
-          timeout: 1800000
+          # deploy-pages caps timeout at 600000ms; keep error tolerance high
+          timeout: 600000
           error_count: 15
