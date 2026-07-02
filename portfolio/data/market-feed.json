@@ -1,6 +1,11 @@
 {
-  "updated": "2026-07-02T02:02:58.643Z",
+  "updated": "2026-07-02T02:10:51.555Z",
   "channels": {
+    "msj": {
+      "name": "MSJ Real Estate",
+      "handle": "@msjrealestate",
+      "url": "https://www.youtube.com/@msjrealestate"
+    },
     "oreal": {
       "name": "OREAL Properties",
       "handle": "@orealproperties",
@@ -18,6 +23,33 @@
       "thumb": "https://i.ytimg.com/vi/1WwrDJvssZo/hqdefault.jpg"
     },
     {
+      "channel": "msj",
+      "channelName": "MSJ Real Estate",
+      "videoId": "XlpFWOOarDA",
+      "title": "1 kanal MAGNIFICENT COURTYARD HOUSE For Sale in TOP CITY ISLAMABAD",
+      "published": "2026-07-01T12:00:22+00:00",
+      "url": "https://www.youtube.com/watch?v=XlpFWOOarDA",
+      "thumb": "https://i.ytimg.com/vi/XlpFWOOarDA/hqdefault.jpg"
+    },
+    {
+      "channel": "msj",
+      "channelName": "MSJ Real Estate",
+      "videoId": "8XwArAmAo08",
+      "title": "Dha Peshawar- A MILESTONE IN DEVELOPMENT",
+      "published": "2026-07-01T06:50:20+00:00",
+      "url": "https://www.youtube.com/watch?v=8XwArAmAo08",
+      "thumb": "https://i.ytimg.com/vi/8XwArAmAo08/hqdefault.jpg"
+    },
+    {
+      "channel": "msj",
+      "channelName": "MSJ Real Estate",
+      "videoId": "CGMZA_YbAnY",
+      "title": "EDGE EXPERT G.T Road, Lahore.☎️ +92-321-7417143",
+      "published": "2026-07-01T05:57:28+00:00",
+      "url": "https://www.youtube.com/watch?v=CGMZA_YbAnY",
+      "thumb": "https://i.ytimg.com/vi/CGMZA_YbAnY/hqdefault.jpg"
+    },
+    {
       "channel": "oreal",
       "channelName": "OREAL Properties",
       "videoId": "WORwwquNnC0",
@@ -25,6 +57,24 @@
       "published": "2026-06-29T17:32:42+00:00",
       "url": "https://www.youtube.com/watch?v=WORwwquNnC0",
       "thumb": "https://i.ytimg.com/vi/WORwwquNnC0/hqdefault.jpg"
+    },
+    {
+      "channel": "msj",
+      "channelName": "MSJ Real Estate",
+      "videoId": "0oTl-fzr-bg",
+      "title": "Fully Furnished 1 kanal BILLIONAIR's LOUIS VUIITON House For Sale in DHA Lahore",
+      "published": "2026-06-28T13:30:02+00:00",
+      "url": "https://www.youtube.com/watch?v=0oTl-fzr-bg",
+      "thumb": "https://i.ytimg.com/vi/0oTl-fzr-bg/hqdefault.jpg"
+    },
+    {
+      "channel": "msj",
+      "channelName": "MSJ Real Estate",
+      "videoId": "TOby3iV3FOY",
+      "title": "Landmark Group is ADJUSTING ALL FILES in their READY PLOTS",
+      "published": "2026-06-28T11:19:53+00:00",
+      "url": "https://www.youtube.com/watch?v=TOby3iV3FOY",
+      "thumb": "https://i.ytimg.com/vi/TOby3iV3FOY/hqdefault.jpg"
     },
     {
       "channel": "oreal",
@@ -43,6 +93,15 @@
       "published": "2026-06-26T15:34:49+00:00",
       "url": "https://www.youtube.com/watch?v=PlkECy4_O-Q",
       "thumb": "https://i.ytimg.com/vi/PlkECy4_O-Q/hqdefault.jpg"
+    },
+    {
+      "channel": "msj",
+      "channelName": "MSJ Real Estate",
+      "videoId": "I7cj9hVKlU4",
+      "title": "Furnished 10 marla EXCLUSIVE LUXURY House For Sale in Bahria Islamabad",
+      "published": "2026-06-26T12:00:19+00:00",
+      "url": "https://www.youtube.com/watch?v=I7cj9hVKlU4",
+      "thumb": "https://i.ytimg.com/vi/I7cj9hVKlU4/hqdefault.jpg"
     },
     {
       "channel": "oreal",
