@@ -30,60 +30,60 @@
   // sold properties (index matches PROPERTIES in main.js)
   const SOLD_CFG = [
     // 0: Margalla View Manor
-    { theme:"charcoalGold", grand:true, cinema:true, pool:true,
+    { facade:"designer", theme:"charcoalGold", grand:true, cinema:true, pool:true,
       roomLabels:["Master Suite","Chef's Kitchen","Cinema Lounge","Drawing Room","Grand Foyer"],
       upRoomLabels:["Master Suite + Dressing","Guest Suite","Family Lounge"] },
     // 1: Villa Serena
-    { theme:"charcoalGold", grand:true, cinema:true, mirror:true,
+    { facade:"designer", theme:"charcoalGold", grand:true, cinema:true, mirror:true,
       roomLabels:["Master Suite","Open Kitchen","Cinema Lounge","Formal Living","Grand Foyer"],
       upRoomLabels:["Master Suite","Children's Bedroom","Upper Lounge"] },
     // 2: Enclave Residence
-    { theme:"greyGraphite", grand:true,
+    { facade:"designer", theme:"greyGraphite", grand:true,
       roomLabels:["Master Bedroom","Kitchen","Dining Room","Double-Height Lounge","Entrance Foyer"],
       upRoomLabels:["Master Bedroom","Second Bedroom","Mezzanine Lounge"] },
     // 3: Casa Blanca E-11
-    { theme:"spanishWarm", grand:false, terrazzo:true, mirror:true,
+    { facade:"designer", theme:"spanishWarm", grand:false, terrazzo:true, mirror:true,
       roomLabels:["Bedroom","Kitchen","Dining","Sunken Lounge","Entrance"],
       upRoomLabels:["Master Bedroom","Guest Bedroom","Study Landing"] },
     // 4: Gulberg Farmhouse
-    { theme:"brickWarm", grand:true, library:true, farmhouse:true,
+    { facade:"veranda", theme:"brickWarm", grand:true, library:true, farmhouse:true,
       roomLabels:["Master Suite","Farmhouse Kitchen","Dining Pavilion","Living Pavilion","Foyer & Orchard"],
       upRoomLabels:["Master Suite","Guest Annexe Room","Reading Loft"] },
     // 5: Hilltop Modern
-    { theme:"greyGraphite", grand:false, mirror:true,
+    { facade:"designer", theme:"greyGraphite", grand:false, mirror:true,
       roomLabels:["Bedroom","Kitchen","Dining","Glazed Lounge","Foyer"],
       upRoomLabels:["Master Bedroom","Second Bedroom","Hilltop Terrace Lounge"] },
     // 6: Phase 6 Palazzo
-    { theme:"heritage", grand:true, library:true,
+    { facade:"classic", theme:"heritage", grand:true, library:true,
       roomLabels:["Master Suite","Twin Kitchens","Cigar Lounge","Drawing Room","Entrance Foyer"],
       upRoomLabels:["Master Suite + Dressing","Guest Suite","Upper Drawing Room"] },
     // 7: Gulberg Heritage House
-    { theme:"heritage", grand:true, library:true, atrium:true, mirror:true,
+    { facade:"veranda", theme:"heritage", grand:true, library:true, atrium:true, mirror:true,
       roomLabels:["Master Suite","Kitchen","Dining","Glass Atrium","Entrance Foyer"],
       upRoomLabels:["Master Suite","Heritage Bedroom","Atrium Gallery"] },
     // 8: Bahria Orchard Villa
-    { theme:"bahriaTown", grand:false,
+    { facade:"designer", theme:"bahriaTown", grand:false,
       roomLabels:["Master Suite","Kitchen","Dining","Drawing Room","Courtyard Entrance"],
       upRoomLabels:["Master Suite","Children's Bedroom","Upper Landing"] },
     // 9: Model Town Estate
-    { theme:"heritage", grand:true, library:true, mirror:true,
+    { facade:"veranda", theme:"heritage", grand:true, library:true, mirror:true,
       roomLabels:["Master Suite","Kitchen","Dining Room","Drawing Room","Colonial Veranda"],
       upRoomLabels:["Master Suite","Guest Bedroom","Veranda Lounge"] },
     // 10: Lake City Linear
-    { theme:"whiteOak", grand:true, cedar:true,
+    { facade:"designer", theme:"whiteOak", grand:true, cedar:true,
       roomLabels:["Master Suite","Kitchen","Dining","Gallery Living","Entrance Gallery"],
       upRoomLabels:["Master Suite","Second Bedroom","Gallery Mezzanine"] },
     // 11: Phase 5 Courtyard
-    { theme:"spanishWarm", grand:false, terrazzo:true, mirror:true,
+    { facade:"classic", theme:"spanishWarm", grand:false, terrazzo:true, mirror:true,
       roomLabels:["Bedroom","Kitchen","Dining","Courtyard Lounge","Entrance"],
       upRoomLabels:["Master Bedroom","Guest Bedroom","Courtyard Landing"] }
   ];
   const DEAL_CFG = [
-    { theme:"bahriaTown", grand:false, roomLabels:["Master Suite","Kitchen","Dining","Drawing Room","Entrance Foyer"],
+    { facade:"designer", theme:"bahriaTown", grand:false, roomLabels:["Master Suite","Kitchen","Dining","Drawing Room","Entrance Foyer"],
       upRoomLabels:["Master Suite","Children's Bedroom","Upper Landing"] },
-    { theme:"charcoalGold", grand:true, cinema:true, roomLabels:["Master Suite","Chef's Kitchen","Cinema Lounge","Formal Living","Grand Foyer"],
+    { facade:"classic", theme:"charcoalGold", grand:true, cinema:true, roomLabels:["Master Suite","Chef's Kitchen","Cinema Lounge","Formal Living","Grand Foyer"],
       upRoomLabels:["Master Suite","Guest Suite","Family Lounge"] },
-    { theme:"bahriaTown", grand:false, terrazzo:true, mirror:true, roomLabels:["Bedroom","Kitchen","Dining","Courtyard Lounge","Entrance"],
+    { facade:"veranda", theme:"bahriaTown", grand:false, terrazzo:true, mirror:true, roomLabels:["Bedroom","Kitchen","Dining","Courtyard Lounge","Entrance"],
       upRoomLabels:["Master Bedroom","Guest Bedroom","Courtyard Landing"] }
   ];
   let curTheme = THEMES.charcoalCream;
@@ -682,6 +682,150 @@
     P().addChild(e);
   }
 
+  /* ---------- EXTERIOR ----------
+     A night-time arrival sequence: the player spawns at the gate and
+     walks up a lit driveway to the front door. The facade is styled per
+     listing (cfg.facade: designer | classic | veranda) so it matches the
+     exterior model shown on the listing card. All coords X()-mirrored. */
+  function buildExterior(cfg, H) {
+    const style = cfg.facade || "designer";
+    const matDark   = M({ color: curTheme.feature, gloss: 0.4, metal: 0.08 });
+    const matLight  = M({ color: curTheme.wall, gloss: 0.28 });
+    const matFrame  = M({ color: [0.08, 0.09, 0.11], gloss: 0.55, metal: 0.4 });
+    const matGround = M({ color: [0.045, 0.06, 0.10], gloss: 0.15 });
+    const matLawn   = M({ color: [0.065, 0.13, 0.085], gloss: 0.12 });
+    const matDrive  = M({ color: [0.10, 0.11, 0.13], gloss: 0.5, metal: 0.1 });
+    const matGate   = M({ color: [0.05, 0.05, 0.06], gloss: 0.65, metal: 0.75 });
+
+    /* grounds: base slab, lawns flanking a paver driveway to the door */
+    box(null, { pos: [0, -0.06, 13.3], scale: [20.4, 0.1, 10.8], mat: matGround });
+    box(null, { pos: [X(-6.7), 0.0, 13.2], scale: [6.5, 0.05, 9.9], mat: matLawn, shadow: false });
+    box(null, { pos: [X(4.7), 0.0, 13.2], scale: [10.4, 0.05, 9.9], mat: matLawn, shadow: false });
+    box(null, { pos: [X(-2), 0.02, 13.25], scale: [2.6, 0.07, 10.3], mat: matDrive });
+    for (const ex of [-3.32, -0.68])
+      box(null, { pos: [X(ex), 0.05, 13.25], scale: [0.07, 0.03, 10.3], mat: MATS.warm, shadow: false });
+    // bollard path lights along the drive
+    for (let i = 0; i < 4; i++) {
+      const z = 9.9 + i * 2.3;
+      for (const ex of [-3.7, -0.3]) {
+        prim("cylinder", null, { pos: [X(ex), 0.22, z], scale: [0.06, 0.44, 0.06], mat: matFrame });
+        prim("sphere", null, { pos: [X(ex), 0.5, z], scale: [0.13, 0.13, 0.13], mat: MATS.warm, shadow: false });
+      }
+    }
+
+    /* boundary wall + closed gate (visual backdrop; player spawns inside) */
+    wallSeg(X(-10), 18.4, X(-3.45), 18.4, 1.6, matLight, true, 0.2);
+    wallSeg(X(-0.55), 18.4, X(10), 18.4, 1.6, matLight, true, 0.2);
+    wallSeg(X(-10), 8, X(-10), 18.4, 1.6, matLight, true, 0.2);
+    wallSeg(X(10), 8, X(10), 18.4, 1.6, matLight, true, 0.2);
+    state.walls.push({ x1: X(-3.45), z1: 18.4, x2: X(-0.55), z2: 18.4, lvl: 0 });
+    // invisible returns: the yard stops at the house line beyond both corners
+    state.walls.push({ x1: -10, z1: 8, x2: -7, z2: 8, lvl: 0 });
+    state.walls.push({ x1: 7, z1: 8, x2: 10, z2: 8, lvl: 0 });
+    for (const seg of [[-10, -3.45], [-0.55, 10]])
+      box(null, { pos: [X((seg[0] + seg[1]) / 2), 1.68, 18.4], scale: [Math.abs(seg[1] - seg[0]), 0.06, 0.26], mat: MATS.gold, shadow: false });
+    // gate pillars with lamps + black-and-gold gate leaves
+    for (const gx of [-3.45, -0.55]) {
+      box(null, { pos: [X(gx), 1.05, 18.4], scale: [0.46, 2.1, 0.46], mat: matDark });
+      prim("sphere", null, { pos: [X(gx), 2.28, 18.4], scale: [0.17, 0.17, 0.17], mat: MATS.warm, shadow: false });
+    }
+    box(null, { pos: [X(-2), 1.86, 18.4], scale: [2.5, 0.07, 0.07], mat: matGate });
+    box(null, { pos: [X(-2), 0.25, 18.4], scale: [2.5, 0.07, 0.07], mat: matGate });
+    for (let i = 0; i < 9; i++) {
+      const bx = -3.2 + i * 0.3;
+      box(null, { pos: [X(bx), 1.05, 18.4], scale: [0.045, 1.7, 0.045], mat: matGate });
+      prim("sphere", null, { pos: [X(bx), 1.95, 18.4], scale: [0.06, 0.09, 0.06], mat: MATS.gold, shadow: false });
+    }
+
+    /* facade cladding on the street face (wall outer face z 8.08) */
+    box(null, { pos: [X(-5.15), 1.6, 8.16], scale: [3.7, 3.2, 0.14], mat: matDark });
+    box(null, { pos: [X(3.15), 1.6, 8.16], scale: [7.7, 3.2, 0.14], mat: matLight });
+    box(null, { pos: [0, H + 1.6, 8.16], scale: [14, 3.2, 0.14], mat: matLight });
+    // double-height entrance tower over the door
+    box(null, { pos: [X(-2), H + 1.6, 8.2], scale: [2.7, 3.2, 0.16], mat: matDark });
+    box(null, { pos: [X(-2), H + 1.45, 8.3], scale: [1.2, 1.8, 0.03], mat: M({ color: [1, 0.88, 0.66], emissive: [1, 0.82, 0.55], emissiveI: 0.95 }), shadow: false });
+    // signature gold light strips flanking the entrance
+    for (const sx of [-3.2, -0.8])
+      box(null, { pos: [X(sx), 2.9, 8.3], scale: [0.07, 5.8, 0.07], mat: MATS.warm, shadow: false });
+    // gold lintel + open double doors + light spilling out
+    box(null, { pos: [X(-2), 3.33, 8.22], scale: [2.7, 0.28, 0.2], mat: MATS.gold });
+    const door = (dx, rot) => {
+      const g = new pc.Entity(); g.setLocalPosition(X(dx), 0, 8.42); g.setEulerAngles(0, R(rot), 0); P().addChild(g);
+      box(g, { pos: [0, 1.45, 0], scale: [0.95, 2.9, 0.06], mat: M({ color: curTheme.wood, gloss: 0.6, metal: 0.1 }) });
+      box(g, { pos: [0.32, 1.45, 0.04], scale: [0.05, 1.6, 0.03], mat: MATS.gold });
+    };
+    door(-2.62, 38); door(-1.38, -38);
+    box(null, { pos: [X(-2), 0.03, 9.0], scale: [2.0, 0.02, 1.5], mat: M({ emissive: [1, 0.8, 0.5], emissiveI: 0.7, opacity: 0.4 }), shadow: false });
+
+    /* glowing windows: ground floor + upper floor.
+       Softer than the interior window mat so panes don't blow out. */
+    const matPane = M({ color: [1, 0.88, 0.66], emissive: [1, 0.82, 0.55], emissiveI: 0.95 });
+    const exWin = (x, y, w, h) => {
+      box(null, { pos: [X(x), y, 8.24], scale: [w, h, 0.05], mat: matFrame });
+      box(null, { pos: [X(x), y, 8.27], scale: [w - 0.2, h - 0.2, 0.03], mat: matPane, shadow: false });
+      // slim gold sill
+      box(null, { pos: [X(x), y - h / 2 - 0.04, 8.26], scale: [w + 0.08, 0.05, 0.08], mat: MATS.gold, shadow: false });
+    };
+    exWin(-5.2, 1.6, 2.0, 1.3);
+    exWin(1.3, 1.55, 1.2, 1.5); exWin(3.3, 1.55, 1.2, 1.5); exWin(5.3, 1.55, 1.2, 1.5);
+    exWin(-5.6, H + 1.5, 1.0, 1.3); exWin(-4.2, H + 1.5, 1.0, 1.3);
+    exWin(2.0, H + 1.5, 1.0, 1.3); exWin(4.6, H + 1.5, 1.0, 1.3);
+
+    /* roofline parapet + warm cove strip, corner pilasters */
+    box(null, { pos: [0, 2 * H + 0.18, 8.12], scale: [14.3, 0.36, 0.3], mat: matLight });
+    box(null, { pos: [0, 2 * H + 0.02, 8.22], scale: [14, 0.05, 0.05], mat: MATS.warm, shadow: false });
+    for (const cx of [-7, 7])
+      box(null, { pos: [X(cx), H, 8.16], scale: [0.2, 2 * H, 0.2], mat: matDark });
+
+    /* style variants — match the listing's exterior archetype */
+    if (style === "classic") {
+      // columned portico with entablature
+      box(null, { pos: [X(-2), 3.56, 8.75], scale: [3.7, 0.24, 1.4], mat: matLight });
+      box(null, { pos: [X(-2), 3.42, 9.4], scale: [3.7, 0.05, 0.06], mat: MATS.gold, shadow: false });
+      for (const px of [-3.5, -0.5]) {
+        prim("cylinder", null, { pos: [X(px), 1.72, 9.15], scale: [0.17, 3.44, 0.17], mat: matLight });
+        prim("cylinder", null, { pos: [X(px), 0.08, 9.15], scale: [0.24, 0.16, 0.24], mat: matLight });
+      }
+    } else if (style === "veranda") {
+      // full-width veranda: deep eave slab on a colonnade
+      box(null, { pos: [0, 3.42, 8.9], scale: [13.4, 0.2, 1.7], mat: matLight });
+      box(null, { pos: [0, 3.3, 9.72], scale: [13.4, 0.05, 0.06], mat: MATS.gold, shadow: false });
+      for (const px of [-6.2, -4.2, 0.2, 2.2, 4.2, 6.2])
+        prim("cylinder", null, { pos: [X(px), 1.66, 9.5], scale: [0.11, 3.32, 0.11], mat: matLight });
+    } else {
+      // designer: vertical wood-slat feature panel on the dark volume
+      for (let i = 0; i < 6; i++)
+        box(null, { pos: [X(-6.3 + i * 0.42), 1.5, 8.26], scale: [0.16, 2.9, 0.06], mat: MATS.wood });
+      box(null, { pos: [X(-6.6), 1.5, 8.3], scale: [0.06, 2.9, 0.06], mat: MATS.warm, shadow: false });
+    }
+
+    /* landscaping + night sky */
+    plant(null, X(-8.5), 9.3, 1.4);
+    plant(null, X(8.4), 9.8, 1.25);
+    plant(null, X(6.6), 16.6, 1.0);
+    plant(null, X(-8.4), 16.2, 1.1);
+    prim("sphere", null, { pos: [X(9), 17, -28], scale: [2.6, 2.6, 2.6], mat: M({ color: [1, 0.96, 0.88], emissive: [1, 0.93, 0.78], emissiveI: 2.4 }), shadow: false });
+    for (let i = 0; i < 26; i++) {
+      const s1 = Math.sin(i * 12.9898) * 43758.5453, fr = s1 - Math.floor(s1);
+      const s2 = Math.sin(i * 78.233) * 12543.2571, fr2 = s2 - Math.floor(s2);
+      prim("sphere", null, {
+        pos: [-28 + fr * 56, 10 + fr2 * 16, -30 - fr * 14],
+        scale: [0.12, 0.12, 0.12],
+        mat: M({ emissive: [0.9, 0.93, 1], emissiveI: 1.6 }), shadow: false
+      });
+    }
+
+    /* exterior lighting: facade wash + gate lamps */
+    const exLight = (x, y, z, range, intensity) => {
+      const o = new pc.Entity();
+      o.addComponent("light", { type: "omni", color: new pc.Color(1, 0.85, 0.6), intensity, range });
+      o.setLocalPosition(x, y, z); P().addChild(o);
+    };
+    exLight(X(-2), 3.4, 10.2, 10, 0.55);
+    exLight(X(-3.45), 2.4, 18.0, 5.5, 0.7);
+    exLight(X(-0.55), 2.4, 18.0, 5.5, 0.7);
+  }
+
   function buildHouse(cfg) {
     cfg = cfg || {};
     const art = curTheme.art;
@@ -695,7 +839,8 @@
     state.stair = MX < 0
       ? { x0: -STAIR_BASE.x1, x1: -STAIR_BASE.x0, zBot: STAIR_BASE.zBot, zTop: STAIR_BASE.zTop }
       : { x0: STAIR_BASE.x0, x1: STAIR_BASE.x1, zBot: STAIR_BASE.zBot, zTop: STAIR_BASE.zTop };
-    state.spawn = { x: X(-1.5), z: 7.0, yaw: 0, pitch: -4 };
+    // arrival: spawn inside the gate, offset for a 3/4 view of the facade
+    state.spawn = { x: X(-5.4), z: 17.3, yaw: R(-16), pitch: 1 };
 
     // ground floor — single slab, terrazzo or marble per listing (no overlay → no z-fighting)
     const floorMat = cfg.terrazzo ? MATS.terrazzof : MATS.floor;
@@ -860,12 +1005,20 @@
       zone(rl[3], -7,  -2, 0.8, 5),
       zone(rl[4], -7,  5,  2.4, 8)
     ];
+
+    /* --- exterior: gate, driveway, styled facade (the arrival) --- */
+    buildExterior(cfg, H);
   }
 
   /* ---------- lighting ---------- */
   function buildLights() {
     app.scene.ambientLight = new pc.Color(0.42, 0.39, 0.35);
-    if (app.scene.fog) { app.scene.fog = pc.FOG_NONE; }
+    // gentle night fog for exterior depth; starts beyond interior sightlines
+    try {
+      app.scene.fog = pc.FOG_LINEAR;
+      app.scene.fogColor = new pc.Color(0.04, 0.05, 0.08);
+      app.scene.fogStart = 26; app.scene.fogEnd = 58;
+    } catch (e) { /* older engine builds: skip fog */ }
     const sun = new pc.Entity();
     sun.addComponent("light", {
       type: "directional", color: new pc.Color(1, 0.88, 0.66), intensity: 1.3,
@@ -904,6 +1057,7 @@
     return [px, pz];
   }
   function roomAt(x, z) {
+    if (state.level === 0 && z > 8.05) return "Front Courtyard";
     if (state.level === 1) {
       const u = state.upRooms || ["Upstairs Suite", "Family Bedroom", "Upper Landing"];
       if (z > 4.2) return u[2];
@@ -1001,8 +1155,10 @@
     if (ml > 1) { mx /= ml; mz /= ml; }
     const p = state.pos;
     const [cx, cz] = collide(p.x + mx * speed, p.z + mz * speed);
-    p.x = Math.max(-6.6, Math.min(6.6, cx));
-    p.z = Math.max(-5.6, Math.min(7.6, cz));
+    // bounds cover the interior AND the front grounds (z 8..18.4);
+    // walls/boundary handle the fine collision, these are the safety net
+    p.x = Math.max(-9.6, Math.min(9.6, cx));
+    p.z = Math.max(-5.6, Math.min(18.0, cz));
 
     // ---- vertical: climb the staircase, switch floors at top/bottom ----
     const H = 3.2, EYE = 1.65;
@@ -1053,7 +1209,7 @@
   // (re)build the furnished interior for a given config; cheap, cached by key
   function rebuild(cfg) {
     const labels = (cfg.roomLabels || []).join(",") + "/" + (cfg.upRoomLabels || []).join(",");
-    const key = `${cfg.theme}|${cfg.grand?1:0}|${cfg.library?1:0}|${cfg.cinema?1:0}|${cfg.pool?1:0}|${cfg.atrium?1:0}|${cfg.farmhouse?1:0}|${cfg.cedar?1:0}|${cfg.terrazzo?1:0}|${cfg.mirror?1:0}|${labels}`;
+    const key = `${cfg.theme}|${cfg.facade||""}|${cfg.grand?1:0}|${cfg.library?1:0}|${cfg.cinema?1:0}|${cfg.pool?1:0}|${cfg.atrium?1:0}|${cfg.farmhouse?1:0}|${cfg.cedar?1:0}|${cfg.terrazzo?1:0}|${cfg.mirror?1:0}|${labels}`;
     if (key === curCfgKey && world) return;
     curCfgKey = key;
     curTheme = THEMES[cfg.theme] || THEMES.charcoalCream;
@@ -1088,7 +1244,7 @@
       state.pos = { x: sp.x, y: 1.65, z: sp.z };
       state.yaw = sp.yaw; state.pitch = sp.pitch;
       state.level = 0; state.eyeY = null;
-      state.curRoom = ""; roomLabel.textContent = (cfg.roomLabels && cfg.roomLabels[4]) || "Entrance Foyer";
+      state.curRoom = ""; roomLabel.textContent = "Front Courtyard";
       app.resizeCanvas();
       loader.style.display = "none";
     } catch (e) {
