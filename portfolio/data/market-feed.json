@@ -1,8 +1,66 @@
 {
-  "updated": null,
+  "updated": "2026-07-02T02:02:58.643Z",
   "channels": {
-    "msj": { "name": "MSJ Real Estate", "handle": "@msjrealestate", "url": "https://www.youtube.com/@msjrealestate" },
-    "oreal": { "name": "OREAL Properties", "handle": "@orealproperties", "url": "https://www.youtube.com/@orealproperties" }
+    "oreal": {
+      "name": "OREAL Properties",
+      "handle": "@orealproperties",
+      "url": "https://www.youtube.com/@orealproperties"
+    }
   },
-  "items": []
+  "items": [
+    {
+      "channel": "oreal",
+      "channelName": "OREAL Properties",
+      "videoId": "1WwrDJvssZo",
+      "title": "10 Marla Neoclassical House For Sale | Rooftop BBQ & Lawn | Bahria Town Phase 8 Rawalpindi",
+      "published": "2026-07-01T16:38:09+00:00",
+      "url": "https://www.youtube.com/watch?v=1WwrDJvssZo",
+      "thumb": "https://i.ytimg.com/vi/1WwrDJvssZo/hqdefault.jpg"
+    },
+    {
+      "channel": "oreal",
+      "channelName": "OREAL Properties",
+      "videoId": "WORwwquNnC0",
+      "title": "10 Marla Luxury Designer House Tour | Bahria Town Rawalpindi  | Modern Dream Home Pakistan 2026",
+      "published": "2026-06-29T17:32:42+00:00",
+      "url": "https://www.youtube.com/watch?v=WORwwquNnC0",
+      "thumb": "https://i.ytimg.com/vi/WORwwquNnC0/hqdefault.jpg"
+    },
+    {
+      "channel": "oreal",
+      "channelName": "OREAL Properties",
+      "videoId": "5nBESgbGQwg",
+      "title": "5 Marla Luxury Duplex House For Sale in Bahria Town Rawalpindi | 3 Bedroom Designer Home",
+      "published": "2026-06-27T16:04:09+00:00",
+      "url": "https://www.youtube.com/watch?v=5nBESgbGQwg",
+      "thumb": "https://i.ytimg.com/vi/5nBESgbGQwg/hqdefault.jpg"
+    },
+    {
+      "channel": "oreal",
+      "channelName": "OREAL Properties",
+      "videoId": "PlkECy4_O-Q",
+      "title": "22 Marla Luxury House For Sale in Bahria Town Rawalpindi | Backyard BBQ | 100 Ft Road | 10.95 Crore",
+      "published": "2026-06-26T15:34:49+00:00",
+      "url": "https://www.youtube.com/watch?v=PlkECy4_O-Q",
+      "thumb": "https://i.ytimg.com/vi/PlkECy4_O-Q/hqdefault.jpg"
+    },
+    {
+      "channel": "oreal",
+      "channelName": "OREAL Properties",
+      "videoId": "M2vYLIa3YQU",
+      "title": "8 Marla House For Sale in Bahria Town Rawalpindi | 5 Bedroom Luxury House | Double Height",
+      "published": "2026-06-25T17:24:29+00:00",
+      "url": "https://www.youtube.com/watch?v=M2vYLIa3YQU",
+      "thumb": "https://i.ytimg.com/vi/M2vYLIa3YQU/hqdefault.jpg"
+    },
+    {
+      "channel": "oreal",
+      "channelName": "OREAL Properties",
+      "videoId": "nvVq3XSzXCI",
+      "title": "Urgent Sale! 5 Marla Fully Furnished Luxury House | Home Cinema | Bahria Town Rawalpindi",
+      "published": "2026-06-24T18:03:47+00:00",
+      "url": "https://www.youtube.com/watch?v=nvVq3XSzXCI",
+      "thumb": "https://i.ytimg.com/vi/nvVq3XSzXCI/hqdefault.jpg"
+    }
+  ]
 }
