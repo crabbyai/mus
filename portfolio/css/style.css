@@ -1639,3 +1639,62 @@ body::before {
   .guide summary { padding: 1.2rem 1.2rem; gap: 0.9rem; }
   .guide__body { padding: 0.2rem 1.2rem 1.6rem 1.2rem; }
 }
+
+/* ---------- Live Market Watch (auto-refreshed feed) ---------- */
+.marketwatch { max-width: 1480px; margin: 0 auto; padding: clamp(4rem, 8vw, 7rem) 6vw; }
+.marketwatch__head { text-align: center; max-width: 50rem; margin: 0 auto 3rem; }
+.feed-live-dot {
+  display: inline-block; width: 9px; height: 9px; border-radius: 50%;
+  background: #e5484d; margin-right: 0.5rem; vertical-align: 1px;
+  animation: feedpulse 1.6s ease-out infinite;
+}
+@keyframes feedpulse {
+  0% { box-shadow: 0 0 0 0 rgba(229,72,77,0.55); }
+  100% { box-shadow: 0 0 0 9px rgba(229,72,77,0); }
+}
+.feed-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.4rem;
+}
+.feedcard { border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; }
+.feedcard__media {
+  position: relative; display: block; aspect-ratio: 16 / 9;
+  background: linear-gradient(140deg, #141b30, #0d1226); overflow: hidden;
+}
+.feedcard__media img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transition: transform 0.6s var(--ease); filter: saturate(0.92);
+}
+.feedcard:hover .feedcard__media img { transform: scale(1.05); }
+.feedcard__media.is-noimg::before {
+  content: "▶  Watch on YouTube"; position: absolute; inset: 0;
+  display: grid; place-items: center; color: var(--muted);
+  font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase;
+}
+.feedcard__play {
+  position: absolute; right: 0.8rem; bottom: 0.8rem;
+  width: 40px; height: 40px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: rgba(10,14,26,0.78); color: var(--gold-bright);
+  font-size: 0.8rem; padding-left: 3px;
+  border: 1px solid rgba(201,164,92,0.4);
+}
+.feedcard__body { padding: 1.1rem 1.2rem 1.25rem; display: flex; flex-direction: column; gap: 0.55rem; flex: 1; }
+.feedcard__meta { display: flex; align-items: center; gap: 0.7rem; }
+.feedcard__badge {
+  font-size: 0.66rem; font-weight: 700; letter-spacing: 0.14em;
+  padding: 0.22rem 0.6rem; border-radius: 99px;
+  border: 1px solid rgba(201,164,92,0.5); color: var(--gold-bright);
+}
+.feedcard__badge--oreal { border-color: rgba(120,170,255,0.45); color: #a8c4f5; }
+.feedcard__time { font-size: 0.74rem; color: var(--muted); }
+.feedcard__title { font-size: 0.95rem; font-weight: 500; line-height: 1.5; flex: 1; }
+.feedcard__title a { color: var(--cream); transition: color 0.3s var(--ease); }
+.feedcard__title a:hover { color: var(--gold-bright); }
+.feedcard__vet {
+  font-size: 0.8rem; color: var(--gold); align-self: flex-start;
+  border-bottom: 1px solid rgba(201,164,92,0.35); padding-bottom: 1px;
+  transition: color 0.3s var(--ease), border-color 0.3s var(--ease);
+}
+.feedcard__vet:hover { color: var(--gold-bright); border-color: var(--gold-bright); }
+.marketwatch__note { text-align: center; margin-top: 1.8rem; font-size: 0.76rem; color: var(--muted); }

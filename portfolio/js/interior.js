@@ -393,7 +393,8 @@
   }
   function chandelier(parent, x, z, y = 3.0) {
     const g = new pc.Entity(); g.setLocalPosition(x, y, z); (parent || P()).addChild(g);
-    prim("cylinder", g, { pos: [0, 0.4, 0], scale: [0.03, 0.8, 0.03], mat: MATS.gold });
+    // short mount stub — must never rise past the slab above (y+0.2 max)
+    prim("cylinder", g, { pos: [0, 0.1, 0], scale: [0.03, 0.2, 0.03], mat: MATS.gold });
     prim("torus", g, { pos: [0, 0, 0], scale: [1, 1, 1], mat: MATS.gold });
     for (let i = 0; i < 8; i++) {
       const a = i / 8 * 6.28;
@@ -401,20 +402,22 @@
     }
     return g;
   }
-  /* ceiling fan — as seen in this house: dark blades, gold hub */
+  /* ceiling fan — as seen in this house: dark blades, gold hub.
+     y is the CEILING height; the fan hangs down from it so the blades
+     always clear the slab above (they used to be embedded inside it). */
   function ceilingFan(parent, x, z, y = 3.08) {
     const g = new pc.Entity(); g.setLocalPosition(x, y, z); (parent || P()).addChild(g);
-    prim("cylinder", g, { pos: [0, 0.18, 0], scale: [0.06, 0.36, 0.06], mat: MATS.metal });
-    prim("cylinder", g, { pos: [0, 0, 0], scale: [0.22, 0.12, 0.22], mat: MATS.gold });
+    prim("cylinder", g, { pos: [0, -0.14, 0], scale: [0.06, 0.28, 0.06], mat: MATS.metal });
+    prim("cylinder", g, { pos: [0, -0.3, 0], scale: [0.22, 0.12, 0.22], mat: MATS.gold });
     const blades = 3;
     for (let i = 0; i < blades; i++) {
       const a = (i / blades) * 6.28;
-      const blade = new pc.Entity(); blade.setLocalPosition(Math.cos(a) * 0.55, 0, Math.sin(a) * 0.55);
+      const blade = new pc.Entity(); blade.setLocalPosition(Math.cos(a) * 0.55, -0.34, Math.sin(a) * 0.55);
       blade.setEulerAngles(0, (a * 180 / Math.PI) + 90, 8);
       box(blade, { pos: [0, 0, 0], scale: [0.9, 0.04, 0.22], mat: MATS.metal });
       g.addChild(blade);
     }
-    prim("sphere", g, { pos: [0, -0.1, 0], scale: [0.15, 0.15, 0.15], mat: MATS.warm });
+    prim("sphere", g, { pos: [0, -0.44, 0], scale: [0.15, 0.15, 0.15], mat: MATS.warm });
     return g;
   }
   /* black geometric feature wall — as in the drawing room:
@@ -470,7 +473,7 @@
   function discPendants(parent, x, z, y = 2.82) {
     const g = new pc.Entity(); g.setLocalPosition(x, y, z); (parent || P()).addChild(g);
     for (let i = -1; i <= 1; i++) {
-      prim("cylinder", g, { pos: [i * 1.05, 0.38, 0], scale: [0.022, 0.76, 0.022], mat: MATS.gold });
+      prim("cylinder", g, { pos: [i * 1.05, 0.13, 0], scale: [0.022, 0.26, 0.022], mat: MATS.gold });
       prim("cylinder", g, { pos: [i * 1.05, 0,    0], scale: [0.68,  0.055, 0.68],  mat: MATS.gold });
       prim("cylinder", g, { pos: [i * 1.05, -0.04, 0], scale: [0.52, 0.10, 0.52],   mat: MATS.warm });
     }
@@ -480,7 +483,7 @@
   /* large rectangular chain chandelier — charcoalGold foyer/dining feature piece */
   function rectChandelier(parent, x, z, y = 3.0) {
     const g = new pc.Entity(); g.setLocalPosition(x, y, z); (parent || P()).addChild(g);
-    prim("cylinder", g, { pos: [0, 0.55, 0], scale: [0.026, 1.1, 0.026], mat: MATS.gold });
+    prim("cylinder", g, { pos: [0, 0.06, 0], scale: [0.026, 0.12, 0.026], mat: MATS.gold });
     const fw = 1.5, fd = 0.75, ft = 0.045;
     box(g, { pos: [0,       0,    0],       scale: [fw, ft, ft],       mat: MATS.gold });
     box(g, { pos: [0,       0,    fd],      scale: [fw, ft, ft],       mat: MATS.gold });
@@ -581,7 +584,7 @@
     plant(up, X(6.2), -4.8, 1.0);
     // landing lounge (south, by the stairwell)
     sofa(up, X(-2.5), 6.2, R(180), 2.2, MATS.fabric);
-    coffeeTable(up, X(-2.5), 5.4);
+    coffeeTable(up, X(-2.5), 5.1);
     plant(up, X(-6.2), 7.0, 1.1);
     chandelier(up, X(-3), 6, 2.9);
 
@@ -733,14 +736,14 @@
       const matGarden = M({ color:[0.55,0.75,0.45], emissive:[0.38,0.52,0.28], emissiveI:1.8, opacity:0.18, gloss:0.95 });
       box(null, { pos:[0, H/2, -5.95], scale:[8, H, 0.06], mat:matGarden, shadow:false });
       for (const fx of [-3,-1,1,3]) box(null, { pos:[fx, H/2, -5.93], scale:[0.06, H, 0.08], mat:MATS.metal, shadow:false });
-      curtain(null, X(-5.5), -5.6, R(0), 2.0);
-      curtain(null, X(5.5), -5.6, R(0), 2.0);
       sofa(null, X(-2), 2, R(180), 2.8, MATS.fabric);
       sofa(null, X(-4.5), 1, R(90), 2.0, MATS.fabric);
       coffeeTable(null, X(-2), 1);
-      for (const ox of [-0.6, 0.6]) {
-        prim("cylinder", null, { pos:[X(ox), 0.8, 6.5], scale:[0.1, 1.6, 0.1], mat:MATS.gold });
-        prim("sphere",   null, { pos:[X(ox), 1.7, 6.5], scale:[0.35,0.35,0.35], mat:M({ color:[1,1,1], gloss:0.2 }) });
+      // decor pedestals flank the entrance gap — clear of the staircase
+      // footprint and the bedroom partition in both mirror variants
+      for (const ox of [-3.4, -0.6]) {
+        prim("cylinder", null, { pos:[X(ox), 0.8, 7.4], scale:[0.1, 1.6, 0.1], mat:MATS.gold });
+        prim("sphere",   null, { pos:[X(ox), 1.7, 7.4], scale:[0.35,0.35,0.35], mat:M({ color:[1,1,1], gloss:0.2 }) });
       }
       const matFluted = M({ color:[0.48,0.50,0.54], gloss:0.35 });
       box(null, { pos:[X(4.75), H/2, 7.9], scale:[4, H, 0.1], mat:matFluted });
@@ -761,9 +764,10 @@
       prim("plane", null, { pos:[X(-3), 0.02, 2], scale:[4.5,1,3.2], mat:MATS.rug, shadow:false });
       sofa(null, X(-2.2), 2.8, R(180), 2.8, MATS.fabric);
       sofa(null, X(-4.8), 1.6, R(90),  2.0, MATS.fabric);
-      coffeeTable(null, X(-2.8), 2);
-      curtain(null, X(-6.7), -0.8, R(90), 2.6);
-      curtain(null, X(-6.7),  4.8, R(90), 2.6);
+      coffeeTable(null, X(-2.8), 1.85);
+      // curtains flank the west window, clear of the green feature wall (z -0.5..4.5)
+      curtain(null, X(-6.7), -2.0, R(90), 2.6);
+      curtain(null, X(-6.7),  5.9, R(90), 2.6);
       painting(null, X(-3), 1.9, 7.9, R(180), hue(0));
     } else {
       prim("plane", null, { pos:[X(-3), 0.02, 2], scale:[4.5,1,3.2], mat:MATS.rug, shadow:false });
@@ -803,15 +807,16 @@
     bed(null, X(4.75), 5.4);
     wardrobe(null, X(6.5), 6.2, R(-90));
     chandelier(null, X(4.75), 6, 3.0);
-    painting(null, X(4.75), 1.9, 7.9, R(180), hue(3));
+    // bahria already dresses this wall with the fluted panel + mirror
+    if (!isBahria) painting(null, X(4.75), 1.9, 7.9, R(180), hue(3));
     plant(null, X(3.1), 7.4, 0.9);
 
     /* --- grand homes: foyer seating --- */
     if (cfg.grand) {
       sofa(null, X(-1.4), 5.6, R(0), 1.4, MATS.fabric2);
       sofa(null, X(-3.2), 5.6, R(0), 1.4, MATS.fabric2);
-      coffeeTable(null, X(-2.3), 5.4);
-      box(null, { pos:[X(-6.85), 0.5, 6.3], scale:[0.4, 1.0, 1.6], mat:MATS.wood });
+      coffeeTable(null, X(-2.3), 6.5);
+      box(null, { pos:[X(-6.62), 0.5, 6.3], scale:[0.4, 1.0, 1.6], mat:MATS.wood });
       painting(null, X(-6.85), 1.7, 6.3, R(90), hue(0));
       if (isCharcoalGold) rectChandelier(null, X(-2.3), 6.4, 3.05);
       else chandelier(null, X(-2.3), 6.4, 3.05);

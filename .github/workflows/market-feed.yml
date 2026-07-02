@@ -1,0 +1,117 @@
+name: Refresh market feed (MSJ + OREAL latest videos)
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"   # every 6 hours
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: market-feed
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: claude/portfolio-website-setup-rpyerk
+
+      - name: Fetch YouTube RSS feeds and build JSON
+        run: |
+          node <<'EOF'
+          const fs = require("fs");
+
+          const CHANNELS = [
+            { key: "msj",   name: "MSJ Real Estate",  handle: "@msjrealestate",   id: "UCu6fG1VNb-e46v27S2kRP-w" },
+            { key: "oreal", name: "OREAL Properties", handle: "@orealproperties", id: "UClMReM8tvy-63BCXMP36vYg" }
+          ];
+
+          const unescapeXml = (s) => s
+            .replace(/&lt;/g, "<").replace(/&gt;/g, ">")
+            .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, "&");
+
+          async function fetchChannel(ch) {
+            const url = `https://www.youtube.com/feeds/videos.xml?channel_id=${ch.id}`;
+            const res = await fetch(url, { headers: { "user-agent": "Mozilla/5.0 (feed-refresh)" } });
+            if (!res.ok) throw new Error(`${ch.key}: HTTP ${res.status}`);
+            const xml = await res.text();
+            const entries = [];
+            const re = /<entry>([\s\S]*?)<\/entry>/g;
+            let m;
+            while ((m = re.exec(xml)) && entries.length < 6) {
+              const e = m[1];
+              const pick = (tag) => {
+                const r = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`);
+                const mm = e.match(r);
+                return mm ? unescapeXml(mm[1].trim()) : "";
+              };
+              const videoId = pick("yt:videoId");
+              if (!videoId) continue;
+              entries.push({
+                channel: ch.key,
+                channelName: ch.name,
+                videoId,
+                title: pick("title"),
+                published: pick("published"),
+                url: `https://www.youtube.com/watch?v=${videoId}`,
+                thumb: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`
+              });
+            }
+            if (!entries.length) throw new Error(`${ch.key}: no entries parsed`);
+            return entries;
+          }
+
+          (async () => {
+            const out = { updated: new Date().toISOString(), channels: {}, items: [] };
+            let ok = 0;
+            for (const ch of CHANNELS) {
+              try {
+                const items = await fetchChannel(ch);
+                out.channels[ch.key] = { name: ch.name, handle: ch.handle, url: `https://www.youtube.com/${ch.handle}` };
+                out.items.push(...items);
+                ok++;
+                console.log(`${ch.key}: ${items.length} videos`);
+              } catch (err) {
+                console.error(`WARN ${err.message}`);
+              }
+            }
+            if (!ok) {
+              console.error("All feeds failed — keeping previous JSON");
+              process.exit(0);
+            }
+            out.items.sort((a, b) => (a.published < b.published ? 1 : -1));
+            fs.mkdirSync("portfolio/data", { recursive: true });
+            fs.writeFileSync("portfolio/data/market-feed.json", JSON.stringify(out, null, 2) + "\n");
+            console.log(`Wrote ${out.items.length} items`);
+          })();
+          EOF
+
+      - name: Commit if changed
+        id: commit
+        run: |
+          if git diff --quiet -- portfolio/data/market-feed.json && \
+             ! git status --porcelain portfolio/data/market-feed.json | grep -q .; then
+            echo "Feed unchanged — nothing to commit"
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name "market-feed-bot"
+          git config user.email "actions@github.com"
+          git add portfolio/data/market-feed.json
+          git commit -m "chore: refresh market feed (MSJ + OREAL latest videos)"
+          git push origin claude/portfolio-website-setup-rpyerk
+          echo "pushed=true" >> "$GITHUB_OUTPUT"
+
+      # Pushes from GITHUB_TOKEN don't trigger the pages workflow, so
+      # dispatch the deploy explicitly (workflow_dispatch is exempt).
+      - name: Trigger Pages deploy
+        if: steps.commit.outputs.pushed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --repo "$GITHUB_REPOSITORY" --ref claude/portfolio-website-setup-rpyerk

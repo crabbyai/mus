@@ -352,8 +352,9 @@ function buildDesigner({ grand = true, cream = false, withPool = false } = {}) {
   part(g, volB, 0.2, 0.7);
   windowGrid(volB, { cols: 2, rows: 1, w: 0.85, h: 0.8, gx: 0.3, y: 0.5, z: 1.56 });
 
-  const bal = balcony(grand ? 2.5 : 2.1);
-  bal.position.set(volB.position.x, 1.95, 1.18);
+  // narrower + nudged right so the left end clears the entrance tower (x ≤ 0.775)
+  const bal = balcony(grand ? 2.2 : 1.9);
+  bal.position.set(volB.position.x + 0.3, 1.95, 1.18);
   part(g, bal, 0.36, 0.4);
   windowGrid(volB, { cols: 2, rows: 1, w: 0.7, h: 0.85, gx: 0.5, y: 1.85, z: 1.56 });
 
@@ -389,7 +390,8 @@ function buildDesigner({ grand = true, cream = false, withPool = false } = {}) {
 
   part(g, planter(-1.15, 1.75), 0.74);
   part(g, planter(1.3, 1.75), 0.76);
-  if (withPool) part(g, pool(2.2, 1.1, grand ? 3.9 : 3.3, 1.1), 0.8);
+  // pool sits fully beside the house — volB ends at x 3.25 (grand) / 2.7
+  if (withPool) part(g, pool(2.2, 1.1, grand ? 4.5 : 3.95, 1.1), 0.8);
   part(g, tree(grand ? -4.3 : -3.8, 1.4, 0.95), 0.84);
   part(g, cypress(grand ? 4.6 : 4, -0.6, 1), 0.88);
   return g;
@@ -405,8 +407,9 @@ function buildPalazzo() {
   doorArch.position.set(0, 0.88, 1.92);
   part(g, doorArch, 0.3);
   for (let i = 0; i < 4; i++) {
-    const colGeo = new THREE.CylinderGeometry(0.14, 0.16, 2.6, 12);
-    colGeo.translate(0, 1.3, 0);
+    // columns must reach the pediment underside (y 3.24), not float below it
+    const colGeo = new THREE.CylinderGeometry(0.14, 0.16, 3.0, 12);
+    colGeo.translate(0, 1.5, 0);
     const col = edged(colGeo, CHARCOAL);
     col.position.set(-1.8 + i * 1.2, 0.24, 2.2);
     part(g, col, 0.34 + i * 0.05, 0.4);
@@ -438,8 +441,9 @@ function buildColonial({ atrium = false } = {}) {
   }
   // veranda colonnade
   for (let i = 0; i < 4; i++) {
-    const cGeo = new THREE.CylinderGeometry(0.09, 0.1, 2.1, 10);
-    cGeo.translate(0, 1.05, 0);
+    // veranda columns rise to the roof base (y 2.92) so they actually support it
+    const cGeo = new THREE.CylinderGeometry(0.09, 0.1, 2.7, 10);
+    cGeo.translate(0, 1.35, 0);
     const c = edged(cGeo, CREAM);
     c.position.set(-2.85 + i * 1.9, 0.22, 2.2);
     part(g, c, 0.34 + i * 0.04, 0.3);
