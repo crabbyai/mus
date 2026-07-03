@@ -491,7 +491,7 @@ function buildFarmhouse({ linear = false } = {}) {
   part(g, tree(-4.8, 1.6, 1.1), 0.6);
   part(g, tree(4.9, 1.8, 0.95), 0.66);
   part(g, tree(5.6, 0.6, 0.75), 0.7);
-  if (linear) part(g, pool(2.2, 1.2, 2.6, 2.7), 0.78);
+  if (linear) part(g, pool(2.2, 1.2, 2.6, 2.9), 0.78); // clear of the veranda posts
   part(g, planter(-3.4, 2.6), 0.84);
   return g;
 }
@@ -549,7 +549,7 @@ function buildGreyTexture() {
   bal.position.set(0.55, 1.95, 1.95);
   part(g, bal, 0.4, 0.4);
   const slats = woodSlats(1.4, 2.9, 6);
-  slats.position.set(1.95, 0.42, 1.42);
+  slats.position.set(1.95, 0.42, 1.56); // proud of the facade (was buried at 1.42)
   part(g, slats, 0.46, 0.4);
   const par = parapet(4.9, 3.4, GRAPHITE);
   par.position.set(-0.4, 3.62, -0.2);
@@ -573,7 +573,7 @@ function buildCube5Marla() {
   const accent = box(0.85, 4.3, 0.2, CHARCOAL_DARK);
   accent.position.set(1.35, 0.22, 1.6);
   part(g, accent, 0.24, 0.7);
-  part(g, lightStrip(1.95, 0.3, 1.7, 3.9), 0.3);
+  part(g, lightStrip(1.82, 0.3, 1.7, 3.9), 0.3); // hugs the entrance fin edge
   windowGrid(main, { cols: 2, rows: 1, w: 0.62, h: 0.85, gx: 0.4, y: 0.55, z: 1.66 });
   [1.62, 2.96].forEach((y, i) => {
     const bal = balcony(2.3, 0.75);
@@ -604,14 +604,15 @@ function buildCornerGlass() {
   windowGrid(volA, { cols: 3, rows: 1, w: 0.72, h: 0.95, gx: 0.34, y: 0.5, z: 1.61 });
   windowGrid(volA, { cols: 3, rows: 1, w: 0.62, h: 0.8, gx: 0.45, y: 2.1, z: 1.61 });
   windowGrid(volB, { cols: 2, rows: 2, w: 0.5, h: 0.6, gx: 0.3, gy: 0.5, y: 0.4, z: 1.31 });
-  const balFront = balcony(3.6, 0.8);
-  balFront.position.set(-0.6, 1.92, 1.7);
+  // narrowed + shifted west so its end clears volB (which starts at x 0.9)
+  const balFront = balcony(3.0, 0.8);
+  balFront.position.set(-0.9, 1.92, 1.7);
   part(g, balFront, 0.36, 0.4);
   const balSide = balcony(2.6, 0.8);
   balSide.position.set(-3.2, 1.92, 0);
   balSide.rotation.y = Math.PI / 2;
   part(g, balSide, 0.42, 0.4);
-  part(g, lightStrip(1.1, 0.3, 1.62, 3), 0.3);
+  part(g, lightStrip(1.1, 0.3, 1.95, 2.5), 0.3); // on volB's face, was buried inside it
   const par = parapet(4.4, 3.2, CREAM);
   par.position.set(-0.6, 3.52, -0.3);
   part(g, par, 0.52, 0.5);

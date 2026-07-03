@@ -615,7 +615,7 @@
     // gallery moment where the flight arrives: art on the partition face
     // beside the stair top + a plant, so you don't climb toward blank wall
     painting(up, MX * 0.12, 1.7, 3.2, R(90), hue3(cfg, 2));
-    plant(up, X(-1.75), 4.55, 0.85);
+    plant(up, X(-1.6), 4.45, 0.85);
 
     state.upRooms = (cfg.upRoomLabels && cfg.upRoomLabels.length === 3)
       ? cfg.upRoomLabels
@@ -635,16 +635,17 @@
     /* screen */
     box(g, { pos: [0, 1.4, -0.2], scale: [3.8, 2.2, 0.08], mat: M({ color: [0.1, 0.1, 0.12], gloss: 0.15 }) });
     box(g, { pos: [0, 1.4, -0.14], scale: [3.4, 1.9, 0.04], mat: matScreen });
-    /* rows of seats */
+    /* rows of seats — tightened so the back row clears the bedroom
+       partition at world z=4 (it used to be embedded in that wall) */
     for (let row = 0; row < 3; row++) {
-      const tz = 0.9 + row * 1.1, ty = row * 0.12;
+      const tz = 0.7 + row * 0.9, ty = row * 0.12;
       for (let s = -1; s <= 1; s++) {
         box(g, { pos: [s * 1.1, ty + 0.3, tz], scale: [0.75, 0.12, 0.7], mat: matSeat });
         box(g, { pos: [s * 1.1, ty + 0.7, tz - 0.28], scale: [0.75, 0.65, 0.1], mat: matSeat });
       }
     }
-    /* aisle floor strip glow */
-    box(g, { pos: [0, 0.01, 1.5], scale: [0.2, 0.02, 3.5], mat: MATS.warm, shadow: false });
+    /* aisle floor strip glow — kept inside the room, not through the wall */
+    box(g, { pos: [0, 0.01, 1.2], scale: [0.2, 0.02, 2.6], mat: MATS.warm, shadow: false });
     return g;
   }
 
@@ -659,20 +660,24 @@
   /* glass atrium — overhead glass ceiling glow */
   function glassAtrium(H) {
     const matGlass = M({ color: [0.8, 0.88, 1.0], emissive: [0.6, 0.72, 0.9], emissiveI: 1.3, opacity: 0.18, gloss: 0.98 });
-    /* glass panels in ceiling above central living zone */
+    /* glass panels just BELOW the upper slab (slab spans y 3.08-3.2;
+       at H+0.04 they used to poke up through the upstairs floor & rugs) */
     for (let i = -2; i <= 2; i++)
-      box(null, { pos: [i * 1.6, H + 0.04, 1], scale: [1.4, 0.06, 4.0], mat: matGlass, shadow: false });
+      box(null, { pos: [i * 1.6, H - 0.16, 1], scale: [1.4, 0.06, 4.0], mat: matGlass, shadow: false });
     /* overhead frame */
     for (const fx of [-3.2, -0.8, 0.8, 3.2])
-      box(null, { pos: [fx, H + 0.04, 1], scale: [0.08, 0.08, 4.0], mat: MATS.metal, shadow: false });
+      box(null, { pos: [fx, H - 0.16, 1], scale: [0.08, 0.08, 4.0], mat: MATS.metal, shadow: false });
     /* warm skylight glow on floor */
     box(null, { pos: [0, 0.01, 1], scale: [6, 0.02, 4], mat: M({ color:[1,1,1], emissive:[0.85,0.90,0.98], emissiveI:0.5 }), shadow: false });
   }
 
-  /* farmhouse exposed ceiling beams */
+  /* farmhouse exposed ceiling beams — run east-west at z rows chosen to
+     clear every hanging fixture and the staircase headroom (the old
+     north-south beams sliced through the dining, foyer and bedroom
+     chandeliers and the stair top) */
   function farmhouseBeams(H) {
-    for (let i = -2; i <= 2; i++)
-      box(null, { pos: [i * 2.2, H - 0.2, 1], scale: [0.28, 0.28, 12], mat: MATS.wood, shadow: false });
+    for (const bz of [-4.8, -3.3, -1.8, -0.3, 3.5])
+      box(null, { pos: [0, H - 0.2, bz], scale: [12, 0.28, 0.28], mat: MATS.wood, shadow: false });
   }
 
   /* cedar vertical slat screens (Lake City) */
@@ -998,7 +1003,7 @@
 
     /* --- library / bookshelves --- */
     if (cfg.library) {
-      const lib = new pc.Entity(); lib.setLocalPosition(X(2.2), 0, -4.6); lib.setEulerAngles(0, R(-90), 0); P().addChild(lib);
+      const lib = new pc.Entity(); lib.setLocalPosition(X(2.2), 0, -4.35); lib.setEulerAngles(0, R(-90), 0); P().addChild(lib);
       box(lib, { pos:[0, 1.3, 0], scale:[3.0, 2.6, 0.4], mat:MATS.wood });
       for (let r = 0; r < 5; r++) box(lib, { pos:[0, 0.45+r*0.5, 0.16], scale:[2.8, 0.04, 0.06], mat:MATS.woodLight });
       const bc = ["#7a2e2e","#2e4a6a","#3a5a3a","#6a5a2e","#4a2e5a"];
@@ -1017,8 +1022,11 @@
 
     /* --- cedar screens --- */
     if (cfg.cedar) {
-      cedarScreens(null, X(-5.5), -5.5, R(0));
-      cedarScreens(null, X(5.5), -5.5, R(0));
+      // west screen moved to the west wall (old spot ran through the
+      // kitchen counters); east screen pulled in from the corner (its
+      // end slats were embedded in the side wall)
+      cedarScreens(null, X(-6.7), -3.5, R(90));
+      cedarScreens(null, X(5.0), -5.55, R(0));
     }
 
     /* --- room zone labels from config (x mirrored, normalised so x1<x2) --- */
