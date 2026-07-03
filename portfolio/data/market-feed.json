@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-03T14:30:13.786Z",
+  "updated": "2026-07-03T19:46:57.315Z",
   "channels": {
     "msj": {
       "name": "MSJ Real Estate",
@@ -13,6 +13,15 @@
     }
   },
   "items": [
+    {
+      "channel": "oreal",
+      "channelName": "OREAL Properties",
+      "videoId": "nUhqnj__Rfo",
+      "title": "Price Reduced! 10 Marla Luxury Park Facing House | 6 Bedroom Double Unit | Bahria Town Rawalpindi",
+      "published": "2026-07-03T17:00:04+00:00",
+      "url": "https://www.youtube.com/watch?v=nUhqnj__Rfo",
+      "thumb": "https://i.ytimg.com/vi/nUhqnj__Rfo/hqdefault.jpg"
+    },
     {
       "channel": "oreal",
       "channelName": "OREAL Properties",
@@ -111,15 +120,6 @@
       "published": "2026-06-26T12:00:19+00:00",
       "url": "https://www.youtube.com/watch?v=I7cj9hVKlU4",
       "thumb": "https://i.ytimg.com/vi/I7cj9hVKlU4/hqdefault.jpg"
-    },
-    {
-      "channel": "oreal",
-      "channelName": "OREAL Properties",
-      "videoId": "M2vYLIa3YQU",
-      "title": "8 Marla House For Sale in Bahria Town Rawalpindi | 5 Bedroom Luxury House | Double Height",
-      "published": "2026-06-25T17:24:29+00:00",
-      "url": "https://www.youtube.com/watch?v=M2vYLIa3YQU",
-      "thumb": "https://i.ytimg.com/vi/M2vYLIa3YQU/hqdefault.jpg"
     }
   ]
 }
