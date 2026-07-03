@@ -520,9 +520,28 @@
       const y = stepRise * (i + 0.5);
       box(null, { pos: [xMid, y - stepRise / 2, z], scale: [w, stepRise + 0.02, stepDepth + 0.02], mat: MATS.marbleWhite });
     }
-    // glass balustrade down the open side
-    box(null, { pos: [S.x0 - 0.04, H * 0.5 + 0.4, (S.zBot + S.zTop) / 2], scale: [0.05, H + 0.8, run], mat: MATS.glass });
-    box(null, { pos: [S.x0 - 0.04, H + 0.55, (S.zBot + S.zTop) / 2], scale: [0.07, 0.07, run], mat: MATS.gold });
+    // balustrade on the open (foyer) side: a glass panel + gold handrail
+    // that FOLLOW THE FLIGHT'S SLOPE — the old version was a 4m-tall
+    // floor-to-ceiling glass slab that made the stair read as a solid wall
+    const openX = state.mirror ? S.x1 + 0.04 : S.x0 - 0.04;
+    const midZ = (S.zBot + S.zTop) / 2;
+    const slopeDeg = Math.atan2(H, run) * 180 / Math.PI;
+    const L = Math.hypot(run, H);
+    const rail = (y, sc, mat) => {
+      const e = new pc.Entity();
+      e.addComponent("render", { type: "box" });
+      e.render.meshInstances.forEach((mi) => (mi.material = mat));
+      e.render.castShadows = false;
+      e.setLocalScale(sc[0], sc[1], sc[2]);
+      e.setLocalPosition(openX, y, midZ);
+      e.setEulerAngles(slopeDeg, 0, 0);
+      P().addChild(e);
+    };
+    rail(H / 2 + 0.55, [0.04, 1.0, L], MATS.glass);        // sloped glass panel
+    rail(H / 2 + 1.08, [0.06, 0.06, L + 0.15], MATS.gold); // sloped gold handrail
+    // newel posts at foot and head of the flight
+    box(null, { pos: [openX, 0.52, S.zBot], scale: [0.07, 1.04, 0.07], mat: MATS.gold });
+    box(null, { pos: [openX, H + 0.52, S.zTop], scale: [0.07, 1.04, 0.07], mat: MATS.gold });
     // newel light at the foot
     prim("cylinder", null, { pos: [S.x1 + 0.1, 0.5, S.zBot - 0.1], scale: [0.12, 1.0, 0.12], mat: MATS.gold });
     prim("sphere", null, { pos: [S.x1 + 0.1, 1.1, S.zBot - 0.1], scale: [0.26, 0.26, 0.26], mat: MATS.warm });
@@ -555,7 +574,13 @@
     // central partition splitting two suites, doorway gap z 0.5..1.7
     wallSeg(0, -6, 0, 0.5, H, MATS.wall, true, 0.16, slabTop, 1);
     wallSeg(0, 1.7, 0, 4, H, MATS.wall, true, 0.16, slabTop, 1);
-    wallSeg(X(-7), 4, hole.x0, 4, H, MATS.wall, true, 0.16, slabTop, 1);
+    // corridor wall beside the stairwell. Two fixes baked in:
+    // 1. it ends 1.3m short of the stairwell, leaving a doorway — the
+    //    landing lounge used to be completely sealed off behind it
+    // 2. the stair-side edge is mirror-resolved — in mirrored plans the
+    //    old X(-7)..hole.x0 span put this wall dead in front of the flight
+    const stairEdge = state.mirror ? hole.x1 : hole.x0;
+    wallSeg(X(-7), 4, stairEdge - MX * 1.3, 4, H, MATS.wall, true, 0.16, slabTop, 1);
 
     // stairwell guard rails (lvl 1 collision so you can't fall in)
     const rail = (x1, z1, x2, z2) => {
@@ -587,6 +612,10 @@
     coffeeTable(up, X(-2.5), 5.1);
     plant(up, X(-6.2), 7.0, 1.1);
     chandelier(up, X(-3), 6, 2.9);
+    // gallery moment where the flight arrives: art on the partition face
+    // beside the stair top + a plant, so you don't climb toward blank wall
+    painting(up, MX * 0.12, 1.7, 3.2, R(90), hue3(cfg, 2));
+    plant(up, X(-1.75), 4.55, 0.85);
 
     state.upRooms = (cfg.upRoomLabels && cfg.upRoomLabels.length === 3)
       ? cfg.upRoomLabels
@@ -1240,7 +1269,7 @@
       ensureApp();
       rebuild(cfg);
       // reset spawn at the foyer looking into the house (toward -Z)
-      const sp = state.spawn || { x: -1.5, z: 7.0, yaw: 0, pitch: -4 };
+      const sp = Object.assign({}, state.spawn || { x: -1.5, z: 7.0, yaw: 0, pitch: -4 }, window.__tourDebugSpawn || {});
       state.pos = { x: sp.x, y: 1.65, z: sp.z };
       state.yaw = sp.yaw; state.pitch = sp.pitch;
       state.level = 0; state.eyeY = null;
