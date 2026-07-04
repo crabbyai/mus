@@ -170,7 +170,7 @@
 <link rel="preload" href="assets/fonts/playfair-display-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="assets/fonts/manrope-latin-300-normal.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="stylesheet" href="css/fonts.css" />
-<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="css/style.css?v=4" />
 <link rel="stylesheet" href="css/enhance.css" />
 </head>
 <body>
@@ -489,6 +489,36 @@
           <div class="fx-cell"><span>🇪🇺 EUR</span><strong data-fx="EUR">—</strong></div>
         </div>
         <p class="tool-note" id="fxNote">Loading live rates…</p>
+      </article>
+
+      <!-- Transfer & closing cost estimator -->
+      <article class="tool-card glass" data-reveal>
+        <h3 class="tool-card__title">Transfer &amp; Closing Cost Estimator</h3>
+        <p class="tool-card__sub">The taxes and fees on top of the price — and exactly how much being a tax filer saves you.</p>
+        <div class="tool-field">
+          <label>Property Value <output id="txPriceOut">PKR 4.00 Crore</output></label>
+          <input type="range" id="txPrice" min="2500000" max="400000000" step="500000" value="40000000" />
+        </div>
+        <div class="tool-field">
+          <label>Your Tax Status</label>
+          <div class="seg" id="txFiler" role="tablist" aria-label="Tax filer status">
+            <button type="button" class="seg__btn is-active" data-val="filer" role="tab" aria-selected="true">Filer</button>
+            <button type="button" class="seg__btn" data-val="nonfiler" role="tab" aria-selected="false">Non-Filer</button>
+          </div>
+        </div>
+        <div class="tool-result">
+          <div class="tool-result__main">
+            <span>Estimated Closing Cost (on top of price)</span>
+            <strong id="txTotal">—</strong>
+          </div>
+          <div class="tool-result__row">
+            <div><span>FBR Advance Tax</span><b id="txFbr">—</b></div>
+            <div><span>Stamp Duty &amp; Registration</span><b id="txStamp">—</b></div>
+            <div><span>Society / Transfer Fee</span><b id="txTransfer">—</b></div>
+            <div><span>All-In (Price + Costs)</span><b id="txAllIn">—</b></div>
+          </div>
+        </div>
+        <p class="tool-note" id="txNote">Indicative rates for 2025–26; exact figures depend on area, DC/FBR value and the latest Finance Act. I confirm every number before your bayana is signed.</p>
       </article>
     </div>
   </section>
@@ -1033,30 +1063,30 @@
   <section class="testimonials" id="testimonials">
     <p class="section-eyebrow" data-reveal>In Their Words</p>
     <h2 class="section-title" data-reveal>Clients who became <em class="gold-italic">friends</em></h2>
-    <div class=”testimonials__slider” id=”slider”>
-      <div class=”testimonial is-active”>
-        <div class=”testimonial__stars”>★★★★★</div>
-        <p>”Adeel sold our 1 Kanal in DHA Phase 2 above asking — in eleven days. The paperwork was flawless. We never lifted a finger.”</p>
+    <div class="testimonials__slider" id="slider">
+      <div class="testimonial is-active">
+        <div class="testimonial__stars">★★★★★</div>
+        <p>“Adeel sold our 1 Kanal in DHA Phase 2 above asking — in eleven days. The paperwork was flawless. We never lifted a finger.”</p>
         <footer><strong>Brig. (R) Tariq Mahmood</strong><span>DHA Phase 2, Islamabad</span></footer>
       </div>
-      <div class=”testimonial”>
-        <div class=”testimonial__stars”>★★★★★</div>
-        <p>”We were overseas the entire time. He video-walked us through every viewing of our Gulberg house and handled the transfer on a power of attorney. Total peace of mind.”</p>
+      <div class="testimonial">
+        <div class="testimonial__stars">★★★★★</div>
+        <p>“We were overseas the entire time. He video-walked us through every viewing of our Gulberg house and handled the transfer on a power of attorney. Total peace of mind.”</p>
         <footer><strong>Sana &amp; Omar Chaudhry</strong><span>Gulberg III, Lahore</span></footer>
       </div>
-      <div class=”testimonial”>
-        <div class=”testimonial__stars”>★★★★★</div>
-        <p>”Three agents told us our Bahria 10 Marla wouldn't cross 4 crore. Adeel closed at 4.65. Enough said.”</p>
+      <div class="testimonial">
+        <div class="testimonial__stars">★★★★★</div>
+        <p>“Three agents told us our Bahria 10 Marla wouldn't cross 4 crore. Adeel closed at 4.65. Enough said.”</p>
         <footer><strong>Faisal Qureshi</strong><span>Bahria Town, Lahore</span></footer>
       </div>
-      <div class=”testimonial”>
-        <div class=”testimonial__stars”>★★★★★</div>
-        <p>”His financial analysis — discounted cash flows, rental yield, exit multiples — was at a level I'd expect from an investment bank. Not from a realtor. The deal he structured saved us PKR 1.2 Crore.”</p>
+      <div class="testimonial">
+        <div class="testimonial__stars">★★★★★</div>
+        <p>“His financial analysis — discounted cash flows, rental yield, exit multiples — was at a level I'd expect from an investment bank. Not from a realtor. The deal he structured saved us PKR 1.2 Crore.”</p>
         <footer><strong>Imran Siddiqui, CFA</strong><span>Gulberg Greens, Islamabad</span></footer>
       </div>
-      <div class=”testimonial”>
-        <div class=”testimonial__stars”>★★★★★</div>
-        <p>”I listed with two other agents before Adeel — both promised the world and delivered nothing for months. He had a qualified buyer within the week. The difference is night and day.”</p>
+      <div class="testimonial">
+        <div class="testimonial__stars">★★★★★</div>
+        <p>“I listed with two other agents before Adeel — both promised the world and delivered nothing for months. He had a qualified buyer within the week. The difference is night and day.”</p>
         <footer><strong>Nasreen Akhtar</strong><span>Bahria Town, Rawalpindi</span></footer>
       </div>
       <div class="testimonials__nav">
@@ -1520,7 +1550,7 @@
 </script>
 <script type="module" src="js/estate3d.js?v=3"></script>
 <script src="js/interior.js?v=3"></script>
-<script src="js/tools.js?v=3" defer></script>
+<script src="js/tools.js?v=4" defer></script>
 <script src="js/enhance.js?v=3" defer></script>
 <script src="js/feed.js?v=3" defer></script>
 <script src="js/social.js?v=1" defer></script>

@@ -1764,3 +1764,21 @@ body::before {
   /* sit above the sticky mobile action bar */
   .sp-toast { bottom: 4.6rem; left: 0.8rem; right: 0.8rem; max-width: none; }
 }
+
+/* ---------- segmented control (filer toggle) ---------- */
+.seg {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem;
+  background: rgba(10,15,30,0.5); border: 1px solid rgba(243,238,227,0.10);
+  border-radius: 12px; padding: 0.3rem;
+}
+.seg__btn {
+  padding: 0.6rem 0.5rem; border: 0; border-radius: 9px; cursor: pointer;
+  background: transparent; color: var(--muted); font-family: var(--sans);
+  font-size: 0.9rem; font-weight: 600; letter-spacing: 0.02em;
+  transition: background 0.3s var(--ease), color 0.3s var(--ease);
+}
+.seg__btn:hover { color: var(--cream); }
+.seg__btn.is-active {
+  background: linear-gradient(135deg, var(--gold), var(--gold-bright));
+  color: #0a0c14;
+}

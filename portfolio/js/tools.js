@@ -158,4 +158,62 @@
 
   if (fxInput) fxInput.addEventListener("input", calcFx);
   calcFx();
+
+  /* ---------- Transfer & closing cost estimator ----------
+     Indicative 2025-26 rates. FBR advance tax (236K) is the big
+     filer/non-filer swing; stamp+registration and society transfer
+     fees are area-dependent, held here as sensible flat defaults. */
+  const RATES_TX = {
+    filer:    { fbr: 0.03,  stamp: 0.02, transfer: 0.01 },
+    nonfiler: { fbr: 0.105, stamp: 0.02, transfer: 0.01 }
+  };
+  const tx = {
+    price: $("txPrice"), priceOut: $("txPriceOut"), filer: $("txFiler"),
+    total: $("txTotal"), fbr: $("txFbr"), stamp: $("txStamp"),
+    transfer: $("txTransfer"), allIn: $("txAllIn"), note: $("txNote")
+  };
+  let txStatus = "filer";
+
+  function calcTx() {
+    if (!tx.price) return;
+    const price = +tx.price.value;
+    const r = RATES_TX[txStatus];
+    const fbr = price * r.fbr;
+    const stamp = price * r.stamp;
+    const transfer = price * r.transfer;
+    const total = fbr + stamp + transfer;
+
+    tx.priceOut.textContent = fmtShort(price);
+    tx.total.textContent = fmtShort(total);
+    tx.fbr.textContent = fmtShort(fbr);
+    tx.stamp.textContent = fmtShort(stamp);
+    tx.transfer.textContent = fmtShort(transfer);
+    tx.allIn.textContent = fmtShort(price + total);
+
+    if (tx.note) {
+      if (txStatus === "nonfiler") {
+        const saving = price * (RATES_TX.nonfiler.fbr - RATES_TX.filer.fbr);
+        tx.note.innerHTML = "As a <strong>non-filer you're paying about " + fmtShort(saving) +
+          " extra</strong> in advance tax alone. Becoming a filer before you transact usually pays for itself many times over — ask me how.";
+      } else {
+        tx.note.textContent = "Indicative rates for 2025–26; exact figures depend on area, DC/FBR value and the latest Finance Act. I confirm every number before your bayana is signed.";
+      }
+    }
+  }
+
+  if (tx.price) tx.price.addEventListener("input", calcTx);
+  if (tx.filer) {
+    tx.filer.addEventListener("click", function (e) {
+      const btn = e.target.closest(".seg__btn");
+      if (!btn) return;
+      txStatus = btn.getAttribute("data-val");
+      tx.filer.querySelectorAll(".seg__btn").forEach(function (b) {
+        const on = b === btn;
+        b.classList.toggle("is-active", on);
+        b.setAttribute("aria-selected", on ? "true" : "false");
+      });
+      calcTx();
+    });
+  }
+  calcTx();
 })();
