@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-06T15:53:42.016Z",
+  "updated": "2026-07-06T20:12:33.797Z",
   "channels": {
     "msj": {
       "name": "MSJ Real Estate",
@@ -13,6 +13,15 @@
     }
   },
   "items": [
+    {
+      "channel": "oreal",
+      "channelName": "OREAL Properties",
+      "videoId": "2DrY2iphzuE",
+      "title": "12 Marla Designer House with Beautiful Lawn & Backyard | Bahria Town Rawalpindi | Luxury House Tour",
+      "published": "2026-07-06T17:13:28+00:00",
+      "url": "https://www.youtube.com/watch?v=2DrY2iphzuE",
+      "thumb": "https://i.ytimg.com/vi/2DrY2iphzuE/hqdefault.jpg"
+    },
     {
       "channel": "msj",
       "channelName": "MSJ Real Estate",
@@ -111,15 +120,6 @@
       "published": "2026-06-27T16:04:09+00:00",
       "url": "https://www.youtube.com/watch?v=5nBESgbGQwg",
       "thumb": "https://i.ytimg.com/vi/5nBESgbGQwg/hqdefault.jpg"
-    },
-    {
-      "channel": "oreal",
-      "channelName": "OREAL Properties",
-      "videoId": "PlkECy4_O-Q",
-      "title": "22 Marla Luxury House For Sale in Bahria Town Rawalpindi | Backyard BBQ | 100 Ft Road | 10.95 Crore",
-      "published": "2026-06-26T15:34:49+00:00",
-      "url": "https://www.youtube.com/watch?v=PlkECy4_O-Q",
-      "thumb": "https://i.ytimg.com/vi/PlkECy4_O-Q/hqdefault.jpg"
     }
   ]
 }
