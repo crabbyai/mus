@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-07T15:11:58.904Z",
+  "updated": "2026-07-07T20:12:04.592Z",
   "channels": {
     "msj": {
       "name": "MSJ Real Estate",
@@ -13,6 +13,15 @@
     }
   },
   "items": [
+    {
+      "channel": "oreal",
+      "channelName": "OREAL Properties",
+      "videoId": "l3Y4NqSwVdg",
+      "title": "11 Marla Defence Villa Corner House | 24/7 Gated | DHA villa Bahria Town Phase 8 Rawalpindi |",
+      "published": "2026-07-07T15:22:17+00:00",
+      "url": "https://www.youtube.com/watch?v=l3Y4NqSwVdg",
+      "thumb": "https://i.ytimg.com/vi/l3Y4NqSwVdg/hqdefault.jpg"
+    },
     {
       "channel": "oreal",
       "channelName": "OREAL Properties",
@@ -111,15 +120,6 @@
       "published": "2026-06-28T11:19:53+00:00",
       "url": "https://www.youtube.com/watch?v=TOby3iV3FOY",
       "thumb": "https://i.ytimg.com/vi/TOby3iV3FOY/hqdefault.jpg"
-    },
-    {
-      "channel": "oreal",
-      "channelName": "OREAL Properties",
-      "videoId": "5nBESgbGQwg",
-      "title": "5 Marla Luxury Duplex House For Sale in Bahria Town Rawalpindi | 3 Bedroom Designer Home",
-      "published": "2026-06-27T16:04:09+00:00",
-      "url": "https://www.youtube.com/watch?v=5nBESgbGQwg",
-      "thumb": "https://i.ytimg.com/vi/5nBESgbGQwg/hqdefault.jpg"
     }
   ]
 }
