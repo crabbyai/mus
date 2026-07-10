@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-09T20:02:15.120Z",
+  "updated": "2026-07-10T09:51:28.126Z",
   "channels": {
     "msj": {
       "name": "MSJ Real Estate",
@@ -13,6 +13,15 @@
     }
   },
   "items": [
+    {
+      "channel": "msj",
+      "channelName": "MSJ Real Estate",
+      "videoId": "hBiFaln288A",
+      "title": "EDGE EXPERT-  EDGE STONE TILES FOR YOUR HOME",
+      "published": "2026-07-10T04:49:11+00:00",
+      "url": "https://www.youtube.com/watch?v=hBiFaln288A",
+      "thumb": "https://i.ytimg.com/vi/hBiFaln288A/hqdefault.jpg"
+    },
     {
       "channel": "msj",
       "channelName": "MSJ Real Estate",
@@ -111,15 +120,6 @@
       "published": "2026-06-29T17:32:42+00:00",
       "url": "https://www.youtube.com/watch?v=WORwwquNnC0",
       "thumb": "https://i.ytimg.com/vi/WORwwquNnC0/hqdefault.jpg"
-    },
-    {
-      "channel": "msj",
-      "channelName": "MSJ Real Estate",
-      "videoId": "0oTl-fzr-bg",
-      "title": "Fully Furnished 1 kanal BILLIONAIR's LOUIS VUIITON House For Sale in DHA Lahore",
-      "published": "2026-06-28T13:30:02+00:00",
-      "url": "https://www.youtube.com/watch?v=0oTl-fzr-bg",
-      "thumb": "https://i.ytimg.com/vi/0oTl-fzr-bg/hqdefault.jpg"
     }
   ]
 }
