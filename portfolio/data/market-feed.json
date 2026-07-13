@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-13T15:09:16.921Z",
+  "updated": "2026-07-13T19:46:46.173Z",
   "channels": {
     "msj": {
       "name": "MSJ Real Estate",
@@ -13,6 +13,15 @@
     }
   },
   "items": [
+    {
+      "channel": "oreal",
+      "channelName": "OREAL Properties",
+      "videoId": "gOUSGXb_f78",
+      "title": "10 Marla Ultra Luxury House 🏡 | Overseas Sector Bahria Town Islamabad | #shorts",
+      "published": "2026-07-13T17:45:54+00:00",
+      "url": "https://www.youtube.com/watch?v=gOUSGXb_f78",
+      "thumb": "https://i.ytimg.com/vi/gOUSGXb_f78/hqdefault.jpg"
+    },
     {
       "channel": "oreal",
       "channelName": "OREAL Properties",
@@ -93,15 +102,6 @@
       "published": "2026-07-02T16:55:48+00:00",
       "url": "https://www.youtube.com/watch?v=D-TE_Pey54c",
       "thumb": "https://i.ytimg.com/vi/D-TE_Pey54c/hqdefault.jpg"
-    },
-    {
-      "channel": "oreal",
-      "channelName": "OREAL Properties",
-      "videoId": "1WwrDJvssZo",
-      "title": "10 Marla Neoclassical House For Sale | Rooftop BBQ & Lawn | Bahria Town Phase 8 Rawalpindi",
-      "published": "2026-07-01T16:38:09+00:00",
-      "url": "https://www.youtube.com/watch?v=1WwrDJvssZo",
-      "thumb": "https://i.ytimg.com/vi/1WwrDJvssZo/hqdefault.jpg"
     },
     {
       "channel": "msj",
