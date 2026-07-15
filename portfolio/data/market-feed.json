@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-15T14:07:01.197Z",
+  "updated": "2026-07-15T19:34:22.184Z",
   "channels": {
     "msj": {
       "name": "MSJ Real Estate",
@@ -13,6 +13,24 @@
     }
   },
   "items": [
+    {
+      "channel": "msj",
+      "channelName": "MSJ Real Estate",
+      "videoId": "jo5XugI7uFg",
+      "title": "Plaza for rent in Gulberg Islamabad. 0300-9037536",
+      "published": "2026-07-15T17:26:48+00:00",
+      "url": "https://www.youtube.com/watch?v=jo5XugI7uFg",
+      "thumb": "https://i.ytimg.com/vi/jo5XugI7uFg/hqdefault.jpg"
+    },
+    {
+      "channel": "oreal",
+      "channelName": "OREAL Properties",
+      "videoId": "zOWldgzsdsE",
+      "title": "10 Marla Ultra Luxury Designer House Tour | Overseas Sector Bahria Town Islamabad  Dream Home",
+      "published": "2026-07-14T16:40:53+00:00",
+      "url": "https://www.youtube.com/watch?v=zOWldgzsdsE",
+      "thumb": "https://i.ytimg.com/vi/zOWldgzsdsE/hqdefault.jpg"
+    },
     {
       "channel": "oreal",
       "channelName": "OREAL Properties",
@@ -95,15 +113,6 @@
       "thumb": "https://i.ytimg.com/vi/nUhqnj__Rfo/hqdefault.jpg"
     },
     {
-      "channel": "oreal",
-      "channelName": "OREAL Properties",
-      "videoId": "D-TE_Pey54c",
-      "title": "10 Marla Neo Classical Luxury House Tour | Home Cinema Basement | Bahria Town Phase 8 Rawalpindi",
-      "published": "2026-07-02T16:55:48+00:00",
-      "url": "https://www.youtube.com/watch?v=D-TE_Pey54c",
-      "thumb": "https://i.ytimg.com/vi/D-TE_Pey54c/hqdefault.jpg"
-    },
-    {
       "channel": "msj",
       "channelName": "MSJ Real Estate",
       "videoId": "XlpFWOOarDA",
@@ -111,15 +120,6 @@
       "published": "2026-07-01T12:00:22+00:00",
       "url": "https://www.youtube.com/watch?v=XlpFWOOarDA",
       "thumb": "https://i.ytimg.com/vi/XlpFWOOarDA/hqdefault.jpg"
-    },
-    {
-      "channel": "msj",
-      "channelName": "MSJ Real Estate",
-      "videoId": "8XwArAmAo08",
-      "title": "Dha Peshawar- A MILESTONE IN DEVELOPMENT",
-      "published": "2026-07-01T06:50:20+00:00",
-      "url": "https://www.youtube.com/watch?v=8XwArAmAo08",
-      "thumb": "https://i.ytimg.com/vi/8XwArAmAo08/hqdefault.jpg"
     }
   ]
 }
