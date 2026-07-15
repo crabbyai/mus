@@ -827,7 +827,7 @@ body::before {
   transition: transform 1.2s var(--ease);
 }
 .creds__diploma:hover .creds__diploma-frame { transform: translateY(-6px) scale(1.01); }
-.creds__diploma-frame img { width: 100%; border-radius: 8px; display: block; }
+.creds__diploma-frame img { width: 100%; height: auto; border-radius: 8px; display: block; }
 .creds__diploma figcaption { text-align: center; margin-top: 1.2rem; }
 .creds__diploma figcaption strong { display: block; font-family: var(--serif); font-size: 1.15rem; color: var(--gold-bright); }
 .creds__diploma figcaption span { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
