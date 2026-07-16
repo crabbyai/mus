@@ -1785,3 +1785,17 @@ body::before {
   background: linear-gradient(135deg, var(--gold), var(--gold-bright));
   color: #0a0c14;
 }
+
+/* ---------- accessibility: skip link + keyboard focus ---------- */
+.skip-link {
+  position: fixed; top: -60px; left: 1rem; z-index: 1000;
+  background: var(--gold); color: #0a0c14; font-weight: 700;
+  padding: 0.7rem 1.2rem; border-radius: 0 0 10px 10px; text-decoration: none;
+  transition: top 0.25s var(--ease);
+}
+.skip-link:focus { top: 0; outline: none; }
+/* visible focus ring for keyboard users (mouse clicks stay clean) */
+a:focus-visible, button:focus-visible, input:focus-visible,
+select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
+  outline: 2px solid var(--gold-bright); outline-offset: 3px; border-radius: 4px;
+}

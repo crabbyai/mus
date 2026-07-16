@@ -55,10 +55,23 @@
       </article>`;
   }
 
+  // Rank genuine property listings above channel noise (tile ads, news,
+  // development updates) so "Live Market Watch" reads as curated stock.
+  const LISTING_RE = /\b(marla|kanal|bedroom|\d+\s*bed|house|villa|home|for sale|plot|farmhouse|duplex|apartment)\b/i;
+  function rank(items) {
+    const scored = items.map((it, i) => ({
+      it,
+      // listing keywords win; original order (recency) breaks ties
+      score: (LISTING_RE.test(it.title || "") ? 1000 : 0) - i
+    }));
+    scored.sort((a, b) => b.score - a.score);
+    return scored.map((s) => s.it);
+  }
+
   fetch("data/market-feed.json", { cache: "no-cache" })
     .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
     .then((data) => {
-      const items = (data && data.items) || [];
+      const items = rank((data && data.items) || []);
       if (!items.length) return; // section stays hidden until first refresh lands
       grid.innerHTML = items.slice(0, 8).map(card).join("");
       if (stamp && data.updated) {
