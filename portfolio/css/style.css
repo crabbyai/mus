@@ -1101,6 +1101,19 @@ body::before {
 .spotlight__nav:hover { background: var(--gold); color: var(--ink); }
 .spotlight__nav--prev { left: 1rem; }
 .spotlight__nav--next { right: 1rem; }
+/* video standout: clickable thumbnail + play overlay */
+.spotlight__vlink { position: absolute; inset: 0; display: block; z-index: 1; }
+.spotlight__play {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 3;
+  width: 74px; height: 74px; border-radius: 50%; display: grid; place-items: center;
+  background: rgba(10,15,30,0.55); backdrop-filter: blur(6px);
+  border: 1.5px solid rgba(201,164,92,0.7); color: var(--gold-bright);
+  font-size: 1.4rem; padding-left: 5px; pointer-events: none;
+  transition: transform 0.4s var(--ease), background 0.3s var(--ease), color 0.3s var(--ease);
+}
+.spotlight__vlink:hover .spotlight__play { transform: translate(-50%, -50%) scale(1.12); background: rgba(201,164,92,0.92); color: #0a0c14; }
+.spotlight__badge { z-index: 4; }
+.spotlight__nav { z-index: 4; }
 .spotlight__info { padding: clamp(1.8rem, 3.5vw, 3rem); display: flex; flex-direction: column; }
 .spotlight__loc { color: var(--gold); font-size: 0.7rem; letter-spacing: 0.26em; text-transform: uppercase; margin-bottom: 0.6rem; }
 .spotlight__title { font-family: var(--serif); font-size: clamp(1.5rem, 3vw, 2.1rem); font-weight: 500; line-height: 1.2; margin-bottom: 1rem; }

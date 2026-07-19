@@ -68,16 +68,112 @@
     return scored.map((s) => s.it);
   }
 
+  /* ---------- "This week's standout": best-performing live video ----------
+     Picks the top property video by real YouTube view count (embedded in
+     the RSS feed). Until view counts land in the JSON it falls back to the
+     newest listing, so the section is always populated. Rebuilds the
+     existing spotlight stage, replacing the static-listing carousel. */
+  function fmtViews(n) {
+    n = +n || 0;
+    if (n >= 1e6) return (n / 1e6).toFixed(n >= 1e7 ? 0 : 1).replace(/\.0$/, "") + "M";
+    if (n >= 1e3) return (n / 1e3).toFixed(n >= 1e5 ? 0 : 1).replace(/\.0$/, "") + "K";
+    return n.toLocaleString("en-US");
+  }
+  function areaOf(title) {
+    const AREAS = ["DHA", "Bahria Town", "Bahria", "Gulberg", "F-7", "F-8", "E-11",
+      "B-17", "Model Town", "Lake City", "Jinnah Garden", "Top City", "i-9", "Overseas Sector"];
+    const t = title || "";
+    for (const a of AREAS) if (new RegExp("\\b" + a.replace(/[-/]/g, "\\$&"), "i").test(t)) return a;
+    if (/islamabad/i.test(t)) return "Islamabad";
+    if (/lahore/i.test(t)) return "Lahore";
+    if (/rawalpindi/i.test(t)) return "Rawalpindi";
+    return "Islamabad & Lahore";
+  }
+
+  function renderStandout(allItems, updated) {
+    const stage = document.querySelector(".spotlight__stage");
+    if (!stage) return;
+    const listings = allItems.filter((it) => LISTING_RE.test(it.title || ""));
+    const pool = (listings.length ? listings : allItems).slice();
+    const byViews = pool.some((it) => +it.views > 0);
+    pool.sort((a, b) => byViews
+      ? (+b.views || 0) - (+a.views || 0)
+      : new Date(b.published) - new Date(a.published));
+    const top = pool.slice(0, 5);
+    if (!top.length) return;
+
+    const waFor = (it) => "https://wa.me/16134083945?text=" + encodeURIComponent(
+      "Hello Adeel — this is the standout listing this week: " + it.title +
+      ". What's it really worth, and can you get me a better price? " + it.url);
+
+    stage.innerHTML =
+      '<div class="spotlight__media">' +
+        '<a class="spotlight__vlink" id="soLink" href="#" target="_blank" rel="noopener" aria-label="Watch on YouTube">' +
+          '<img id="soImg" src="" alt="" />' +
+          '<span class="spotlight__play">▶</span>' +
+        '</a>' +
+        '<span class="spotlight__badge" id="soBadge"></span>' +
+        (top.length > 1 ? '<button class="spotlight__nav spotlight__nav--prev" id="soPrev" aria-label="Previous">←</button>' +
+        '<button class="spotlight__nav spotlight__nav--next" id="soNext" aria-label="Next">→</button>' : '') +
+      '</div>' +
+      '<div class="spotlight__info">' +
+        '<p class="spotlight__loc" id="soLoc"></p>' +
+        '<h3 class="spotlight__title" id="soTitle"></h3>' +
+        '<div class="spotlight__tags" id="soTags"></div>' +
+        '<div class="spotlight__price"><span id="soPriceLbl"></span><strong id="soViews"></strong></div>' +
+        '<div class="spotlight__actions">' +
+          '<a class="btn btn--gold" id="soWatch" href="#" target="_blank" rel="noopener">▶ Watch Full Tour <span class="btn__arrow">→</span></a>' +
+          '<a class="btn btn--wa" id="soWa" href="#" target="_blank" rel="noopener">Get me a better price</a>' +
+        '</div>' +
+        '<div class="spotlight__dots" id="soDots"></div>' +
+      '</div>';
+
+    const $s = (id) => document.getElementById(id);
+    const dotsWrap = $s("soDots");
+    top.forEach((_, i) => {
+      const d = document.createElement("button");
+      d.className = "spotlight__dot" + (i === 0 ? " is-active" : "");
+      d.setAttribute("aria-label", "Standout " + (i + 1));
+      d.addEventListener("click", () => go(i));
+      dotsWrap.appendChild(d);
+    });
+
+    let idx = 0;
+    function draw() {
+      const it = top[idx];
+      const badgeName = BADGE[it.channel] || it.channelName || "";
+      $s("soLink").href = it.url; $s("soWatch").href = it.url; $s("soWa").href = waFor(it);
+      const im = $s("soImg");
+      im.src = it.thumb || ""; im.alt = it.title || "";
+      im.onerror = function () { im.style.display = "none"; };
+      $s("soBadge").textContent = byViews ? (idx === 0 ? "🔥 #1 Most-Watched" : "#" + (idx + 1) + " This Week") : "🆕 Latest Listing";
+      $s("soLoc").textContent = areaOf(it.title) + " · " + timeAgo(it.published);
+      $s("soTitle").textContent = it.title || "";
+      $s("soTags").innerHTML = '<span>' + esc(badgeName) + '</span>' + (byViews ? '<span>🔥 Trending</span>' : '<span>New</span>');
+      $s("soPriceLbl").textContent = byViews ? "Views this week" : "Freshly listed";
+      $s("soViews").textContent = byViews ? fmtViews(it.views) + " views" : timeAgo(it.published);
+      dotsWrap.querySelectorAll(".spotlight__dot").forEach((x, i) => x.classList.toggle("is-active", i === idx));
+    }
+    function go(i) { idx = (i + top.length) % top.length; draw(); }
+    if (top.length > 1) {
+      $s("soPrev").addEventListener("click", () => go(idx - 1));
+      $s("soNext").addEventListener("click", () => go(idx + 1));
+    }
+    draw();
+  }
+
   fetch("data/market-feed.json", { cache: "no-cache" })
     .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
     .then((data) => {
-      const items = rank((data && data.items) || []);
+      const raw = (data && data.items) || [];
+      const items = rank(raw);
       if (!items.length) return; // section stays hidden until first refresh lands
       grid.innerHTML = items.slice(0, 8).map(card).join("");
       if (stamp && data.updated) {
         stamp.textContent = "Feed refreshed " + timeAgo(data.updated) + " · auto-updates every 6 hours";
       }
       section.hidden = false;
+      renderStandout(raw, data.updated);
       // let the reveal system pick the cards up if GSAP is present
       if (window.ScrollTrigger) window.ScrollTrigger.refresh();
     })

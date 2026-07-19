@@ -93,12 +93,16 @@ jobs:
               };
               const videoId = pick("yt:videoId");
               if (!videoId) continue;
+              // YouTube RSS embeds view count in <media:community><media:statistics views="N"/>
+              const vm = e.match(/<media:statistics[^>]*\bviews="(\d+)"/);
+              const views = vm ? parseInt(vm[1], 10) : 0;
               entries.push({
                 channel: ch.key,
                 channelName: ch.name,
                 videoId,
                 title: pick("title"),
                 published: pick("published"),
+                views,
                 url: `https://www.youtube.com/watch?v=${videoId}`,
                 thumb: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`
               });
