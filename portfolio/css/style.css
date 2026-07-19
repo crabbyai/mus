@@ -759,9 +759,15 @@ body::before {
   .lightbox__panel { grid-template-columns: 1fr; overflow-y: auto; }
   .lightbox__media { aspect-ratio: 16/10; }
 }
-@media (max-width: 760px) {
+/* Collapse the desktop nav to the hamburger while it still fits (it only
+   fits >=1100px). Below this, the full menu overflowed and clipped
+   "Work With Me" — also the width iOS uses when a site is loaded through
+   a domain-forwarding mask. */
+@media (max-width: 1120px) {
   .nav__links { display: none; }
   .nav__burger { display: block; }
+}
+@media (max-width: 760px) {
   .hero__stats { grid-template-columns: 1fr 1fr; }
   .testimonials__slider { min-height: 320px; }
   .faq { padding-left: 6vw; padding-right: 6vw; }
