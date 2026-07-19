@@ -184,7 +184,6 @@ PROPERTIES.forEach((p, i) => {
       <img src="${p.img}" alt="${p.title}" loading="lazy" />
       <span class="card__sold">SOLD${p.soldIn ? ` · ${p.soldIn} DAYS` : ""}</span>
       <span class="card__size">${p.sizeLabel}</span>
-      <button class="card__fav" type="button" data-fav="${i}" aria-label="Save ${p.title} to shortlist" aria-pressed="false">♥</button>
     </div>
     <div class="card__body">
       <p class="card__loc">${p.loc}</p>
@@ -205,10 +204,6 @@ PROPERTIES.forEach((p, i) => {
     openLightbox(i);
     const lb = document.getElementById("lbTourBtn");
     if (lb && lb.onclick) lb.onclick();
-  });
-  card.querySelector(".card__fav").addEventListener("click", (e) => {
-    e.stopPropagation();
-    window.Favorites && window.Favorites.toggle(i, e.currentTarget);
   });
   guardImage(card.querySelector(".card__media img"), i, p.title);
   grid.appendChild(card);
@@ -816,9 +811,12 @@ function toast(msg) {
 
 /* ---------- FAVORITES / SHORTLIST (localStorage) ---------- */
 window.Favorites = (function () {
+  // Favourites are live listings (from the OREAL/MSJ feed), stored by
+  // videoId/url with just enough data to render them in the drawer.
   let favs = [];
-  try { favs = JSON.parse(localStorage.getItem("ar_favs") || "[]"); } catch (e) { favs = []; }
-  const save = () => { try { localStorage.setItem("ar_favs", JSON.stringify(favs)); } catch (e) {} };
+  try { favs = JSON.parse(localStorage.getItem("ar_favs_v2") || "[]"); } catch (e) { favs = []; }
+  if (!Array.isArray(favs)) favs = [];
+  const save = () => { try { localStorage.setItem("ar_favs_v2", JSON.stringify(favs)); } catch (e) {} };
 
   const countEl = document.getElementById("favCount");
   const navFav = document.getElementById("navFav");
@@ -827,37 +825,47 @@ window.Favorites = (function () {
   const sCount = document.getElementById("shortlistCount");
   const sendBtn = document.getElementById("shortlistSend");
 
-  function isFav(i) { return favs.includes(i); }
-  function syncCards() {
-    document.querySelectorAll(".card__fav").forEach((btn) => {
-      const i = +btn.dataset.fav;
-      const on = isFav(i);
-      btn.classList.toggle("is-fav", on);
-      btn.setAttribute("aria-pressed", on ? "true" : "false");
-    });
-  }
+  const keyOf = (l) => l && (l.id || l.url);
+  const esc = (t) => { const d = document.createElement("div"); d.textContent = t == null ? "" : t; return d.innerHTML; };
+  function isFav(id) { return favs.some((f) => f.id === id); }
   function updateCount() {
     if (countEl) countEl.textContent = favs.length;
     if (navFav) navFav.classList.toggle("has-favs", favs.length > 0);
   }
-  function toggle(i, btn) {
-    const at = favs.indexOf(i);
-    if (at === -1) { favs.push(i); toast("Saved to your shortlist ♥"); }
-    else { favs.splice(at, 1); }
-    save(); updateCount(); syncCards();
+  // reflect saved state on any favourite hearts currently in the DOM
+  function sync() {
+    document.querySelectorAll(".feedcard__fav").forEach((btn) => {
+      const on = isFav(btn.dataset.id);
+      btn.classList.toggle("is-fav", on);
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+  }
+  function removeById(id) {
+    const at = favs.findIndex((f) => f.id === id);
+    if (at > -1) { favs.splice(at, 1); save(); updateCount(); sync(); renderDrawer(); }
+  }
+  function toggle(listing, btn) {
+    const id = keyOf(listing);
+    if (!id) return;
+    const at = favs.findIndex((f) => f.id === id);
+    if (at === -1) {
+      favs.push({ id: id, title: listing.title || "", url: listing.url || "",
+                  thumb: listing.thumb || "", channel: listing.channel || "" });
+      toast("Saved to your favourites ♥");
+    } else { favs.splice(at, 1); }
+    save(); updateCount(); sync();
     if (btn) {
-      btn.classList.toggle("is-fav", isFav(i));
-      if (isFav(i)) { btn.classList.remove("pop"); void btn.offsetWidth; btn.classList.add("pop"); }
+      const on = isFav(id);
+      btn.classList.toggle("is-fav", on);
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+      if (on) { btn.classList.remove("pop"); void btn.offsetWidth; btn.classList.add("pop"); }
     }
     if (drawer && drawer.classList.contains("is-open")) renderDrawer();
   }
   function waLink() {
     if (!favs.length) return "#";
-    const lines = favs.map((i) => {
-      const p = PROPERTIES[i];
-      return `• ${p.title} — ${p.loc} (${p.sizeLabel}, ${p.price})`;
-    });
-    const msg = `Hello Adeel, I've shortlisted these homes on your site and would like more details:\n\n${lines.join("\n")}`;
+    const lines = favs.map((f) => `• ${f.title}\n  ${f.url}`);
+    const msg = `Hello Adeel, I've saved these listings on your site — what are they really worth, and can you get me a better price?\n\n${lines.join("\n\n")}`;
     return `https://wa.me/16134083945?text=${encodeURIComponent(msg)}`;
   }
   function renderDrawer() {
@@ -868,36 +876,33 @@ window.Favorites = (function () {
     }
     if (!listEl) return;
     if (!favs.length) {
-      listEl.innerHTML = `<p class="shortlist__empty">No saved homes yet. Tap the ♥ on any listing to add it here.</p>`;
+      listEl.innerHTML = `<p class="shortlist__empty">No saved listings yet. Tap the ♥ on any live listing in "Live Market Watch" to save it here.</p>`;
       return;
     }
-    listEl.innerHTML = favs.map((i) => {
-      const p = PROPERTIES[i];
-      const img = (document.querySelectorAll(".card__media img")[i] || {}).src || p.img;
-      return `<div class="sl-item">
-        <img src="${img}" alt="${p.title}" />
+    listEl.innerHTML = favs.map((f) => `<div class="sl-item">
+        <a class="sl-item__thumb" href="${esc(f.url)}" target="_blank" rel="noopener"><img src="${esc(f.thumb)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'" /></a>
         <div class="sl-item__body">
-          <strong>${p.title}</strong><span>${p.loc}</span>
-          <em>${p.price}</em>
+          <strong>${esc(f.title)}</strong>
+          <span>${esc((f.channel || "").toUpperCase())}</span>
+          <a class="sl-item__watch" href="${esc(f.url)}" target="_blank" rel="noopener">Watch on YouTube ↗</a>
         </div>
-        <button class="sl-item__rm" type="button" data-rm="${i}" aria-label="Remove">✕</button>
-      </div>`;
-    }).join("");
+        <button class="sl-item__rm" type="button" data-rm="${esc(f.id)}" aria-label="Remove">✕</button>
+      </div>`).join("");
     listEl.querySelectorAll("[data-rm]").forEach((b) =>
-      b.addEventListener("click", () => toggle(+b.dataset.rm)));
+      b.addEventListener("click", () => removeById(b.dataset.rm)));
   }
   function open() {
     if (!drawer) return;
     renderDrawer();
     drawer.classList.add("is-open");
     drawer.setAttribute("aria-hidden", "false");
-    if (lenis) lenis.stop();
+    if (typeof lenis !== "undefined" && lenis) lenis.stop();
   }
   function close() {
     if (!drawer) return;
     drawer.classList.remove("is-open");
     drawer.setAttribute("aria-hidden", "true");
-    if (lenis) lenis.start();
+    if (typeof lenis !== "undefined" && lenis) lenis.start();
   }
 
   if (navFav) navFav.addEventListener("click", open);
@@ -906,12 +911,12 @@ window.Favorites = (function () {
   const scl = document.getElementById("shortlistClear");
   if (sb) sb.addEventListener("click", close);
   if (sc) sc.addEventListener("click", close);
-  if (scl) scl.addEventListener("click", () => { favs = []; save(); updateCount(); syncCards(); renderDrawer(); });
+  if (scl) scl.addEventListener("click", () => { favs = []; save(); updateCount(); sync(); renderDrawer(); });
   if (sendBtn) sendBtn.addEventListener("click", (e) => { if (!favs.length) e.preventDefault(); });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
 
-  updateCount(); syncCards();
-  return { toggle, isFav, syncCards };
+  updateCount(); sync();
+  return { toggle, isFav, sync };
 })();
 
 /* ---------- MARKET INSIGHTS (animate bars + numbers on view) ---------- */

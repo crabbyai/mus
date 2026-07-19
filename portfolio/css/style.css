@@ -1678,7 +1678,22 @@ body::before {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.4rem;
 }
-.feedcard { border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; }
+.feedcard { position: relative; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; }
+/* favourite heart on live listings */
+.feedcard__fav {
+  position: absolute; top: 0.7rem; right: 0.7rem; z-index: 5;
+  width: 38px; height: 38px; border-radius: 50%;
+  background: rgba(10,15,30,0.68); backdrop-filter: blur(8px);
+  border: 1px solid rgba(243,238,227,0.28); color: rgba(243,238,227,0.9);
+  font-size: 1.05rem; cursor: pointer; display: grid; place-items: center;
+  transition: transform 0.3s var(--ease), background 0.3s, color 0.3s, border-color 0.3s;
+}
+.feedcard__fav:hover { color: #ff6b5e; border-color: rgba(255,107,94,0.6); transform: scale(1.12); }
+.feedcard__fav.is-fav { background: #e2453a; border-color: #e2453a; color: #fff; }
+.feedcard__fav.pop { animation: favPop 0.4s var(--ease); }
+.sl-item__thumb { display: block; }
+.sl-item__watch { font-size: 0.72rem; color: var(--gold); text-decoration: none; margin-top: 0.15rem; }
+.sl-item__watch:hover { color: var(--gold-bright); }
 .feedcard__media {
   position: relative; display: block; aspect-ratio: 16 / 9;
   background: linear-gradient(140deg, #141b30, #0d1226); overflow: hidden;

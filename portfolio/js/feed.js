@@ -39,6 +39,9 @@
     );
     return `
       <article class="feedcard glass">
+        <button class="feedcard__fav" type="button" aria-label="Save to favourites" aria-pressed="false"
+                data-id="${esc(item.videoId || item.url)}" data-title="${esc(item.title)}"
+                data-url="${esc(item.url)}" data-thumb="${esc(item.thumb || "")}" data-channel="${esc(item.channel || "")}">♥</button>
         <a class="feedcard__media" href="${esc(item.url)}" target="_blank" rel="noopener" aria-label="Watch on YouTube">
           <img src="${esc(item.thumb || "")}" alt="" loading="lazy"
                onerror="this.parentElement.classList.add('is-noimg'); this.remove();" />
@@ -169,6 +172,17 @@
       const items = rank(raw);
       if (!items.length) return; // section stays hidden until first refresh lands
       grid.innerHTML = items.slice(0, 8).map(card).join("");
+      // wire up the favourite hearts and reflect any saved state
+      grid.querySelectorAll(".feedcard__fav").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.preventDefault(); e.stopPropagation();
+          if (window.Favorites) window.Favorites.toggle({
+            id: btn.dataset.id, title: btn.dataset.title, url: btn.dataset.url,
+            thumb: btn.dataset.thumb, channel: btn.dataset.channel
+          }, btn);
+        });
+      });
+      if (window.Favorites && window.Favorites.sync) window.Favorites.sync();
       if (stamp && data.updated) {
         stamp.textContent = "Feed refreshed " + timeAgo(data.updated) + " · auto-updates every 6 hours";
       }
