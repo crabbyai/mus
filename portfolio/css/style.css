@@ -429,7 +429,7 @@ body::before {
   50%     { box-shadow: 0 8px 24px -6px rgba(226,69,58,0.6), 0 0 0 12px rgba(226,69,58,0); }
 }
 .deal__media { cursor: pointer; }
-.deal__3d {
+.deal__3d, .deal__watch {
   position: absolute; right: 1rem; bottom: 1rem;
   background: rgba(10,15,30,0.75); backdrop-filter: blur(6px);
   border: 1px solid rgba(201,164,92,0.5); color: var(--gold-bright);
@@ -438,8 +438,8 @@ body::before {
   opacity: 0; transform: translateY(6px);
   transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
 }
-.deal:hover .deal__3d { opacity: 1; transform: none; }
-@media (hover: none) { .deal__3d { opacity: 1; transform: none; } }
+.deal:hover .deal__3d, .deal:hover .deal__watch { opacity: 1; transform: none; }
+@media (hover: none) { .deal__3d, .deal__watch { opacity: 1; transform: none; } }
 .deal__live {
   position: absolute; top: 1rem; right: 1rem; z-index: 2;
   display: inline-flex; align-items: center; gap: 0.35rem;

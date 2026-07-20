@@ -32,7 +32,7 @@
     return div.innerHTML;
   }
 
-  function card(item, idx) {
+  function card(item) {
     const badge = BADGE[item.channel] || item.channelName || "";
     const wa = "https://wa.me/16134083945?text=" + encodeURIComponent(
       "Hello Adeel — I found this listing. What's it really worth, and can you get me a better price? " + item.url
@@ -47,8 +47,6 @@
                onerror="this.parentElement.classList.add('is-noimg'); this.remove();" />
           <span class="feedcard__play">▶</span>
         </a>
-        <button class="feedcard__3d" type="button" data-idx="${idx}"
-                aria-label="View an auto-generated 3D model of this listing">◈ 3D Preview</button>
         <div class="feedcard__body">
           <div class="feedcard__meta">
             <span class="feedcard__badge feedcard__badge--${esc(item.channel)}">${esc(badge)}</span>
@@ -181,7 +179,7 @@
       const items = diversify(raw);
       if (!items.length) return; // section stays hidden until first refresh lands
       const shown = items.slice(0, 8);
-      grid.innerHTML = shown.map((it, i) => card(it, i)).join("");
+      grid.innerHTML = shown.map((it) => card(it)).join("");
       // wire up the favourite hearts and reflect any saved state
       grid.querySelectorAll(".feedcard__fav").forEach((btn) => {
         btn.addEventListener("click", (e) => {
@@ -190,16 +188,6 @@
             id: btn.dataset.id, title: btn.dataset.title, url: btn.dataset.url,
             thumb: btn.dataset.thumb, channel: btn.dataset.channel
           }, btn);
-        });
-      });
-      // wire the auto-generated 3D preview on each live listing
-      grid.querySelectorAll(".feedcard__3d").forEach((btn) => {
-        btn.addEventListener("click", (e) => {
-          e.preventDefault(); e.stopPropagation();
-          const it = shown[+btn.dataset.idx];
-          if (it && window.ListingViewer) {
-            window.ListingViewer.open(Object.assign({ area: areaOf(it.title) }, it));
-          }
         });
       });
       if (window.Favorites && window.Favorites.sync) window.Favorites.sync();
