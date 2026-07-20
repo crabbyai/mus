@@ -60,12 +60,19 @@
 
   const LISTING_RE = /\b(marla|kanal|\d+\s*bed(?:room)?s?|\d+\s*bhk|for sale|\bplot\b|farmhouse|duplex|villa|kothi|apartment|penthouse)\b/i;
 
-  // "Live Market Watch" is the latest-activity feed across every channel
-  // (MSJ + OREAL + Zameen). Round-robin the newest post from each channel so
-  // one prolific channel can't crowd the others out — this is where Zameen's
-  // market commentary surfaces, while the Available Listings grid stays
-  // listings-only. Items arrive already sorted newest-first.
-  function diversify(items) {
+  // Zameen posts nationwide, but Adeel only covers Islamabad, Rawalpindi and
+  // Lahore — so keep a Zameen video only if its title names one of those areas.
+  const ZAMEEN_OK = /lahore|islamabad|bahria|rawalpindi|pindi/i;
+  function allowItem(it) {
+    const t = it.title || "";
+    if (/karachi/i.test(t)) return false;
+    if (it.channel === "zameen" && !ZAMEEN_OK.test(t)) return false;
+    return true;
+  }
+
+  // Order the feed so MSJ + OREAL come first (round-robined between the two so
+  // neither dominates), and Zameen is always appended at the end.
+  function roundRobin(items) {
     const byCh = {};
     items.forEach((it) => { (byCh[it.channel] = byCh[it.channel] || []).push(it); });
     const chans = Object.keys(byCh);
@@ -76,6 +83,15 @@
       if (!any) break;
     }
     return out;
+  }
+  // Build the visible grid: MSJ + OREAL first (round-robined), with Zameen
+  // always at the end. Reserve up to 2 of the last slots for allowed Zameen
+  // videos so they still surface — just never above MSJ/OREAL.
+  function pickForGrid(items, limit) {
+    const front = roundRobin(items.filter((it) => it.channel !== "zameen"));
+    const back = items.filter((it) => it.channel === "zameen"); // newest-first, at the end
+    const zSlots = Math.min(back.length, 2);
+    return front.slice(0, limit - zSlots).concat(back.slice(0, zSlots));
   }
 
   /* ---------- "This week's standout": best-performing live video ----------
@@ -175,12 +191,10 @@
   fetch("data/market-feed.json", { cache: "no-cache" })
     .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
     .then((data) => {
-      // Blacklist Karachi listings — outside the areas Adeel covers
-      // (Islamabad, Rawalpindi, Lahore).
-      const raw = ((data && data.items) || []).filter((it) => !/karachi/i.test(it.title || ""));
-      const items = diversify(raw);
-      if (!items.length) return; // section stays hidden until first refresh lands
-      const shown = items.slice(0, 8);
+      // Keep only in-area videos (Karachi out; Zameen limited to ISB/Pindi/LHR/Bahria).
+      const raw = ((data && data.items) || []).filter(allowItem);
+      if (!raw.length) return; // section stays hidden until first refresh lands
+      const shown = pickForGrid(raw, 8);
       grid.innerHTML = shown.map((it) => card(it)).join("");
       // wire up the favourite hearts and reflect any saved state
       grid.querySelectorAll(".feedcard__fav").forEach((btn) => {

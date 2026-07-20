@@ -223,9 +223,15 @@ jobs:
               console.error("All feeds failed — keeping previous JSON");
               process.exit(0);
             }
-            // Blacklist Karachi listings — outside Adeel's coverage
-            // (Islamabad, Rawalpindi, Lahore).
-            out.items = out.items.filter((it) => !/karachi/i.test(it.title || ""));
+            // Coverage filter: drop Karachi everywhere, and keep a Zameen video
+            // only if its title names Islamabad / Rawalpindi / Lahore / Bahria.
+            const ZAMEEN_OK = /lahore|islamabad|bahria|rawalpindi|pindi/i;
+            out.items = out.items.filter((it) => {
+              const t = it.title || "";
+              if (/karachi/i.test(t)) return false;
+              if (it.channel === "zameen" && !ZAMEEN_OK.test(t)) return false;
+              return true;
+            });
             out.items.sort((a, b) => (a.published < b.published ? 1 : -1));
             fs.mkdirSync("portfolio/data", { recursive: true });
             fs.writeFileSync("portfolio/data/market-feed.json", JSON.stringify(out, null, 2) + "\n");
