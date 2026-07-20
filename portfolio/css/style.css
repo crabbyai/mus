@@ -440,6 +440,45 @@ body::before {
 }
 .deal:hover .deal__3d, .deal:hover .deal__watch { opacity: 1; transform: none; }
 @media (hover: none) { .deal__3d, .deal__watch { opacity: 1; transform: none; } }
+
+/* ---------- GET STARTED (conversion CTA) ---------- */
+.getstarted { padding: 5.5rem 1.5rem; }
+.getstarted__card {
+  max-width: 900px; margin: 0 auto; text-align: center;
+  padding: 3.6rem 2.6rem; border-radius: 24px; position: relative; overflow: hidden;
+  border: 1px solid rgba(201,164,92,0.32);
+  box-shadow: 0 40px 90px -40px rgba(0,0,0,0.85);
+}
+.getstarted__card::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(130% 100% at 50% 0%, rgba(201,164,92,0.16), transparent 62%);
+}
+.getstarted__card > * { position: relative; }
+.getstarted .section-title { margin: 0.7rem 0 1.2rem; }
+.getstarted__lead { color: var(--muted); max-width: 660px; margin: 0 auto 2rem; line-height: 1.75; }
+.getstarted__points {
+  list-style: none; display: inline-flex; flex-direction: column; gap: 0.8rem;
+  text-align: left; margin: 0 auto 2.2rem; padding: 0;
+}
+.getstarted__points li {
+  position: relative; padding-left: 2.1rem; color: var(--cream);
+  font-size: 1rem; line-height: 1.4;
+}
+.getstarted__points li::before {
+  content: "✓"; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+  width: 1.4rem; height: 1.4rem; border-radius: 50%;
+  display: grid; place-items: center; font-size: 0.72rem; font-weight: 800;
+  color: #0a0e1a; background: linear-gradient(140deg, var(--gold-bright), var(--gold));
+}
+.getstarted__actions {
+  display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; margin-bottom: 1.7rem;
+}
+.getstarted__trust { color: var(--muted); font-size: 0.82rem; letter-spacing: 0.01em; }
+@media (max-width: 560px) {
+  .getstarted { padding: 4rem 1.1rem; }
+  .getstarted__card { padding: 2.6rem 1.4rem; }
+  .getstarted__actions .btn { width: 100%; justify-content: center; }
+}
 .deal__live {
   position: absolute; top: 1rem; right: 1rem; z-index: 2;
   display: inline-flex; align-items: center; gap: 0.35rem;
