@@ -138,11 +138,16 @@ jobs:
           // project launch) pushes its actual property tours past that window.
           // This reads the same list a visitor sees, so those listings surface.
           async function scrapeChannelVideos(ch) {
-            const res = await fetch(`https://www.youtube.com/${ch.handle}/videos`, { headers: UA });
+            // YouTube serves datacenter IPs (CI runners) a consent interstitial
+            // whose ytInitialData has no video grid. The SOCS/CONSENT cookies
+            // and hl/gl params bypass it so the real "Latest" list comes through.
+            const res = await fetch(`https://www.youtube.com/${ch.handle}/videos?hl=en&gl=US`, {
+              headers: { ...UA, "accept-language": "en-US,en;q=0.9", "cookie": "SOCS=CAI; CONSENT=YES+1" }
+            });
             if (!res.ok) throw new Error(`videos page HTTP ${res.status}`);
             const html = await res.text();
             const mData = html.match(/ytInitialData\s*=\s*({.+?});\s*<\/script>/s);
-            if (!mData) throw new Error("no ytInitialData");
+            if (!mData) throw new Error(`no ytInitialData (html ${html.length}b)`);
             const data = JSON.parse(mData[1]);
             const out = [], seen = new Set();
             const runsText = (o) => o && (o.simpleText || (o.runs && o.runs.map((r) => r.text).join(""))) || "";
@@ -162,6 +167,7 @@ jobs:
               }
               for (const k in node) walk(node[k]);
             })(data);
+            console.log(`${ch.key}: /videos page yielded ${out.length} videos (html ${html.length}b)`);
             return out.slice(0, 30);
           }
 
