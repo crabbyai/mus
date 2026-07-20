@@ -117,6 +117,54 @@ jobs:
             return entries;
           }
 
+          // Convert YouTube's relative "2 days ago" text to an approximate ISO
+          // timestamp so scraped videos sort alongside the RSS ones.
+          function relToIso(txt) {
+            const m = (txt || "").match(/(\d+)\s+(second|minute|hour|day|week|month|year)s?\s+ago/i);
+            const now = Date.now();
+            if (!m) return new Date(now).toISOString();
+            const mult = { second: 1e3, minute: 6e4, hour: 36e5, day: 864e5, week: 6048e5, month: 2592e6, year: 31536e6 };
+            return new Date(now - parseInt(m[1], 10) * mult[m[2].toLowerCase()]).toISOString();
+          }
+          function parseViews(txt) {
+            const m = (txt || "").replace(/,/g, "").match(/([\d.]+)\s*([KM]?)\s*views/i);
+            if (!m) return 0;
+            let v = parseFloat(m[1]);
+            if (/k/i.test(m[2])) v *= 1e3; else if (/m/i.test(m[2])) v *= 1e6;
+            return Math.round(v);
+          }
+          // Scrape the channel's /videos "Latest" tab. RSS only exposes the
+          // newest ~15 uploads; a channel mid event-burst (e.g. Zameen during a
+          // project launch) pushes its actual property tours past that window.
+          // This reads the same list a visitor sees, so those listings surface.
+          async function scrapeChannelVideos(ch) {
+            const res = await fetch(`https://www.youtube.com/${ch.handle}/videos`, { headers: UA });
+            if (!res.ok) throw new Error(`videos page HTTP ${res.status}`);
+            const html = await res.text();
+            const mData = html.match(/ytInitialData\s*=\s*({.+?});\s*<\/script>/s);
+            if (!mData) throw new Error("no ytInitialData");
+            const data = JSON.parse(mData[1]);
+            const out = [], seen = new Set();
+            const runsText = (o) => o && (o.simpleText || (o.runs && o.runs.map((r) => r.text).join(""))) || "";
+            (function walk(node) {
+              if (!node || typeof node !== "object") return;
+              const v = node.videoRenderer;
+              if (v && v.videoId && !seen.has(v.videoId)) {
+                seen.add(v.videoId);
+                const title = runsText(v.title);
+                if (title) out.push({
+                  channel: ch.key, channelName: ch.name, videoId: v.videoId, title,
+                  published: relToIso(runsText(v.publishedTimeText)),
+                  views: parseViews(runsText(v.viewCountText)),
+                  url: `https://www.youtube.com/watch?v=${v.videoId}`,
+                  thumb: `https://i.ytimg.com/vi/${v.videoId}/hqdefault.jpg`
+                });
+              }
+              for (const k in node) walk(node[k]);
+            })(data);
+            return out.slice(0, 30);
+          }
+
           (async () => {
             let prev = { channels: {}, items: [] };
             try { prev = JSON.parse(fs.readFileSync("portfolio/data/market-feed.json", "utf8")); } catch {}
@@ -126,10 +174,22 @@ jobs:
             for (const ch of CHANNELS) {
               try {
                 const items = await fetchChannel(ch);
+                // Additive: fold in any /videos-page uploads RSS didn't return
+                // (e.g. listing tours buried past the RSS window). Never fatal —
+                // if the scrape fails we still have the RSS items.
+                try {
+                  const scraped = await scrapeChannelVideos(ch);
+                  const have = new Set(items.map((i) => i.videoId));
+                  let added = 0;
+                  for (const s of scraped) if (!have.has(s.videoId)) { items.push(s); have.add(s.videoId); added++; }
+                  console.log(`${ch.key}: +${added} from /videos page`);
+                } catch (se) {
+                  console.log(`${ch.key}: /videos scrape skipped (${se.message})`);
+                }
                 out.channels[ch.key] = { name: ch.name, handle: ch.handle, url: `https://www.youtube.com/${ch.handle}` };
-                out.items.push(...items);
+                out.items.push(...items.slice(0, 30));
                 ok++;
-                console.log(`${ch.key}: ${items.length} videos`);
+                console.log(`${ch.key}: ${Math.min(items.length, 30)} videos`);
               } catch (err) {
                 console.error(`WARN ${ch.key}: ${err.message} — keeping previous items for this channel`);
                 const kept = (prev.items || []).filter((it) => it.channel === ch.key);
