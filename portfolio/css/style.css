@@ -526,6 +526,28 @@ body::before {
 }
 .fpost__title { font-size: 1.02rem; font-weight: 600; line-height: 1.4; color: var(--cream); margin-bottom: 0.35rem; }
 .fpost__body { color: var(--muted); font-size: 0.88rem; line-height: 1.6; margin-bottom: 0.6rem; }
+.fpost__src { display: inline-block; font-size: 0.76rem; color: var(--muted); text-decoration: underline; text-underline-offset: 2px; margin-bottom: 0.9rem; }
+.fpost__src:hover { color: var(--gold-bright); }
+
+/* auto-generated agent answer */
+.fanswer {
+  background: linear-gradient(180deg, rgba(201,164,92,0.08), rgba(201,164,92,0.03));
+  border: 1px solid rgba(201,164,92,0.28); border-radius: 12px;
+  padding: 0.9rem 1rem; margin-top: 0.2rem;
+}
+.fanswer__head { display: flex; align-items: center; gap: 0.45rem; margin-bottom: 0.5rem; }
+.fanswer__name { color: var(--cream); font-weight: 700; font-size: 0.88rem; }
+.fanswer__body { color: var(--cream); font-size: 0.9rem; line-height: 1.65; margin-bottom: 0.8rem; opacity: 0.95; }
+.fanswer__wa {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  background: #1faa54; color: #fff; font-size: 0.82rem; font-weight: 700;
+  padding: 0.5rem 0.95rem; border-radius: 99px; transition: transform 0.2s var(--ease), background 0.2s var(--ease);
+}
+.fanswer__wa:hover { background: #25c162; transform: translateY(-1px); }
+
+.forum__stamp { font-size: 0.74rem; color: var(--muted); }
+.forum__cta { margin: 1.4rem auto 0.3rem; display: flex; width: fit-content; }
+@media (max-width: 560px) { .forum__cta { width: 100%; justify-content: center; } }
 .fpost__actions { display: flex; flex-wrap: wrap; gap: 1rem; }
 .fpost__act {
   background: none; border: none; cursor: pointer; color: var(--muted);

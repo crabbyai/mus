@@ -1,0 +1,140 @@
+name: Refresh community feed (r/islamabad + r/lahore + r/pakistan real-estate Qs)
+
+on:
+  schedule:
+    - cron: "37 */6 * * *"   # every 6 hours (offset from the market feed)
+  workflow_dispatch:
+  push:
+    branches:
+      - claude/portfolio-website-setup-rpyerk
+    paths:
+      - ".github/workflows/reddit-feed.yml"
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: reddit-feed
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: claude/portfolio-website-setup-rpyerk
+
+      - name: Fetch Reddit real-estate questions and build JSON
+        run: |
+          node <<'EOF'
+          const fs = require("fs");
+
+          const SUBS = ["islamabad", "lahore", "pakistan"];
+          const QUERY = 'property OR plot OR "real estate" OR house OR flat OR rent OR DHA OR Bahria OR marla OR kanal OR invest OR society OR possession OR filer';
+          // Reddit demands a unique, descriptive User-Agent or it 429s/403s.
+          const UA = { "user-agent": "web:pakistani.luxury:v1.2 (real-estate Q&A aggregator for adeelahmedrahman)" };
+
+          const RE = /\b(marla|kanal|plot|dha|bahria|gulberg|enclave|property|real ?estate|\bhouse\b|\bflat\b|apartment|\brent\b|landlord|tenant|possession|society|non-?filer|\bfiler\b|invest|\bcda\b|\bfile\b|kothi|overseas|mortgage|installment|instalment|down payment|for sale)\b/i;
+          const QRE = /\?|\b(how|should|is it|worth|advice|help|which|vs|versus|better|recommend|suggest|anyone|thoughts|opinion|legit|genuine|scam|confused|stuck|difference|vs\.?)\b/i;
+
+          const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+          async function fetchJson(url) {
+            let lastErr;
+            for (const delay of [0, 3000, 8000, 15000]) {
+              if (delay) await sleep(delay);
+              try {
+                const res = await fetch(url, { headers: UA });
+                if (!res.ok) throw new Error("HTTP " + res.status);
+                return await res.json();
+              } catch (e) { lastErr = e; }
+            }
+            throw lastErr;
+          }
+
+          function clean(text) {
+            return (text || "").replace(/\s+/g, " ").replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").trim();
+          }
+
+          async function fetchSub(sub) {
+            const url = `https://www.reddit.com/r/${sub}/search.json?q=${encodeURIComponent(QUERY)}` +
+                        `&restrict_sr=on&sort=new&limit=75&t=year&raw_json=1`;
+            const json = await fetchJson(url);
+            const kids = (json && json.data && json.data.children) || [];
+            const out = [];
+            for (const k of kids) {
+              const d = k.data || {};
+              if (d.stickied || d.over_18 || !d.title) continue;
+              const hay = d.title + " " + (d.selftext || "");
+              if (!RE.test(hay)) continue;           // must be real-estate
+              if (!QRE.test(d.title)) continue;      // must read like a question
+              out.push({
+                id: d.id,
+                sub: d.subreddit ? d.subreddit.toLowerCase() : sub,
+                author: d.author && d.author !== "[deleted]" ? d.author : "redditor",
+                title: clean(d.title).slice(0, 180),
+                body: clean(d.selftext).slice(0, 300),
+                url: "https://www.reddit.com" + d.permalink,
+                score: d.score || 0,
+                num_comments: d.num_comments || 0,
+                ts: (d.created_utc || 0) * 1000
+              });
+            }
+            return out;
+          }
+
+          (async () => {
+            let prev = { items: [] };
+            try { prev = JSON.parse(fs.readFileSync("portfolio/data/forum-feed.json", "utf8")); } catch {}
+
+            const seen = new Set();
+            let all = [];
+            let ok = 0;
+            for (const sub of SUBS) {
+              try {
+                const items = await fetchSub(sub);
+                for (const it of items) { if (!seen.has(it.id)) { seen.add(it.id); all.push(it); } }
+                ok++;
+                console.log(`${sub}: ${items.length} real-estate questions`);
+              } catch (e) {
+                console.error(`WARN ${sub}: ${e.message}`);
+              }
+            }
+
+            if (!ok || !all.length) {
+              console.error("No Reddit data this run — keeping previous feed.");
+              process.exit(0);
+            }
+
+            all.sort((a, b) => b.ts - a.ts);
+            const out = { updated: new Date().toISOString(), items: all.slice(0, 15) };
+            fs.mkdirSync("portfolio/data", { recursive: true });
+            fs.writeFileSync("portfolio/data/forum-feed.json", JSON.stringify(out, null, 2) + "\n");
+            console.log(`Wrote ${out.items.length} questions`);
+          })();
+          EOF
+
+      - name: Commit if changed
+        id: commit
+        run: |
+          if git diff --quiet -- portfolio/data/forum-feed.json && \
+             ! git status --porcelain portfolio/data/forum-feed.json | grep -q .; then
+            echo "Feed unchanged — nothing to commit"
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name "community-feed-bot"
+          git config user.email "actions@github.com"
+          git add portfolio/data/forum-feed.json
+          git commit -m "chore: refresh community feed (Reddit real-estate questions)"
+          git push origin claude/portfolio-website-setup-rpyerk
+          echo "pushed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Trigger Pages deploy
+        if: steps.commit.outputs.pushed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --repo "$GITHUB_REPOSITORY" --ref claude/portfolio-website-setup-rpyerk
