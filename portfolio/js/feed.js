@@ -12,7 +12,7 @@
   const stamp = document.getElementById("feedUpdated");
   if (!section || !grid) return;
 
-  const BADGE = { msj: "MSJ", oreal: "OREAL" };
+  const BADGE = { msj: "MSJ", oreal: "OREAL", zameen: "ZAMEEN" };
 
   function timeAgo(iso) {
     const d = new Date(iso);

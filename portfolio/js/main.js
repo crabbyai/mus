@@ -699,7 +699,103 @@ function openDealLightbox(d, i) {
 }
 
 const dealsGrid = document.getElementById("dealsGrid");
-if (dealsGrid) {
+
+/* ---------- AVAILABLE LISTINGS (live) ----------
+   The "Hot deals" grid is now driven by the same live YouTube feed as Market
+   Watch (MSJ + OREAL + Zameen). Each card leads with an auto-generated 3D
+   model and the real video tour. Falls back to the curated static list only
+   if the feed can't be fetched, so the section is never empty. */
+const DEAL_BADGE = { msj: "MSJ", oreal: "OREAL", zameen: "ZAMEEN" };
+const DEAL_LISTING_RE = /\b(marla|kanal|bedroom|\d+\s*bed|house|villa|home|kothi|for sale|plot|farmhouse|duplex|apartment)\b/i;
+function dealCity(t) {
+  t = (t || "").toLowerCase();
+  if (/rawalpindi|pindi/.test(t)) return "rawalpindi";
+  if (/lahore|dha lhr/.test(t)) return "lahore";
+  if (/islamabad|\bisb\b|bahria enclave|b-?17|gulberg islamabad|e-?11|\bf-?\d/.test(t)) return "islamabad";
+  return "";
+}
+function dealCityLabel(c) {
+  return { islamabad: "Islamabad", lahore: "Lahore", rawalpindi: "Rawalpindi" }[c] || "Islamabad & Lahore";
+}
+function dealTags(t) {
+  const rules = [
+    [/brand\s*new/i, "Brand New"], [/corner/i, "Corner"], [/designer/i, "Designer"],
+    [/possession|ready to move|ready to live|\bready\b/i, "Possession Ready"], [/basement/i, "Basement"],
+    [/solar/i, "Solar"], [/park\s*fac/i, "Park Face"], [/investor/i, "Investor Rate"],
+    [/luxury|deluxe/i, "Luxury"], [/furnished/i, "Furnished"], [/urgent/i, "Urgent Sale"]
+  ];
+  const out = [];
+  for (const [re, label] of rules) { if (out.length >= 3) break; if (re.test(t)) out.push(label); }
+  return out;
+}
+function dealPrice(t) {
+  let m = (t || "").match(/(?:pkr|rs\.?)?\s*(\d+(?:\.\d+)?)\s*(?:crore|cr\b|kror|karor)/i);
+  if (m) return "PKR " + m[1] + " Crore";
+  m = (t || "").match(/(?:pkr|rs\.?)?\s*(\d+(?:\.\d+)?)\s*(?:lac|lakh|lakhs)\b/i);
+  if (m) return "PKR " + m[1] + " Lac";
+  return "";
+}
+function dealSpecs(t) {
+  const size = ((t || "").match(/(\d+(?:\.\d+)?)\s*(?:marla|kanal)/i) || [])[0];
+  const beds = ((t || "").match(/(\d+)\s*(?:bed|bedroom|bhk)/i) || [])[1];
+  const parts = [];
+  if (size) parts.push(size.replace(/\s+/g, " ").trim());
+  if (beds) parts.push(beds + " Beds");
+  parts.push("Full video walkthrough");
+  return parts.join(" · ");
+}
+function renderLiveDeals(items) {
+  dealsGrid.innerHTML = "";
+  items.forEach((item) => {
+    const city = dealCity(item.title);
+    const price = dealPrice(item.title);
+    const tags = dealTags(item.title);
+    const badge = DEAL_BADGE[item.channel] || item.channelName || "LIVE";
+    const wa = `https://wa.me/16134083945?text=${encodeURIComponent(
+      `Hello Adeel, I'm interested in this listing: ${item.title}. Is it still available and what's the best price? ${item.url}`)}`;
+    const el = document.createElement("article");
+    el.className = "deal deal--live";
+    if (city) el.dataset.city = city;
+    el.innerHTML = `
+      <div class="deal__media">
+        <img src="${item.thumb || ""}" alt="${item.title}" loading="lazy" />
+        <span class="deal__badge">${badge}</span>
+        <span class="deal__live">● LIVE</span>
+        <span class="deal__3d">◈ View in 3D</span>
+      </div>
+      <div class="deal__body">
+        <p class="card__loc">${dealCityLabel(city)} · Live Listing</p>
+        <h3 class="card__title">${item.title}</h3>
+        <div class="card__tags">${tags.map((t) => `<span>${t}</span>`).join("")}</div>
+        <p class="deal__specs">${dealSpecs(item.title)}</p>
+        <div class="deal__price"><span>${price ? "Demand" : "Best price"}</span><strong>${price || "Ask me →"}</strong></div>
+        <div class="deal__actions">
+          <a class="btn btn--wa" href="${wa}" target="_blank" rel="noopener">WhatsApp Now</a>
+          <a class="btn btn--ghost btn--sm" href="tel:+16134083945">Call</a>
+        </div>
+        <button class="card__tour-btn deal__tour-btn" type="button">▶ Watch Video Tour</button>
+      </div>`;
+    dealsGrid.appendChild(el);
+    const openView = () => window.ListingViewer && window.ListingViewer.open(
+      Object.assign({ area: city ? dealCityLabel(city) : undefined }, item));
+    el.querySelector(".deal__media").addEventListener("click", openView);
+    el.querySelector(".deal__tour-btn").addEventListener("click", () => window.open(item.url, "_blank", "noopener"));
+    el.querySelector(".deal__media img").addEventListener("error", function () {
+      this.closest(".deal__media").classList.add("is-noimg");
+      this.style.display = "none";
+    }, { once: true });
+  });
+  // Only show city chips that actually have live listings, so filtering
+  // never lands on an empty grid.
+  const present = new Set(items.map((it) => dealCity(it.title)).filter(Boolean));
+  document.querySelectorAll("#dealsCityFilter .chip").forEach((chip) => {
+    const c = chip.dataset.city;
+    chip.style.display = (c === "all" || present.has(c)) ? "" : "none";
+  });
+  if (typeof ScrollTrigger !== "undefined") ScrollTrigger.refresh();
+}
+function renderStaticDeals() {
+  dealsGrid.innerHTML = "";
   HOT_DEALS.forEach((d, di) => {
     const el = document.createElement("article");
     el.className = "deal";
@@ -735,6 +831,16 @@ if (dealsGrid) {
       this.style.display = "none";
     }, { once: true });
   });
+}
+if (dealsGrid) {
+  fetch("data/market-feed.json", { cache: "no-cache" })
+    .then((r) => (r.ok ? r.json() : Promise.reject()))
+    .then((data) => {
+      const items = ((data && data.items) || []).filter((it) => DEAL_LISTING_RE.test(it.title || ""));
+      if (items.length) renderLiveDeals(items.slice(0, 9));
+      else renderStaticDeals();
+    })
+    .catch(() => renderStaticDeals());
 }
 
 /* ---------- GALLERY SEARCH + SORT ---------- */

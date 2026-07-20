@@ -440,6 +440,20 @@ body::before {
 }
 .deal:hover .deal__3d { opacity: 1; transform: none; }
 @media (hover: none) { .deal__3d { opacity: 1; transform: none; } }
+.deal__live {
+  position: absolute; top: 1rem; right: 1rem; z-index: 2;
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  background: rgba(10,15,30,0.72); color: #ff6b5e;
+  font-size: 0.56rem; letter-spacing: 0.2em; font-weight: 800;
+  padding: 0.32rem 0.62rem; border-radius: 99px;
+  border: 1px solid rgba(226,69,58,0.45); backdrop-filter: blur(6px);
+}
+.deal__media.is-noimg { background: linear-gradient(135deg, #16223f, #0a0f1e); }
+.deal__media.is-noimg::after {
+  content: "▶ Video listing"; position: absolute; inset: 0;
+  display: grid; place-items: center; color: var(--muted);
+  font-size: 0.82rem; letter-spacing: 0.08em;
+}
 .deal__body { padding: 1.4rem 1.5rem 1.6rem; }
 .deal__specs { color: var(--muted); font-size: 0.82rem; margin-bottom: 1rem; }
 .deal__price {
@@ -1735,6 +1749,7 @@ body::before {
   border: 1px solid rgba(201,164,92,0.5); color: var(--gold-bright);
 }
 .feedcard__badge--oreal { border-color: rgba(120,170,255,0.45); color: #a8c4f5; }
+.feedcard__badge--zameen { border-color: rgba(126,211,155,0.5); color: #8fe0af; }
 .feedcard__time { font-size: 0.74rem; color: var(--muted); }
 .feedcard__title { font-size: 0.95rem; font-weight: 500; line-height: 1.5; flex: 1; }
 .feedcard__title a { color: var(--cream); transition: color 0.3s var(--ease); }

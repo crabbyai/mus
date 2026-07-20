@@ -1,4 +1,4 @@
-name: Refresh market feed (MSJ + OREAL latest videos)
+name: Refresh market feed (MSJ + OREAL + Zameen latest videos)
 
 on:
   schedule:
@@ -33,8 +33,10 @@ jobs:
           const fs = require("fs");
 
           const CHANNELS = [
-            { key: "msj",   name: "MSJ Real Estate",  handle: "@msjrealestate",   id: "UCu6fG1VNb-e46v27S2kRP-w" },
-            { key: "oreal", name: "OREAL Properties", handle: "@orealproperties", id: "UClMReM8tvy-63BCXMP36vYg" }
+            { key: "msj",    name: "MSJ Real Estate",   handle: "@msjrealestate",   id: "UCu6fG1VNb-e46v27S2kRP-w" },
+            { key: "oreal",  name: "OREAL Properties",  handle: "@orealproperties", id: "UClMReM8tvy-63BCXMP36vYg" },
+            // id left blank — resolved from the @handle on first run (self-healing below)
+            { key: "zameen", name: "Zameen Properties", handle: "@zameenproperties", id: "" }
           ];
 
           const unescapeXml = (s) => s
@@ -74,9 +76,10 @@ jobs:
           async function fetchChannel(ch) {
             let xml;
             try {
+              if (!ch.id) throw new Error("no id configured");
               xml = await fetchFeedXml(ch.id);
             } catch (e1) {
-              console.log(`${ch.key}: id ${ch.id} failed (${e1.message}) — resolving from ${ch.handle}`);
+              console.log(`${ch.key}: ${ch.id ? `id ${ch.id} failed (${e1.message})` : "no id configured"} — resolving from ${ch.handle}`);
               const freshId = await resolveChannelId(ch.handle);
               console.log(`${ch.key}: resolved ${ch.handle} -> ${freshId}`);
               xml = await fetchFeedXml(freshId);
@@ -157,7 +160,7 @@ jobs:
           git config user.name "market-feed-bot"
           git config user.email "actions@github.com"
           git add portfolio/data/market-feed.json
-          git commit -m "chore: refresh market feed (MSJ + OREAL latest videos)"
+          git commit -m "chore: refresh market feed (MSJ + OREAL + Zameen latest videos)"
           git push origin claude/portfolio-website-setup-rpyerk
           echo "pushed=true" >> "$GITHUB_OUTPUT"
 
