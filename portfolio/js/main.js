@@ -835,11 +835,26 @@ function renderStaticDeals() {
     }, { once: true });
   });
 }
+// Round-robin the newest listing from each channel so one high-volume
+// channel can't crowd the others out — every agency gets representation.
+function diversifyByChannel(items) {
+  const byCh = {};
+  items.forEach((it) => { (byCh[it.channel] = byCh[it.channel] || []).push(it); });
+  const chans = Object.keys(byCh);
+  const out = [];
+  for (let i = 0; out.length < items.length; i++) {
+    let any = false;
+    for (const c of chans) { if (byCh[c][i]) { out.push(byCh[c][i]); any = true; } }
+    if (!any) break;
+  }
+  return out;
+}
 if (dealsGrid) {
   fetch("data/market-feed.json", { cache: "no-cache" })
     .then((r) => (r.ok ? r.json() : Promise.reject()))
     .then((data) => {
-      const items = ((data && data.items) || []).filter((it) => DEAL_LISTING_RE.test(it.title || ""));
+      const listings = ((data && data.items) || []).filter((it) => DEAL_LISTING_RE.test(it.title || ""));
+      const items = diversifyByChannel(listings);
       if (items.length) renderLiveDeals(items.slice(0, 9));
       else renderStaticDeals();
     })

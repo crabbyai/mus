@@ -87,7 +87,10 @@ jobs:
             const entries = [];
             const re = /<entry>([\s\S]*?)<\/entry>/g;
             let m;
-            while ((m = re.exec(xml)) && entries.length < 6) {
+            // Grab the full RSS window (YouTube returns the latest ~15). High
+            // volume channels like Zameen mix listings with commentary, so a
+            // small cap can miss all the actual "X Marla for Sale" tours.
+            while ((m = re.exec(xml)) && entries.length < 15) {
               const e = m[1];
               const pick = (tag) => {
                 const r = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`);
