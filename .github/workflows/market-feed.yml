@@ -35,8 +35,10 @@ jobs:
           const CHANNELS = [
             { key: "msj",    name: "MSJ Real Estate",   handle: "@msjrealestate",   id: "UCu6fG1VNb-e46v27S2kRP-w" },
             { key: "oreal",  name: "OREAL Properties",  handle: "@orealproperties", id: "UClMReM8tvy-63BCXMP36vYg" },
-            // id left blank — resolved from the @handle on first run (self-healing below)
-            { key: "zameen", name: "Zameen Properties", handle: "@zameenproperties", id: "" }
+            // @zameenproperties (the listings channel). id resolved from the
+            // handle; `avoid` is @zameenpk (Zameen.com's separate podcast
+            // channel, which is *featured* on this page) so we never lock onto it.
+            { key: "zameen", name: "Zameen Properties", handle: "@zameenproperties", id: "", avoid: "UCd5zTrqwM1lSd1KyeEZcswA" }
           ];
 
           const unescapeXml = (s) => s
@@ -45,16 +47,27 @@ jobs:
 
           const UA = { "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" };
 
-          // Self-healing: if the hardcoded channel ID stops working, re-resolve
-          // it from the channel's @handle page.
-          async function resolveChannelId(handle) {
-            const res = await fetch(`https://www.youtube.com/${handle}`, { headers: UA });
+          // Resolve a handle to the channel's OWN id. A bare "channelId" match
+          // can grab a *featured* channel (e.g. @zameenproperties features
+          // @zameenpk), so prefer canonical/externalId/og:url which always
+          // refer to the channel being viewed, and skip any `avoid` id.
+          async function resolveChannelId(handle, avoid) {
+            const res = await fetch(`https://www.youtube.com/${handle}`, {
+              headers: { ...UA, "accept-language": "en-US,en;q=0.9", "cookie": "SOCS=CAI; CONSENT=YES+1" }
+            });
             if (!res.ok) throw new Error(`resolve ${handle}: HTTP ${res.status}`);
             const html = await res.text();
-            const m = html.match(/"channelId":"(UC[\w-]{22})"/) ||
-                      html.match(/channel_id=(UC[\w-]{22})/);
-            if (!m) throw new Error(`resolve ${handle}: no channelId in page`);
-            return m[1];
+            const cands = [];
+            const grab = (re) => { const m = html.match(re); if (m && !cands.includes(m[1])) cands.push(m[1]); };
+            grab(/<link rel="canonical" href="https:\/\/www\.youtube\.com\/channel\/(UC[\w-]{22})"/);
+            grab(/"externalId":"(UC[\w-]{22})"/);
+            grab(/<meta property="og:url" content="https:\/\/www\.youtube\.com\/channel\/(UC[\w-]{22})"/);
+            grab(/"channelId":"(UC[\w-]{22})"/);
+            grab(/channel_id=(UC[\w-]{22})/);
+            const id = cands.find((c) => c && c !== avoid) || cands[0];
+            if (!id) throw new Error(`resolve ${handle}: no channelId in page`);
+            if (avoid && id === avoid) throw new Error(`resolve ${handle}: only found avoided id ${avoid}`);
+            return id;
           }
 
           const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -80,7 +93,7 @@ jobs:
               xml = await fetchFeedXml(ch.id);
             } catch (e1) {
               console.log(`${ch.key}: ${ch.id ? `id ${ch.id} failed (${e1.message})` : "no id configured"} — resolving from ${ch.handle}`);
-              const freshId = await resolveChannelId(ch.handle);
+              const freshId = await resolveChannelId(ch.handle, ch.avoid);
               console.log(`${ch.key}: resolved ${ch.handle} -> ${freshId}`);
               xml = await fetchFeedXml(freshId);
             }
