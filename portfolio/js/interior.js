@@ -78,14 +78,11 @@
       roomLabels:["Bedroom","Kitchen","Dining","Courtyard Lounge","Entrance"],
       upRoomLabels:["Master Bedroom","Guest Bedroom","Courtyard Landing"] }
   ];
-  const DEAL_CFG = [
-    { facade:"designer", theme:"bahriaTown", grand:false, roomLabels:["Master Suite","Kitchen","Dining","Drawing Room","Entrance Foyer"],
-      upRoomLabels:["Master Suite","Children's Bedroom","Upper Landing"] },
-    { facade:"classic", theme:"charcoalGold", grand:true, cinema:true, roomLabels:["Master Suite","Chef's Kitchen","Cinema Lounge","Formal Living","Grand Foyer"],
-      upRoomLabels:["Master Suite","Guest Suite","Family Lounge"] },
-    { facade:"veranda", theme:"bahriaTown", grand:false, terrazzo:true, mirror:true, roomLabels:["Bedroom","Kitchen","Dining","Courtyard Lounge","Entrance"],
-      upRoomLabels:["Master Bedroom","Guest Bedroom","Courtyard Landing"] }
-  ];
+  // Each available listing reuses a sold property's SVG + 3D model, so its
+  // walkable tour points at that same sold layout. Keeps the model shown in
+  // the lightbox identical to the house you walk through. Index = deal index
+  // (HOT_DEALS in main.js); value = SOLD_CFG index of the matching house.
+  const DEAL_TO_SOLD = [1, 0, 2, 3, 6, 8, 10, 11];
   let curTheme = THEMES.charcoalCream;
   const hx = (s) => [parseInt(s.slice(1, 3), 16) / 255, parseInt(s.slice(3, 5), 16) / 255, parseInt(s.slice(5, 7), 16) / 255];
   /* mirror transform — flips the whole floor plan across X for "mirrored"
@@ -1290,7 +1287,11 @@
   }
   // open by sold-property index / hot-deal index (from main.js)
   function openProperty(i, name) { return open(Object.assign({ name }, SOLD_CFG[i] || {})); }
-  function openDeal(i, name) { return open(Object.assign({ name }, DEAL_CFG[i] || {})); }
+  function openDeal(i, name) {
+    const si = DEAL_TO_SOLD[i];
+    const cfg = (si != null && SOLD_CFG[si]) ? SOLD_CFG[si] : {};
+    return open(Object.assign({ name }, cfg));
+  }
   function close() {
     overlay.classList.remove("is-open");
     document.documentElement.style.overflow = "";

@@ -587,8 +587,19 @@ const HOT_DEALS = [
     badge: "NEW"
   }
 ];
-// 3D archetype per deal (see estate3d.js ARCHETYPES)
-const DEAL_MODELS = ["greyTexture", "manor", "spanish"];
+// 3D archetype per deal — matched to the sold property that shares each
+// listing's SVG so the model in the lightbox and the walkable tour agree
+// (see estate3d.js ARCHETYPES / interior.js DEAL_TO_SOLD).
+const DEAL_MODELS = [
+  "modern",      // 0 · villa-serena
+  "manor",       // 1 · margalla-manor
+  "greyTexture", // 2 · enclave-residence
+  "cube5",       // 3 · casa-blanca
+  "palazzo",     // 4 · phase6-palazzo
+  "modernWhite", // 5 · bahria-orchard
+  "linear",      // 6 · lake-city
+  "brick"        // 7 · phase5-courtyard
+];
 
 function openDealLightbox(d, i) {
   document.getElementById("lbImg").src = d.img;
