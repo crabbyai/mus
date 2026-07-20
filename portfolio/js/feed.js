@@ -60,17 +60,24 @@
       </article>`;
   }
 
-  // Rank genuine property listings above channel noise (tile ads, news,
-  // development updates) so "Live Market Watch" reads as curated stock.
-  const LISTING_RE = /\b(marla|kanal|bedroom|\d+\s*bed|house|villa|home|for sale|plot|farmhouse|duplex|apartment)\b/i;
-  function rank(items) {
-    const scored = items.map((it, i) => ({
-      it,
-      // listing keywords win; original order (recency) breaks ties
-      score: (LISTING_RE.test(it.title || "") ? 1000 : 0) - i
-    }));
-    scored.sort((a, b) => b.score - a.score);
-    return scored.map((s) => s.it);
+  const LISTING_RE = /\b(marla|kanal|\d+\s*bed(?:room)?s?|\d+\s*bhk|for sale|\bplot\b|farmhouse|duplex|villa|kothi|apartment|penthouse)\b/i;
+
+  // "Live Market Watch" is the latest-activity feed across every channel
+  // (MSJ + OREAL + Zameen). Round-robin the newest post from each channel so
+  // one prolific channel can't crowd the others out — this is where Zameen's
+  // market commentary surfaces, while the Available Listings grid stays
+  // listings-only. Items arrive already sorted newest-first.
+  function diversify(items) {
+    const byCh = {};
+    items.forEach((it) => { (byCh[it.channel] = byCh[it.channel] || []).push(it); });
+    const chans = Object.keys(byCh);
+    const out = [];
+    for (let i = 0; out.length < items.length; i++) {
+      let any = false;
+      for (const c of chans) { if (byCh[c][i]) { out.push(byCh[c][i]); any = true; } }
+      if (!any) break;
+    }
+    return out;
   }
 
   /* ---------- "This week's standout": best-performing live video ----------
@@ -171,7 +178,7 @@
     .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
     .then((data) => {
       const raw = (data && data.items) || [];
-      const items = rank(raw);
+      const items = diversify(raw);
       if (!items.length) return; // section stays hidden until first refresh lands
       const shown = items.slice(0, 8);
       grid.innerHTML = shown.map((it, i) => card(it, i)).join("");

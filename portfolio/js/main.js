@@ -706,7 +706,10 @@ const dealsGrid = document.getElementById("dealsGrid");
    model and the real video tour. Falls back to the curated static list only
    if the feed can't be fetched, so the section is never empty. */
 const DEAL_BADGE = { msj: "MSJ", oreal: "OREAL", zameen: "ZAMEEN" };
-const DEAL_LISTING_RE = /\b(marla|kanal|bedroom|\d+\s*bed|house|villa|home|kothi|for sale|plot|farmhouse|duplex|apartment)\b/i;
+// Property-specific signals only — bare "house"/"home" match commentary
+// videos (e.g. Zameen's podcasts), so a real listing must state a size,
+// bed count, sale status or a property type.
+const DEAL_LISTING_RE = /\b(marla|kanal|\d+\s*bed(?:room)?s?|\d+\s*bhk|for sale|\bplot\b|farmhouse|duplex|villa|kothi|apartment|penthouse)\b/i;
 function dealCity(t) {
   t = (t || "").toLowerCase();
   if (/rawalpindi|pindi/.test(t)) return "rawalpindi";
