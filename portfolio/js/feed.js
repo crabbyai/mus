@@ -175,7 +175,9 @@
   fetch("data/market-feed.json", { cache: "no-cache" })
     .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
     .then((data) => {
-      const raw = (data && data.items) || [];
+      // Blacklist Karachi listings — outside the areas Adeel covers
+      // (Islamabad, Rawalpindi, Lahore).
+      const raw = ((data && data.items) || []).filter((it) => !/karachi/i.test(it.title || ""));
       const items = diversify(raw);
       if (!items.length) return; // section stays hidden until first refresh lands
       const shown = items.slice(0, 8);

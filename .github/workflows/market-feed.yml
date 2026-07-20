@@ -223,6 +223,9 @@ jobs:
               console.error("All feeds failed — keeping previous JSON");
               process.exit(0);
             }
+            // Blacklist Karachi listings — outside Adeel's coverage
+            // (Islamabad, Rawalpindi, Lahore).
+            out.items = out.items.filter((it) => !/karachi/i.test(it.title || ""));
             out.items.sort((a, b) => (a.published < b.published ? 1 : -1));
             fs.mkdirSync("portfolio/data", { recursive: true });
             fs.writeFileSync("portfolio/data/market-feed.json", JSON.stringify(out, null, 2) + "\n");
