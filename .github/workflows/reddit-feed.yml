@@ -28,26 +28,59 @@ jobs:
           ref: claude/portfolio-website-setup-rpyerk
 
       - name: Fetch Reddit real-estate questions and build JSON
+        env:
+          REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
+          REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
         run: |
           node <<'EOF'
           const fs = require("fs");
 
+          // Reddit blocks datacenter IPs (like GitHub runners) on the public
+          // .json endpoints (HTTP 403), so we use the official OAuth API. Set
+          // REDDIT_CLIENT_ID / REDDIT_CLIENT_SECRET as repo secrets — see
+          // REDDIT_SETUP.md. Without them we keep the last feed (curated
+          // fallback shows on the site regardless).
+          const CID = process.env.REDDIT_CLIENT_ID;
+          const CSECRET = process.env.REDDIT_CLIENT_SECRET;
+
           const SUBS = ["islamabad", "lahore", "pakistan"];
           const QUERY = 'property OR plot OR "real estate" OR house OR flat OR rent OR DHA OR Bahria OR marla OR kanal OR invest OR society OR possession OR filer';
-          // Reddit demands a unique, descriptive User-Agent or it 429s/403s.
-          const UA = { "user-agent": "web:pakistani.luxury:v1.2 (real-estate Q&A aggregator for adeelahmedrahman)" };
+          const UA = "web:pakistani.luxury:v1.2 (real-estate Q&A aggregator for adeelahmedrahman)";
 
           const RE = /\b(marla|kanal|plot|dha|bahria|gulberg|enclave|property|real ?estate|\bhouse\b|\bflat\b|apartment|\brent\b|landlord|tenant|possession|society|non-?filer|\bfiler\b|invest|\bcda\b|\bfile\b|kothi|overseas|mortgage|installment|instalment|down payment|for sale)\b/i;
           const QRE = /\?|\b(how|should|is it|worth|advice|help|which|vs|versus|better|recommend|suggest|anyone|thoughts|opinion|legit|genuine|scam|confused|stuck|difference|vs\.?)\b/i;
 
           const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-          async function fetchJson(url) {
+          async function getToken() {
             let lastErr;
-            for (const delay of [0, 3000, 8000, 15000]) {
+            for (const delay of [0, 3000, 8000]) {
               if (delay) await sleep(delay);
               try {
-                const res = await fetch(url, { headers: UA });
+                const res = await fetch("https://www.reddit.com/api/v1/access_token", {
+                  method: "POST",
+                  headers: {
+                    "Authorization": "Basic " + Buffer.from(CID + ":" + CSECRET).toString("base64"),
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "User-Agent": UA
+                  },
+                  body: "grant_type=client_credentials"
+                });
+                if (!res.ok) throw new Error("token HTTP " + res.status);
+                const d = await res.json();
+                if (!d.access_token) throw new Error("no access_token in response");
+                return d.access_token;
+              } catch (e) { lastErr = e; }
+            }
+            throw lastErr;
+          }
+
+          async function fetchJson(url, token) {
+            let lastErr;
+            for (const delay of [0, 3000, 8000]) {
+              if (delay) await sleep(delay);
+              try {
+                const res = await fetch(url, { headers: { "Authorization": "Bearer " + token, "User-Agent": UA } });
                 if (!res.ok) throw new Error("HTTP " + res.status);
                 return await res.json();
               } catch (e) { lastErr = e; }
@@ -59,10 +92,10 @@ jobs:
             return (text || "").replace(/\s+/g, " ").replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").trim();
           }
 
-          async function fetchSub(sub) {
-            const url = `https://www.reddit.com/r/${sub}/search.json?q=${encodeURIComponent(QUERY)}` +
+          async function fetchSub(sub, token) {
+            const url = `https://oauth.reddit.com/r/${sub}/search?q=${encodeURIComponent(QUERY)}` +
                         `&restrict_sr=on&sort=new&limit=75&t=year&raw_json=1`;
-            const json = await fetchJson(url);
+            const json = await fetchJson(url, token);
             const kids = (json && json.data && json.data.children) || [];
             const out = [];
             for (const k of kids) {
@@ -87,6 +120,14 @@ jobs:
           }
 
           (async () => {
+            if (!CID || !CSECRET) {
+              console.error("No REDDIT_CLIENT_ID / REDDIT_CLIENT_SECRET secret set — keeping previous feed. See REDDIT_SETUP.md.");
+              process.exit(0);
+            }
+            let token;
+            try { token = await getToken(); console.log("Reddit OAuth token acquired."); }
+            catch (e) { console.error("Reddit auth failed: " + e.message + " — keeping previous feed."); process.exit(0); }
+
             let prev = { items: [] };
             try { prev = JSON.parse(fs.readFileSync("portfolio/data/forum-feed.json", "utf8")); } catch {}
 
@@ -95,7 +136,7 @@ jobs:
             let ok = 0;
             for (const sub of SUBS) {
               try {
-                const items = await fetchSub(sub);
+                const items = await fetchSub(sub, token);
                 for (const it of items) { if (!seen.has(it.id)) { seen.add(it.id); all.push(it); } }
                 ok++;
                 console.log(`${sub}: ${items.length} real-estate questions`);
