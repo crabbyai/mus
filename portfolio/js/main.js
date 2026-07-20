@@ -433,7 +433,10 @@ function openLightbox(i) {
 
   // per-listing interior walkthrough
   const tourBtn = document.getElementById("lbTourBtn");
-  if (tourBtn) tourBtn.onclick = () => window.HouseTour && window.HouseTour.openProperty(i, p.title);
+  if (tourBtn) {
+    tourBtn.innerHTML = '<span class="lightbox__tour-ico">▷</span> Step Inside — Virtual Tour';
+    tourBtn.onclick = () => window.HouseTour && window.HouseTour.openProperty(i, p.title);
+  }
 }
 function closeLightbox() {
   lightbox.classList.remove("is-open");
@@ -444,6 +447,74 @@ function closeLightbox() {
 document.getElementById("lightboxClose").addEventListener("click", closeLightbox);
 document.getElementById("lightboxBackdrop").addEventListener("click", closeLightbox);
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeLightbox(); });
+
+/* ---------- LIVE LISTING 3D PREVIEW ----------
+   A live YouTube listing (from the Market Watch feed) opens in the same
+   lightbox, but the 3D model is generated automatically from the listing's
+   own title, and the primary CTA is the *real* video tour on YouTube — no
+   generic interior pretending to be the house. */
+function parseListingSpecs(title) {
+  const t = title || "";
+  const out = [];
+  const size = (t.match(/(\d+(?:\.\d+)?)\s*(marla|kanal)/i) || [])[0];
+  const beds = (t.match(/(\d+)\s*(?:bed|bedroom|bhk)/i) || [])[1];
+  const storey = /triple\s*(?:storey|story)|3\s*storey/i.test(t) ? "Triple Storey"
+    : /double\s*(?:storey|story|unit)|2\s*storey/i.test(t) ? "Double Storey"
+    : /single\s*(?:storey|story)/i.test(t) ? "Single Storey" : "";
+  if (size) out.push(["Plot Size", size.replace(/\s+/g, " ").trim()]);
+  if (beds) out.push(["Bedrooms", beds]);
+  if (storey) out.push(["Configuration", storey]);
+  return out;
+}
+function fmtViewsShort(n) {
+  n = +n || 0;
+  if (n >= 1e6) return (n / 1e6).toFixed(n >= 1e7 ? 0 : 1).replace(/\.0$/, "") + "M";
+  if (n >= 1e3) return (n / 1e3).toFixed(n >= 1e5 ? 0 : 1).replace(/\.0$/, "") + "K";
+  return n.toLocaleString("en-US");
+}
+window.ListingViewer = {
+  open(item) {
+    if (!item) return;
+    const lbImg = document.getElementById("lbImg");
+    lbImg.src = item.thumb || "";
+    lbImg.alt = item.title || "";
+    lbImg.onerror = function () { lbImg.style.visibility = "hidden"; };
+    lbImg.style.visibility = "visible";
+    const badge = item.channelName || (item.channel || "").toUpperCase();
+    document.getElementById("lbLoc").textContent =
+      (item.area || "Islamabad & Lahore") + " · Live Listing" + (badge ? " · " + badge : "");
+    document.getElementById("lbTitle").textContent = item.title || "";
+    document.getElementById("lbDesc").textContent =
+      "Auto-generated 3D massing from this listing. Drag to explore the form, then watch the full walkthrough on YouTube.";
+    const specs = parseListingSpecs(item.title);
+    document.getElementById("lbSpecs").innerHTML =
+      specs.map(([k, v]) => `<div><span>${k}</span><strong>${v}</strong></div>`).join("");
+    document.getElementById("lbFeatures").innerHTML = "";
+    document.getElementById("lbSold").style.display = "none";
+    const priceRow = document.querySelector(".lightbox__price");
+    if (+item.views > 0) {
+      if (priceRow) priceRow.style.display = "";
+      document.getElementById("lbPriceLabel").textContent = "Views on YouTube";
+      document.getElementById("lbPrice").textContent = fmtViewsShort(item.views);
+    } else if (priceRow) {
+      priceRow.style.display = "none";
+    }
+    lightbox.classList.add("is-open");
+    lightbox.setAttribute("aria-hidden", "false");
+    if (lenis) lenis.stop();
+
+    const media = lightbox.querySelector(".lightbox__media");
+    const hint = document.getElementById("lbDragHint");
+    const has3d = window.Estate3D && window.Estate3D.openViewerForListing(item.title, media);
+    if (hint) hint.style.display = has3d ? "block" : "none";
+
+    const tourBtn = document.getElementById("lbTourBtn");
+    if (tourBtn) {
+      tourBtn.innerHTML = '<span class="lightbox__tour-ico">▶</span> Watch the Real Tour on YouTube';
+      tourBtn.onclick = () => window.open(item.url, "_blank", "noopener");
+    }
+  }
+};
 
 /* ---------- TESTIMONIAL SLIDER ---------- */
 const slides = document.querySelectorAll(".testimonial");
@@ -621,7 +692,10 @@ function openDealLightbox(d, i) {
   if (hint) hint.style.display = has3d ? "block" : "none";
 
   const tourBtn = document.getElementById("lbTourBtn");
-  if (tourBtn) tourBtn.onclick = () => window.HouseTour && window.HouseTour.openDeal(i, d.title);
+  if (tourBtn) {
+    tourBtn.innerHTML = '<span class="lightbox__tour-ico">▷</span> Step Inside — Virtual Tour';
+    tourBtn.onclick = () => window.HouseTour && window.HouseTour.openDeal(i, d.title);
+  }
 }
 
 const dealsGrid = document.getElementById("dealsGrid");

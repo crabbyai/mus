@@ -856,8 +856,36 @@ function ensureViewer(container) {
   return viewer;
 }
 
+/* ---------- LIVE LISTING → 3D MASSING ----------
+   Derive an architectural archetype straight from a live YouTube listing's
+   own title. Deterministic: the same listing always maps to the same model,
+   so every card in the live feed gets a massing that reflects *its* plot
+   size, storeys, and style — generated automatically, no manual table. */
+function archetypeForListing(title) {
+  const t = (title || "").toLowerCase();
+  const kanal = /\bkanal\b/.test(t);
+  const marlaM = t.match(/(\d+(?:\.\d+)?)\s*marla/);
+  const marla = marlaM ? parseFloat(marlaM[1]) : 0;
+  const small = marla > 0 && marla <= 6;
+  if (/farm\s*-?\s*house|orchard/.test(t)) return "farmhouse";
+  if (/palazzo|palace|mansion/.test(t)) return "palazzo";
+  if (/spanish/.test(t)) return "spanish";
+  if (/colonial|heritage|classic|traditional/.test(t)) return "colonial";
+  if (/corner/.test(t)) return "corner";
+  if (/brick/.test(t)) return "brick";
+  if (/grey|gray|stone|concrete/.test(t)) return "greyTexture";
+  if (/designer|luxury|deluxe|elegant/.test(t)) return kanal ? "manor" : "modernWhite";
+  if (kanal || /villa/.test(t)) return "manor";
+  if (small) return "cube5";
+  if (/single\s*(?:storey|story)/.test(t)) return "linear";
+  return "modern";
+}
+
 function openViewer(index, container) {
   return openViewerByType(PROPERTY_MODELS[index] || "modern", container);
+}
+function openViewerForListing(title, container) {
+  return openViewerByType(archetypeForListing(title), container);
 }
 function openViewerByType(type, container) {
   const v = ensureViewer(container);
@@ -880,5 +908,5 @@ function closeViewer() {
   if (viewer) viewer.open = false;
 }
 
-window.Estate3D = { openViewer, openViewerByType, closeViewer };
+window.Estate3D = { openViewer, openViewerByType, openViewerForListing, archetypeForListing, closeViewer };
 initShowcase();

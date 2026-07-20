@@ -1716,6 +1716,17 @@ body::before {
   font-size: 0.8rem; padding-left: 3px;
   border: 1px solid rgba(201,164,92,0.4);
 }
+.feedcard__3d {
+  position: absolute; left: 0.7rem; top: 0.7rem; z-index: 3;
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em;
+  padding: 0.34rem 0.68rem; border-radius: 99px; cursor: pointer;
+  background: rgba(10,14,26,0.82); color: var(--gold-bright);
+  border: 1px solid rgba(201,164,92,0.5);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  transition: transform 0.25s var(--ease), background 0.25s var(--ease), border-color 0.25s var(--ease);
+}
+.feedcard__3d:hover { transform: translateY(-1px); background: var(--gold); color: #0a0e1a; border-color: var(--gold); }
 .feedcard__body { padding: 1.1rem 1.2rem 1.25rem; display: flex; flex-direction: column; gap: 0.55rem; flex: 1; }
 .feedcard__meta { display: flex; align-items: center; gap: 0.7rem; }
 .feedcard__badge {
