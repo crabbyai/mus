@@ -73,6 +73,38 @@
       "Prices swing a lot by sector, street and even sun-facing, so a single 'rate' can be misleading. I price off recent actual sold deals, not asking prices. Send me the exact location and size on WhatsApp and I'll give you an honest current value.",
       "Asking prices and real closed prices are often quite different. Tell me the precise plot/house details and I'll give you the number I'd actually advise a client to pay."
     ],
+    landlord: [
+      "Punjab's Rented Premises Act governs this — what matters most is what your written agreement says about increases at renewal. If it's silent, the increase is negotiable, not automatic, and you're entitled to proper notice. Message me the details on WhatsApp and I'll tell you what's actually enforceable.",
+      "Rent increases at renewal are a negotiation unless your agreement fixes them. Get everything in writing and don't rely on a verbal demand. Send me your situation and I'll tell you where you stand."
+    ],
+    inheritance: [
+      "Inherited property with multiple heirs needs the succession certificate and every heir's share settled properly before a clean sale — otherwise the buyer walks. The usual routes are one sibling buying the others out, or an agreed sale with a written distribution. Message me and I'll explain the cleanest path for your case.",
+      "This is very common and very fixable. Get the succession/legal heirship sorted first, agree the split in writing, then go to market — a clean title is what gets you full price. WhatsApp me the details and I'll walk you through the order of steps."
+    ],
+    documents: [
+      "Before any token, check: the title deed (registry/intiqal), a fresh fard from the land record, the approved building plan, the society NOC and dues clearance, and the seller's CNIC matching the title. Never rely on the dealer's word alone. Send me the property details and I'll do this verification with you.",
+      "Verify ownership independently at the record office, confirm no dues or disputes outstanding, and match the seller's CNIC to the title before a rupee moves. I do exactly this check for clients — WhatsApp me and I'll run it on your property."
+    ],
+    noc: [
+      "Check the NOC directly with the relevant authority — CDA/RDA for Islamabad and Rawalpindi, LDA for Lahore — not with the developer's brochure. Ask which specific sectors or phases are approved, because societies often advertise partial approval as full. Message me the society name and I'll tell you its real status.",
+      "'Approved' is often doing a lot of work in marketing material. Confirm with the development authority which phases are actually NOC-cleared, and for how much land. Send me the society and I'll give you a straight read."
+    ],
+    yield: [
+      "Rental yield in Pakistan is typically modest — most of the return has historically come from capital appreciation, not rent. Apartments can yield better than houses, but factor in management, maintenance and how liquid resale really is. Tell me the building and unit and I'll give you realistic numbers.",
+      "Look past the headline yield to service charges, vacancy and resale liquidity — that's where apartment returns are won or lost. WhatsApp me the specifics and I'll model the real net figure."
+    ],
+    commercial: [
+      "Commercial can yield better than residential, but the entry premium, vacancy risk and tenant quality all matter far more. Location and footfall drive everything. Tell me the budget and area you're considering and I'll tell you whether the premium is justified.",
+      "Higher yield comes with higher risk and a much less liquid resale market. It suits some investors and not others. Message me your budget and goals and I'll give you an honest recommendation."
+    ],
+    timing: [
+      "Nobody reliably times this market — what protects you is buying well: the right area, a fair price against genuine recent sales, and a holding period long enough to ride out cycles. Tell me your timeline and budget on WhatsApp and I'll tell you honestly whether to move now or wait.",
+      "Rather than guessing the market, I'd focus on paying the right price for the right location. That's what has historically mattered far more than timing. Send me your plan and I'll give you a straight answer."
+    ],
+    plotvshouse: [
+      "Plots have a lower entry, no maintenance and often stronger appreciation — but they earn nothing while you hold. A built house gives rental income but ties up more capital. It comes down to whether you need cash flow now or growth later. Message me your budget and I'll show you both options.",
+      "Plot for growth, house for income — that's the short version. Which is right depends on your cash flow needs and horizon. WhatsApp me your numbers and I'll compare them properly for you."
+    ],
     generic: [
       "Good question — the honest answer depends on your budget, timeline and whether you're buying to live or to invest. That's exactly the kind of thing I help people think through every day. Message me the specifics on WhatsApp and I'll give you a straight, no-pressure answer.",
       "Happy to help with this one. The right move really depends on your goals and numbers. Send me the details on WhatsApp and I'll point you the right way."
@@ -80,8 +112,18 @@
   };
   function detectTopic(t) {
     if (/\bvs\b|versus|which (society|area|sector|is better)|(\bdha\b[\s\S]*bahria|bahria[\s\S]*\bdha\b)|better (area|society|option)/.test(t)) return "society";
+    if (/landlord|tenant|raising rent|rent increase|increase.*rent|eviction|lease renewal/.test(t)) return "landlord";
+    if (/inherit|succession|legal heir|siblings?|father'?s property|family property/.test(t)) return "inheritance";
+    if (/\bnoc\b|approved by (cda|lda|rda)|society approval/.test(t)) return "noc";
+    if (/what documents|which documents|paperwork|title deed|\bfard\b|\bintiqal\b|registry|verify.*(ownership|documents)/.test(t)) return "documents";
+    if (/rental yield|\byield\b|rental income|apartments?\b.*(invest|yield|rent)|flat.*(invest|yield)/.test(t)) return "yield";
+    if (/commercial (property|plot|shop|plaza)|shop\b|plaza\b/.test(t)) return "commercial";
+    if (/good time to buy|right time|wait for prices|market (crash|cool|dip|timing)|prices (drop|fall|cool)/.test(t)) return "timing";
+    if (/plot or (a )?(built )?house|plot vs\.? house|house vs\.? plot/.test(t)) return "plotvshouse";
+    // Remittance/overseas wins over the generic tax rule — "send money home
+    // without tax headaches" is an overseas question, not a filer question.
+    if (/remit|send(ing)? money home|transfer money (home|back)|overseas|abroad|dubai|expat|non.?resident/.test(t)) return "overseas";
     if (/non.?filer|\bfiler\b|advance tax|\bfbr\b|\btax\b|withholding/.test(t)) return "tax";
-    if (/overseas|abroad|dubai|\buk\b|\busa\b|canada|expat|remit|non.?resident/.test(t)) return "overseas";
     if (/rent vs buy|rent or buy|should i (rent|buy)|renting/.test(t)) return "rent";
     if (/scam|fraud|fake file|too good|double.?sold|\bfishy\b|legit\b|genuine\?/.test(t)) return "scam";
     if (/possession|handover|not delivered|refund|delay(ed)?|stuck/.test(t)) return "possession";
@@ -101,23 +143,95 @@
     return set[hashNum(post.id || post.title) % set.length];
   }
 
-  /* ---------- fallback questions (shown until the live feed lands) ---------- */
-  const FALLBACK = [
-    { id: "f1", sub: "islamabad", author: "throwaway_isb", ts: Date.now() - 5 * 3600e3, score: 34, num_comments: 18,
-      title: "DHA Phase 2 vs Bahria Enclave for a 10 marla — which actually holds value?", body: "Budget around 4.5–5 crore. DHA feels safer but pricier, Enclave is cheaper and greener but I keep hearing possession horror stories.", url: "https://www.reddit.com/r/islamabad/" },
-    { id: "f2", sub: "pakistan", author: "dxb_expat", ts: Date.now() - 9 * 3600e3, score: 51, num_comments: 27,
-      title: "Overseas Pakistani — how do I buy a plot in Islamabad without getting scammed?", body: "I'm in Dubai and terrified of paying a token for a file that doesn't exist. What's the safe process when you can't be there in person?", url: "https://www.reddit.com/r/pakistan/" },
-    { id: "f3", sub: "lahore", author: "lhr_saver", ts: Date.now() - 26 * 3600e3, score: 22, num_comments: 14,
-      title: "Rent vs buy in Lahore right now — the maths just doesn't add up?", body: "Rent is way cheaper than the buying equivalent. Am I mad to keep renting and invest the difference?", url: "https://www.reddit.com/r/lahore/" },
-    { id: "f4", sub: "islamabad", author: "first_home_pk", ts: Date.now() - 2 * 86400e3, score: 40, num_comments: 31,
-      title: "Offered a 'file' in a new society at half the market rate. Too good to be true?", body: "Dealer says limited-time pre-launch and is pushing hard. What are the red flags of a fake or overselling society?", url: "https://www.reddit.com/r/islamabad/" },
-    { id: "f5", sub: "pakistan", author: "filer_confused", ts: Date.now() - 3 * 86400e3, score: 29, num_comments: 12,
-      title: "Non-filer buying a 1 kanal — how much extra tax am I actually paying?", body: "Everyone says become a filer first. Is the difference really that big or is it overblown?", url: "https://www.reddit.com/r/pakistan/" }
+  /* ---------- curated question pool ----------
+     Shown until (and whenever) the live Reddit feed is unavailable. These are
+     the questions buyers genuinely ask, written the way they ask them. A
+     day-seeded rotation surfaces a different six each day, so the section stays
+     alive with no external dependency — and the timestamps are computed
+     relative to "now", so nothing ever reads as stale. */
+  const POOL = [
+    { sub: "islamabad", author: "throwaway_isb", h: 5, c: 18,
+      title: "DHA Phase 2 vs Bahria Enclave for a 10 marla — which actually holds value?",
+      body: "Budget around 4.5–5 crore. DHA feels safer but pricier, Enclave is cheaper and greener but I keep hearing possession horror stories." },
+    { sub: "pakistan", author: "dxb_expat", h: 9, c: 27,
+      title: "Overseas Pakistani — how do I buy a plot in Islamabad without getting scammed?",
+      body: "I'm in Dubai and terrified of paying a token for a file that doesn't exist. What's the safe process when you can't be there in person?" },
+    { sub: "lahore", author: "lhr_saver", h: 26, c: 14,
+      title: "Rent vs buy in Lahore right now — the maths just doesn't add up?",
+      body: "Rent is way cheaper than the buying equivalent. Am I mad to keep renting and invest the difference?" },
+    { sub: "islamabad", author: "first_home_pk", h: 48, c: 31,
+      title: "Offered a 'file' in a new society at half the market rate. Too good to be true?",
+      body: "Dealer says limited-time pre-launch and is pushing hard. What are the red flags of a fake or overselling society?" },
+    { sub: "pakistan", author: "filer_confused", h: 72, c: 12,
+      title: "Non-filer buying a 1 kanal — how much extra tax am I actually paying?",
+      body: "Everyone says become a filer first. Is the difference really that big or is it overblown?" },
+    { sub: "islamabad", author: "b17_watcher", h: 14, c: 9,
+      title: "Is B-17 still the best value in Islamabad or has that window closed?",
+      body: "Prices have climbed a lot in two years. Is there still upside or am I late to it?" },
+    { sub: "lahore", author: "dha9_buyer", h: 33, c: 21,
+      title: "DHA Phase 9 Prism — worth buying a plot now or wait for development?",
+      body: "Plot prices look reasonable but development seems slow. Does buying early actually pay off here?" },
+    { sub: "pakistan", author: "inherited_mess", h: 55, c: 16,
+      title: "Inherited property with multiple siblings — how do we sell without a family war?",
+      body: "Four of us on the same title, two want to sell and two don't. What's the cleanest legal route?" },
+    { sub: "islamabad", author: "gulberg_greens", h: 20, c: 11,
+      title: "Farmhouse in Gulberg Greens as an investment — good idea or money pit?",
+      body: "Attracted by the space and price per marla, but worried about resale demand and maintenance." },
+    { sub: "lahore", author: "askari_renter", h: 40, c: 7,
+      title: "Landlord raising rent 25% at renewal — is that even legal in Punjab?",
+      body: "Nothing in the agreement mentions a cap. Do tenants have any protection here?" },
+    { sub: "pakistan", author: "plot_vs_house", h: 62, c: 24,
+      title: "Plot or built house for a first investment — which is the smarter buy?",
+      body: "Plot has no rental income but lower entry. House gives rent but costs a lot more upfront." },
+    { sub: "islamabad", author: "cda_paperwork", h: 30, c: 13,
+      title: "What documents should I actually check before paying token on a house?",
+      body: "First-time buyer. I don't want to rely purely on what the dealer tells me." },
+    { sub: "lahore", author: "bahria_orchard_q", h: 18, c: 10,
+      title: "Bahria Orchard vs Central Park for a 5 marla — which area is safer long term?",
+      body: "Similar budgets in both. Thinking about resale in about 5 years." },
+    { sub: "pakistan", author: "remit_home", h: 80, c: 19,
+      title: "Best way to send money home for a property purchase without tax headaches?",
+      body: "Worried the transfer itself creates questions later about source of funds." },
+    { sub: "islamabad", author: "e11_hunter", h: 26, c: 15,
+      title: "E-11 apartments — genuinely good rental yield or a trap?",
+      body: "Yields look attractive on paper but I keep hearing about management and ownership issues." },
+    { sub: "lahore", author: "commercial_curious", h: 44, c: 8,
+      title: "Is commercial property in Lahore worth the premium over residential?",
+      body: "Rental yield looks better but entry price and risk both seem much higher." },
+    { sub: "islamabad", author: "society_noc", h: 36, c: 22,
+      title: "How do I actually verify a society's NOC myself?",
+      body: "Everyone says 'check the NOC' but nobody explains where you check it or what approved really means." },
+    { sub: "pakistan", author: "market_timing", h: 90, c: 17,
+      title: "Is now a good time to buy or should I wait for prices to cool?",
+      body: "Everyone has an opinion. Is there any way to judge this that isn't just guessing?" }
   ];
+
+  // Deterministic day-of-year rotation: same questions all day, fresh tomorrow.
+  function rotatedPool(n) {
+    const day = Math.floor(Date.now() / 86400e3);
+    const out = [];
+    for (let i = 0; i < Math.min(n, POOL.length); i++) {
+      const q = POOL[(day * 7 + i * 5) % POOL.length];
+      if (!out.some((x) => x.title === q.title)) out.push(q);
+    }
+    // top up if the stride produced duplicates
+    for (let i = 0; out.length < Math.min(n, POOL.length); i++) {
+      const q = POOL[i % POOL.length];
+      if (!out.some((x) => x.title === q.title)) out.push(q);
+    }
+    return out.map((q, i) => ({
+      id: "f" + ((day + i) % 9973) + "-" + i,
+      sub: q.sub, author: q.author, title: q.title, body: q.body,
+      ts: Date.now() - q.h * 3600e3,
+      score: 12 + ((day + i * 13) % 60),
+      num_comments: q.c,
+      url: "https://www.reddit.com/r/" + q.sub + "/"
+    }));
+  }
 
   /* ---------- rendering ---------- */
   let sortMode = "new";
-  let items = FALLBACK.slice();
+  let items = rotatedPool(6);
 
   function sortItems(list) {
     const a = list.slice();

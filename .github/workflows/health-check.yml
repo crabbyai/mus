@@ -1,0 +1,134 @@
+name: Site health check
+
+# Guards the things that have actually broken before: JS syntax errors that
+# blank a section, malformed feed JSON, dead internal links, missing assets
+# referenced by HTML/CSS, and duplicate element IDs.
+on:
+  push:
+    branches:
+      - claude/portfolio-website-setup-rpyerk
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate JavaScript syntax
+        run: |
+          fail=0
+          for f in $(find portfolio/js -name '*.js' -not -path '*/vendor/*'); do
+            if node --check "$f" 2>/dev/null; then
+              echo "ok   $f"
+            else
+              echo "FAIL $f"; node --check "$f" || true; fail=1
+            fi
+          done
+          exit $fail
+
+      - name: Validate JSON data files
+        run: |
+          fail=0
+          for f in $(find portfolio/data -name '*.json'); do
+            if node -e "JSON.parse(require('fs').readFileSync('$f','utf8'))" 2>/dev/null; then
+              echo "ok   $f"
+            else
+              echo "FAIL $f is not valid JSON"; fail=1
+            fi
+          done
+          exit $fail
+
+      - name: Check referenced local assets exist
+        run: |
+          node <<'EOF'
+          const fs = require("fs"), path = require("path");
+          const root = "portfolio";
+          const html = fs.readFileSync(path.join(root, "index.html"), "utf8");
+          const css = fs.readFileSync(path.join(root, "css/style.css"), "utf8");
+
+          const refs = new Set();
+          const add = (m) => { if (m) m.forEach((r) => refs.add(r)); };
+          // src="..." / href="..." / srcset="..." pointing at local files
+          add(html.match(/(?:src|href|srcset)="(?!https?:|\/\/|#|mailto:|tel:|data:)[^"]+"/g));
+          // url(...) inside CSS
+          add(css.match(/url\((?!['"]?data:)['"]?[^)'"]+['"]?\)/g));
+
+          let missing = [];
+          for (const raw of refs) {
+            let p = raw.replace(/^(?:src|href|srcset)="/, "").replace(/"$/, "")
+                       .replace(/^url\(['"]?/, "").replace(/['"]?\)$/, "")
+                       .split("?")[0].split("#")[0].trim();
+            if (!p || p.startsWith("http")) continue;
+            // CSS urls resolve relative to css/, HTML relative to root
+            const candidates = [path.join(root, p), path.join(root, "css", p)];
+            if (!candidates.some((c) => fs.existsSync(c))) missing.push(p);
+          }
+          if (missing.length) {
+            console.error("Missing local assets:\n  " + missing.join("\n  "));
+            process.exit(1);
+          }
+          console.log("All local asset references resolve.");
+          EOF
+
+      - name: Check internal anchors and duplicate IDs
+        run: |
+          node <<'EOF'
+          const fs = require("fs");
+          const html = fs.readFileSync("portfolio/index.html", "utf8");
+
+          const ids = (html.match(/\sid="([^"]+)"/g) || []).map((s) => s.match(/id="([^"]+)"/)[1]);
+          const dupes = ids.filter((v, i) => ids.indexOf(v) !== i);
+          if (dupes.length) {
+            console.error("Duplicate element IDs: " + [...new Set(dupes)].join(", "));
+            process.exit(1);
+          }
+
+          const anchors = [...new Set((html.match(/href="#([A-Za-z][\w-]*)"/g) || [])
+            .map((s) => s.match(/href="#([\w-]+)"/)[1]))];
+          const dead = anchors.filter((a) => !ids.includes(a));
+          if (dead.length) {
+            console.error("Nav links pointing at missing sections: " + dead.join(", "));
+            process.exit(1);
+          }
+          console.log(`${ids.length} unique IDs, ${anchors.length} internal anchors — all resolve.`);
+          EOF
+
+      - name: Check SEO essentials are intact
+        run: |
+          node <<'EOF'
+          const fs = require("fs");
+          const html = fs.readFileSync("portfolio/index.html", "utf8");
+          const required = {
+            "<title>": /<title>[^<]{10,}<\/title>/,
+            "meta description": /name="description"\s+content="[^"]{50,}"/,
+            "canonical": /rel="canonical"/,
+            "og:title": /property="og:title"/,
+            "og:image": /property="og:image"/,
+            "twitter:card": /name="twitter:card"/,
+            "JSON-LD": /application\/ld\+json/,
+            "RealEstateAgent schema": /"@type":\s*"RealEstateAgent"/,
+            "manifest": /rel="manifest"/,
+            "service worker": /serviceWorker/
+          };
+          const missing = Object.entries(required).filter(([, re]) => !re.test(html)).map(([k]) => k);
+          if (missing.length) {
+            console.error("SEO/PWA regressions — missing: " + missing.join(", "));
+            process.exit(1);
+          }
+          for (const f of ["portfolio/sitemap.xml", "portfolio/robots.txt", "portfolio/site.webmanifest", "portfolio/sw.js"]) {
+            if (!fs.existsSync(f)) { console.error("Missing " + f); process.exit(1); }
+          }
+          console.log("SEO + PWA essentials present.");
+          EOF
+
+      - name: Report page weight
+        run: |
+          echo "Largest served assets:"
+          find portfolio/assets -maxdepth 1 -type f -printf '%s %p\n' | sort -rn | head -8 | \
+            awk '{printf "  %6.0f KB  %s\n", $1/1024, $2}'
+          echo "Total site: $(du -sh portfolio | cut -f1)"
