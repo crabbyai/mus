@@ -183,7 +183,7 @@
 <link rel="preload" href="assets/fonts/playfair-display-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="assets/fonts/manrope-latin-300-normal.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="stylesheet" href="css/fonts.css" />
-<link rel="stylesheet" href="css/style.css?v=20" />
+<link rel="stylesheet" href="css/style.css?v=21" />
 <link rel="stylesheet" href="css/enhance.css" />
 </head>
 <body>
@@ -1338,6 +1338,47 @@
   </section>
 
   <!-- ======= COMMUNITY Q&A (live from Reddit) ======= -->
+  <!-- ======= HOUSE BUILDER (3D configurator) ======= -->
+  <section class="builder" id="builder">
+    <div class="builder__head">
+      <p class="section-eyebrow" data-reveal>Design Studio</p>
+      <h2 class="section-title" data-reveal>Build your <em class="gold-italic">dream home</em></h2>
+      <p class="builder__intro" data-reveal>Design it exactly how you want it — plot size, storeys, elevation, finishes, the lot. Watch it come to life in 3D, then send the spec straight to my trusted builders for a real quote.</p>
+    </div>
+
+    <div class="builder__shell glass" data-reveal>
+      <div class="builder__stage">
+        <canvas id="builderCanvas" aria-label="3D preview of your house design" role="img"></canvas>
+        <div class="builder__loading" id="builderLoading"><span></span>Loading design studio…</div>
+        <div class="builder__stagetools">
+          <button class="builder__tool" id="builderDayNight" type="button" aria-pressed="false" title="Toggle day / night">🌙</button>
+          <button class="builder__tool" id="builderSpin" type="button" aria-pressed="true" title="Toggle auto-rotate">⟳</button>
+          <button class="builder__tool" id="builderShot" type="button" title="Download an image of your design">⤓</button>
+        </div>
+        <p class="builder__hint">Drag to orbit · scroll to zoom</p>
+      </div>
+
+      <div class="builder__panel">
+        <div class="builder__controls" id="builderControls"><!-- generated --></div>
+
+        <div class="builder__summary">
+          <div class="builder__stat">
+            <span>Covered area</span>
+            <strong id="bldArea">—</strong>
+          </div>
+          <div class="builder__stat">
+            <span>Indicative build cost</span>
+            <strong id="bldCost">—</strong>
+          </div>
+          <p class="builder__disclaimer">Rough construction estimate at current rates — excludes land. Your builder quote will be exact.</p>
+          <button class="btn btn--wa builder__cta" id="bldRequest" type="button" data-magnetic>
+            Request this build from my builders <span class="btn__arrow">→</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="forum" id="forum">
     <div class="forum__head">
       <p class="section-eyebrow" data-reveal>Real Questions · Real Answers</p>
@@ -1585,6 +1626,7 @@
 { "imports": { "three": "./js/vendor/three.module.min.js" } }
 </script>
 <script type="module" src="js/estate3d.js?v=4"></script>
+<script type="module" src="js/house-builder.js?v=1"></script>
 <script src="js/interior.js?v=4"></script>
 <script src="js/tools.js?v=4" defer></script>
 <script src="js/enhance.js?v=4" defer></script>
