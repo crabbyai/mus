@@ -117,7 +117,7 @@
         e.preventDefault();
         const d = new FormData(exitFrm);
         const msg = `Hello Adeel! My name is ${d.get("name")}. I'm interested in: ${d.get("intent")}. Please reach me on this WhatsApp number.`;
-        window.open(`https://wa.me/16134083945?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
+        (window.LeadRelay ? window.LeadRelay.send(msg) : window.open(`https://wa.me/16134083945?text=${encodeURIComponent(msg)}`, "_blank", "noopener"));
         closeExit();
       });
     }

@@ -913,7 +913,7 @@ if (sortSelect) sortSelect.addEventListener("change", applySort);
       const size = SIZE_LABEL[sel.size] || "any size";
       const purpose = sel.purpose === "buy" ? "purchase" : "rental";
       const msg = `Hello Adeel, I'm looking to ${purpose} a ${size} home in ${area}, ${city}. Could you share available listings?`;
-      window.open(`https://wa.me/16134083945?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
+      (window.LeadRelay ? window.LeadRelay.send(msg) : window.open(`https://wa.me/16134083945?text=${encodeURIComponent(msg)}`, "_blank", "noopener"));
     });
   }
 })();
@@ -926,7 +926,7 @@ if (leadForm) {
     const d = new FormData(leadForm);
     const msg = `Hello Adeel! I'm ${d.get("name") || "a visitor"} — interested in ${d.get("intent")} ` +
       `(${d.get("area")}, budget: ${d.get("budget") || "flexible"}). Found you via your portfolio site.`;
-    window.open(`https://wa.me/16134083945?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
+    (window.LeadRelay ? window.LeadRelay.send(msg) : window.open(`https://wa.me/16134083945?text=${encodeURIComponent(msg)}`, "_blank", "noopener"));
   });
 }
 
@@ -1104,7 +1104,7 @@ if (bookForm) {
       `Time: ${d.get("time")}\n` +
       `Purpose: ${d.get("intent")}\n` +
       `Meet by: ${d.get("mode")}`;
-    window.open(`https://wa.me/16134083945?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
+    (window.LeadRelay ? window.LeadRelay.send(msg) : window.open(`https://wa.me/16134083945?text=${encodeURIComponent(msg)}`, "_blank", "noopener"));
     toast("Opening WhatsApp to confirm your slot…");
   });
 }
@@ -1130,7 +1130,7 @@ if (bookForm) {
       const area = (row.querySelector("strong") || {}).textContent || "";
       const cityName = isbPanel.classList.contains("is-active") ? "Islamabad" : "Lahore";
       const msg = `Hello Adeel, I saw the price guide on your site — what's currently available in ${area.trim()}, ${cityName}?`;
-      window.open(`https://wa.me/16134083945?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
+      (window.LeadRelay ? window.LeadRelay.send(msg) : window.open(`https://wa.me/16134083945?text=${encodeURIComponent(msg)}`, "_blank", "noopener"));
     });
   });
 })();
@@ -1149,7 +1149,7 @@ if (alertForm) {
       `Plot size: ${d.get("size")}\n` +
       `Budget: ${d.get("budget") || "flexible"} Crore\n` +
       `Purpose: ${d.get("purpose")}`;
-    window.open(`https://wa.me/16134083945?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
+    (window.LeadRelay ? window.LeadRelay.send(msg) : window.open(`https://wa.me/16134083945?text=${encodeURIComponent(msg)}`, "_blank", "noopener"));
     toast("Opening WhatsApp to set up your alerts…");
   });
 }

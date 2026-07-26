@@ -2089,3 +2089,44 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
     word-break: break-all;
   }
 }
+
+/* ============================================================
+   LEAD FALLBACK — shown only when the WhatsApp handoff fails
+   ============================================================ */
+.leadfb { position: fixed; inset: 0; z-index: 300; display: grid; place-items: center; padding: 1.2rem; }
+.leadfb__backdrop { position: absolute; inset: 0; background: rgba(4,7,14,0.8); backdrop-filter: blur(5px); }
+.leadfb__card {
+  position: relative; width: 100%; max-width: 440px; border-radius: 18px;
+  padding: 2rem 1.7rem; border: 1px solid rgba(201,164,92,0.4);
+  background: var(--ink-2, #111726);
+  box-shadow: 0 40px 90px -40px rgba(0,0,0,0.9);
+  animation: leadfbIn 0.35s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+@keyframes leadfbIn { from { opacity: 0; transform: translateY(14px) scale(0.98); } }
+@media (prefers-reduced-motion: reduce) { .leadfb__card { animation: none; } }
+.leadfb__x {
+  position: absolute; top: 0.7rem; right: 0.8rem; width: 44px; height: 44px;
+  background: none; border: 0; color: var(--muted); font-size: 1rem; cursor: pointer;
+}
+.leadfb__x:hover { color: var(--cream); }
+.leadfb__title { font-size: 1.2rem; margin-bottom: 0.35rem; color: var(--cream); }
+.leadfb__sub { color: var(--muted); font-size: 0.86rem; line-height: 1.6; margin-bottom: 1rem; }
+.leadfb__msg {
+  background: rgba(10,14,26,0.6); border: 1px solid rgba(243,238,227,0.12);
+  border-radius: 10px; padding: 0.7rem 0.85rem; margin-bottom: 1.1rem;
+  color: var(--cream); font-size: 0.8rem; line-height: 1.55;
+  max-height: 8.5rem; overflow-y: auto; white-space: pre-wrap;
+}
+.leadfb__actions { display: grid; gap: 0.55rem; }
+.leadfb__btn {
+  display: flex; align-items: center; justify-content: center; min-height: 44px;
+  border: 0; border-radius: 99px; cursor: pointer; text-decoration: none;
+  font: inherit; font-size: 0.87rem; font-weight: 600;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+.leadfb__btn:active { transform: scale(0.985); }
+.leadfb__btn:hover { filter: brightness(1.08); }
+.leadfb__btn--wa { background: #1faa54; color: #fff; }
+.leadfb__btn--mail { background: linear-gradient(140deg, var(--gold-bright, #e7c56a), var(--gold, #c9a45c)); color: #0a0e1a; }
+.leadfb__btn--copy { background: rgba(255,255,255,0.06); color: var(--cream); border: 1px solid rgba(243,238,227,0.22); }
+.leadfb__btn--call { background: transparent; color: var(--cream); border: 1px solid rgba(243,238,227,0.22); }
