@@ -21,9 +21,12 @@
   // rotate the starting point per session so repeat visits vary
   var offset = Math.floor(Math.random() * MESSAGES.length);
 
-  var el = document.createElement("aside");
+  // <aside> carries an implicit complementary role, so role="status" on it is
+  // invalid ARIA — a plain div is the correct host for a live region.
+  var el = document.createElement("div");
   el.className = "sp-toast";
   el.setAttribute("role", "status");
+  el.setAttribute("aria-live", "polite");
   document.body.appendChild(el);
 
   var hideTimer = null;

@@ -1,0 +1,38 @@
+# Netlify security + caching headers (pakistani.luxury).
+# GitHub Pages cannot send custom headers — index.html carries an equivalent
+# CSP in a <meta> tag so that deployment is covered too.
+
+/*
+  # Clickjacking: this site is never meant to be framed by third parties.
+  X-Frame-Options: SAMEORIGIN
+  Content-Security-Policy: default-src 'self'; img-src 'self' data: https:; media-src 'self' https:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; font-src 'self' data:; connect-src 'self' https:; frame-src https://www.google.com https://maps.google.com https://www.youtube.com https://www.youtube-nocookie.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self' https://wa.me; object-src 'none'; upgrade-insecure-requests
+  # Stop MIME sniffing turning an upload into an executable script.
+  X-Content-Type-Options: nosniff
+  # Send the origin (not the full path) to third parties like YouTube.
+  Referrer-Policy: strict-origin-when-cross-origin
+  # This site needs none of these — deny them outright.
+  Permissions-Policy: geolocation=(), camera=(), microphone=(), payment=(), usb=(), magnetometer=()
+  # Force HTTPS for a year, including subdomains.
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+
+# Fingerprinted/static assets — cache hard, they change by filename or ?v=.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/js/*
+  Cache-Control: public, max-age=604800
+
+/css/*
+  Cache-Control: public, max-age=604800
+
+# Feeds refresh every 6h — let clients revalidate so listings never go stale.
+/data/*
+  Cache-Control: public, max-age=300, must-revalidate
+
+# The service worker must never be served stale or it can pin an old build.
+/sw.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate

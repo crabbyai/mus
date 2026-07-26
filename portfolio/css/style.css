@@ -125,7 +125,8 @@ body::before {
   transition: background 0.35s, color 0.35s;
 }
 .nav__cta:hover { background: var(--gold); color: var(--ink); }
-.nav__burger { display: none; background: none; border: 0; cursor: pointer; width: 34px; }
+.nav__burger { display: none; background: none; border: 0; cursor: pointer;
+  width: 44px; height: 44px; padding: 8px; }  /* 44px min touch target */
 .nav__burger span { display: block; height: 1.5px; background: var(--cream); margin: 8px 0; transition: 0.4s var(--ease); }
 .nav__burger.is-open span:nth-child(1) { transform: translateY(5px) rotate(45deg); }
 .nav__burger.is-open span:nth-child(2) { transform: translateY(-4.5px) rotate(-45deg); }
@@ -849,7 +850,9 @@ body::before {
 /* ============ FOOTER ============ */
 .footer { text-align: center; padding: 3.5rem 6vw 2.8rem; border-top: 1px solid rgba(243,238,227,0.08); color: var(--muted); font-size: 0.82rem; }
 .footer__monogram { font-family: var(--serif); color: var(--gold); font-size: 1.6rem; margin-bottom: 0.8rem; }
-.footer__fine { font-size: 0.68rem; opacity: 0.6; margin-top: 0.4rem; }
+/* opacity 0.6 dropped this below the 4.5:1 contrast minimum — use an explicit
+   colour that passes WCAG AA against the footer background instead. */
+.footer__fine { font-size: 0.68rem; color: #98a1b3; margin-top: 0.4rem; }
 
 /* ============ LIGHTBOX ============ */
 .lightbox { position: fixed; inset: 0; z-index: 950; display: grid; place-items: center; padding: 4vw; visibility: hidden; }
@@ -1377,7 +1380,7 @@ body::before {
   position: relative; display: inline-flex; align-items: center; gap: 0.4rem;
   background: rgba(20,28,52,0.5); border: 1px solid rgba(243,238,227,0.22);
   color: var(--cream); cursor: pointer; border-radius: 99px;
-  padding: 0.5rem 0.9rem; margin-left: 1.4rem; font-size: 0.82rem;
+  padding: 0.5rem 0.9rem; margin-left: 1.4rem; font-size: 0.82rem; min-height: 44px;
   transition: border-color 0.35s, color 0.35s, background 0.35s;
 }
 .nav__fav:hover { border-color: var(--gold); color: var(--gold); }
@@ -1849,7 +1852,7 @@ body::before {
 /* favourite heart on live listings */
 .feedcard__fav {
   position: absolute; top: 0.7rem; right: 0.7rem; z-index: 5;
-  width: 38px; height: 38px; border-radius: 50%;
+  width: 44px; height: 44px; border-radius: 50%;
   background: rgba(10,15,30,0.68); backdrop-filter: blur(8px);
   border: 1px solid rgba(243,238,227,0.28); color: rgba(243,238,227,0.9);
   font-size: 1.05rem; cursor: pointer; display: grid; place-items: center;
@@ -1909,7 +1912,8 @@ body::before {
 .feedcard__title a:hover { color: var(--gold-bright); }
 .feedcard__vet {
   font-size: 0.8rem; color: var(--gold); align-self: flex-start;
-  border-bottom: 1px solid rgba(201,164,92,0.35); padding-bottom: 1px;
+  border-bottom: 1px solid rgba(201,164,92,0.35);
+  padding: 0.6rem 0 0.5rem;  /* taller hit area on touch */
   transition: color 0.3s var(--ease), border-color 0.3s var(--ease);
 }
 .feedcard__vet:hover { color: var(--gold-bright); border-color: var(--gold-bright); }
@@ -2011,4 +2015,77 @@ body::before {
 a:focus-visible, button:focus-visible, input:focus-visible,
 select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
   outline: 2px solid var(--gold-bright); outline-offset: 3px; border-radius: 4px;
+}
+
+/* ============================================================
+   TOUCH TARGET SAFETY NET
+   WCAG 2.5.8 / mobile usability: controls need ~44px of tappable
+   area. Expanding the *hit area* with a centred pseudo-element
+   keeps every visual design decision above exactly as-is.
+   ============================================================ */
+@media (pointer: coarse) {
+  .forum__sort,
+  .fpost__src,
+  .footer__social a,
+  .shortlist__close,
+  .shortlist__clear,
+  .exit-popup__x,
+  .lightbox__close,
+  .feedcard__vet,
+  .fanswer__wa,
+  .forum__logout,
+  .fmodal__close { position: relative; }
+
+  .forum__sort::after,
+  .fpost__src::after,
+  .footer__social a::after,
+  .shortlist__close::after,
+  .shortlist__clear::after,
+  .exit-popup__x::after,
+  .lightbox__close::after,
+  .feedcard__vet::after,
+  .fanswer__wa::after,
+  .forum__logout::after,
+  .fmodal__close::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* ============================================================
+   PRINT — buyers and lawyers do print listing pages. Strip the
+   chrome, keep the substance, and expose link targets.
+   ============================================================ */
+@media print {
+  .nav, .nav__burger, .mobile-menu, .whatsapp-fab, .fab-dock,
+  .exit-popup, .sp-toast, .shortlist, .back-to-top, .marquee,
+  .hero__aurora, .showcase3d, .tour, .lightbox, .fmodal,
+  .forum__sorts, .spotlight__nav, .cursor, .cursor--dot { display: none !important; }
+
+  html, body {
+    background: #fff !important;
+    color: #000 !important;
+    font-size: 11pt;
+  }
+  .section-title, h1, h2, h3 { color: #000 !important; page-break-after: avoid; }
+  p, li { color: #222 !important; }
+  section { page-break-inside: avoid; padding: 0.6cm 0 !important; }
+  img { max-width: 100% !important; page-break-inside: avoid; }
+
+  /* Printed pages lose hrefs — print them so the contact routes survive. */
+  a[href^="http"]::after,
+  a[href^="tel:"]::after,
+  a[href^="mailto:"]::after {
+    content: " (" attr(href) ")";
+    font-size: 9pt;
+    color: #555;
+    word-break: break-all;
+  }
 }
