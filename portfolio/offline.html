@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<title>You're offline · Adeel Rahman, MBA</title>
+<style>
+  :root { --ink:#0a0e1a; --ink-2:#111726; --cream:#f3eee3; --muted:#9aa3b5; --gold:#c9a45c; --gold-bright:#e7c56a; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 1.5rem;
+    background: radial-gradient(120% 90% at 50% 0%, #16203a, var(--ink) 62%);
+    color: var(--cream); font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    text-align: center; -webkit-font-smoothing: antialiased;
+  }
+  .card {
+    max-width: 460px; padding: 2.8rem 2rem; border-radius: 20px;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(201,164,92,0.3);
+    box-shadow: 0 40px 90px -40px rgba(0,0,0,0.85);
+  }
+  .mark {
+    width: 60px; height: 60px; margin: 0 auto 1.3rem; border-radius: 50%;
+    display: grid; place-items: center; font-weight: 800; letter-spacing: 0.02em;
+    color: var(--ink); background: linear-gradient(140deg, var(--gold-bright), var(--gold));
+  }
+  h1 { font-size: 1.5rem; margin: 0 0 0.6rem; font-weight: 600; }
+  p { color: var(--muted); line-height: 1.7; margin: 0 0 1.6rem; font-size: 0.95rem; }
+  .actions { display: flex; flex-direction: column; gap: 0.7rem; }
+  a, button {
+    font: inherit; font-size: 0.9rem; font-weight: 600; cursor: pointer;
+    padding: 0.75rem 1.2rem; border-radius: 99px; text-decoration: none;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+  a:active, button:active { transform: scale(0.98); }
+  .retry { background: linear-gradient(140deg, var(--gold-bright), var(--gold)); color: var(--ink); border: none; }
+  .wa { background: #1faa54; color: #fff; }
+  .tel { background: transparent; color: var(--cream); border: 1px solid rgba(243,238,227,0.25); }
+  .note { font-size: 0.78rem; color: var(--muted); margin: 1.4rem 0 0; }
+</style>
+</head>
+<body>
+  <main class="card">
+    <div class="mark">AR</div>
+    <h1>You're offline</h1>
+    <p>No internet connection right now. Your saved pages will load again the moment you're back — and you can still reach me directly.</p>
+    <div class="actions">
+      <button class="retry" onclick="location.reload()">Try again</button>
+      <a class="wa" href="https://wa.me/16134083945">Message me on WhatsApp</a>
+      <a class="tel" href="tel:+16134083945">Call +1 613 408 3945</a>
+    </div>
+    <p class="note">Adeel Rahman, MBA · Islamabad &amp; Lahore</p>
+  </main>
+  <script>
+    // Bounce back automatically the moment connectivity returns.
+    addEventListener("online", () => location.reload());
+  </script>
+</body>
+</html>

@@ -278,7 +278,10 @@
 
     <div class="hero__portrait" data-speed="0.85">
       <div class="hero__portrait-frame">
-        <img src="assets/adeel-portrait.jpg?v=3" alt="Adeel Rahman, MBA" width="1023" height="728" fetchpriority="high" />
+        <picture>
+          <source srcset="assets/adeel-portrait.webp?v=3" type="image/webp" />
+          <img src="assets/adeel-portrait.jpg?v=3" alt="Adeel Rahman, MBA" width="1023" height="728" fetchpriority="high" />
+        </picture>
       </div>
       <div class="hero__portrait-card glass">
         <span class="hero__portrait-dot"></span> Adeel Rahman, MBA
@@ -318,7 +321,10 @@
   <section class="about" id="about">
     <div class="about__media" data-reveal>
       <div class="about__img-wrap">
-        <img src="assets/adeel-about.jpg?v=6" alt="Adeel Rahman, MBA — luxury real estate agent, Islamabad & Lahore" width="900" height="1200" loading="lazy" decoding="async" data-speed="0.92" />
+        <picture>
+          <source srcset="assets/adeel-about.webp?v=6" type="image/webp" />
+          <img src="assets/adeel-about.jpg?v=6" alt="Adeel Rahman, MBA — luxury real estate agent, Islamabad &amp; Lahore" width="900" height="1200" loading="lazy" decoding="async" data-speed="0.92" />
+        </picture>
       </div>
       <div class="about__badge glass" data-reveal>
         <strong>Top 1%</strong>
@@ -360,7 +366,10 @@
     <div class="creds__grid">
       <figure class="creds__diploma" data-reveal>
         <div class="creds__diploma-frame">
-          <img src="assets/mba-diploma.jpg" alt="Master of Business Administration diploma awarded to Adeel Ahmed Rahman by Carleton University, Ottawa, Canada" width="1400" height="1050" loading="lazy" decoding="async" />
+          <picture>
+            <source srcset="assets/mba-diploma.webp" type="image/webp" />
+            <img src="assets/mba-diploma.jpg" alt="Master of Business Administration diploma awarded to Adeel Ahmed Rahman by Carleton University, Ottawa, Canada" width="1400" height="1050" loading="lazy" decoding="async" />
+          </picture>
         </div>
         <figcaption>
           <strong>Master of Business Administration</strong>
@@ -1047,7 +1056,10 @@
   <!-- ======= QUOTE BAND ======= -->
   <section class="quote-band">
     <div class="quote-band__portrait" data-reveal>
-      <img src="assets/adeel-portrait.jpg?v=3" alt="Adeel Ahmed Rahman" width="1023" height="728" loading="lazy" decoding="async" />
+      <picture>
+        <source srcset="assets/adeel-portrait.webp?v=3" type="image/webp" />
+        <img src="assets/adeel-portrait.jpg?v=3" alt="Adeel Ahmed Rahman" width="1023" height="728" loading="lazy" decoding="async" />
+      </picture>
     </div>
     <blockquote data-reveal>
       “A house is sold in an afternoon.<br /><em class="gold-italic">A reputation takes a lifetime.</em>”
@@ -1571,5 +1583,14 @@
 <script src="js/feed.js?v=12" defer></script>
 <script src="js/forum.js?v=3" defer></script>
 <script src="js/social.js?v=1" defer></script>
+<script>
+  /* Service worker: offline fallback + instant repeat visits.
+     Relative scope so it works on both the Pages sub-path and pakistani.luxury. */
+  if ("serviceWorker" in navigator) {
+    addEventListener("load", function () {
+      navigator.serviceWorker.register("sw.js").catch(function () { /* non-fatal */ });
+    });
+  }
+</script>
 </body>
 </html>
