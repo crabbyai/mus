@@ -21,11 +21,11 @@ const GLASS_TINT = 0x121a2c;
 
 /* Finishes double as the cost tier — order matters, cheapest first. */
 const FINISHES = {
-  charcoal: { label: "Charcoal render", wall: 0x3a3f4a, trim: 0xd9d0bc, rate: 5200 },
-  cream:    { label: "Cream stucco",    wall: 0xd9d0bc, trim: 0x8a7350, rate: 5000 },
-  stone:    { label: "Grey stone",      wall: 0x6d7178, trim: 0xd9d0bc, rate: 6400 },
-  brick:    { label: "Exposed brick",   wall: 0x8d4a34, trim: 0xd9d0bc, rate: 5800 },
-  white:    { label: "Modern white",    wall: 0xe8e6e1, trim: 0x3a3f4a, rate: 5600 }
+  greyWhite:  { label: "Grey & white plaster", wall: 0x7d838c, trim: 0xeceae5, rate: 5200 },
+  travertine: { label: "Travertine cladding",  wall: 0xd8cbb2, trim: 0xb9a888, rate: 6800 },
+  whiteWood:  { label: "White & wood",         wall: 0xeceae5, trim: 0x8d8579, rate: 5600 },
+  sandstone:  { label: "Sandstone & grey",     wall: 0xc2a678, trim: 0x6d7178, rate: 6200 },
+  brick:      { label: "Gultex & brick",       wall: 0x8d4a34, trim: 0xeceae5, rate: 5400 }
 };
 
 const PLOTS = {
@@ -35,11 +35,12 @@ const PLOTS = {
   "2k":  { label: "2 Kanal",  w: 18,   d: 20,   sqft: 9000, lot: [26, 34] }
 };
 
+/* Elevation styles as they're actually described here. */
 const STYLES = {
-  modern:  "Modern",
-  classic: "Classic columns",
-  spanish: "Spanish villa",
-  glass:   "Glass contemporary"
+  dha:      "DHA Modern",
+  glass:    "Contemporary Glass",
+  spanish:  "Bahria Spanish",
+  colonial: "Lahore Kothi"
 };
 
 const FEATURES = {
@@ -55,8 +56,8 @@ const FEATURES = {
 const state = {
   plot: "10m",
   storeys: 2,
-  style: "modern",
-  finish: "charcoal",
+  style: "dha",
+  finish: "greyWhite",
   roof: "flat",
   features: { lawn: true, wall: true, porch: true, balcony: true, pool: false, solar: false, basement: false },
   night: false,
@@ -81,23 +82,58 @@ function tex(key, draw, repeat = [2, 2], size = 256) {
 }
 const css = (h) => "#" + h.toString(16).padStart(6, "0");
 
-function stuccoTex(color) {
-  return tex("stucco" + color, (g, s) => {
+/* Smooth grey/white plaster — the base finish on nearly every DHA elevation. */
+function plasterTex(color) {
+  return tex("plaster" + color, (g, s) => {
     g.fillStyle = css(color); g.fillRect(0, 0, s, s);
-    for (let i = 0; i < 5200; i++) {
-      g.fillStyle = `rgba(0,0,0,${Math.random() * 0.05})`;
-      g.fillRect(Math.random() * s, Math.random() * s, 1.4, 1.4);
+    for (let i = 0; i < 4200; i++) {
+      g.fillStyle = `rgba(0,0,0,${Math.random() * 0.035})`;
+      g.fillRect(Math.random() * s, Math.random() * s, 1.6, 1.6);
     }
   });
 }
-function brickTex(color) {
-  return tex("brick" + color, (g, s) => {
+
+/* Travertine / marble cladding — the cream stone banding you see all over
+   Bahria and DHA facades, laid in wide horizontal courses. */
+function travertineTex() {
+  return tex("travertine", (g, s) => {
+    g.fillStyle = "#d8cbb2"; g.fillRect(0, 0, s, s);
+    for (let i = 0; i < 2600; i++) {
+      g.fillStyle = `rgba(150,130,100,${Math.random() * 0.18})`;
+      g.fillRect(Math.random() * s, Math.random() * s, 6 + Math.random() * 16, 1.5);
+    }
+    g.strokeStyle = "rgba(120,104,80,0.5)"; g.lineWidth = 1.5;
+    for (let r = 1; r < 4; r++) {
+      g.beginPath(); g.moveTo(0, r * s / 4); g.lineTo(s, r * s / 4); g.stroke();
+    }
+  }, [2, 2]);
+}
+
+/* WPC / wood-look cladding panels — the warm vertical slats used as feature
+   panels around entrances and on projecting boxes. */
+function woodCladTex() {
+  return tex("woodclad", (g, s) => {
+    g.fillStyle = "#6b4526"; g.fillRect(0, 0, s, s);
+    const n = 10;
+    for (let i = 0; i < n; i++) {
+      g.fillStyle = `hsl(${24 + Math.random() * 8}, ${38 + Math.random() * 12}%, ${24 + Math.random() * 12}%)`;
+      g.fillRect(i * s / n + 1.5, 0, s / n - 3, s);
+      for (let k = 0; k < 26; k++) {
+        g.fillStyle = `rgba(0,0,0,${Math.random() * 0.16})`;
+        g.fillRect(i * s / n + 2, Math.random() * s, s / n - 4, 1);
+      }
+    }
+  }, [1, 1]);
+}
+
+function brickTex() {
+  return tex("brick", (g, s) => {
     g.fillStyle = "#6d3a29"; g.fillRect(0, 0, s, s);
     const bh = s / 14;
     for (let r = 0; r < 14; r++) {
       const off = (r % 2) * (s / 12);
       for (let c = -1; c < 13; c++) {
-        g.fillStyle = `hsl(14, ${28 + Math.random() * 14}%, ${26 + Math.random() * 12}%)`;
+        g.fillStyle = `hsl(14, ${28 + Math.random() * 14}%, ${30 + Math.random() * 12}%)`;
         g.fillRect(c * (s / 6) + off + 1.5, r * bh + 1.5, s / 6 - 3, bh - 3);
       }
     }
@@ -105,9 +141,9 @@ function brickTex(color) {
 }
 function tileTex() {
   return tex("roofTile", (g, s) => {
-    g.fillStyle = "#7d3b2a"; g.fillRect(0, 0, s, s);
+    g.fillStyle = "#8d4530"; g.fillRect(0, 0, s, s);
     for (let y = 0; y < 8; y++) for (let x = 0; x < 8; x++) {
-      g.fillStyle = `hsl(${12 + Math.random() * 8}, 45%, ${26 + Math.random() * 10}%)`;
+      g.fillStyle = `hsl(${12 + Math.random() * 8}, 48%, ${32 + Math.random() * 12}%)`;
       g.beginPath();
       g.arc(x * s / 8 + s / 16, y * s / 8 + s / 16, s / 17, Math.PI, 0);
       g.fill();
@@ -116,10 +152,10 @@ function tileTex() {
 }
 function paverTex() {
   return tex("paver", (g, s) => {
-    g.fillStyle = "#8f6249"; g.fillRect(0, 0, s, s);
-    for (let y = 0; y < 10; y++) for (let x = 0; x < 10; x++) {
-      g.fillStyle = `hsl(20, 26%, ${38 + Math.random() * 12}%)`;
-      g.fillRect(x * s / 10 + 1, y * s / 10 + 1, s / 10 - 2, s / 10 - 2);
+    g.fillStyle = "#9a8b76"; g.fillRect(0, 0, s, s);
+    for (let y = 0; y < 8; y++) for (let x = 0; x < 8; x++) {
+      g.fillStyle = `hsl(34, 16%, ${52 + Math.random() * 14}%)`;
+      g.fillRect(x * s / 8 + 1.5, y * s / 8 + 1.5, s / 8 - 3, s / 8 - 3);
     }
   }, [5, 5]);
 }
@@ -142,130 +178,276 @@ function box(w, h, d, material) {
   m.castShadow = m.receiveShadow = true;
   return m;
 }
-function glassMat(emissive) {
+function glassMat(night) {
   return new THREE.MeshStandardMaterial({
-    color: GLASS_TINT, roughness: 0.06, metalness: 0.35,
-    emissive: new THREE.Color(emissive ? 0xffca7a : 0x2d4a7a),
-    emissiveIntensity: emissive ? 1.35 : 0.55
+    color: 0x1a2740, roughness: 0.05, metalness: 0.55,
+    emissive: new THREE.Color(night ? 0xffc074 : 0x39628f),
+    emissiveIntensity: night ? 1.5 : 0.7
   });
+}
+/* Black aluminium — window frames, railings, gate. Ubiquitous here. */
+function frameMat() { return mat(0x191c22, 0.4, 0.65); }
+
+/* A glazed opening with the black frame that defines these elevations. */
+function window3d(g, { w, h, x, y, z, rotY = 0, night }) {
+  const grp = new THREE.Group();
+  const pane = new THREE.Mesh(new THREE.PlaneGeometry(w, h), glassMat(night));
+  pane.position.z = 0.04;
+  grp.add(pane);
+  const t = 0.09;
+  const fm = frameMat();
+  for (const [bw, bh, bx, by] of [[w + t * 2, t, 0, h / 2], [w + t * 2, t, 0, -h / 2],
+                                  [t, h, -w / 2, 0], [t, h, w / 2, 0]]) {
+    const b = box(bw, bh, 0.1, fm);
+    b.position.set(bx, by, 0.04);
+    grp.add(b);
+  }
+  // mullion — these windows are almost always divided
+  const mull = box(0.07, h, 0.1, fm);
+  mull.position.z = 0.05;
+  grp.add(mull);
+  grp.position.set(x, y, z);
+  grp.rotation.y = rotY;
+  g.add(grp);
+}
+
+/* Vertical fins/louvers — the single most recognisable feature of a modern
+   DHA elevation. Runs full height across part of the facade. */
+function louvers(g, { w, h, x, y, z, count, material }) {
+  for (let i = 0; i < count; i++) {
+    const f = box(0.1, h, 0.32, material);
+    f.position.set(x - w / 2 + (w / (count - 1)) * i, y, z);
+    g.add(f);
+  }
+}
+
+/* Mumty (roof stair enclosure) + water tanks — every real house here has
+   them, and their absence is exactly why a render looks foreign. */
+function roofFurniture(g, { W, D, topY, wallMat, trimMat, night }) {
+  const mumty = box(W * 0.3, 2.5, D * 0.26, wallMat);
+  mumty.position.set(-W * 0.26, topY + 1.25, -D * 0.24);
+  g.add(mumty);
+  const mCap = box(W * 0.3 + 0.25, 0.16, D * 0.26 + 0.25, trimMat);
+  mCap.position.set(-W * 0.26, topY + 2.55, -D * 0.24);
+  g.add(mCap);
+  window3d(g, { w: 0.8, h: 1, x: -W * 0.26, y: topY + 1.5, z: -D * 0.24 + D * 0.13 + 0.02, night });
+
+  // black poly water tanks
+  for (let i = 0; i < 2; i++) {
+    const tank = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.34, 0.95, 12),
+      mat(0x23262b, 0.75, 0.05));
+    tank.castShadow = true;
+    tank.position.set(-W * 0.34 + i * 0.75, topY + 3.1, -D * 0.24);
+    g.add(tank);
+  }
+  // stair-block handrail run
+  const rail = box(W * 0.3, 0.06, 0.06, frameMat());
+  rail.position.set(-W * 0.26, topY + 0.95, -D * 0.24 + D * 0.13 + 0.3);
+  g.add(rail);
+}
+
+/* Boundary wall with capped pillars and lamps — the street face of the house. */
+function boundary(g, { lw, ld, wallMat, trimMat, night }) {
+  const h = 2.0, t = 0.24;
+  const seg = (lw - 4.6) / 2;
+  const add = (w, hh, d, x, y, z, m) => { const b = box(w, hh, d, m); b.position.set(x, y, z); g.add(b); };
+
+  add(lw, h, t, 0, h / 2, -ld / 2, wallMat);
+  add(t, h, ld, lw / 2, h / 2, 0, wallMat);
+  add(t, h, ld, -lw / 2, h / 2, 0, wallMat);
+  // capping band along the top — always present, reads as "finished"
+  add(lw + 0.1, 0.12, t + 0.14, 0, h + 0.06, -ld / 2, trimMat);
+  add(t + 0.14, 0.12, ld, lw / 2, h + 0.06, 0, trimMat);
+  add(t + 0.14, 0.12, ld, -lw / 2, h + 0.06, 0, trimMat);
+
+  for (const sx of [-1, 1]) {
+    add(seg, h, t, sx * (2.3 + seg / 2), h / 2, ld / 2, wallMat);
+    add(seg + 0.1, 0.12, t + 0.14, sx * (2.3 + seg / 2), h + 0.06, ld / 2, trimMat);
+    // gate pillars, clad and lamp-topped
+    add(0.62, h + 0.5, 0.62, sx * 2.3, (h + 0.5) / 2, ld / 2, trimMat);
+    const lamp = box(0.3, 0.3, 0.3, glassMat(night));
+    lamp.position.set(sx * 2.3, h + 0.72, ld / 2);
+    g.add(lamp);
+    if (night) {
+      const pl = new THREE.PointLight(0xffb765, 1.6, 9, 2);
+      pl.position.set(sx * 2.3, h + 0.72, ld / 2);
+      g.add(pl);
+    }
+  }
+
+  // steel gate with vertical wood-look battens
+  const gate = box(4.4, 1.85, 0.1, mat(0x1b1e24, 0.45, 0.7));
+  gate.position.set(0, 0.95, ld / 2);
+  g.add(gate);
+  const battenMat = mat(0x6b4526, 0.75, 0.05, woodCladTex());
+  for (let i = 0; i < 9; i++) {
+    const b = box(0.32, 1.6, 0.06, battenMat);
+    b.position.set(-1.9 + i * 0.48, 0.95, ld / 2 + 0.08);
+    g.add(b);
+  }
 }
 
 /* ============================================================
-   House generation
+   House generation — modelled on DHA / Bahria elevations
    ============================================================ */
 function buildHouse(cfg) {
   const g = new THREE.Group();
   const plot = PLOTS[cfg.plot];
   const fin = FINISHES[cfg.finish];
   const W = plot.w, D = plot.d;
-  const floorH = 3.2;
+  const floorH = 3.3;
   const storeys = cfg.storeys;
   const night = cfg.night;
+  const style = cfg.style;
 
-  const wallMap = cfg.finish === "brick" ? brickTex(fin.wall) : stuccoTex(fin.wall);
-  const wallMat = mat(fin.wall, 0.9, 0.03, wallMap);
-  const trimMat = mat(fin.trim, 0.8, 0.04);
+  const wallMap = cfg.finish === "brick" ? brickTex()
+    : cfg.finish === "travertine" ? travertineTex()
+    : plasterTex(fin.wall);
+  const wallMat = mat(fin.wall, 0.88, 0.03, wallMap);
+  const trimMat = mat(fin.trim, 0.8, 0.04, plasterTex(fin.trim));
+  const stoneMat = mat(0xd8cbb2, 0.8, 0.03, travertineTex());
+  const woodMat = mat(0x6b4526, 0.72, 0.04, woodCladTex());
+  const accentMat = style === "colonial" || style === "spanish" ? stoneMat : woodMat;
 
-  /* ---- plinth ---- */
-  const plinth = box(W + 1.2, 0.45, D + 1.2, mat(0x55504a, 0.95));
-  plinth.position.y = 0.22;
+  /* ---- plinth: houses here sit on a raised base above the driveway ---- */
+  const plinth = box(W + 1.0, 0.5, D + 1.0, mat(0x8d8579, 0.92, 0.02, plasterTex(0x8d8579)));
+  plinth.position.y = 0.25;
   g.add(plinth);
 
   /* ---- storeys ---- */
   for (let s = 0; s < storeys; s++) {
-    const y = 0.45 + s * floorH;
-    // slightly stepped upper floors read as designed, not extruded
-    const inset = cfg.style === "modern" || cfg.style === "glass" ? s * 0.35 : 0;
-    const bw = W - inset * 2, bd = D - inset * 2;
+    const y = 0.5 + s * floorH;
+    const bw = W, bd = D;
 
     const body = box(bw, floorH, bd, wallMat);
     body.position.set(0, y + floorH / 2, 0);
     g.add(body);
 
-    // feature band in trim colour
-    const band = box(bw + 0.12, 0.22, bd + 0.12, trimMat);
-    band.position.set(0, y + floorH - 0.11, 0);
+    // floor-level banding, a defining horizontal line on these elevations
+    const band = box(bw + 0.16, 0.26, bd + 0.16, trimMat);
+    band.position.set(0, y + floorH - 0.13, 0);
     g.add(band);
 
-    // windows across the front
-    const cols = Math.max(2, Math.round(bw / 2.6));
-    const wW = cfg.style === "glass" ? bw / cols * 0.82 : bw / cols * 0.55;
-    const wH = cfg.style === "glass" ? floorH * 0.72 : 1.35;
-    for (let c = 0; c < cols; c++) {
-      const x = -bw / 2 + bw / cols * (c + 0.5);
-      const pane = new THREE.Mesh(new THREE.PlaneGeometry(wW, wH), glassMat(night));
-      pane.position.set(x, y + floorH * 0.52, bd / 2 + 0.03);
-      g.add(pane);
-      // side windows
-      const side = new THREE.Mesh(new THREE.PlaneGeometry(wW * 0.7, wH * 0.8), glassMat(night));
-      side.rotation.y = Math.PI / 2;
-      side.position.set(-bw / 2 - 0.03, y + floorH * 0.52, -bd / 2 + bd / cols * (c + 0.5));
-      g.add(side);
+    /* Cantilevered projecting box over the porch side — extremely common on
+       upper floors here, and what stops the massing reading as a plain cube. */
+    if (s > 0 && style !== "colonial") {
+      const proj = box(bw * 0.42, floorH * 0.82, 1.0, accentMat);
+      proj.position.set(bw * 0.22, y + floorH * 0.5, bd / 2 + 0.5);
+      g.add(proj);
+      window3d(g, { w: bw * 0.3, h: floorH * 0.5, x: bw * 0.22,
+                    y: y + floorH * 0.52, z: bd / 2 + 1.02, night });
     }
 
-    // classic columns on the ground floor
-    if (cfg.style === "classic" && s === 0) {
+    // front windows
+    const cols = Math.max(2, Math.round(bw / 3.0));
+    for (let c = 0; c < cols; c++) {
+      const x = -bw / 2 + bw / cols * (c + 0.5);
+      if (s > 0 && style !== "colonial" && x > bw * 0.04) continue; // behind the projection
+      window3d(g, { w: bw / cols * 0.62, h: style === "glass" ? floorH * 0.66 : 1.5,
+                    x, y: y + floorH * 0.53, z: bd / 2 + 0.02, night });
+    }
+    // side windows
+    for (let c = 0; c < Math.max(2, Math.round(bd / 3.4)); c++) {
+      window3d(g, { w: 1.1, h: 1.4, x: -bw / 2 - 0.02,
+                    y: y + floorH * 0.53,
+                    z: -bd / 2 + bd / Math.max(2, Math.round(bd / 3.4)) * (c + 0.5),
+                    rotY: -Math.PI / 2, night });
+    }
+
+    /* Double-height entrance feature: a tall clad panel with slim glazing
+       beside the door, running through both floors. */
+    if (s === 0 && storeys > 1 && style !== "colonial") {
+      const feat = box(2.6, floorH * 2 - 0.3, 0.34, accentMat);
+      feat.position.set(-bw * 0.22, y + floorH - 0.15, bd / 2 + 0.17);
+      g.add(feat);
+      for (let k = 0; k < 3; k++) {
+        window3d(g, { w: 0.42, h: floorH * 0.52, x: -bw * 0.22 - 0.75 + k * 0.75,
+                      y: y + floorH * 0.85 + k * 0.06, z: bd / 2 + 0.36, night });
+      }
+    }
+
+    // vertical louvers — signature DHA detail
+    if (style === "dha" && s === storeys - 1) {
+      louvers(g, { w: bw * 0.34, h: floorH * 0.84, x: -bw * 0.02,
+                   y: y + floorH * 0.52, z: bd / 2 + 0.2,
+                   count: 9, material: accentMat });
+    }
+
+    // classic columns for the colonial kothi
+    if (style === "colonial" && s === 0) {
       for (let i = 0; i < 4; i++) {
-        const col = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.22, 0.26, floorH, 16), trimMat);
+        const col = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.28, floorH, 16), stoneMat);
         col.castShadow = true;
-        col.position.set(-bw / 2 + 0.9 + i * ((bw - 1.8) / 3), y + floorH / 2, bd / 2 + 0.9);
+        col.position.set(-bw / 2 + 1.0 + i * ((bw - 2.0) / 3), y + floorH / 2, bd / 2 + 1.1);
         g.add(col);
       }
-      const canopy = box(bw * 0.9, 0.25, 2.2, trimMat);
-      canopy.position.set(0, y + floorH, bd / 2 + 0.9);
+      const canopy = box(bw * 0.92, 0.3, 2.5, stoneMat);
+      canopy.position.set(0, y + floorH + 0.15, bd / 2 + 1.1);
       g.add(canopy);
     }
 
-    // balconies on upper floors
+    // arched openings for the Spanish/Bahria villa
+    if (style === "spanish" && s === 0) {
+      for (let i = 0; i < 3; i++) {
+        const arch = new THREE.Mesh(new THREE.TorusGeometry(0.62, 0.13, 8, 18, Math.PI), stoneMat);
+        arch.position.set(-bw * 0.28 + i * 1.5, y + floorH * 0.62, bd / 2 + 0.1);
+        g.add(arch);
+      }
+    }
+
+    // balcony with glass railing
     if (cfg.features.balcony && s > 0) {
-      const slab = box(bw * 0.55, 0.16, 1.5, trimMat);
-      slab.position.set(0, y + 0.08, bd / 2 + 0.75);
+      const slab = box(bw * 0.44, 0.18, 1.5, trimMat);
+      slab.position.set(-bw * 0.24, y + 0.09, bd / 2 + 0.75);
       g.add(slab);
-      const rail = new THREE.Mesh(
-        new THREE.BoxGeometry(bw * 0.55, 0.85, 0.06),
-        new THREE.MeshStandardMaterial({ color: 0x9fc4e8, roughness: 0.1, metalness: 0.3,
-          transparent: true, opacity: 0.42 }));
-      rail.position.set(0, y + 0.5, bd / 2 + 1.48);
+      const rail = new THREE.Mesh(new THREE.BoxGeometry(bw * 0.44, 0.95, 0.05),
+        new THREE.MeshStandardMaterial({ color: 0x9fc4e8, roughness: 0.08,
+          metalness: 0.3, transparent: true, opacity: 0.34 }));
+      rail.position.set(-bw * 0.24, y + 0.57, bd / 2 + 1.48);
       g.add(rail);
+      const cap = box(bw * 0.44, 0.07, 0.09, frameMat());
+      cap.position.set(-bw * 0.24, y + 1.06, bd / 2 + 1.48);
+      g.add(cap);
     }
   }
 
-  const topY = 0.45 + storeys * floorH;
+  const topY = 0.5 + storeys * floorH;
 
   /* ---- roof ---- */
   if (cfg.roof === "hip") {
     const roof = new THREE.Mesh(
-      new THREE.ConeGeometry(Math.max(W, D) * 0.78, 2.4, 4),
-      mat(0x7d3b2a, 0.9, 0.02, tileTex()));
+      new THREE.ConeGeometry(Math.max(W, D) * 0.80, 2.6, 4),
+      mat(0x8d4530, 0.9, 0.02, tileTex()));
     roof.rotation.y = Math.PI / 4;
-    roof.position.y = topY + 1.2;
+    roof.position.y = topY + 1.3;
     roof.castShadow = true;
     g.add(roof);
   } else {
-    const par = box(W + 0.3, 0.85, D + 0.3, trimMat);
-    par.position.y = topY + 0.42;
+    // parapet with a contrasting coping — never a bare slab edge here
+    const par = box(W + 0.2, 1.0, D + 0.2, wallMat);
+    par.position.y = topY + 0.5;
     g.add(par);
-    const inner = box(W - 0.5, 0.9, D - 0.5, mat(0x3d4550, 0.95));
-    inner.position.y = topY + 0.45;
+    const cope = box(W + 0.42, 0.14, D + 0.42, trimMat);
+    cope.position.y = topY + 1.02;
+    g.add(cope);
+    const inner = box(W - 0.6, 1.05, D - 0.6, mat(0x8d8579, 0.95));
+    inner.position.y = topY + 0.5;
     g.add(inner);
+    roofFurniture(g, { W, D, topY, wallMat, trimMat, night });
   }
 
-  /* ---- door ---- */
-  const door = box(1.5, 2.5, 0.14, mat(0x4a2f1c, 0.65, 0.08));
-  door.position.set(0, 0.45 + 1.25, D / 2 + 0.06);
+  /* ---- main door ---- */
+  const door = box(1.6, 2.6, 0.16, mat(0x3a2617, 0.6, 0.1, woodCladTex()));
+  door.position.set(-W * 0.22, 0.5 + 1.3, D / 2 + 0.22);
   g.add(door);
-  const doorLight = new THREE.Mesh(new THREE.PlaneGeometry(0.16, 0.9), glassMat(night));
-  doorLight.position.set(1.1, 0.45 + 1.6, D / 2 + 0.07);
-  g.add(doorLight);
 
   /* ---- solar ---- */
   if (cfg.features.solar && cfg.roof === "flat") {
     for (let i = 0; i < 3; i++) {
-      const p = box(W * 0.26, 0.08, D * 0.3,
-        new THREE.MeshStandardMaterial({ color: 0x16203a, roughness: 0.25, metalness: 0.7 }));
-      p.position.set(-W * 0.3 + i * W * 0.3, topY + 0.95, -D * 0.1);
-      p.rotation.x = -0.32;
+      const p = box(W * 0.24, 0.08, D * 0.26,
+        new THREE.MeshStandardMaterial({ color: 0x16203a, roughness: 0.22, metalness: 0.7 }));
+      p.position.set(-W * 0.05 + i * W * 0.26, topY + 1.35, D * 0.16);
+      p.rotation.x = -0.34;
       g.add(p);
     }
   }
@@ -274,85 +456,90 @@ function buildHouse(cfg) {
   const [lw, ld] = plot.lot;
   const ground = new THREE.Mesh(
     new THREE.PlaneGeometry(lw, ld),
-    mat(cfg.features.lawn ? 0x4a8a4e : 0x6d675e, 1, 0,
+    mat(cfg.features.lawn ? 0x4a8a4e : 0x9a8b76, 1, 0,
         cfg.features.lawn ? grassTex() : paverTex()));
   ground.rotation.x = -Math.PI / 2;
   ground.receiveShadow = true;
   g.add(ground);
 
-  // driveway
-  const drive = new THREE.Mesh(new THREE.PlaneGeometry(4.2, (ld - D) / 2 + 1),
-    mat(0x8f6249, 0.95, 0, paverTex()));
+  // paved driveway from the gate to the porch, with a kerb
+  const driveL = (ld - D) / 2 + 1.4;
+  const drive = new THREE.Mesh(new THREE.PlaneGeometry(5.0, driveL),
+    mat(0x9a8b76, 0.95, 0, paverTex()));
   drive.rotation.x = -Math.PI / 2;
-  drive.position.set(0, 0.02, D / 2 + (ld - D) / 4);
+  drive.position.set(W * 0.12, 0.02, D / 2 + driveL / 2 - 0.6);
   drive.receiveShadow = true;
   g.add(drive);
 
+  /* ---- car porch: attached cantilever slab, not a free-standing gazebo ---- */
   if (cfg.features.porch) {
-    const roofSlab = box(5, 0.2, 4.4, trimMat);
-    roofSlab.position.set(-W / 2 - 1.6, 3.0, D / 2 - 1.2);
-    g.add(roofSlab);
-    for (const dx of [-2.2, 2.2]) for (const dz of [-1.9, 1.9]) {
-      const post = box(0.2, 3, 0.2, trimMat);
-      post.position.set(-W / 2 - 1.6 + dx, 1.5, D / 2 - 1.2 + dz);
+    const px = W * 0.14, pz = D / 2 + 2.3;
+    const slab = box(5.4, 0.26, 4.6, trimMat);
+    slab.position.set(px, 3.05, pz);
+    g.add(slab);
+    const fascia = box(5.6, 0.12, 0.14, accentMat);
+    fascia.position.set(px, 2.9, pz + 2.3);
+    g.add(fascia);
+    for (const dx of [-2.3, 2.3]) {
+      const post = box(0.26, 3.05, 0.26, trimMat);
+      post.position.set(px + dx, 1.52, pz + 2.0);
       g.add(post);
+    }
+    if (night) {
+      const pl = new THREE.PointLight(0xffc98a, 2.2, 12, 2);
+      pl.position.set(px, 2.8, pz);
+      g.add(pl);
     }
   }
 
   if (cfg.features.pool) {
-    const water = box(5.2, 0.3, 3.2, new THREE.MeshStandardMaterial({
-      color: 0x1d6f8f, roughness: 0.05, metalness: 0.55,
-      emissive: new THREE.Color(night ? 0x0a4a63 : 0x000000), emissiveIntensity: night ? 0.7 : 0
+    const water = box(5.4, 0.34, 3.2, new THREE.MeshStandardMaterial({
+      color: 0x1d7fa0, roughness: 0.04, metalness: 0.5,
+      emissive: new THREE.Color(night ? 0x0d5f7d : 0x0a3a4a),
+      emissiveIntensity: night ? 1.1 : 0.28
     }));
-    water.position.set(W / 2 + 2.4, 0.16, -D / 4);
+    water.position.set(-W / 2 - 2.7, 0.18, -D / 5);
     g.add(water);
-    const lip = box(5.8, 0.14, 3.8, trimMat);
-    lip.position.set(W / 2 + 2.4, 0.06, -D / 4);
+    const lip = box(6.1, 0.16, 3.9, stoneMat);
+    lip.position.set(-W / 2 - 2.7, 0.07, -D / 5);
     g.add(lip);
   }
 
-  if (cfg.features.wall) {
-    const h = 1.9, t = 0.22;
-    const wallM = mat(fin.trim, 0.92, 0.02, stuccoTex(fin.trim));
-    const north = box(lw, h, t, wallM); north.position.set(0, h / 2, -ld / 2); g.add(north);
-    const east = box(t, h, ld, wallM); east.position.set(lw / 2, h / 2, 0); g.add(east);
-    const west = box(t, h, ld, wallM); west.position.set(-lw / 2, h / 2, 0); g.add(west);
-    // front wall with a gate gap
-    const seg = (lw - 4.4) / 2;
-    for (const sx of [-1, 1]) {
-      const f = box(seg, h, t, wallM);
-      f.position.set(sx * (4.4 / 2 + seg / 2), h / 2, ld / 2);
-      g.add(f);
-    }
-    const gate = box(4.2, 1.7, 0.1, new THREE.MeshStandardMaterial({
-      color: 0x14171d, roughness: 0.45, metalness: 0.75 }));
-    gate.position.set(0, 0.85, ld / 2);
-    g.add(gate);
-    for (const sx of [-1, 1]) {
-      const pil = box(0.5, h + 0.35, 0.5, trimMat);
-      pil.position.set(sx * 2.35, (h + 0.35) / 2, ld / 2);
-      g.add(pil);
-    }
-  }
+  if (cfg.features.wall) boundary(g, { lw, ld, wallMat: trimMat, trimMat: stoneMat, night });
 
   if (cfg.features.lawn) {
-    for (const [tx, tz] of [[-lw / 2 + 1.6, ld / 2 - 2.4], [lw / 2 - 1.6, ld / 2 - 2.4],
-                            [-lw / 2 + 1.6, -ld / 2 + 2.4]]) {
-      const trunk = box(0.22, 1.1, 0.22, mat(0x4a3524, 0.95));
-      trunk.position.set(tx, 0.55, tz);
+    // clipped hedging along the wall + a couple of palms, as per local landscaping
+    for (const sx of [-1, 1]) {
+      const hedge = box(0.7, 0.75, ld * 0.5, mat(0x2f6b34, 0.95));
+      hedge.position.set(sx * (lw / 2 - 0.75), 0.38, -ld * 0.12);
+      g.add(hedge);
+    }
+    for (const [tx, tz] of [[-lw / 2 + 1.5, ld / 2 - 2.2], [lw / 2 - 1.5, -ld / 2 + 2.4]]) {
+      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.16, 2.1, 8),
+        mat(0x6b5638, 0.95));
+      trunk.castShadow = true;
+      trunk.position.set(tx, 1.05, tz);
       g.add(trunk);
-      const crown = new THREE.Mesh(new THREE.SphereGeometry(0.95, 12, 10), mat(0x24512c, 0.95));
-      crown.position.set(tx, 1.8, tz);
-      crown.castShadow = true;
+      for (let f = 0; f < 7; f++) {
+        const frond = new THREE.Mesh(new THREE.BoxGeometry(1.15, 0.07, 0.3),
+          mat(0x2f6b34, 0.9));
+        frond.geometry.translate(0.58, 0, 0);   // pivot at the crown, not the centre
+        frond.castShadow = true;
+        frond.position.set(tx, 2.12, tz);
+        frond.rotation.y = (f / 7) * Math.PI * 2;
+        frond.rotation.z = -0.45;               // droop outward and down
+        g.add(frond);
+      }
+      const crown = new THREE.Mesh(new THREE.SphereGeometry(0.2, 8, 6), mat(0x3b5a2c, 0.95));
+      crown.position.set(tx, 2.14, tz);
       g.add(crown);
     }
   }
 
-  // warm spill from the porch at night
   if (night) {
-    const lamp = new THREE.PointLight(0xffb765, 2.4, 16, 2);
-    lamp.position.set(0, 3, D / 2 + 2.2);
-    g.add(lamp);
+    const spill = new THREE.PointLight(0xffb765, 2.0, 15, 2);
+    spill.position.set(-W * 0.22, 3.2, D / 2 + 1.8);
+    g.add(spill);
   }
 
   g.userData.footprint = { W, D, lw, ld };
