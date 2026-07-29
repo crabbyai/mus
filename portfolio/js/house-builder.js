@@ -287,6 +287,83 @@ function boundary(g, { lw, ld, wallMat, trimMat, night }) {
   }
 }
 
+
+/* ---------- fake bloom ----------
+   A real bloom pass needs EffectComposer (more weight, more GPU). An additive
+   radial sprite at each light source reads almost identically at this scale
+   and costs nothing — this is what gives the scene its game-like glow. */
+function glowTex() {
+  return tex("glow", (g, s) => {
+    const grd = g.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2);
+    grd.addColorStop(0, "rgba(255,225,170,1)");
+    grd.addColorStop(0.28, "rgba(255,196,120,0.55)");
+    grd.addColorStop(1, "rgba(255,180,90,0)");
+    g.fillStyle = grd; g.fillRect(0, 0, s, s);
+  }, [1, 1], 128);
+}
+function glow(g, x, y, z, size = 2.4, color = 0xffc98a) {
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({
+    map: glowTex(), color, transparent: true,
+    blending: THREE.AdditiveBlending, depthWrite: false, opacity: 0.85
+  }));
+  sp.scale.setScalar(size);
+  sp.position.set(x, y, z);
+  g.add(sp);
+  return sp;
+}
+
+/* Gold vertical light strips — the signature accent on the showcase models. */
+function goldStrip(g, x, y, z, h, night) {
+  const m = new THREE.MeshStandardMaterial({
+    color: 0xffe0a8, emissive: new THREE.Color(0xffc98a),
+    emissiveIntensity: night ? 2.6 : 1.5, roughness: 0.3, metalness: 0.2
+  });
+  const strip = new THREE.Mesh(new THREE.BoxGeometry(0.09, h, 0.09), m);
+  strip.position.set(x, y + h / 2, z);
+  g.add(strip);
+  glow(g, x, y + h / 2, z + 0.1, night ? 1.5 : 0.9);
+}
+
+/* Bollard lights down the driveway — cheap, and they make the ground read. */
+function bollard(g, x, z, night) {
+  const post = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.09, 0.85, 8),
+    mat(0x23262b, 0.5, 0.4));
+  post.castShadow = true;
+  post.position.set(x, 0.42, z);
+  g.add(post);
+  const cap = new THREE.Mesh(new THREE.SphereGeometry(0.11, 10, 8),
+    new THREE.MeshStandardMaterial({ color: 0xffe0a8,
+      emissive: new THREE.Color(0xffc074), emissiveIntensity: night ? 3 : 1.4 }));
+  cap.position.set(x, 0.9, z);
+  g.add(cap);
+  glow(g, x, 0.9, z, night ? 1.5 : 0.8);
+  if (night) {
+    const pl = new THREE.PointLight(0xffb765, 0.9, 5, 2);
+    pl.position.set(x, 0.95, z);
+    g.add(pl);
+  }
+}
+
+/* Showcase podium — the dark disc with a gold ring the tour models sit on.
+   It frames the design and hides the horizon, which is what makes it read as
+   a presentation piece rather than a floating box. */
+function podium(r) {
+  const grp = new THREE.Group();
+  const baseGeo = new THREE.CylinderGeometry(r, r * 1.03, 0.3, 64);
+  baseGeo.translate(0, -0.15, 0);
+  const base = new THREE.Mesh(baseGeo,
+    new THREE.MeshStandardMaterial({ color: 0x141f3a, roughness: 0.45, metalness: 0.35 }));
+  base.receiveShadow = true;
+  grp.add(base);
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(r, 0.03, 8, 96),
+    new THREE.MeshStandardMaterial({ color: GOLD, roughness: 0.35, metalness: 0.85,
+      emissive: new THREE.Color(0x6a4f1e), emissiveIntensity: 0.8 }));
+  ring.rotation.x = Math.PI / 2;
+  ring.position.y = 0.005;
+  grp.add(ring);
+  return grp;
+}
+
 /* ============================================================
    House generation — modelled on DHA / Bahria elevations
    ============================================================ */
@@ -455,7 +532,7 @@ function buildHouse(cfg) {
   /* ---- grounds ---- */
   const [lw, ld] = plot.lot;
   const ground = new THREE.Mesh(
-    new THREE.PlaneGeometry(lw, ld),
+    new THREE.PlaneGeometry(lw * 0.99, ld * 0.99),
     mat(cfg.features.lawn ? 0x4a8a4e : 0x9a8b76, 1, 0,
         cfg.features.lawn ? grassTex() : paverTex()));
   ground.rotation.x = -Math.PI / 2;
@@ -542,6 +619,20 @@ function buildHouse(cfg) {
     g.add(spill);
   }
 
+  // showcase podium + accent lighting
+  g.add(podium(Math.max(lw, ld) * 0.66));
+
+  const stripH = storeys * floorH * 0.82;
+  goldStrip(g, -W / 2 - 0.06, 0.6, D / 2 + 0.06, stripH, night);
+  goldStrip(g, W / 2 + 0.06, 0.6, D / 2 + 0.06, stripH, night);
+
+  for (let i = 0; i < 4; i++) {
+    const dz = D / 2 + 1.4 + i * 1.7;
+    if (dz > ld / 2 - 0.8) break;
+    bollard(g, W * 0.12 - 2.9, dz, night);
+    bollard(g, W * 0.12 + 2.9, dz, night);
+  }
+
   g.userData.footprint = { W, D, lw, ld };
   return g;
 }
@@ -584,7 +675,7 @@ let dragging = false, lastX = 0, lastY = 0, pinchStart = 0;
 
 const canvas = () => document.getElementById("builderCanvas");
 
-function skyColor(night) { return night ? 0x0a1024 : 0x2c4372; }
+function skyColor(night) { return night ? 0x05070f : 0x0a0f1e; }
 
 function initScene() {
   const cv = canvas();
@@ -596,21 +687,26 @@ function initScene() {
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.42;
+  renderer.toneMappingExposure = 1.25;
 
   scene = new THREE.Scene();
   scene.background = new THREE.Color(skyColor(false));
-  scene.fog = new THREE.Fog(skyColor(false), 46, 96);
+  // Tight fog like the tour models — the house emerges from darkness rather
+  // than sitting on a flat blue card. This is what sells the diorama look.
+  scene.fog = new THREE.Fog(skyColor(false), 34, 88);
 
   camera = new THREE.PerspectiveCamera(38, 1, 0.5, 220);
   rig = new THREE.Group();
   scene.add(rig);
 
-  hemi = new THREE.HemisphereLight(0xcfe0ff, 0x6a7a58, 1.9);
+  // Cool blue ambient + warm key + blue rim: the three-light rig the estate
+  // showcase uses, which is what gives those renders their depth.
+  hemi = new THREE.HemisphereLight(0x9aa8c4, 0x3a4030, 1.35);
   scene.add(hemi);
+  scene.add(new THREE.AmbientLight(0x5a6a96, 0.85));
 
-  sun = new THREE.DirectionalLight(0xfff0d6, 3.4);
-  sun.position.set(16, 24, 14);
+  sun = new THREE.DirectionalLight(0xffd9a0, 3.1);
+  sun.position.set(16, 22, 15);
   sun.castShadow = true;
   sun.shadow.mapSize.set(2048, 2048);
   const s = 30;
@@ -620,13 +716,13 @@ function initScene() {
   sun.shadow.bias = -0.0006;
   scene.add(sun);
 
-  const rim = new THREE.DirectionalLight(0x7f9fe8, 1.15);
-  rim.position.set(-18, 12, -16);
+  const rim = new THREE.DirectionalLight(0x4466cc, 1.15);
+  rim.position.set(-18, 11, -17);
   scene.add(rim);
 
   // Facade fill — without this the front elevation reads as a black slab.
-  const fill = new THREE.DirectionalLight(0xffffff, 0.75);
-  fill.position.set(0, 10, 34);
+  const fill = new THREE.DirectionalLight(0xbcd0ff, 0.5);
+  fill.position.set(0, 9, 34);
   scene.add(fill);
 
   bindPointer(cv);
@@ -689,13 +785,13 @@ function rebuild() {
   const night = state.night;
   scene.background.setHex(skyColor(night));
   scene.fog.color.setHex(skyColor(night));
-  sun.intensity = night ? 0.5 : 3.4;
-  sun.color.setHex(night ? 0x8fa8e8 : 0xffe6c2);
-  hemi.intensity = night ? 0.6 : 1.9;
+  sun.intensity = night ? 0.55 : 3.1;
+  sun.color.setHex(night ? 0x7e9ae0 : 0xffd9a0);
+  hemi.intensity = night ? 0.55 : 1.25;
 
   // frame the whole lot regardless of plot size
   const lot = house.userData.footprint;
-  dist = Math.max(lot.lw, lot.ld) * 1.62;
+  dist = Math.max(lot.lw, lot.ld) * 1.92;
 
   const t0 = performance.now();
   (function grow() {
