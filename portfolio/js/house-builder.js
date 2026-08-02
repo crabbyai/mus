@@ -828,6 +828,173 @@ function pendant(g, x, y, z, night) {
 }
 
 
+
+/* ---------- interior detailing, from how these rooms are actually finished --
+   The recurring language in Lahore/Islamabad 1-Kanal interiors: a stepped
+   gypsum ceiling with hidden warm cove LED, a fan in every room, floor-to-
+   ceiling curtains, an L-shaped sectional with bold accent chairs, and a
+   backlit wood-slat feature wall. ------------------------------------------ */
+
+/* Stepped false ceiling with a hidden warm cove — the single biggest thing
+   that makes a room here read as "finished". */
+function coveCeiling(g, iw, id, H, night) {
+  const outer = mat(0xf2efe9, 0.95);
+  // perimeter drop
+  const dropD = 0.85, drop = 0.28;
+  const mk = (w, d, x, z) => { const b = box(w, drop, d, outer); b.position.set(x, H - drop / 2, z); g.add(b); };
+  mk(iw, dropD, 0, -id / 2 + dropD / 2);
+  mk(iw, dropD, 0, id / 2 - dropD / 2);
+  mk(dropD, id - dropD * 2, -iw / 2 + dropD / 2, 0);
+  mk(dropD, id - dropD * 2, iw / 2 - dropD / 2, 0);
+
+  // the cove itself: an emissive strip tucked behind the drop, washing upward
+  const coveMat = new THREE.MeshStandardMaterial({
+    color: 0xfff0d0, emissive: new THREE.Color(0xffc98a),
+    emissiveIntensity: night ? 1.9 : 0.95
+  });
+  const cw = 0.09;
+  const strips = [
+    [iw - dropD * 2, cw, 0, -id / 2 + dropD],
+    [iw - dropD * 2, cw, 0, id / 2 - dropD],
+    [cw, id - dropD * 2, -iw / 2 + dropD, 0],
+    [cw, id - dropD * 2, iw / 2 - dropD, 0]
+  ];
+  for (const [w, d, x, z] of strips) {
+    const st = new THREE.Mesh(new THREE.BoxGeometry(w, 0.05, d), coveMat);
+    st.position.set(x, H - drop - 0.04, z);
+    g.add(st);
+  }
+  // light thrown from the cove onto the slab
+  const coveLight = new THREE.PointLight(0xffc98a, night ? 34 : 20, 26, 2);
+  coveLight.position.set(0, H - 0.5, 0);
+  g.add(coveLight);
+
+  // dark wood-slat centre panel, as seen in most of these ceilings
+  const panel = box(iw * 0.44, 0.1, id * 0.3, mat(0x7a5a36, 0.7, 0.05, woodCladTex()));
+  panel.position.set(0, H - 0.06, -id * 0.08);
+  g.add(panel);
+}
+
+/* Ceiling fan — present in essentially every room here; its absence is a tell. */
+function ceilingFan(g, x, y, z) {
+  const rod = box(0.06, 0.32, 0.06, mat(0x2a2a2a, 0.5, 0.5));
+  rod.position.set(x, y - 0.16, z);
+  g.add(rod);
+  const hub = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.1, 12), mat(0x2a2a2a, 0.4, 0.6));
+  hub.position.set(x, y - 0.34, z);
+  g.add(hub);
+  for (let i = 0; i < 4; i++) {
+    const blade = box(1.05, 0.025, 0.2, mat(0x3a2c1f, 0.7, 0.05));
+    blade.geometry.translate(0.55, 0, 0);
+    blade.position.set(x, y - 0.34, z);
+    blade.rotation.y = (i / 4) * Math.PI * 2;
+    g.add(blade);
+  }
+}
+
+/* Floor-to-ceiling curtains, two-tone — grey sheers with a mustard drape is
+   the combination that turns up again and again. */
+function curtains(g, x, z, w, H) {
+  const sheer = new THREE.MeshStandardMaterial({ color: 0xb9bcc4, roughness: 0.95,
+    transparent: true, opacity: 0.55 });
+  const drape = mat(0xb8912f, 0.92);
+  const panelW = w * 0.16;
+  for (const side of [-1, 1]) {
+    const d = box(panelW, H * 0.92, 0.1, drape);
+    d.position.set(x + side * (w / 2 - panelW / 2), H * 0.46, z - 0.06);
+    g.add(d);
+    const sh = box(panelW * 0.8, H * 0.92, 0.06, sheer);
+    sh.position.set(x + side * (w / 2 - panelW * 1.5), H * 0.46, z - 0.02);
+    g.add(sh);
+  }
+  const rail = box(w, 0.06, 0.08, mat(0x2a2a2a, 0.4, 0.6));
+  rail.position.set(x, H * 0.94, z - 0.06);
+  g.add(rail);
+}
+
+/* L-shaped sectional — the standard lounge piece, not a pair of two-seaters. */
+function sectional(g, x, z, rotY, c) {
+  const grp = new THREE.Group();
+  const seat = (w, d, px, pz) => {
+    const b = box(w, 0.42, d, furnitureMat(c)); b.position.set(px, 0.28, pz); grp.add(b);
+  };
+  const back = (w, d, px, pz) => {
+    const b = box(w, 0.6, d, furnitureMat(c)); b.position.set(px, 0.66, pz); grp.add(b);
+  };
+  seat(3.1, 1.0, 0, 0);        back(3.1, 0.22, 0, -0.39);
+  seat(1.0, 1.5, -1.05, 1.25); back(0.22, 1.5, -1.5, 1.25);
+  // scatter cushions in the accent colour
+  for (const [cx, cz] of [[-1.0, -0.2], [0.4, -0.2], [1.2, -0.2], [-1.05, 1.5]]) {
+    const cu = box(0.4, 0.4, 0.14, furnitureMat(0xd6a52e, 0.9));
+    cu.position.set(cx, 0.68, cz);
+    cu.rotation.z = 0.2;
+    grp.add(cu);
+  }
+  grp.position.set(x, 0, z); grp.rotation.y = rotY;
+  g.add(grp);
+}
+
+/* Mustard accent chair — the colour note in nearly every one of these rooms. */
+function accentChair(g, x, z, rotY) {
+  const grp = new THREE.Group();
+  const seat = new THREE.Mesh(new THREE.CylinderGeometry(0.44, 0.4, 0.4, 18), furnitureMat(0xd6a52e, 0.85));
+  seat.position.y = 0.34; grp.add(seat);
+  const back = new THREE.Mesh(new THREE.CylinderGeometry(0.44, 0.44, 0.55, 18, 1, true,
+    Math.PI * 0.15, Math.PI * 1.1), furnitureMat(0xd6a52e, 0.85));
+  back.material.side = THREE.DoubleSide;
+  back.position.y = 0.76; grp.add(back);
+  grp.position.set(x, 0, z); grp.rotation.y = rotY;
+  g.add(grp);
+}
+
+/* Framed artwork on the feature wall. */
+function artwork(g, x, y, z, w, h) {
+  const frame = box(w + 0.1, h + 0.1, 0.05, mat(0x1a1a1a, 0.4, 0.5));
+  frame.position.set(x, y, z + 0.02);
+  g.add(frame);
+  const art = new THREE.Mesh(new THREE.PlaneGeometry(w, h),
+    new THREE.MeshStandardMaterial({ color: 0x8d7a5c, roughness: 0.85,
+      map: travertineTex(), emissive: new THREE.Color(0x2a2318), emissiveIntensity: 0.3 }));
+  art.position.set(x, y, z + 0.06);
+  g.add(art);
+}
+
+/* Wall sconce — slim vertical LED, flanking feature walls. */
+function sconce(g, x, y, z, night) {
+  const m = new THREE.MeshStandardMaterial({ color: 0xfff0d0,
+    emissive: new THREE.Color(0xffc98a), emissiveIntensity: night ? 3 : 1.7 });
+  const s = box(0.06, 0.75, 0.05, m);
+  s.position.set(x, y, z);
+  g.add(s);
+  glow(g, x, y, z + 0.1, night ? 1.3 : 0.8);
+}
+
+/* Staircase with a glass balustrade — visible from the lounge in most of
+   these houses, and a big part of why they read as double-height. */
+function staircase(g, x, z, H, night) {
+  const steps = 11, rise = H / steps, run = 0.28;
+  const treadM = mat(0x5a3f27, 0.55, 0.05, woodCladTex());
+  for (let i = 0; i < steps; i++) {
+    const t = box(1.35, 0.09, run, treadM);
+    t.position.set(x, rise * (i + 1) - 0.045, z - i * run);
+    g.add(t);
+    const r = box(1.35, rise - 0.09, 0.06, mat(0xe8e4dc, 0.9));
+    r.position.set(x, rise * (i + 1) - rise / 2, z - i * run - run / 2);
+    g.add(r);
+  }
+  const glass = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.95, steps * run),
+    new THREE.MeshStandardMaterial({ color: 0x9fc4e8, roughness: 0.06, metalness: 0.3,
+      transparent: true, opacity: 0.3 }));
+  glass.position.set(x + 0.7, H * 0.62, z - (steps * run) / 2 + run);
+  glass.rotation.x = -Math.atan(rise / run) * 0.42;
+  g.add(glass);
+  const rail = box(0.05, 0.05, steps * run * 1.06, mat(0x2a2a2a, 0.35, 0.6));
+  rail.position.set(x + 0.7, H * 0.62 + 0.5, z - (steps * run) / 2 + run);
+  rail.rotation.x = -Math.atan(rise / run) * 0.42;
+  g.add(rail);
+  if (night) sconce(g, x - 0.85, H * 0.55, z - 0.6, night);
+}
+
 /* Floating room labels — turns the interior from "a nice room" into a plan
    you can read, which is what someone briefing a builder actually needs. */
 function labelTex(text) {
@@ -881,6 +1048,7 @@ function buildInterior(cfg) {
   ceil.rotation.x = Math.PI / 2;
   ceil.position.y = H;
   g.add(ceil);
+  coveCeiling(g, iw, id, H, night);
 
   // shell walls (front wall omitted so the camera can see in from outside)
   const wallM = mat(0xece7dd, 0.92, 0.02, plasterTex(0xece7dd));
@@ -910,6 +1078,8 @@ function buildInterior(cfg) {
     g.add(mull);
   }
 
+  curtains(g, iw * 0.14, id / 2 - 0.12, glassW * 1.12, H);
+
   // skirting — small detail, big realism payoff
   const skirtM = mat(0xbdb6a8, 0.7);
   const sk1 = box(iw, 0.11, 0.05, skirtM); sk1.position.set(0, 0.055, -id / 2 + 0.07); g.add(sk1);
@@ -935,6 +1105,8 @@ function buildInterior(cfg) {
   const foyerZ = id * 0.34;
   rug(g, -iw * 0.2, foyerZ, 1.6, 1.1, 0x6b4f39);
   zone("Entrance Foyer", -iw * 0.2, foyerZ);
+  staircase(g, -iw * 0.44, foyerZ - 0.4, H, night);
+  zone("Stairs", -iw * 0.44, foyerZ - 1.2);
 
   // --- drawing room: formal, front corner, screened from the lounge ---
   const drawZ = id * 0.16, drawX = iw * 0.26;
@@ -944,6 +1116,7 @@ function buildInterior(cfg) {
   sofa(g, drawX - iw * 0.14, drawZ, Math.PI / 2, 0x6d5a48);
   table(g, drawX, drawZ, 1.0, 0.6, 0x5a3f27);
   pendant(g, drawX, H - 0.6, drawZ, night);
+  ceilingFan(g, drawX, H - 0.3, drawZ + id * 0.06);
   zone("Drawing Room", drawX, drawZ);
   // half-height screen separating it from the circulation — very common here
   const screen = box(0.12, 1.05, id * 0.18, featM);
@@ -952,12 +1125,16 @@ function buildInterior(cfg) {
 
   // --- family lounge: private, deeper into the plan ---
   const loungeZ = -id * 0.14;
-  rug(g, -iw * 0.2, loungeZ, iw * 0.44, id * 0.26, 0x5b4636);
-  sofa(g, -iw * 0.2, loungeZ + id * 0.12, 0, 0x4a5364);
-  if (W > 8) sofa(g, -iw * 0.42, loungeZ, Math.PI / 2, 0x4a5364);
+  rug(g, -iw * 0.2, loungeZ, iw * 0.46, id * 0.28, 0x6b5340);
+  sectional(g, -iw * 0.18, loungeZ + id * 0.06, 0, 0x555f70);
+  accentChair(g, -iw * 0.38, loungeZ - id * 0.04, 0.7);
+  accentChair(g, -iw * 0.02, loungeZ - id * 0.04, -0.7);
   table(g, -iw * 0.2, loungeZ, 1.2, 0.66, 0x6b4526);
   tvWall(g, -iw * 0.2, -id / 2 + 0.2, night);
-  pendant(g, -iw * 0.2, H - 0.55, loungeZ, night);
+  artwork(g, -iw * 0.44, 1.75, -id / 2 + 0.22, 1.1, 1.4);
+  sconce(g, -iw * 0.05, 1.85, -id / 2 + 0.24, night);
+  sconce(g, -iw * 0.35, 1.85, -id / 2 + 0.24, night);
+  ceilingFan(g, -iw * 0.2, H - 0.3, loungeZ);
   zone("Family Lounge", -iw * 0.2, loungeZ);
 
   // --- dining, between lounge and kitchen ---
