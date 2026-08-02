@@ -269,7 +269,7 @@ function boundary(g, { lw, ld, wallMat, trimMat, night }) {
     lamp.position.set(sx * 2.3, h + 0.72, ld / 2);
     g.add(lamp);
     if (night) {
-      const pl = new THREE.PointLight(0xffb765, 1.6, 9, 2);
+      const pl = new THREE.PointLight(0xffb765, 16, 10, 2);
       pl.position.set(sx * 2.3, h + 0.72, ld / 2);
       g.add(pl);
     }
@@ -338,7 +338,7 @@ function bollard(g, x, z, night) {
   g.add(cap);
   glow(g, x, 0.9, z, night ? 1.5 : 0.8);
   if (night) {
-    const pl = new THREE.PointLight(0xffb765, 0.9, 5, 2);
+    const pl = new THREE.PointLight(0xffb765, 9, 6, 2);
     pl.position.set(x, 0.95, z);
     g.add(pl);
   }
@@ -621,7 +621,7 @@ function buildHouse(cfg) {
       g.add(post);
     }
     if (night) {
-      const pl = new THREE.PointLight(0xffc98a, 2.2, 12, 2);
+      const pl = new THREE.PointLight(0xffc98a, 24, 13, 2);
       pl.position.set(px, 2.8, pz);
       g.add(pl);
     }
@@ -673,7 +673,7 @@ function buildHouse(cfg) {
   }
 
   if (night) {
-    const spill = new THREE.PointLight(0xffb765, 2.0, 15, 2);
+    const spill = new THREE.PointLight(0xffb765, 22, 16, 2);
     spill.position.set(-W * 0.22, 3.2, D / 2 + 1.8);
     g.add(spill);
   }
@@ -693,6 +693,245 @@ function buildHouse(cfg) {
   }
 
   g.userData.footprint = { W, D, lw, ld };
+  return g;
+}
+
+
+/* ============================================================
+   Shareable designs — the whole config round-trips through the
+   URL hash, so a couple can send each other a design before they
+   ever contact anyone, and Adeel can open the exact house.
+   ============================================================ */
+const FEATURE_KEYS = Object.keys(FEATURES);
+
+function encodeDesign() {
+  const on = FEATURE_KEYS.filter((k) => state.features[k]).join(".");
+  return [state.plot, state.storeys, state.style, state.finish, state.roof, on || "-"].join("~");
+}
+function applyDesign(str) {
+  if (!str) return false;
+  const [plot, storeys, style, finish, roof, feats] = String(str).split("~");
+  if (!PLOTS[plot] || !STYLES[style] || !FINISHES[finish]) return false;
+  state.plot = plot;
+  state.storeys = Math.min(3, Math.max(1, parseInt(storeys, 10) || 2));
+  state.style = style;
+  state.finish = finish;
+  state.roof = roof === "hip" ? "hip" : "flat";
+  const set = new Set((feats || "").split("."));
+  FEATURE_KEYS.forEach((k) => { state.features[k] = set.has(k); });
+  return true;
+}
+function designUrl() {
+  const u = new URL(location.href);
+  u.hash = "design=" + encodeDesign();
+  return u.toString();
+}
+function readDesignFromUrl() {
+  const m = location.hash.match(/design=([^&]+)/);
+  return m ? applyDesign(decodeURIComponent(m[1])) : false;
+}
+/* Keep the address bar in step without spamming history. */
+function syncUrl() {
+  try { history.replaceState(null, "", "#design=" + encodeDesign()); } catch (e) { /* ignore */ }
+}
+
+
+/* ============================================================
+   INTERIOR — "step inside your design"
+   A furnished ground floor generated from the same config, so what
+   you walk into is the house you just specified: bigger plots get
+   more rooms, the finish drives the palette.
+   ============================================================ */
+function furnitureMat(c, r = 0.8) { return mat(c, r, 0.04); }
+
+function sofa(g, x, z, rotY, c) {
+  const grp = new THREE.Group();
+  const base = box(2.3, 0.42, 0.95, furnitureMat(c));
+  base.position.y = 0.28;
+  grp.add(base);
+  const back = box(2.3, 0.62, 0.22, furnitureMat(c));
+  back.position.set(0, 0.68, -0.37);
+  grp.add(back);
+  for (const ax of [-1.04, 1.04]) {
+    const arm = box(0.22, 0.34, 0.95, furnitureMat(c));
+    arm.position.set(ax, 0.6, 0);
+    grp.add(arm);
+  }
+  grp.position.set(x, 0, z); grp.rotation.y = rotY;
+  g.add(grp);
+}
+function table(g, x, z, w, d, c) {
+  const top = box(w, 0.09, d, furnitureMat(c, 0.5));
+  top.position.set(x, 0.74, z);
+  g.add(top);
+  for (const [dx, dz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
+    const leg = box(0.09, 0.74, 0.09, furnitureMat(0x2c2118));
+    leg.position.set(x + dx * (w / 2 - 0.12), 0.37, z + dz * (d / 2 - 0.12));
+    g.add(leg);
+  }
+}
+function rug(g, x, z, w, d, c) {
+  const r = new THREE.Mesh(new THREE.PlaneGeometry(w, d), mat(c, 0.95));
+  r.rotation.x = -Math.PI / 2;
+  r.position.set(x, 0.012, z);
+  r.receiveShadow = true;
+  g.add(r);
+}
+function tvWall(g, x, z, night) {
+  const panel = box(2.6, 1.5, 0.12, furnitureMat(0x2a2118, 0.6));
+  panel.position.set(x, 1.35, z);
+  g.add(panel);
+  const screen = new THREE.Mesh(new THREE.PlaneGeometry(1.9, 1.05),
+    new THREE.MeshStandardMaterial({ color: 0x0b0f18, roughness: 0.1, metalness: 0.4,
+      emissive: new THREE.Color(0x2a4a7a), emissiveIntensity: night ? 1.1 : 0.5 }));
+  screen.position.set(x, 1.42, z + 0.07);
+  g.add(screen);
+  const unit = box(2.8, 0.42, 0.45, furnitureMat(0x3a2c1f, 0.7));
+  unit.position.set(x, 0.21, z + 0.2);
+  g.add(unit);
+}
+function kitchen(g, x, z, w, night) {
+  const counter = box(w, 0.9, 0.65, furnitureMat(0x2f3540, 0.55));
+  counter.position.set(x, 0.45, z);
+  g.add(counter);
+  const top = box(w + 0.08, 0.07, 0.72, furnitureMat(0xd8cbb2, 0.35));
+  top.position.set(x, 0.93, z);
+  g.add(top);
+  const uppers = box(w * 0.8, 0.7, 0.35, furnitureMat(0x39404d, 0.6));
+  uppers.position.set(x, 1.95, z - 0.14);
+  g.add(uppers);
+  // under-cabinet strip, the detail that makes a kitchen read as modern
+  const strip = new THREE.Mesh(new THREE.BoxGeometry(w * 0.78, 0.04, 0.06),
+    new THREE.MeshStandardMaterial({ color: 0xfff0d0,
+      emissive: new THREE.Color(0xffd9a0), emissiveIntensity: night ? 2.2 : 1.1 }));
+  strip.position.set(x, 1.58, z + 0.02);
+  g.add(strip);
+}
+function pendant(g, x, y, z, night) {
+  const cord = box(0.03, 0.7, 0.03, furnitureMat(0x1a1a1a));
+  cord.position.set(x, y + 0.35, z);
+  g.add(cord);
+  const shade = new THREE.Mesh(new THREE.ConeGeometry(0.26, 0.3, 14, 1, true),
+    new THREE.MeshStandardMaterial({ color: 0xc9a45c, roughness: 0.3, metalness: 0.7,
+      side: THREE.DoubleSide }));
+  shade.position.set(x, y, z);
+  g.add(shade);
+  const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.09, 10, 8),
+    new THREE.MeshStandardMaterial({ color: 0xfff0d0,
+      emissive: new THREE.Color(0xffd9a0), emissiveIntensity: night ? 3 : 1.8 }));
+  bulb.position.set(x, y - 0.12, z);
+  g.add(bulb);
+  glow(g, x, y - 0.12, z, night ? 1.8 : 1.1);
+  const pl = new THREE.PointLight(0xffd9a0, night ? 26 : 12, 9, 2);
+  pl.position.set(x, y - 0.15, z);
+  g.add(pl);
+}
+
+function buildInterior(cfg) {
+  const g = new THREE.Group();
+  const plot = PLOTS[cfg.plot];
+  const fin = FINISHES[cfg.finish];
+  const W = plot.w, D = plot.d, night = cfg.night;
+  const H = 3.0;
+  const inset = 0.18;               // wall thickness
+  const iw = W - inset * 2, id = D - inset * 2;
+
+  // floor: polished tile, which is what almost every house here uses
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(iw, id),
+    new THREE.MeshStandardMaterial({ color: 0xd7d2c8, roughness: 0.14, metalness: 0.35 }));
+  floor.rotation.x = -Math.PI / 2;
+  floor.receiveShadow = true;
+  g.add(floor);
+
+  const ceilMat = mat(0xf2efe9, 0.95); ceilMat.side = THREE.DoubleSide;
+  const ceil = new THREE.Mesh(new THREE.PlaneGeometry(iw, id), ceilMat);
+  ceil.rotation.x = Math.PI / 2;
+  ceil.position.y = H;
+  g.add(ceil);
+
+  // shell walls (front wall omitted so the camera can see in from outside)
+  const wallM = mat(0xece7dd, 0.92, 0.02, plasterTex(0xece7dd));
+  const back = box(iw, H, 0.12, wallM); back.position.set(0, H / 2, -id / 2); g.add(back);
+  const left = box(0.12, H, id, wallM); left.position.set(-iw / 2, H / 2, 0); g.add(left);
+  const right = box(0.12, H, id, wallM); right.position.set(iw / 2, H / 2, 0); g.add(right);
+
+  // feature wall in the finish's accent, behind the lounge
+  const featM = cfg.finish === "brick" ? mat(0x8d4a34, 0.9, 0.02, brickTex())
+                                       : mat(0x6b4526, 0.7, 0.05, woodCladTex());
+  const feat = box(iw * 0.5, H, 0.08, featM);
+  feat.position.set(-iw * 0.2, H / 2, -id / 2 + 0.08);
+  g.add(feat);
+
+  // glazing on the front opening so you see the lawn from inside
+  const glassW = iw * 0.62;
+  const view = new THREE.Mesh(new THREE.PlaneGeometry(glassW, H * 0.72),
+    new THREE.MeshStandardMaterial({ color: 0x9fc4e8, roughness: 0.03, metalness: 0.4,
+      transparent: true, opacity: 0.22,
+      emissive: new THREE.Color(night ? 0x0a1428 : 0x5f86b8),
+      emissiveIntensity: night ? 0.4 : 0.75 }));
+  view.position.set(iw * 0.14, H * 0.44, id / 2 - 0.04);
+  g.add(view);
+  for (let i = 0; i < 4; i++) {
+    const mull = box(0.06, H * 0.72, 0.08, frameMat());
+    mull.position.set(iw * 0.14 - glassW / 2 + (glassW / 3) * i, H * 0.44, id / 2 - 0.02);
+    g.add(mull);
+  }
+
+  // skirting — small detail, big realism payoff
+  const skirtM = mat(0xbdb6a8, 0.7);
+  const sk1 = box(iw, 0.11, 0.05, skirtM); sk1.position.set(0, 0.055, -id / 2 + 0.07); g.add(sk1);
+  const sk2 = box(0.05, 0.11, id, skirtM); sk2.position.set(-iw / 2 + 0.07, 0.055, 0); g.add(sk2);
+  const sk3 = box(0.05, 0.11, id, skirtM); sk3.position.set(iw / 2 - 0.07, 0.055, 0); g.add(sk3);
+
+  /* ---- furnishing, scaled to the plot ---- */
+  const lounge = -id * 0.18;
+  rug(g, -iw * 0.18, lounge, iw * 0.5, id * 0.3, 0x5b4636);
+  sofa(g, -iw * 0.18, lounge + id * 0.14, 0, 0x4a5364);
+  if (W > 8) sofa(g, -iw * 0.42, lounge, Math.PI / 2, 0x4a5364);
+  table(g, -iw * 0.18, lounge, 1.2, 0.66, 0x6b4526);
+  tvWall(g, -iw * 0.2, -id / 2 + 0.2, night);
+  pendant(g, -iw * 0.18, H - 0.55, lounge, night);
+
+  // dining + kitchen along the other side once there's room
+  if (W > 8) {
+    table(g, iw * 0.27, -id * 0.05, 1.7, 0.95, 0x5a3f27);
+    for (const [cx, cz] of [[-0.75, 0], [0.75, 0], [0, -0.72], [0, 0.72]]) {
+      const chair = box(0.42, 0.5, 0.42, furnitureMat(0x3d4450));
+      chair.position.set(iw * 0.27 + cx, 0.3, -id * 0.05 + cz);
+      g.add(chair);
+      const cb = box(0.42, 0.5, 0.08, furnitureMat(0x3d4450));
+      cb.position.set(iw * 0.27 + cx, 0.72, -id * 0.05 + cz - (cz ? Math.sign(cz) * 0.17 : 0.17));
+      g.add(cb);
+    }
+    pendant(g, iw * 0.27, H - 0.6, -id * 0.05, night);
+    kitchen(g, iw * 0.26, -id / 2 + 0.42, iw * 0.4, night);
+  }
+
+  // plant in the corner
+  const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.17, 0.4, 12), furnitureMat(0x8a6a4a));
+  pot.position.set(iw / 2 - 0.6, 0.2, id / 2 - 0.7);
+  g.add(pot);
+  for (let i = 0; i < 5; i++) {
+    const leaf = box(0.6, 0.05, 0.2, furnitureMat(0x2f6b34, 0.9));
+    leaf.geometry.translate(0.3, 0, 0);
+    leaf.position.set(iw / 2 - 0.6, 0.62, id / 2 - 0.7);
+    leaf.rotation.y = (i / 5) * Math.PI * 2;
+    leaf.rotation.z = -0.5;
+    g.add(leaf);
+  }
+
+  // ambient interior light so it never goes pitch black
+  const amb = new THREE.PointLight(night ? 0xffcf9a : 0xdfe8ff, night ? 60 : 34, 34, 2);
+  amb.position.set(0, H - 0.35, 0);
+  g.add(amb);
+  // second source toward the front so the room doesn't fall off into black
+  const fillL = new THREE.PointLight(night ? 0xffd9a8 : 0xe8f0ff, night ? 42 : 22, 26, 2);
+  fillL.position.set(0, H - 0.5, id * 0.28);
+  g.add(fillL);
+  // a soft ambient floor so nothing is ever unreadable
+  g.add(new THREE.HemisphereLight(night ? 0x6a5a48 : 0xbcd0ff, 0x2a2620, night ? 1.1 : 1.4));
+
+  g.userData.interior = { W: iw, D: id, H };
   return g;
 }
 
@@ -724,11 +963,60 @@ function fmtPKR(n) {
   return "PKR " + (n / 1e5).toFixed(0) + " Lac";
 }
 
+
+/* Smoothly fly the camera between the exterior orbit and standing inside. */
+function animateCamera(toInside) {
+  const from = { yaw, pitch, dist };
+  const to = toInside
+    ? { yaw: 0, pitch: 0.16, dist: 0 }
+    : { yaw: -0.7, pitch: 0.26, dist: Math.max(PLOTS[state.plot].lot[0], PLOTS[state.plot].lot[1]) * 1.92 };
+  const t0 = performance.now();
+  camAnim = () => {
+    const k = Math.min(1, (performance.now() - t0) / 900);
+    const e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;   // ease-in-out
+    yaw = targetYaw = from.yaw + (to.yaw - from.yaw) * e;
+    pitch = from.pitch + (to.pitch - from.pitch) * e;
+    dist = from.dist + (to.dist - from.dist) * e;
+    if (k >= 1) camAnim = null;
+  };
+}
+
+function setInside(on) {
+  if (!initialised || inside === on) return;
+  inside = on;
+  state.spin = false; syncSpinBtn();
+
+  if (on) {
+    interior = buildInterior(state);
+    rig.add(interior);
+    if (house) house.visible = false;
+    if (stars) stars.visible = false;
+    scene.fog.near = 6; scene.fog.far = 42;
+  } else {
+    if (interior) { rig.remove(interior); disposeTree(interior); interior = null; }
+    if (house) house.visible = true;
+    if (stars) stars.visible = state.night;
+    scene.fog.near = 34; scene.fog.far = 88;
+  }
+  animateCamera(on);
+
+  const btn = document.getElementById("builderInside");
+  if (btn) {
+    btn.setAttribute("aria-pressed", String(on));
+    btn.textContent = on ? "⤢" : "⌂";
+    btn.title = on ? "Back to the exterior" : "Step inside your design";
+  }
+  const hint = document.querySelector(".builder__hint");
+  if (hint) hint.textContent = on ? "Drag to look around · scroll to move"
+                                  : "Drag to orbit · scroll to zoom";
+}
+
 /* ============================================================
    Scene
    ============================================================ */
 let renderer, scene, camera, house, sun, hemi, rig;
-let composer = null, bloomPass = null, stars = null, flickerWins = [];
+let composer = null, bloomPass = null, ssaoPass = null, stars = null, flickerWins = [];
+let interior = null, inside = false, camAnim = null;
 let running = false, initialised = false, raf = 0;
 let yaw = -0.7, pitch = 0.26, dist = 34, targetYaw = -0.7;
 let dragging = false, lastX = 0, lastY = 0, pinchStart = 0;
@@ -789,17 +1077,35 @@ function initScene() {
   // Skipped on low-end/small devices where the extra pass isn't worth it.
   const wantsBloom = !matchMedia("(prefers-reduced-motion: reduce)").matches &&
                      innerWidth > 640 && (navigator.hardwareConcurrency || 4) >= 4;
+  // SSAO costs real GPU time, so it's desktop-with-headroom only.
+  const wantsSSAO = wantsBloom && innerWidth >= 1024 &&
+                    (navigator.hardwareConcurrency || 4) >= 8;
+
   if (wantsBloom) {
-    Promise.all([
+    const mods = [
       import("./vendor/three/postprocessing/EffectComposer.js"),
       import("./vendor/three/postprocessing/RenderPass.js"),
       import("./vendor/three/postprocessing/UnrealBloomPass.js"),
-      import("./vendor/three/postprocessing/OutputPass.js")
-    ]).then(([EC, RP, UB, OP]) => {
+      import("./vendor/three/postprocessing/OutputPass.js"),
+      wantsSSAO ? import("./vendor/three/postprocessing/SSAOPass.js") : Promise.resolve(null)
+    ];
+    Promise.all(mods).then(([EC, RP, UB, OP, SS]) => {
+      const w = canvas().clientWidth, h = canvas().clientHeight;
       composer = new EC.EffectComposer(renderer);
       composer.addPass(new RP.RenderPass(scene, camera));
-      bloomPass = new UB.UnrealBloomPass(
-        new THREE.Vector2(canvas().clientWidth, canvas().clientHeight),
+
+      // Ambient occlusion: contact shadows in corners, under eaves and where
+      // the house meets the ground. Subtle radius — large values look muddy
+      // at this scale.
+      if (SS) {
+        ssaoPass = new SS.SSAOPass(scene, camera, w, h);
+        ssaoPass.kernelRadius = 0.6;
+        ssaoPass.minDistance = 0.0012;
+        ssaoPass.maxDistance = 0.12;
+        composer.addPass(ssaoPass);
+      }
+
+      bloomPass = new UB.UnrealBloomPass(new THREE.Vector2(w, h),
         0.55,   // strength — enough to bleed the gold strips and windows
         0.7,    // radius
         0.85    // threshold: only genuinely bright things bloom
@@ -807,7 +1113,7 @@ function initScene() {
       composer.addPass(bloomPass);
       composer.addPass(new OP.OutputPass());
       resize();
-    }).catch(() => { composer = null; });   // plain render still works
+    }).catch(() => { composer = null; ssaoPass = null; });   // plain render still works
   }
 
   bindPointer(cv);
@@ -827,6 +1133,7 @@ function resize() {
   camera.updateProjectionMatrix();
   if (composer) composer.setSize(w, h);
   if (bloomPass) bloomPass.resolution.set(w, h);
+  if (ssaoPass) ssaoPass.setSize(w, h);
 }
 
 function bindPointer(cv) {
@@ -842,7 +1149,8 @@ function bindPointer(cv) {
   addEventListener("mouseup", () => { dragging = false; });
   cv.addEventListener("wheel", (e) => {
     e.preventDefault();
-    dist = Math.max(16, Math.min(70, dist + Math.sign(e.deltaY) * 2.2));
+    dist = inside ? Math.max(-2.2, Math.min(3.2, dist + Math.sign(e.deltaY) * 0.4))
+                  : Math.max(16, Math.min(70, dist + Math.sign(e.deltaY) * 2.2));
   }, { passive: false });
   cv.addEventListener("touchstart", (e) => {
     if (e.touches.length === 1) down(e.touches[0].clientX, e.touches[0].clientY);
@@ -896,6 +1204,13 @@ function rebuild() {
   const lot = house.userData.footprint;
   dist = Math.max(lot.lw, lot.ld) * 1.92;
 
+  if (inside) {
+    if (interior) { rig.remove(interior); disposeTree(interior); }
+    interior = buildInterior(state);
+    rig.add(interior);
+    house.visible = false;
+  }
+
   const t0 = performance.now();
   (function grow() {
     const k = Math.min(1, (performance.now() - t0) / 480);
@@ -919,8 +1234,25 @@ function disposeTree(obj) {
 function loop() {
   if (!running) return;
   raf = requestAnimationFrame(loop);
-  if (state.spin && !dragging) targetYaw += 0.0022;
+  if (camAnim) camAnim();
+  if (state.spin && !dragging && !inside) targetYaw += 0.0022;
   yaw += (targetYaw - yaw) * 0.08;
+
+  if (inside) {
+    // Stand back near the glazing and look into the room; "dist" walks you
+    // forward and back along the view direction.
+    const eye = 1.62;
+    const room = interior ? interior.userData.interior : { D: 10 };
+    const walk = Math.max(-2.2, Math.min(3.2, dist));
+    const baseZ = room.D * 0.34 - walk;
+    camera.position.set(Math.sin(yaw) * walk * 0.6, eye, baseZ);
+    camera.lookAt(camera.position.x - Math.sin(yaw) * 8,
+                  eye - pitch * 2.6 + 0.05,
+                  camera.position.z - Math.cos(yaw) * 8);
+    if (composer) composer.render(); else renderer.render(scene, camera);
+    return;
+  }
+
   const r = dist;
   camera.position.set(Math.sin(yaw) * r * Math.cos(pitch),
                       Math.sin(pitch) * r + 3,
@@ -972,12 +1304,12 @@ function renderControls() {
   el.querySelectorAll("[data-set]").forEach((b) => b.addEventListener("click", () => {
     const key = b.dataset.set, val = b.dataset.value;
     state[key] = key === "storeys" ? +val : val;
-    renderControls(); rebuild(); updateSummary();
+    renderControls(); rebuild(); updateSummary(); syncUrl();
   }));
   el.querySelectorAll("[data-feature]").forEach((b) => b.addEventListener("click", () => {
     const k = b.dataset.feature;
     state.features[k] = !state.features[k];
-    renderControls(); rebuild(); updateSummary();
+    renderControls(); rebuild(); updateSummary(); syncUrl();
   }));
 }
 
@@ -999,7 +1331,8 @@ function specText() {
     "• Add-ons: " + (on.length ? on.join(", ") : "none") + "\n" +
     "• Approx covered area: " + area.toLocaleString("en-US") + " sq ft\n" +
     "• Indicative build cost shown on site: " + fmtPKR(cost) + "\n\n" +
-    "Please connect me with your builders for an exact quote.";
+    "Please connect me with your builders for an exact quote.\n\n" +
+    "My design: " + designUrl();
 }
 
 function wireChrome() {
@@ -1023,6 +1356,34 @@ function wireChrome() {
     a.click();
   });
 
+  const insideBtn = document.getElementById("builderInside");
+  if (insideBtn) insideBtn.addEventListener("click", () => setInside(!inside));
+
+  const share = document.getElementById("builderShare");
+  if (share) share.addEventListener("click", () => {
+    const url = designUrl();
+    const done = () => {
+      const old = share.textContent;
+      share.textContent = "✓";
+      setTimeout(() => { share.textContent = old; }, 1600);
+    };
+    if (navigator.share && /Android|iPhone|iPad/i.test(navigator.userAgent)) {
+      navigator.share({ title: "My home design", url }).then(done, () => copy(url, done));
+    } else { copy(url, done); }
+  });
+  function copy(text, done) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, fallback);
+    } else { fallback(); }
+    function fallback() {
+      const ta = document.createElement("textarea");
+      ta.value = text; ta.style.cssText = "position:fixed;opacity:0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); done(); } catch (e) { /* ignore */ }
+      ta.remove();
+    }
+  }
+
   document.getElementById("bldRequest").addEventListener("click", () => {
     const msg = specText();
     if (window.LeadRelay) window.LeadRelay.send(msg);
@@ -1041,6 +1402,7 @@ function syncSpinBtn() {
   const section = document.getElementById("builder");
   if (!section || !canvas()) return;
 
+  readDesignFromUrl();   // a shared link wins over the defaults
   renderControls();
   updateSummary();
 
