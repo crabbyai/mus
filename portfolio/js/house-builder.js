@@ -1712,7 +1712,7 @@ function wireChrome() {
 
   const walkBtn = document.getElementById("builderWalk");
   if (walkBtn) walkBtn.addEventListener("click", () => {
-    if (window.WalkTour) window.WalkTour.open("Your Design");
+    if (window.WalkTour) window.WalkTour.open(null, "Your Design");
   });
 
   const insideBtn = document.getElementById("builderInside");

@@ -15,8 +15,8 @@ import * as THREE from "three";
 import {
   state, PLOTS, FINISHES,
   buildHouse, buildInterior,
-  mat, box, plasterTex, paverTex, grassTex, glow
-} from "./house-builder.js?v=6";
+  mat, box, plasterTex, paverTex, grassTex, glow, window3d, woodCladTex
+} from "./house-builder.js?v=7";
 
 /* ---------- module state ---------- */
 let renderer, scene, camera, composer = null, bloomPass = null;
@@ -128,6 +128,44 @@ function buildWorld(cfg) {
   const head = box(DOOR_W, 0.6, t, shellM);
   head.position.set(0, H - 0.3, D / 2);
   g.add(head);
+
+  /* Elevation detail: without glazing and banding the shell reads as a blank
+     box from the drive, which is the first thing you see on arrival. */
+  const trimM = mat(fin.trim, 0.8, 0.04, plasterTex(fin.trim));
+  const band = box(W + 0.18, 0.26, D + 0.18, trimM);
+  band.position.y = H - 0.13;
+  g.add(band);
+  const plinthB = box(W + 0.3, 0.35, D + 0.3, trimM);
+  plinthB.position.y = 0.17;
+  g.add(plinthB);
+
+  // front glazing either side of the door
+  for (const sx of [-1, 1]) {
+    window3d(g, { w: Math.min(2.0, side * 0.62), h: 1.5, x: sx * (DOOR_W / 2 + side / 2),
+                  y: 1.6, z: D / 2 + 0.14, night });
+  }
+  // side windows
+  const sideN = Math.max(2, Math.round(D / 3.6));
+  for (let i = 0; i < sideN; i++) {
+    const z = -D / 2 + (D / sideN) * (i + 0.5);
+    window3d(g, { w: 1.2, h: 1.4, x: -W / 2 - 0.14, y: 1.6, z, rotY: -Math.PI / 2, night });
+    window3d(g, { w: 1.2, h: 1.4, x: W / 2 + 0.14, y: 1.6, z, rotY: Math.PI / 2, night });
+  }
+  // clad panel framing the entrance
+  const entry = box(DOOR_W + 1.2, H, 0.16, mat(0x6b4526, 0.72, 0.04, woodCladTex()));
+  entry.position.set(0, H / 2, D / 2 + 0.14);
+  g.add(entry);
+  // cut the doorway back out of that panel by drawing the opening over it
+  const openL = box((DOOR_W + 1.2 - DOOR_W) / 2, H, 0.2, mat(0x6b4526, 0.72, 0.04, woodCladTex()));
+  g.remove(entry);
+  for (const sx of [-1, 1]) {
+    const jamb = box(0.6, H, 0.18, mat(0x6b4526, 0.72, 0.04, woodCladTex()));
+    jamb.position.set(sx * (DOOR_W / 2 + 0.3), H / 2, D / 2 + 0.14);
+    g.add(jamb);
+  }
+  const lintel = box(DOOR_W + 1.2, 0.5, 0.18, mat(0x6b4526, 0.72, 0.04, woodCladTex()));
+  lintel.position.set(0, H - 0.25, D / 2 + 0.14);
+  g.add(lintel);
 
   // floor + ceiling
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(W, D),
@@ -371,8 +409,12 @@ function loop(now) {
 /* ============================================================
    Open / close
    ============================================================ */
-function openTour(title) {
+function openTour(cfg, title) {
   ensureOverlay();
+  // An explicit config wins; without one we walk the Design Studio's
+  // current state. Sold-home tours always pass their own.
+  const conf = Object.assign({}, state, cfg || {});
+  if (cfg && cfg.features) conf.features = Object.assign({}, state.features, cfg.features);
 
   if (!renderer) {
     try {
@@ -405,15 +447,15 @@ function openTour(title) {
   }
 
   scene = new THREE.Scene();
-  const skyC = state.night ? 0x05070f : 0x2b3d63;
+  const skyC = conf.night ? 0x05070f : 0x2b3d63;
   scene.background = new THREE.Color(skyC);
   scene.fog = new THREE.Fog(skyC, 26, 110);
 
-  world = buildWorld(state);
+  world = buildWorld(conf);
   scene.add(world);
 
   // start at the gate, facing the house
-  const [, ld] = PLOTS[state.plot].lot;
+  const [, ld] = PLOTS[conf.plot].lot;
   pos.set(0, 0, ld / 2 - 1.2);
   yaw = 0; pitch = 0;
   vel.set(0, 0);
