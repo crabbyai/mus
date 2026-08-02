@@ -827,6 +827,39 @@ function pendant(g, x, y, z, night) {
   g.add(pl);
 }
 
+
+/* Floating room labels — turns the interior from "a nice room" into a plan
+   you can read, which is what someone briefing a builder actually needs. */
+function labelTex(text) {
+  return tex("lbl:" + text, (g, sz) => {
+    g.clearRect(0, 0, sz, sz);
+    g.font = "600 40px ui-sans-serif, system-ui, sans-serif";
+    g.textAlign = "center";
+    g.textBaseline = "middle";
+    const w = g.measureText(text).width + 46;
+    g.fillStyle = "rgba(10,15,26,0.82)";
+    g.beginPath();
+    g.roundRect((sz - w) / 2, sz / 2 - 34, w, 68, 34);
+    g.fill();
+    g.strokeStyle = "rgba(201,164,92,0.75)";
+    g.lineWidth = 2.5;
+    g.stroke();
+    g.fillStyle = "#e7c56a";
+    g.fillText(text, sz / 2, sz / 2 + 1);
+  }, [1, 1], 512);
+}
+function roomLabel(g, text, x, z, H) {
+  const t = labelTex(text);
+  t.needsUpdate = true;
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({
+    map: t, transparent: true, depthTest: false, depthWrite: false
+  }));
+  sp.scale.set(3.2, 3.2, 1);
+  sp.position.set(x, H - 0.9, z);
+  sp.renderOrder = 999;
+  g.add(sp);
+}
+
 function buildInterior(cfg) {
   const g = new THREE.Group();
   const plot = PLOTS[cfg.plot];
@@ -883,28 +916,68 @@ function buildInterior(cfg) {
   const sk2 = box(0.05, 0.11, id, skirtM); sk2.position.set(-iw / 2 + 0.07, 0.055, 0); g.add(sk2);
   const sk3 = box(0.05, 0.11, id, skirtM); sk3.position.set(iw / 2 - 0.07, 0.055, 0); g.add(sk3);
 
-  /* ---- furnishing, scaled to the plot ---- */
-  const lounge = -id * 0.18;
-  rug(g, -iw * 0.18, lounge, iw * 0.5, id * 0.3, 0x5b4636);
-  sofa(g, -iw * 0.18, lounge + id * 0.14, 0, 0x4a5364);
-  if (W > 8) sofa(g, -iw * 0.42, lounge, Math.PI / 2, 0x4a5364);
-  table(g, -iw * 0.18, lounge, 1.2, 0.66, 0x6b4526);
-  tvWall(g, -iw * 0.2, -id / 2 + 0.2, night);
-  pendant(g, -iw * 0.18, H - 0.55, lounge, night);
+  /* ---- layout ----------------------------------------------------------
+     Planned the way houses here actually are, not as one open-plan box:
 
-  // dining + kitchen along the other side once there's room
+       front  →  entrance foyer, with the DRAWING ROOM off it. That formal
+                 room for guests is the defining feature of a Pakistani plan
+                 and has no real western equivalent — guests are received
+                 there without entering family space.
+       middle →  FAMILY LOUNGE (private, where the family actually sits) with
+                 the TV, opening onto DINING.
+       rear   →  KITCHEN, with the wet/working side kept at the back.
+
+     A powder room sits by the entrance; bedrooms are upstairs. ------------ */
+
+  const zone = (label, x, z) => roomLabel(g, label, x, z, H);
+
+  // --- entrance foyer, centred on the front door ---
+  const foyerZ = id * 0.34;
+  rug(g, -iw * 0.2, foyerZ, 1.6, 1.1, 0x6b4f39);
+  zone("Entrance Foyer", -iw * 0.2, foyerZ);
+
+  // --- drawing room: formal, front corner, screened from the lounge ---
+  const drawZ = id * 0.16, drawX = iw * 0.26;
+  rug(g, drawX, drawZ, iw * 0.36, id * 0.22, 0x6e4a34);
+  sofa(g, drawX, drawZ + id * 0.1, 0, 0x6d5a48);
+  sofa(g, drawX + iw * 0.14, drawZ, -Math.PI / 2, 0x6d5a48);
+  sofa(g, drawX - iw * 0.14, drawZ, Math.PI / 2, 0x6d5a48);
+  table(g, drawX, drawZ, 1.0, 0.6, 0x5a3f27);
+  pendant(g, drawX, H - 0.6, drawZ, night);
+  zone("Drawing Room", drawX, drawZ);
+  // half-height screen separating it from the circulation — very common here
+  const screen = box(0.12, 1.05, id * 0.18, featM);
+  screen.position.set(drawX - iw * 0.19, 0.52, drawZ);
+  g.add(screen);
+
+  // --- family lounge: private, deeper into the plan ---
+  const loungeZ = -id * 0.14;
+  rug(g, -iw * 0.2, loungeZ, iw * 0.44, id * 0.26, 0x5b4636);
+  sofa(g, -iw * 0.2, loungeZ + id * 0.12, 0, 0x4a5364);
+  if (W > 8) sofa(g, -iw * 0.42, loungeZ, Math.PI / 2, 0x4a5364);
+  table(g, -iw * 0.2, loungeZ, 1.2, 0.66, 0x6b4526);
+  tvWall(g, -iw * 0.2, -id / 2 + 0.2, night);
+  pendant(g, -iw * 0.2, H - 0.55, loungeZ, night);
+  zone("Family Lounge", -iw * 0.2, loungeZ);
+
+  // --- dining, between lounge and kitchen ---
   if (W > 8) {
-    table(g, iw * 0.27, -id * 0.05, 1.7, 0.95, 0x5a3f27);
+    const dinZ = -id * 0.06, dinX = iw * 0.28;
+    table(g, dinX, dinZ, 1.7, 0.95, 0x5a3f27);
     for (const [cx, cz] of [[-0.75, 0], [0.75, 0], [0, -0.72], [0, 0.72]]) {
       const chair = box(0.42, 0.5, 0.42, furnitureMat(0x3d4450));
-      chair.position.set(iw * 0.27 + cx, 0.3, -id * 0.05 + cz);
+      chair.position.set(dinX + cx, 0.3, dinZ + cz);
       g.add(chair);
       const cb = box(0.42, 0.5, 0.08, furnitureMat(0x3d4450));
-      cb.position.set(iw * 0.27 + cx, 0.72, -id * 0.05 + cz - (cz ? Math.sign(cz) * 0.17 : 0.17));
+      cb.position.set(dinX + cx, 0.72, dinZ + cz - (cz ? Math.sign(cz) * 0.17 : 0.17));
       g.add(cb);
     }
-    pendant(g, iw * 0.27, H - 0.6, -id * 0.05, night);
+    pendant(g, dinX, H - 0.6, dinZ, night);
+    zone("Dining", dinX, dinZ);
+
+    // --- kitchen at the rear ---
     kitchen(g, iw * 0.26, -id / 2 + 0.42, iw * 0.4, night);
+    zone("Kitchen", iw * 0.26, -id / 2 + 1.1);
   }
 
   // plant in the corner
@@ -1244,7 +1317,7 @@ function loop() {
     const eye = 1.62;
     const room = interior ? interior.userData.interior : { D: 10 };
     const walk = Math.max(-2.2, Math.min(3.2, dist));
-    const baseZ = room.D * 0.34 - walk;
+    const baseZ = room.D * 0.42 - walk;
     camera.position.set(Math.sin(yaw) * walk * 0.6, eye, baseZ);
     camera.lookAt(camera.position.x - Math.sin(yaw) * 8,
                   eye - pitch * 2.6 + 0.05,
