@@ -43,7 +43,20 @@ const STYLES = {
   colonial: "Lahore Kothi"
 };
 
+/* Interior arrangement options. These are the choices that actually
+   distinguish a plan here from a Western one — a separate working ("dirty")
+   kitchen for heavy cooking, a ground-floor guest room so visitors never
+   enter family space, a servant quarter with its own outside entrance, and a
+   guest powder room off the foyer. */
+const KITCHENS = {
+  closed: "Closed + dirty kitchen",
+  open:   "Open / island kitchen"
+};
+
 const FEATURES = {
+  guestRoom:  { label: "Ground-floor guest room", cost: 1400000 },
+  servantQtr: { label: "Servant quarter", cost: 1100000 },
+  powderRoom: { label: "Guest powder room", cost: 350000 },
   pool:     { label: "Swimming pool", cost: 3500000 },
   lawn:     { label: "Landscaped lawn", cost: 450000 },
   wall:     { label: "Boundary wall & gate", cost: 1200000 },
@@ -59,7 +72,9 @@ const state = {
   style: "dha",
   finish: "greyWhite",
   roof: "flat",
-  features: { lawn: true, wall: true, porch: true, balcony: true, pool: false, solar: false, basement: false },
+  kitchen: "closed",
+  features: { lawn: true, wall: true, porch: true, balcony: true, pool: false, solar: false,
+              basement: false, guestRoom: true, servantQtr: true, powderRoom: true },
   night: false,
   spin: true
 };
@@ -641,6 +656,22 @@ function buildHouse(cfg) {
     g.add(lip);
   }
 
+  /* Servant quarter: a separate block at the rear with its own outside door
+     and its own toilet — never entered through the main house. */
+  if (cfg.features.servantQtr) {
+    const sx = -W / 2 - 1.6, sz = -D / 2 - 1.4;
+    const blk = box(3.2, 2.6, 2.8, wallMat);
+    blk.position.set(sx, 1.3, sz);
+    g.add(blk);
+    const cap = box(3.4, 0.14, 3.0, trimMat);
+    cap.position.set(sx, 2.67, sz);
+    g.add(cap);
+    const sdoor = box(0.85, 1.95, 0.1, mat(0x3a2617, 0.6, 0.1, woodCladTex()));
+    sdoor.position.set(sx + 0.7, 0.97, sz + 1.42);
+    g.add(sdoor);
+    window3d(g, { w: 0.7, h: 0.75, x: sx - 0.75, y: 1.7, z: sz + 1.42, night });
+  }
+
   if (cfg.features.wall) boundary(g, { lw, ld, wallMat: trimMat, trimMat: stoneMat, night });
 
   if (cfg.features.lawn) {
@@ -706,17 +737,18 @@ const FEATURE_KEYS = Object.keys(FEATURES);
 
 function encodeDesign() {
   const on = FEATURE_KEYS.filter((k) => state.features[k]).join(".");
-  return [state.plot, state.storeys, state.style, state.finish, state.roof, on || "-"].join("~");
+  return [state.plot, state.storeys, state.style, state.finish, state.roof, on || "-", state.kitchen].join("~");
 }
 function applyDesign(str) {
   if (!str) return false;
-  const [plot, storeys, style, finish, roof, feats] = String(str).split("~");
+  const [plot, storeys, style, finish, roof, feats, kitchen] = String(str).split("~");
   if (!PLOTS[plot] || !STYLES[style] || !FINISHES[finish]) return false;
   state.plot = plot;
   state.storeys = Math.min(3, Math.max(1, parseInt(storeys, 10) || 2));
   state.style = style;
   state.finish = finish;
   state.roof = roof === "hip" ? "hip" : "flat";
+  state.kitchen = KITCHENS[kitchen] ? kitchen : "closed";
   const set = new Set((feats || "").split("."));
   FEATURE_KEYS.forEach((k) => { state.features[k] = set.has(k); });
   return true;
@@ -1052,6 +1084,7 @@ function buildInterior(cfg) {
 
   // shell walls (front wall omitted so the camera can see in from outside)
   const wallM = mat(0xece7dd, 0.92, 0.02, plasterTex(0xece7dd));
+  const wallM2 = wallM;
   const back = box(iw, H, 0.12, wallM); back.position.set(0, H / 2, -id / 2); g.add(back);
   const left = box(0.12, H, id, wallM); left.position.set(-iw / 2, H / 2, 0); g.add(left);
   const right = box(0.12, H, id, wallM); right.position.set(iw / 2, H / 2, 0); g.add(right);
@@ -1154,7 +1187,74 @@ function buildInterior(cfg) {
 
     // --- kitchen at the rear ---
     kitchen(g, iw * 0.26, -id / 2 + 0.42, iw * 0.4, night);
-    zone("Kitchen", iw * 0.26, -id / 2 + 1.1);
+
+    if (cfg.kitchen === "closed") {
+      // Partition wall with a doorway: heavy cooking is kept out of the living
+      // space, and the working ("dirty") kitchen sits behind it.
+      const partW = iw * 0.46;
+      const pw = box(partW * 0.34, H, 0.12, wallM2);
+      pw.position.set(iw * 0.26 - partW * 0.33, H / 2, -id * 0.2);
+      g.add(pw);
+      const pw2 = box(partW * 0.34, H, 0.12, wallM2);
+      pw2.position.set(iw * 0.26 + partW * 0.33, H / 2, -id * 0.2);
+      g.add(pw2);
+      const header = box(partW * 0.36, H * 0.22, 0.12, wallM2);
+      header.position.set(iw * 0.26, H - H * 0.11, -id * 0.2);
+      g.add(header);
+      zone("Kitchen", iw * 0.26, -id / 2 + 1.2);
+      // the working kitchen beyond
+      const dirty = box(iw * 0.3, 0.9, 0.55, furnitureMat(0x3a4048, 0.6));
+      dirty.position.set(iw * 0.26, 0.45, -id / 2 + 1.5);
+      g.add(dirty);
+      zone("Dirty Kitchen", iw * 0.26, -id / 2 + 2.2);
+    } else {
+      // open plan: island facing the dining
+      const island = box(iw * 0.26, 0.92, 0.9, furnitureMat(0x2f3540, 0.55));
+      island.position.set(iw * 0.26, 0.46, -id * 0.24);
+      g.add(island);
+      const islandTop = box(iw * 0.28, 0.08, 1.0, furnitureMat(0xd8cbb2, 0.3));
+      islandTop.position.set(iw * 0.26, 0.94, -id * 0.24);
+      g.add(islandTop);
+      for (let i = 0; i < 3; i++) {
+        const stool = new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.15, 0.68, 12),
+          furnitureMat(0xd6a52e, 0.8));
+        stool.position.set(iw * 0.26 - 0.7 + i * 0.7, 0.34, -id * 0.24 + 0.85);
+        g.add(stool);
+      }
+      pendant(g, iw * 0.26, H - 0.7, -id * 0.24, night);
+      zone("Open Kitchen", iw * 0.26, -id / 2 + 1.2);
+    }
+  }
+
+  /* Ground-floor guest bedroom: off the front, so visitors are received and
+     housed without ever entering the family side of the house. */
+  if (cfg.features.guestRoom && W > 8) {
+    const gx = -iw * 0.34, gz = id * 0.06;
+    const gw = box(0.12, H, id * 0.3, wallM2);
+    gw.position.set(gx + iw * 0.16, H / 2, gz);
+    g.add(gw);
+    const bed = box(1.5, 0.5, 2.0, furnitureMat(0x6d5a48));
+    bed.position.set(gx, 0.3, gz);
+    g.add(bed);
+    const head = box(1.6, 0.8, 0.12, featM);
+    head.position.set(gx, 0.7, gz - 1.05);
+    g.add(head);
+    const duvet = box(1.52, 0.14, 1.3, furnitureMat(0xd8d2c6, 0.9));
+    duvet.position.set(gx, 0.6, gz + 0.3);
+    g.add(duvet);
+    zone("Guest Bedroom", gx, gz);
+  }
+
+  /* Powder room off the foyer — for guests, so they never use a family bath. */
+  if (cfg.features.powderRoom) {
+    const px2 = iw * 0.44, pz2 = id * 0.4;
+    const pwall = box(0.1, H, 1.5, wallM2);
+    pwall.position.set(px2 - 0.75, H / 2, pz2);
+    g.add(pwall);
+    const basin = box(0.5, 0.14, 0.36, furnitureMat(0xe8e4dc, 0.3));
+    basin.position.set(px2, 0.85, pz2 - 0.5);
+    g.add(basin);
+    zone("Powder Rm", px2 - 0.2, pz2);
   }
 
   // plant in the corner
@@ -1198,6 +1298,8 @@ function estimate(cfg) {
 
   let cost = area * fin.rate;
   if (cfg.roof === "hip") cost += area * 220;
+  if (cfg.kitchen === "closed") cost += 550000;   // second working kitchen
+  else cost += 850000;                            // island + better joinery
   for (const k in cfg.features) {
     if (!cfg.features[k]) continue;
     if (k === "basement") continue; // already in area
@@ -1549,6 +1651,7 @@ function renderControls() {
     optionRow("Elevation", "style", Object.entries(STYLES), state.style) +
     optionRow("Finish", "finish", Object.entries(FINISHES).map(([k, v]) => [k, v.label]), state.finish) +
     optionRow("Roof", "roof", [["flat", "Flat parapet"], ["hip", "Tiled hip"]], state.roof) +
+    optionRow("Kitchen", "kitchen", Object.entries(KITCHENS), state.kitchen) +
     optionRow("Add-ons", "features", Object.entries(FEATURES).map(([k, v]) => [k, v.label]), null, true);
 
   el.querySelectorAll("[data-set]").forEach((b) => b.addEventListener("click", () => {
@@ -1578,6 +1681,7 @@ function specText() {
     "• Elevation: " + STYLES[state.style] + "\n" +
     "• Finish: " + FINISHES[state.finish].label + "\n" +
     "• Roof: " + (state.roof === "hip" ? "Tiled hip" : "Flat parapet") + "\n" +
+    "• Kitchen: " + KITCHENS[state.kitchen] + "\n" +
     "• Add-ons: " + (on.length ? on.join(", ") : "none") + "\n" +
     "• Approx covered area: " + area.toLocaleString("en-US") + " sq ft\n" +
     "• Indicative build cost shown on site: " + fmtPKR(cost) + "\n\n" +
