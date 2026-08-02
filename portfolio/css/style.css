@@ -720,9 +720,28 @@ body::before {
 }
 .likethis__ref { display: flex; flex-direction: column; }
 .likethis__refmedia { position: relative; }
-.likethis__refmedia img {
+.likethis__refmedia img,
+#ltCanvas {
   width: 100%; aspect-ratio: 16 / 10; object-fit: cover; display: block;
   background: rgba(0,0,0,0.3);
+}
+#ltCanvas { touch-action: pan-y; cursor: grab; }
+#ltCanvas:active { cursor: grabbing; }
+#ltCanvas[hidden] { display: none; }
+.likethis__stagetools {
+  position: absolute; top: 0.9rem; right: 0.9rem; display: flex; gap: 0.4rem;
+}
+.likethis__stagetools[hidden] { display: none; }
+.likethis__hint {
+  position: absolute; left: 0.9rem; bottom: 0.8rem;
+  font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--muted); pointer-events: none;
+}
+.likethis__hint[hidden] { display: none; }
+.likethis__stamp {
+  position: absolute; right: 0.9rem; bottom: 0.8rem; text-align: right;
+  font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--gold-bright); pointer-events: none;
 }
 .likethis__refbadge {
   position: absolute; top: 0.9rem; left: 0.9rem;

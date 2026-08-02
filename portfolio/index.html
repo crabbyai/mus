@@ -1142,8 +1142,9 @@
       <p class="section-eyebrow" data-reveal>Can't Find It? Build It.</p>
       <h2 class="section-title" data-reveal>Build me <em class="gold-italic">one like this</em></h2>
       <p class="likethis__intro" data-reveal>Every home below is one I've already sold. Pick the one closest to
-      what you want, adjust the brief, and it goes straight to my construction partners in Lahore and
-      Islamabad as a costed request — not a vague enquiry.</p>
+      what you want and it builds in 3D in front of you — change the plot, the storeys, the elevation, and
+      the model changes with it. Then it goes straight to my construction partners in Lahore and Islamabad
+      as a costed request, not a vague enquiry.</p>
     </div>
 
     <div class="likethis__picker" data-reveal>
@@ -1154,8 +1155,16 @@
     <div class="likethis__shell glass" data-reveal>
       <div class="likethis__ref">
         <div class="likethis__refmedia">
+          <!-- Static art is the no-WebGL fallback; the live model hides it. -->
           <img id="ltRefImg" src="" alt="" />
-          <span class="likethis__refbadge">Reference build</span>
+          <canvas id="ltCanvas" aria-label="Live 3D model of the house you're briefing" role="img" hidden></canvas>
+          <span class="likethis__refbadge" id="ltBadge">Reference build</span>
+          <div class="likethis__stagetools" id="ltTools" hidden>
+            <button class="builder__tool" id="ltDayNight" type="button" aria-pressed="false" title="Toggle day / night">🌙</button>
+            <button class="builder__tool" id="ltSpin" type="button" aria-pressed="true" title="Toggle auto-rotate">⟳</button>
+          </div>
+          <p class="likethis__hint" id="ltHint" hidden>Drag to rotate · scroll to zoom</p>
+          <p class="likethis__stamp" id="ltStamp" aria-live="polite"></p>
         </div>
         <div class="likethis__refbody">
           <p class="likethis__refloc" id="ltRefLoc"></p>
@@ -1179,7 +1188,7 @@
             Send this brief to my builders <span class="btn__arrow">→</span>
           </button>
           <button class="btn btn--ghost btn--sm likethis__alt" id="ltTune" type="button">
-            ⊹ Fine-tune it in 3D first
+            ⊹ Open it in the Design Studio
           </button>
         </div>
       </div>
@@ -1666,9 +1675,9 @@
 { "imports": { "three": "./js/vendor/three.module.min.js" } }
 </script>
 <script type="module" src="js/estate3d.js?v=5"></script>
-<script type="module" src="js/house-builder.js?v=9"></script>
+<script type="module" src="js/house-builder.js?v=10"></script>
 <script type="module" src="js/house-tour.js?v=6"></script>
-<script type="module" src="js/like-this.js?v=1"></script>
+<script type="module" src="js/like-this.js?v=2"></script>
 <script src="js/tools.js?v=4" defer></script>
 <script src="js/enhance.js?v=4" defer></script>
 <script src="js/feed.js?v=12" defer></script>

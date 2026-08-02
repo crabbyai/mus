@@ -1954,7 +1954,7 @@ window.HouseBuilder = {
    house the visitor configured — one spec, one set of builders. */
 export {
   state, PLOTS, FINISHES, STYLES, KITCHENS, FEATURES,
-  buildHouse, buildInterior, estimate, fmtPKR,
+  buildHouse, buildInterior, estimate, fmtPKR, starfield,
   mat, box, frameMat, window3d, glow, glowTex,
   plasterTex, travertineTex, woodCladTex, paverTex, grassTex,
   ceilingFan, coveCeiling, sectional, accentChair, table, rug, tvWall,

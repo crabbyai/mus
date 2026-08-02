@@ -14,8 +14,9 @@
    Design Studio so the two never quote different numbers, and the
    "fine-tune in 3D" button hands the exact same spec across.
    ============================================================ */
-import { PLOTS, STYLES, FINISHES, KITCHENS, FEATURES, estimate, fmtPKR }
-  from "./house-builder.js?v=9";
+import * as THREE from "three";
+import { PLOTS, STYLES, FINISHES, KITCHENS, FEATURES, estimate, fmtPKR,
+  buildHouse, starfield } from "./house-builder.js?v=10";
 
 const WA = "16134083945";
 
@@ -58,10 +59,268 @@ const brief = {
   plot: "10m", storeys: 2, style: "dha", finish: "greyWhite",
   roof: "flat", kitchen: "closed",
   features: {},
-  area: "", status: "own", timing: "3m"
+  area: "", status: "own", timing: "3m",
+  night: false, spin: true
 };
 
 let mounted = false;
+
+
+/* ============================================================
+   LIVE MODEL — the brief you're building, rotating on its podium
+   ------------------------------------------------------------
+   A still photograph of a sold house can't answer "what does 2
+   Kanal look like instead of 10 Marla?". This renders the actual
+   brief, so every chip you tap changes the thing you're looking at.
+
+   Same geometry and lighting rig as the Design Studio (buildHouse
+   is imported, not reimplemented), kept to one scene that boots
+   lazily and pauses whenever it's off-screen or the tab is hidden.
+   ============================================================ */
+let renderer, scene, camera, rig, house, sun, hemi, stars = null;
+let composer = null, bloomPass = null;
+let ready = false, running = false, raf = 0, flickerWins = [];
+let yaw = -0.7, targetYaw = -0.7, pitch = 0.24, dist = 30;
+let dragging = false, lastX = 0, lastY = 0, pinchStart = 0;
+
+const cv = () => document.getElementById("ltCanvas");
+const sky = (night) => (night ? 0x05070f : 0x0a0f1e);
+
+function initScene() {
+  const c = cv();
+  if (!c) return false;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas: c, antialias: true, alpha: false,
+      powerPreference: "high-performance" });
+  } catch (e) { return false; }
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.25;
+
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(sky(false));
+  scene.fog = new THREE.Fog(sky(false), 34, 88);
+
+  camera = new THREE.PerspectiveCamera(38, 1, 0.5, 220);
+  rig = new THREE.Group();
+  scene.add(rig);
+
+  hemi = new THREE.HemisphereLight(0x9aa8c4, 0x3a4030, 1.35);
+  scene.add(hemi);
+  scene.add(new THREE.AmbientLight(0x5a6a96, 0.85));
+
+  sun = new THREE.DirectionalLight(0xffd9a0, 3.1);
+  sun.position.set(16, 22, 15);
+  sun.castShadow = true;
+  sun.shadow.mapSize.set(2048, 2048);
+  const s = 30;
+  sun.shadow.camera.left = -s; sun.shadow.camera.right = s;
+  sun.shadow.camera.top = s; sun.shadow.camera.bottom = -s;
+  sun.shadow.camera.far = 90;
+  sun.shadow.bias = -0.0006;
+  scene.add(sun);
+
+  const rim = new THREE.DirectionalLight(0x4466cc, 1.15);
+  rim.position.set(-18, 11, -17);
+  scene.add(rim);
+  const fill = new THREE.DirectionalLight(0xbcd0ff, 0.5);
+  fill.position.set(0, 9, 34);
+  scene.add(fill);
+
+  // Bloom is what makes the gold strips and lit windows glow. Loaded on
+  // demand, and skipped where the extra pass isn't worth the frame budget.
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches &&
+      innerWidth > 640 && (navigator.hardwareConcurrency || 4) >= 4) {
+    Promise.all([
+      import("./vendor/three/postprocessing/EffectComposer.js"),
+      import("./vendor/three/postprocessing/RenderPass.js"),
+      import("./vendor/three/postprocessing/UnrealBloomPass.js"),
+      import("./vendor/three/postprocessing/OutputPass.js")
+    ]).then(([EC, RP, UB, OP]) => {
+      const w = cv().clientWidth, h = cv().clientHeight;
+      composer = new EC.EffectComposer(renderer);
+      composer.addPass(new RP.RenderPass(scene, camera));
+      bloomPass = new UB.UnrealBloomPass(new THREE.Vector2(w, h), 0.55, 0.7, 0.85);
+      composer.addPass(bloomPass);
+      composer.addPass(new OP.OutputPass());
+      resize();
+    }).catch(() => { composer = null; });
+  }
+
+  // Reveal before the first resize — a hidden canvas measures 0×0, which
+  // would leave the renderer stuck at its 300×150 default.
+  c.hidden = false;
+  const img = document.getElementById("ltRefImg");
+  if (img) img.style.display = "none";
+  ["ltTools", "ltHint"].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.hidden = false;
+  });
+  const badge = document.getElementById("ltBadge");
+  if (badge) badge.textContent = "Your build · live 3D";
+
+  bindPointer(c);
+  wireStageTools();
+  resize();
+  addEventListener("resize", resize, { passive: true });
+  ready = true;
+  return true;
+}
+
+function resize() {
+  if (!renderer) return;
+  const c = cv();
+  const w = c.clientWidth, h = c.clientHeight;
+  if (!w || !h) return;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  if (composer) composer.setSize(w, h);
+  if (bloomPass) bloomPass.resolution.set(w, h);
+}
+
+function bindPointer(c) {
+  const down = (x, y) => { dragging = true; lastX = x; lastY = y; setSpin(false); };
+  const move = (x, y) => {
+    if (!dragging) return;
+    targetYaw -= (x - lastX) * 0.008;
+    pitch = Math.max(0.04, Math.min(0.72, pitch + (y - lastY) * 0.004));
+    lastX = x; lastY = y;
+  };
+  const up = () => { dragging = false; };
+
+  c.addEventListener("pointerdown", (e) => { c.setPointerCapture(e.pointerId); down(e.clientX, e.clientY); });
+  c.addEventListener("pointermove", (e) => move(e.clientX, e.clientY));
+  c.addEventListener("pointerup", up);
+  c.addEventListener("pointercancel", up);
+  c.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    dist = Math.max(12, Math.min(90, dist + e.deltaY * 0.03));
+  }, { passive: false });
+
+  // Two-finger pinch to zoom; one finger already orbits via pointer events.
+  c.addEventListener("touchstart", (e) => {
+    if (e.touches.length === 2) pinchStart = touchGap(e) || 1;
+  }, { passive: true });
+  c.addEventListener("touchmove", (e) => {
+    if (e.touches.length !== 2) return;
+    const g = touchGap(e);
+    if (g && pinchStart) { dist = Math.max(12, Math.min(90, dist * (pinchStart / g))); pinchStart = g; }
+  }, { passive: true });
+  function touchGap(e) {
+    const [a, b] = e.touches;
+    return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+  }
+}
+
+function setSpin(on) {
+  brief.spin = on;
+  const b = document.getElementById("ltSpin");
+  if (b) { b.setAttribute("aria-pressed", String(on)); b.style.opacity = on ? "1" : "0.5"; }
+}
+
+function wireStageTools() {
+  const dn = document.getElementById("ltDayNight");
+  if (dn) dn.addEventListener("click", () => {
+    brief.night = !brief.night;
+    dn.setAttribute("aria-pressed", String(brief.night));
+    dn.textContent = brief.night ? "☀" : "🌙";
+    rebuild3d();
+  });
+  const sp = document.getElementById("ltSpin");
+  if (sp) sp.addEventListener("click", () => setSpin(!brief.spin));
+}
+
+/* Names what's on screen, so a size change is unmistakable even at a glance. */
+function stampSpec() {
+  const el = document.getElementById("ltStamp");
+  if (!el) return;
+  const storeys = ["", "Single storey", "Double storey", "Triple storey"][brief.storeys] || "";
+  el.textContent = [PLOTS[brief.plot].label, storeys, STYLES[brief.style]].filter(Boolean).join(" · ");
+}
+
+function disposeTree(obj) {
+  obj.traverse((o) => {
+    if (o.geometry) o.geometry.dispose();
+    if (o.material) {
+      const list = Array.isArray(o.material) ? o.material : [o.material];
+      list.forEach((m) => m.dispose());   // cached textures are shared, not disposed
+    }
+  });
+}
+
+/* Called on every option change — this is the whole point of the section. */
+function rebuild3d() {
+  if (!ready) return;
+  if (house) { rig.remove(house); disposeTree(house); }
+  house = buildHouse(brief);
+  house.scale.setScalar(0.001);
+  rig.add(house);
+
+  flickerWins = [];
+  house.traverse((o) => {
+    const m = o.material;
+    if (m && m.emissiveIntensity > 0.6 && m.emissive && m.emissive.r > 0.5) {
+      m.userData.base = m.emissiveIntensity;
+      flickerWins.push(m);
+    }
+  });
+
+  const night = brief.night;
+  if (night && !stars) { stars = starfield(); scene.add(stars); }
+  if (stars) stars.visible = night;
+  scene.background.setHex(sky(night));
+  scene.fog.color.setHex(sky(night));
+  sun.intensity = night ? 0.55 : 3.1;
+  sun.color.setHex(night ? 0x7e9ae0 : 0xffd9a0);
+  hemi.intensity = night ? 0.55 : 1.25;
+
+  // Framing is the whole trick here. Backing off in proportion to the plot
+  // (what the Design Studio does) makes every size fill the frame identically,
+  // so 5 Marla and 2 Kanal look the same. Backing off sub-linearly instead
+  // keeps the lot in shot while letting a bigger plot actually read bigger —
+  // 2 Kanal comes out roughly 1.4× the on-screen size of 5 Marla.
+  const lot = house.userData.footprint;
+  const span = Math.max(lot.lw, lot.ld);
+  dist = 42 * Math.pow(span / 22, 0.42);
+
+  stampSpec();
+
+  const t0 = performance.now();
+  (function grow() {
+    const k = Math.min(1, (performance.now() - t0) / 480);
+    house.scale.setScalar(0.001 + (1 - Math.pow(1 - k, 3)) * 0.999);
+    if (k < 1) requestAnimationFrame(grow);
+  })();
+}
+
+function loop() {
+  if (!running) return;
+  raf = requestAnimationFrame(loop);
+  if (brief.spin && !dragging) targetYaw += 0.0022;
+  yaw += (targetYaw - yaw) * 0.08;
+
+  camera.position.set(Math.sin(yaw) * dist * Math.cos(pitch),
+                      Math.sin(pitch) * dist + 3,
+                      Math.cos(yaw) * dist * Math.cos(pitch));
+  camera.lookAt(0, 3.2, 0);
+
+  if (flickerWins.length) {
+    const t = performance.now() * 0.001;
+    for (let i = 0; i < flickerWins.length; i++) {
+      const m = flickerWins[i];
+      m.emissiveIntensity = m.userData.base * (1 + Math.sin(t * 1.6 + i * 2.1) * 0.06);
+    }
+  }
+  if (stars) stars.rotation.y += 0.00012;
+
+  if (composer) composer.render();
+  else renderer.render(scene, camera);
+}
+function startLoop() { if (!running && ready) { running = true; loop(); } }
+function stopLoop() { running = false; cancelAnimationFrame(raf); }
 
 /* ---------- the reference homes ---------- */
 function homes() {
@@ -176,12 +435,12 @@ function renderControls() {
   el.querySelectorAll("[data-ltset]").forEach((b) => b.addEventListener("click", () => {
     const k = b.dataset.ltset;
     brief[k] = k === "storeys" ? +b.dataset.value : b.dataset.value;
-    renderControls(); updateSummary();
+    renderControls(); updateSummary(); rebuild3d();
   }));
   el.querySelectorAll("[data-ltfeature]").forEach((b) => b.addEventListener("click", () => {
     const k = b.dataset.ltfeature;
     brief.features[k] = !brief.features[k];
-    renderControls(); updateSummary();
+    renderControls(); updateSummary(); rebuild3d();
   }));
   const sel = document.getElementById("ltArea2");
   if (sel) sel.addEventListener("change", () => { brief.area = sel.value; });
@@ -241,7 +500,7 @@ function select(i, scroll) {
   if (!list.length) return;
   seedFrom(Math.max(0, Math.min(list.length - 1, i | 0)));
   mount();
-  renderReel(); renderRef(); renderControls(); updateSummary();
+  renderReel(); renderRef(); renderControls(); updateSummary(); rebuild3d();
   if (scroll) {
     const s = document.getElementById("likethis");
     if (s) s.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -283,7 +542,7 @@ function selectFromText(text, label) {
   const hit = AREAS.find(([v]) => v && loc && loc.toLowerCase().indexOf(v.split(",")[0].toLowerCase()) >= 0);
   if (hit) brief.area = hit[0];
 
-  renderControls(); updateSummary();
+  renderControls(); updateSummary(); rebuild3d();
 }
 
 /* ---------- wiring ---------- */
@@ -317,3 +576,29 @@ function boot() {
   select(0, false);
 }
 boot();
+
+/* The scene costs nothing until the section is nearly in view, and the render
+   loop stops the moment it scrolls away or the tab is hidden. */
+(function bootScene() {
+  const section = document.getElementById("likethis");
+  if (!section || !cv()) return;
+  let tried = false;
+
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (!e.isIntersecting) { stopLoop(); continue; }
+      if (!tried) {
+        tried = true;
+        if (!initScene()) { io.disconnect(); return; }   // no WebGL — static art stays
+        rebuild3d();
+      }
+      startLoop();
+    }
+  }, { rootMargin: "260px" });
+  io.observe(section);
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) stopLoop();
+    else if (ready && section.getBoundingClientRect().top < innerHeight) startLoop();
+  });
+})();
