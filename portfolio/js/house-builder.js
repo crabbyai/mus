@@ -1749,6 +1749,47 @@ function syncSpinBtn() {
   if (b) { b.setAttribute("aria-pressed", String(state.spin)); b.style.opacity = state.spin ? "1" : "0.5"; }
 }
 
+
+/* ============================================================
+   PUBLIC API — lets the rest of the site open a house in here.
+   The old walkable tour rendered an interior that had nothing to
+   do with the exterior it was launched from. Driving that button
+   into this configurator instead means the inside always matches
+   the outside, because both come from one spec.
+   ============================================================ */
+window.HouseBuilder = {
+  openFrom(opts) {
+    opts = opts || {};
+    if (opts.plot && PLOTS[opts.plot]) state.plot = opts.plot;
+    if (opts.storeys) state.storeys = Math.min(3, Math.max(1, opts.storeys));
+    if (opts.style && STYLES[opts.style]) state.style = opts.style;
+    if (opts.finish && FINISHES[opts.finish]) state.finish = opts.finish;
+    if (opts.roof) state.roof = opts.roof === "hip" ? "hip" : "flat";
+
+    const section = document.getElementById("builder");
+    if (section) section.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    renderControls(); updateSummary(); syncUrl();
+
+    // The scene boots lazily, so wait for it before switching to the interior.
+    const go = () => {
+      if (!initialised) { setTimeout(go, 160); return; }
+      rebuild();
+      if (opts.inside !== false) setTimeout(() => setInside(true), 420);
+    };
+    go();
+  },
+  /* so callers can map a listing's size text onto a plot */
+  plotFromText(text) {
+    const t = (text || "").toLowerCase();
+    if (/2\s*kanal/.test(t)) return "2k";
+    if (/1\s*kanal|\bkanal\b/.test(t)) return "1k";
+    const m = t.match(/(\d+(?:\.\d+)?)\s*marla/);
+    if (m) { const n = parseFloat(m[1]); return n <= 6 ? "5m" : n <= 12 ? "10m" : "1k"; }
+    return "10m";
+  }
+};
+
 /* ============================================================
    Lazy boot — nothing runs until the section is close to view
    ============================================================ */

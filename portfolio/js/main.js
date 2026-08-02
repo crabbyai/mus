@@ -434,7 +434,7 @@ function openLightbox(i) {
   // per-listing interior walkthrough
   const tourBtn = document.getElementById("lbTourBtn");
   if (tourBtn) {
-    tourBtn.innerHTML = '<span class="lightbox__tour-ico">▷</span> Step Inside — Virtual Tour';
+    tourBtn.innerHTML = '<span class="lightbox__tour-ico">▷</span> Step Inside This Design';
     tourBtn.onclick = () => window.HouseTour && window.HouseTour.openProperty(i, p.title);
   }
 }
@@ -629,7 +629,7 @@ function openDealLightbox(d, i) {
 
   const tourBtn = document.getElementById("lbTourBtn");
   if (tourBtn) {
-    tourBtn.innerHTML = '<span class="lightbox__tour-ico">▷</span> Step Inside — Virtual Tour';
+    tourBtn.innerHTML = '<span class="lightbox__tour-ico">▷</span> Step Inside This Design';
     tourBtn.onclick = () => window.HouseTour && window.HouseTour.openDeal(i, d.title);
   }
 }
@@ -917,6 +917,58 @@ if (sortSelect) sortSelect.addEventListener("change", applySort);
     });
   }
 })();
+
+
+/* ---------- VIRTUAL TOUR -> HOUSE BUILDER ----------
+   The old walkable tour generated an interior with no relationship to the
+   house it was opened from — the inside never matched the outside, and the
+   layout wasn't a Pakistani plan. Rather than keep a broken feature (and a
+   2.3MB engine) around, the tour buttons now open the Design Studio, seeded
+   from the listing, and step inside. Same promise, and the interior is
+   guaranteed to match because both come from one spec. */
+function builderStyleFor(text) {
+  const t = (text || "").toLowerCase();
+  if (/spanish|mehal|villa|orchard|farmhouse/.test(t)) return "spanish";
+  if (/heritage|colonial|kothi|model town|palazzo|classic/.test(t)) return "colonial";
+  if (/glass|atrium|modern white|contemporary/.test(t)) return "glass";
+  return "dha";
+}
+function builderFinishFor(text) {
+  const t = (text || "").toLowerCase();
+  if (/brick|heritage/.test(t)) return "brick";
+  if (/marble|travertine|palazzo|stone/.test(t)) return "travertine";
+  if (/white|cream|casa blanca/.test(t)) return "whiteWood";
+  if (/sand|courtyard|spanish/.test(t)) return "sandstone";
+  return "greyWhite";
+}
+function openBuilderFor(title, sizeText, storeys) {
+  if (!window.HouseBuilder) return false;
+  // The lightbox holds scroll (lenis is stopped) — close it or the page can
+  // never reach the builder section and its scene never boots.
+  closeLightbox();
+  const hay = (title || "") + " " + (sizeText || "");
+  window.HouseBuilder.openFrom({
+    plot: window.HouseBuilder.plotFromText(sizeText || title),
+    storeys: storeys || 2,
+    style: builderStyleFor(hay),
+    finish: builderFinishFor(hay),
+    roof: /spanish|kothi|heritage|colonial|model town/i.test(hay) ? "hip" : "flat",
+    inside: true
+  });
+  return true;
+}
+/* Keep the old name working for anything still calling it. */
+window.HouseTour = {
+  open: () => openBuilderFor("", "10 Marla", 2),
+  openProperty: (i, title) => {
+    const p = PROPERTIES[i] || {};
+    openBuilderFor(title || p.title, p.sizeLabel || p.area, 2);
+  },
+  openDeal: (i, title) => {
+    const d = HOT_DEALS[i] || {};
+    openBuilderFor(title || d.title, d.title, 2);
+  }
+};
 
 /* ---------- WHATSAPP LEAD FORM ---------- */
 const leadForm = document.getElementById("leadForm");
