@@ -1148,8 +1148,12 @@ function buildInterior(cfg) {
   const foyerZ = id * 0.34;
   rug(g, -iw * 0.2, foyerZ, 1.6, 1.1, 0x6b4f39);
   zone("Entrance Foyer", -iw * 0.2, foyerZ);
-  staircase(g, -iw * 0.44, foyerZ - 0.4, H, night);
-  zone("Stairs", -iw * 0.44, foyerZ - 1.2);
+  // The walkable tour supplies its own climbable staircase in this exact
+  // spot; drawing the decorative one too put two flights in the same room.
+  if (!cfg.noStair) {
+    staircase(g, -iw * 0.44, foyerZ - 0.4, H, night);
+    zone("Stairs", -iw * 0.44, foyerZ - 1.2);
+  }
 
   // --- drawing room: formal, front corner, screened from the lounge ---
   const drawZ = id * 0.16, drawX = iw * 0.26;

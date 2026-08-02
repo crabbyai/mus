@@ -16,11 +16,11 @@ import {
   state, PLOTS, FINISHES,
   buildHouse, buildInterior,
   mat, box, plasterTex, paverTex, grassTex, glow, window3d, woodCladTex
-} from "./house-builder.js?v=8";
+} from "./house-builder.js?v=9";
 import { ARCHETYPES, PROPERTY_MODELS } from "./estate3d.js?v=5";
 
 /* ---------- module state ---------- */
-let renderer, scene, camera, composer = null, bloomPass = null;
+let renderer, scene, camera, composer = null, bloomPass = null, ssaoPass = null;
 let world = null, running = false, raf = 0;
 let exteriorGrp = null, interiorGrp = null, phase = "outside", doorZ = 0, promptEl;
 let overlay, canvas, roomEl, hintEl;
@@ -206,7 +206,7 @@ function buildWorld(cfg) {
   g.add(ceil);
 
   /* --- the furnished interior, reused verbatim from the configurator --- */
-  const inner = buildInterior(Object.assign({}, cfg));
+  const inner = buildInterior(Object.assign({}, cfg, { noStair: true }));
   inner.position.y = 0.012;
   // its own shell/ceiling would z-fight with ours, so drop those pieces
   inner.children.slice().forEach((c) => {
@@ -230,16 +230,46 @@ function buildWorld(cfg) {
   }
   if (cfg.features.guestRoom && W > 8) addZone("Guest Bedroom", -iw * 0.34, id * 0.06, iw * 0.3, id * 0.26);
 
-  /* --- staircase you can actually walk up --- */
-  const sx = -iw * 0.42, sz0 = id * 0.16, steps = 12, run = 0.3, rise = H / steps;
-  const treadM = mat(0x5a3f27, 0.55, 0.05, plasterTex(0x5a3f27));
+  /* --- staircase you can actually walk up ---------------------------------
+     Placed where buildInterior would have drawn its decorative flight, so
+     there is exactly one staircase in the room. Built with risers, stringers
+     and a handrail — bare floating treads looked like debris. */
+  const iwS = W - 0.36, idS = D - 0.36;
+  const sx = -iwS * 0.44, sz0 = idS * 0.34 - 0.4;
+  const steps = 12, run = 0.29, rise = H / steps, treadW = 1.4;
+  const treadM = mat(0x5a3f27, 0.5, 0.06, woodCladTex());
+  const riserM = mat(0xe8e4dc, 0.9);
   for (let i = 0; i < steps; i++) {
-    const tr = box(1.5, 0.1, run, treadM);
-    tr.position.set(sx, rise * (i + 1) - 0.05, sz0 - i * run);
+    const z = sz0 - i * run;
+    const tr = box(treadW, 0.1, run + 0.04, treadM);
+    tr.position.set(sx, rise * (i + 1) - 0.05, z);
     g.add(tr);
+    const ri = box(treadW, rise - 0.1, 0.05, riserM);        // closed riser
+    ri.position.set(sx, rise * (i + 1) - rise / 2 - 0.05, z - run / 2);
+    g.add(ri);
   }
-  stair = { x: sx, z0: sz0 + run, z1: sz0 - steps * run, w: 0.8, base: 0, top: H };
-  addZone("Stairs", sx, sz0 - (steps * run) / 2, 1.6, steps * run);
+  // side stringers so the flight reads as one object, not floating slabs
+  const runLen = steps * run;
+  for (const off of [-treadW / 2 - 0.06, treadW / 2 + 0.06]) {
+    const str = box(0.12, 0.42, Math.hypot(runLen, H), treadM);
+    str.position.set(sx + off, H / 2 - 0.1, sz0 - runLen / 2);
+    str.rotation.x = -Math.atan2(H, runLen);
+    g.add(str);
+  }
+  // glass balustrade + handrail on the open side
+  const bal = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.92, Math.hypot(runLen, H)),
+    new THREE.MeshStandardMaterial({ color: 0x9fc4e8, roughness: 0.05, metalness: 0.3,
+      transparent: true, opacity: 0.26 }));
+  bal.position.set(sx + treadW / 2 + 0.1, H / 2 + 0.5, sz0 - runLen / 2);
+  bal.rotation.x = -Math.atan2(H, runLen);
+  g.add(bal);
+  const hand = box(0.06, 0.06, Math.hypot(runLen, H), mat(0x191c22, 0.4, 0.6));
+  hand.position.set(sx + treadW / 2 + 0.1, H / 2 + 0.96, sz0 - runLen / 2);
+  hand.rotation.x = -Math.atan2(H, runLen);
+  g.add(hand);
+
+  stair = { x: sx, z0: sz0 + run, z1: sz0 - runLen, w: treadW / 2 + 0.1, base: 0, top: H };
+  addZone("Stairs", sx, sz0 - runLen / 2, treadW + 0.4, runLen);
 
   /* --- upper landing so the stairs lead somewhere --- */
   const upY = H;
@@ -266,11 +296,16 @@ function buildWorld(cfg) {
   g.add(duvet);
 
   /* --- lighting --- */
-  g.add(new THREE.HemisphereLight(night ? 0x50607f : 0xbcd0ff, 0x3a4030, night ? 0.9 : 1.5));
+  g.add(new THREE.HemisphereLight(night ? 0x50607f : 0xbcd0ff, 0x5a5240, night ? 0.85 : 1.35));
+  // warm bounce off the floor, which flat ambient alone never gives
+  const bounce = new THREE.DirectionalLight(night ? 0x6a5a48 : 0xffe8c8, night ? 0.25 : 0.55);
+  bounce.position.set(0, -4, 6);
+  g.add(bounce);
   const sun = new THREE.DirectionalLight(night ? 0x7e9ae0 : 0xffd9a0, night ? 0.5 : 2.6);
   sun.position.set(14, 22, 12);
   sun.castShadow = true;
-  sun.shadow.mapSize.set(2048, 2048);
+  sun.shadow.mapSize.set(4096, 4096);
+  sun.shadow.radius = 4;
   const sc = 26;
   sun.shadow.camera.left = -sc; sun.shadow.camera.right = sc;
   sun.shadow.camera.top = sc; sun.shadow.camera.bottom = -sc;
@@ -405,6 +440,7 @@ function size() {
   camera.updateProjectionMatrix();
   if (composer) composer.setSize(w, h);
   if (bloomPass) bloomPass.resolution.set(w, h);
+  if (ssaoPass) ssaoPass.setSize(w, h);
 }
 
 /* ============================================================
@@ -486,29 +522,43 @@ function openTour(cfg, title) {
     try {
       renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance" });
     } catch (e) { return false; }
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75));
+    // Max quality: full DPR, soft shadows and filmic tone mapping.
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
     renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.type = THREE.VSMShadowMap;   // softest, least acne
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.2;
-    camera = new THREE.PerspectiveCamera(72, 1, 0.05, 240);
+    renderer.toneMappingExposure = 1.12;
+    camera = new THREE.PerspectiveCamera(70, 1, 0.05, 240);
 
     // bloom, same treatment as the configurator
-    if (innerWidth > 640 && (navigator.hardwareConcurrency || 4) >= 4 &&
-        !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const cores = navigator.hardwareConcurrency || 4;
+    const wantsFX = innerWidth > 640 && cores >= 4 &&
+                    !matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const wantsAO = wantsFX && innerWidth >= 1024 && cores >= 8;
+    if (wantsFX) {
       Promise.all([
         import("./vendor/three/postprocessing/EffectComposer.js"),
         import("./vendor/three/postprocessing/RenderPass.js"),
         import("./vendor/three/postprocessing/UnrealBloomPass.js"),
-        import("./vendor/three/postprocessing/OutputPass.js")
-      ]).then(([EC, RP, UB, OP]) => {
+        import("./vendor/three/postprocessing/OutputPass.js"),
+        wantsAO ? import("./vendor/three/postprocessing/SSAOPass.js") : Promise.resolve(null)
+      ]).then(([EC, RP, UB, OP, SS]) => {
         composer = new EC.EffectComposer(renderer);
         composer.addPass(new RP.RenderPass(scene, camera));
-        bloomPass = new UB.UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.42, 0.7, 0.9);
+        // Ambient occlusion grounds furniture and darkens corners — the single
+        // biggest realism gain indoors.
+        if (SS) {
+          ssaoPass = new SS.SSAOPass(scene, camera, innerWidth, innerHeight);
+          ssaoPass.kernelRadius = 0.45;
+          ssaoPass.minDistance = 0.0009;
+          ssaoPass.maxDistance = 0.09;
+          composer.addPass(ssaoPass);
+        }
+        bloomPass = new UB.UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.34, 0.65, 0.92);
         composer.addPass(bloomPass);
         composer.addPass(new OP.OutputPass());
         size();
-      }).catch(() => { composer = null; });
+      }).catch(() => { composer = null; ssaoPass = null; });
     }
   }
 
@@ -565,5 +615,7 @@ function closeTour() {
 }
 
 window.WalkTour = { open: openTour, close: closeTour,
+  /* test hook: jump to a spot so the walk-in doesn't have to be simulated */
+  _tp: (x, z, ry) => { pos.x = x; pos.z = z; if (ry != null) { yaw = ry; } },
   _dbg: () => ({ running, pos: [ +pos.x.toFixed(2), +pos.y.toFixed(2), +pos.z.toFixed(2) ],
                  keys: Object.keys(keys).filter(k => keys[k]), walls: walls.length, zones: zones.length }) };
