@@ -1867,10 +1867,9 @@ function syncSpinBtn() {
 
 /* ============================================================
    PUBLIC API — lets the rest of the site open a house in here.
-   The old walkable tour rendered an interior that had nothing to
-   do with the exterior it was launched from. Driving that button
-   into this configurator instead means the inside always matches
-   the outside, because both come from one spec.
+   "Build me one like this" hands its whole brief across, so what
+   renders in 3D is exactly what the visitor just costed — one
+   spec, one number, one set of builders.
    ============================================================ */
 window.HouseBuilder = {
   openFrom(opts) {
@@ -1880,6 +1879,8 @@ window.HouseBuilder = {
     if (opts.style && STYLES[opts.style]) state.style = opts.style;
     if (opts.finish && FINISHES[opts.finish]) state.finish = opts.finish;
     if (opts.roof) state.roof = opts.roof === "hip" ? "hip" : "flat";
+    if (opts.kitchen && KITCHENS[opts.kitchen]) state.kitchen = opts.kitchen;
+    if (opts.features) for (const k in FEATURES) state.features[k] = !!opts.features[k];
 
     const section = document.getElementById("builder");
     if (section) section.scrollIntoView({ behavior: "smooth", block: "start" });

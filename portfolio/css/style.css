@@ -377,9 +377,9 @@ body::before {
   width: calc(100% - 3rem); margin: 0 1.5rem 1.4rem;
   padding: 0.65rem 1rem;
   background: rgba(201,164,92,0.1); border: 1px solid rgba(201,164,92,0.55);
-  color: var(--gold-bright); font-family: var(--sans); font-size: 0.74rem;
-  font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;
-  border-radius: 99px; cursor: pointer;
+  color: var(--gold-bright); font-family: var(--sans); font-size: 0.72rem;
+  font-weight: 600; letter-spacing: 0.13em; text-transform: uppercase;
+  border-radius: 99px; cursor: pointer; text-align: center; line-height: 1.35;
   transition: background 0.3s var(--ease), box-shadow 0.3s var(--ease), color 0.3s;
 }
 .card__tour-btn:hover {
@@ -617,8 +617,11 @@ body::before {
 .deal__price span { font-size: 0.62rem; letter-spacing: 0.26em; text-transform: uppercase; color: var(--muted); }
 .deal__price strong { font-family: var(--serif); font-size: 1.5rem; color: var(--gold-bright); }
 .deal__actions { display: flex; gap: 0.7rem; }
+/* White on WhatsApp green is only 2.45:1 — an AA failure on the site's main
+   conversion button. Keeping the brand green and going to near-black label
+   text puts it at 8:1 and matches how the gold buttons already read. */
 .btn--wa {
-  background: #1ebe57; color: #fff; padding: 0.7rem 1.4rem; font-weight: 600; font-size: 0.78rem;
+  background: #1ebe57; color: #06210f; padding: 0.7rem 1.4rem; font-weight: 700; font-size: 0.78rem;
 }
 .btn--wa:hover { background: #25d366; box-shadow: 0 10px 30px -8px rgba(30,190,87,0.6); }
 .btn--sm { padding: 0.7rem 1.4rem; font-size: 0.78rem; }
@@ -661,21 +664,120 @@ body::before {
 .to-top.is-visible { opacity: 1; pointer-events: auto; transform: none; }
 .to-top:hover { background: var(--gold); color: var(--ink); }
 
-/* ============ VIRTUAL TOUR CTA ============ */
-.tourcta {
-  position: relative; padding: clamp(4.5rem, 9vw, 8rem) 6vw; text-align: center;
+/* ============ BUILD ME ONE LIKE THIS ============ */
+.likethis {
+  position: relative; padding: clamp(4.5rem, 9vw, 7.5rem) 6vw;
   background:
     radial-gradient(ellipse at 50% 0%, rgba(201,164,92,0.12), transparent 60%),
     linear-gradient(180deg, #0c1226, var(--ink));
   border-top: 1px solid rgba(201,164,92,0.18);
   border-bottom: 1px solid rgba(201,164,92,0.18);
 }
-.tourcta__inner { max-width: 50rem; margin: 0 auto; }
-.tourcta__lead { color: #c9cedb; max-width: 40rem; margin: 0 auto 2rem; }
-.tourcta__btn { font-size: 1rem; padding: 1.15rem 2.6rem; }
-.tourcta__hints { display: flex; gap: 1.6rem; justify-content: center; flex-wrap: wrap; margin-top: 1.8rem; }
-.tourcta__hints span { font-size: 0.74rem; letter-spacing: 0.04em; color: var(--muted); }
-.tourcta__hints b { color: var(--gold); }
+.likethis__head { text-align: center; max-width: 52rem; margin: 0 auto 2.6rem; }
+.likethis__intro { color: #c9cedb; max-width: 42rem; margin: 1rem auto 0; }
+
+/* --- reference reel --- */
+.likethis__picker { max-width: 78rem; margin: 0 auto 1.6rem; }
+.likethis__pickerlabel {
+  font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 0.7rem;
+}
+.likethis__reel {
+  display: flex; gap: 0.7rem; overflow-x: auto; padding-bottom: 0.6rem;
+  scroll-snap-type: x mandatory; scrollbar-width: thin;
+  scrollbar-color: rgba(201,164,92,0.5) transparent;
+}
+.likethis__reel::-webkit-scrollbar { height: 6px; }
+.likethis__reel::-webkit-scrollbar-thumb { background: rgba(201,164,92,0.5); border-radius: 99px; }
+.lt-ref {
+  flex: 0 0 auto; width: 11.5rem; scroll-snap-align: start; cursor: pointer;
+  display: flex; flex-direction: column; text-align: left; gap: 0.15rem;
+  padding: 0.4rem 0.4rem 0.6rem; border-radius: 12px; font: inherit; color: var(--cream);
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(243,238,227,0.12);
+  transition: border-color 0.25s var(--ease), background 0.25s var(--ease), transform 0.25s var(--ease);
+}
+.lt-ref img {
+  width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 8px;
+  margin-bottom: 0.45rem; background: rgba(0,0,0,0.25);
+}
+.lt-ref__name {
+  font-size: 0.78rem; font-weight: 600; line-height: 1.25;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.lt-ref__meta { font-size: 0.68rem; color: var(--muted); letter-spacing: 0.04em; }
+.lt-ref:hover { border-color: rgba(201,164,92,0.55); transform: translateY(-2px); }
+.lt-ref.is-on {
+  border-color: var(--gold); background: rgba(201,164,92,0.12);
+}
+.lt-ref.is-on .lt-ref__name { color: var(--gold-bright); }
+
+/* --- brief shell --- */
+.likethis__shell {
+  max-width: 78rem; margin: 0 auto; border-radius: 18px; overflow: hidden;
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 22rem);
+  border: 1px solid rgba(243,238,227,0.1);
+}
+.likethis__ref { display: flex; flex-direction: column; }
+.likethis__refmedia { position: relative; }
+.likethis__refmedia img {
+  width: 100%; aspect-ratio: 16 / 10; object-fit: cover; display: block;
+  background: rgba(0,0,0,0.3);
+}
+.likethis__refbadge {
+  position: absolute; top: 0.9rem; left: 0.9rem;
+  font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase;
+  padding: 0.36rem 0.7rem; border-radius: 99px;
+  background: rgba(10,14,26,0.78); color: var(--gold-bright);
+  border: 1px solid rgba(201,164,92,0.4); backdrop-filter: blur(6px);
+}
+.likethis__refbody { padding: 1.4rem 1.5rem 1.6rem; }
+.likethis__refloc {
+  font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted);
+}
+.likethis__reftitle {
+  font-family: var(--font-display, inherit); font-size: clamp(1.3rem, 2.4vw, 1.8rem);
+  margin: 0.35rem 0 0.7rem; outline: none;
+}
+/* Focus lands here after a jump from a card, so mark it as a highlight rather
+   than an input-looking box. */
+h3.likethis__reftitle:focus-visible {   /* beats the global [tabindex] ring below */
+  outline: none; padding-left: 0.7rem; margin-left: -0.7rem;
+  box-shadow: inset 3px 0 0 0 var(--gold);
+}
+.likethis__refdesc { color: #c9cedb; font-size: 0.9rem; line-height: 1.65; margin-bottom: 1rem; }
+.likethis__reflist { list-style: none; display: grid; gap: 0.3rem; padding: 0; margin: 0; }
+.likethis__reflist li { font-size: 0.82rem; color: var(--cream); opacity: 0.85; }
+
+.likethis__form {
+  background: rgba(9,13,24,0.55); padding: 1.5rem 1.4rem;
+  display: flex; flex-direction: column; gap: 1rem;
+  border-left: 1px solid rgba(243,238,227,0.08);
+}
+.likethis__formlabel {
+  font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold);
+}
+.likethis__controls { overflow-y: auto; max-height: 32rem; padding-right: 0.2rem; }
+.lt-select {
+  width: 100%; font: inherit; font-size: 0.82rem; color: var(--cream);
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(243,238,227,0.16);
+  border-radius: 10px; padding: 0.6rem 0.7rem; min-height: 40px;
+}
+.lt-select:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.lt-select option { background: #0c1226; color: var(--cream); }
+.likethis__summary { margin-top: auto; padding-top: 1rem; border-top: 1px solid rgba(243,238,227,0.1); }
+.likethis__summary .builder__stat strong { white-space: nowrap; }
+.likethis__cta { width: 100%; justify-content: center; }
+.likethis__alt { width: 100%; justify-content: center; margin-top: 0.6rem; }
+
+@media (max-width: 900px) {
+  .likethis__shell { grid-template-columns: minmax(0, 1fr); }
+  .likethis__form { border-left: 0; border-top: 1px solid rgba(243,238,227,0.08); }
+  .likethis__controls { max-height: none; overflow: visible; }
+}
+@media (max-width: 560px) {
+  .lt-ref { width: 9.5rem; }
+}
 
 /* ============ TOUR BUTTON IN LIGHTBOX ============ */
 .lightbox__tour {
@@ -906,7 +1008,7 @@ body::before {
 .whatsapp-fab {
   position: fixed; right: 1.6rem; bottom: 1.6rem; z-index: 920;
   width: 58px; height: 58px; border-radius: 50%;
-  background: #1ebe57; color: #fff;
+  background: #1ebe57; color: #06210f;
   display: grid; place-items: center;
   box-shadow: 0 14px 36px -8px rgba(30,190,87,0.55);
   transition: transform 0.35s var(--ease), box-shadow 0.35s;
@@ -1557,7 +1659,7 @@ body::before {
     font-size: 0.72rem; letter-spacing: 0.08em; font-weight: 600;
   }
   .mobile-bar__ico { font-size: 1.1rem; }
-  .mobile-bar__btn--wa { background: #1ebe57; color: #fff; }
+  .mobile-bar__btn--wa { background: #1ebe57; color: #06210f; }
   .mobile-bar__btn--gold { background: var(--gold); color: var(--ink); }
   /* free the corners — the bar replaces the floating buttons on mobile */
   .whatsapp-fab { display: none; }

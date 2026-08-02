@@ -196,14 +196,12 @@ PROPERTIES.forEach((p, i) => {
         <span class="card__price"><em>Closed at</em>${p.price}</span>
         <span class="card__view">View Story →</span>
       </div>
-      <button class="card__tour-btn" type="button">▷ Virtual Tour</button>
+      <button class="card__tour-btn" type="button">⌂ Build Me One Like This</button>
     </div>`;
   card.addEventListener("click", () => openLightbox(i));
   card.querySelector(".card__tour-btn").addEventListener("click", (e) => {
     e.stopPropagation();
-    openLightbox(i);
-    const lb = document.getElementById("lbTourBtn");
-    if (lb && lb.onclick) lb.onclick();
+    if (window.LikeThis) window.LikeThis.open(i);
   });
   guardImage(card.querySelector(".card__media img"), i, p.title);
   grid.appendChild(card);
@@ -431,11 +429,14 @@ function openLightbox(i) {
   const has3d = window.Estate3D && window.Estate3D.openViewer(i, media);
   if (hint) hint.style.display = has3d ? "block" : "none";
 
-  // per-listing interior walkthrough
+  // this house is sold — the useful offer is another one exactly like it
   const tourBtn = document.getElementById("lbTourBtn");
   if (tourBtn) {
-    tourBtn.innerHTML = '<span class="lightbox__tour-ico">▷</span> Step Inside This Design';
-    tourBtn.onclick = () => window.HouseTour && window.HouseTour.openProperty(i, p.title);
+    tourBtn.innerHTML = '<span class="lightbox__tour-ico">⌂</span> Build Me One Like This';
+    tourBtn.onclick = () => {
+      closeLightbox();
+      if (window.LikeThis) window.LikeThis.open(i);
+    };
   }
 }
 function closeLightbox() {
@@ -629,8 +630,11 @@ function openDealLightbox(d, i) {
 
   const tourBtn = document.getElementById("lbTourBtn");
   if (tourBtn) {
-    tourBtn.innerHTML = '<span class="lightbox__tour-ico">▷</span> Step Inside This Design';
-    tourBtn.onclick = () => window.HouseTour && window.HouseTour.openDeal(i, d.title);
+    tourBtn.innerHTML = '<span class="lightbox__tour-ico">⌂</span> Build Me One Like This';
+    tourBtn.onclick = () => {
+      closeLightbox();
+      if (window.LikeThis) window.LikeThis.openFromText(d.title + " " + (d.specs || ""), d.loc || d.title);
+    };
   }
 }
 
@@ -756,14 +760,12 @@ function renderStaticDeals() {
           <a class="btn btn--wa" href="${wa}" target="_blank" rel="noopener">WhatsApp Now</a>
           <a class="btn btn--ghost btn--sm" href="tel:+16134083945">Call</a>
         </div>
-        <button class="card__tour-btn deal__tour-btn" type="button">▷ Virtual Tour</button>
+        <button class="card__tour-btn deal__tour-btn" type="button">⌂ Build Me One Like This</button>
       </div>`;
     dealsGrid.appendChild(el);
     el.querySelector(".deal__media").addEventListener("click", () => openDealLightbox(d, di));
     el.querySelector(".deal__tour-btn").addEventListener("click", () => {
-      openDealLightbox(d, di);
-      const lb = document.getElementById("lbTourBtn");
-      if (lb && lb.onclick) lb.onclick();
+      if (window.LikeThis) window.LikeThis.openFromText(d.title + " " + (d.specs || ""), d.loc || d.title);
     });
     el.querySelector(".deal__media img").addEventListener("error", function () {
       this.style.display = "none";
@@ -919,126 +921,69 @@ if (sortSelect) sortSelect.addEventListener("change", applySort);
 })();
 
 
-/* ---------- VIRTUAL TOURS FOR THE SOLD HOMES ----------
-   Each sold home gets its own tour built to match that specific house — its
-   plot, its storey count, the elevation its 3D model already shows, and a
-   finish that suits its character. Nothing here touches the Design Studio;
-   these are standalone walkthroughs of the twelve closed sales.
+/* ---------- BUILDABLE SPEC FOR EACH SOLD HOME ----------
+   A sold house can't be toured into a sale — it's gone. What it can do is
+   act as a reference build: "one like this, on my plot". These are the twelve
+   closings written as construction briefs, so js/like-this.js can pre-fill a
+   builder request from whichever one the visitor points at.
 
    Index matches PROPERTIES in this file and PROPERTY_MODELS in estate3d.js,
-   so the model in the lightbox and the house you walk are the same design. */
-/* The archetype each sold home's lightbox model renders — the tour shows the
-   identical model, so the exterior you walk up to is the thumbnail exactly. */
-const SOLD_ARCHETYPES = ["manor", "modern", "greyTexture", "cube5", "farmhouse",
-  "corner", "palazzo", "colonialAtrium", "modernWhite", "colonial", "linear", "brick"];
-
-const SOLD_TOURS = [
+   so the model in the lightbox and the spec you brief from are one design. */
+const SOLD_SPECS = [
   // 0 · The Margalla View Manor — 2 Kanal, 7 bed, grand modern manor
   { plot: "2k", storeys: 2, style: "dha", finish: "greyWhite", roof: "flat",
-    plan: "grand", palette: { wall: 0xe8e3d8, floor: 0xdcd6c9, sofa: 0x4a5364, accent: 0xd6a52e, stone: 0xd8cbb2 },
     kitchen: "closed", features: { pool: true, lawn: true, wall: true, porch: true,
     balcony: true, guestRoom: true, servantQtr: true, powderRoom: true, solar: false } },
   // 1 · Villa Serena — 1 Kanal, 6 bed, designer
   { plot: "1k", storeys: 2, style: "dha", finish: "whiteWood", roof: "flat",
-    plan: "openModern", palette: { wall: 0xf2efe9, floor: 0xe2ded6, sofa: 0x6b7686, accent: 0xc9a45c },
     kitchen: "closed", features: { pool: true, lawn: true, wall: true, porch: true,
     balcony: true, guestRoom: true, servantQtr: true, powderRoom: true } },
   // 2 · The Enclave Residence — 10 Marla, grey structure
   { plot: "10m", storeys: 2, style: "dha", finish: "greyWhite", roof: "flat",
-    palette: { wall: 0xe6e3dd, floor: 0xd2cec6, sofa: 0x4f5966, accent: 0xb8912f },
     kitchen: "closed", features: { lawn: true, wall: true, porch: true, balcony: true,
     guestRoom: true, powderRoom: true, servantQtr: false, pool: false } },
   // 3 · Casa Blanca E-11 — 5 Marla, compact white
   { plot: "5m", storeys: 2, style: "glass", finish: "whiteWood", roof: "flat",
-    plan: "openModern", palette: { wall: 0xf6f4f0, floor: 0xe6e2da, sofa: 0x7c8798, accent: 0xd6a52e },
     kitchen: "open", features: { lawn: true, wall: true, porch: true, balcony: true,
     guestRoom: false, servantQtr: false, powderRoom: true, pool: false } },
   // 4 · Gulberg Greens Farmhouse — 4 Kanal, sprawling, tiled roof
   { plot: "2k", storeys: 1, style: "spanish", finish: "sandstone", roof: "hip",
-    plan: "farmhouse", palette: { wall: 0xe9e0cd, floor: 0xc2a678, sofa: 0x6d5a48, accent: 0x8d6a3a, stone: 0xc2a678 },
     kitchen: "closed", features: { pool: true, lawn: true, wall: true, porch: true,
     balcony: false, guestRoom: true, servantQtr: true, powderRoom: true } },
   // 5 · The Hilltop Modern — 10 Marla, glass-forward
   { plot: "10m", storeys: 2, style: "glass", finish: "greyWhite", roof: "flat",
-    plan: "openModern", palette: { wall: 0xeceae5, floor: 0xd7d2c8, sofa: 0x3f4855, accent: 0xc9a45c },
     kitchen: "open", features: { lawn: true, wall: true, porch: true, balcony: true,
     guestRoom: false, servantQtr: false, powderRoom: true, pool: false } },
   // 6 · Phase 6 Palazzo — 1 Kanal, classical, travertine
   { plot: "1k", storeys: 2, style: "colonial", finish: "travertine", roof: "hip",
-    plan: "colonialFormal", palette: { wall: 0xf0e9db, floor: 0xd8cbb2, sofa: 0x6d5a48, accent: 0xb8912f, stone: 0xd8cbb2 },
     kitchen: "closed", features: { pool: true, lawn: true, wall: true, porch: true,
     balcony: true, guestRoom: true, servantQtr: true, powderRoom: true } },
   // 7 · The Gulberg Heritage House — 2 Kanal, brick, colonial
   { plot: "2k", storeys: 2, style: "colonial", finish: "brick", roof: "hip",
-    plan: "grand", palette: { wall: 0xe4dcd0, floor: 0xcbbfa9, sofa: 0x5a4a3c, accent: 0x9d6b3a, stone: 0xc9b79a },
     kitchen: "closed", features: { lawn: true, wall: true, porch: true, balcony: true,
     guestRoom: true, servantQtr: true, powderRoom: true, pool: false } },
   // 8 · Bahria Orchard Villa — 10 Marla, modern white
   { plot: "10m", storeys: 2, style: "dha", finish: "whiteWood", roof: "flat",
-    palette: { wall: 0xf4f2ee, floor: 0xe0dcd4, sofa: 0x5d6878, accent: 0xd6a52e },
     kitchen: "closed", features: { lawn: true, wall: true, porch: true, balcony: true,
     guestRoom: true, powderRoom: true, servantQtr: false, pool: false } },
   // 9 · Model Town Estate — 1 Kanal, colonial kothi
   { plot: "1k", storeys: 2, style: "colonial", finish: "sandstone", roof: "hip",
-    plan: "colonialFormal", palette: { wall: 0xefe7d6, floor: 0xcdbb98, sofa: 0x6b5a46, accent: 0xa8823a, stone: 0xc2a678 },
     kitchen: "closed", features: { lawn: true, wall: true, porch: true, balcony: false,
     guestRoom: true, servantQtr: true, powderRoom: true, pool: false } },
   // 10 · Lake City Linear House — 10 Marla, linear modern
   { plot: "10m", storeys: 2, style: "dha", finish: "greyWhite", roof: "flat",
-    plan: "openModern", palette: { wall: 0xeeece7, floor: 0xd9d4cb, sofa: 0x4b5462, accent: 0xc9a45c },
     kitchen: "open", features: { lawn: true, wall: true, porch: true, balcony: true,
     guestRoom: false, servantQtr: false, powderRoom: true, pool: false } },
   // 11 · The Phase 5 Courtyard — 5 Marla, brick courtyard
   { plot: "5m", storeys: 2, style: "spanish", finish: "brick", roof: "flat",
-    plan: "courtyard", palette: { wall: 0xe8ddd2, floor: 0xc9a98d, sofa: 0x6a5647, accent: 0xb8722f },
     kitchen: "closed", features: { lawn: true, wall: true, porch: true, balcony: false,
     guestRoom: false, servantQtr: false, powderRoom: true, pool: false } }
 ];
 
-/* Available listings are live YouTube posts, so there's no fixed design to
-   walk — derive a plausible one from the listing's own title. */
-function tourConfigFromText(text) {
-  const t = (text || "").toLowerCase();
-  const plot = /2\s*kanal/.test(t) ? "2k"
-    : /kanal/.test(t) ? "1k"
-    : (() => { const m = t.match(/(\d+(?:\.\d+)?)\s*marla/); return m ? (parseFloat(m[1]) <= 6 ? "5m" : "10m") : "10m"; })();
-  const style = /spanish|mehal|villa/.test(t) ? "spanish"
-    : /kothi|colonial|heritage|palazzo|classic/.test(t) ? "colonial"
-    : /glass|corner|modern facade/.test(t) ? "glass" : "dha";
-  const finish = /brick/.test(t) ? "brick"
-    : /marble|travertine|luxury|palazzo/.test(t) ? "travertine"
-    : /white/.test(t) ? "whiteWood"
-    : /spanish|sand/.test(t) ? "sandstone" : "greyWhite";
-  return {
-    plot, style, finish,
-    storeys: /triple|3\s*storey/.test(t) ? 3 : /single/.test(t) ? 1 : 2,
-    roof: /spanish|kothi|colonial|heritage/.test(t) ? "hip" : "flat",
-    kitchen: "closed",
-    features: { lawn: true, wall: true, porch: true, balcony: true,
-                guestRoom: plot !== "5m", servantQtr: plot === "1k" || plot === "2k",
-                powderRoom: true, pool: /pool|swimming/.test(t) }
-  };
-}
-
-/* Public tour API. Each entry walks its own house — no Design Studio involved. */
-window.HouseTour = {
-  open: () => window.WalkTour && window.WalkTour.open(SOLD_TOURS[0], PROPERTIES[0].title),
-  openProperty: (i, title) => {
-    if (!window.WalkTour) return;
-    closeLightbox();
-    const p = PROPERTIES[i] || {};
-    const cfg = Object.assign({}, SOLD_TOURS[i] || SOLD_TOURS[2],
-      { archetype: SOLD_ARCHETYPES[i] || "modern" });
-    window.WalkTour.open(cfg, title || p.title || "Virtual Tour");
-  },
-  openDeal: (i, title) => {
-    if (!window.WalkTour) return;
-    closeLightbox();
-    const d = HOT_DEALS[i] || {};
-    const name = title || d.title || "Virtual Tour";
-    window.WalkTour.open(tourConfigFromText(name + " " + (d.specs || "")), name);
-  }
-};
+/* Handed to js/like-this.js, which is a module and can't reach these
+   script-scoped consts directly. The sold homes are the reference builds
+   the "build me one like this" section works from. */
+window.SoldHomes = { PROPERTIES, SOLD_SPECS };
 
 /* ---------- WHATSAPP LEAD FORM ---------- */
 const leadForm = document.getElementById("leadForm");
@@ -1361,9 +1306,8 @@ if (alertForm) {
   prev.addEventListener("click", () => go(idx - 1));
   next.addEventListener("click", () => go(idx + 1));
   tourBtn.addEventListener("click", () => {
-    openDealLightbox(HOT_DEALS[idx], idx);
-    const lb = document.getElementById("lbTourBtn");
-    if (lb && lb.onclick) lb.onclick();
+    const d = HOT_DEALS[idx];
+    if (window.LikeThis) window.LikeThis.openFromText(d.title + " " + (d.specs || ""), d.loc || d.title);
   });
   threeBtn.addEventListener("click", () => openDealLightbox(HOT_DEALS[idx], idx));
 
