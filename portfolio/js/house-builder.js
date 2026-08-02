@@ -344,6 +344,64 @@ function bollard(g, x, z, night) {
   }
 }
 
+
+/* A parked car under the porch — instantly gives the scene scale and life. */
+function car(g, x, z, rotY, night) {
+  const grp = new THREE.Group();
+  const bodyMat = mat(0x2b3a52, 0.3, 0.75);
+  const body = box(1.85, 0.52, 4.3, bodyMat);
+  body.position.y = 0.68;
+  grp.add(body);
+  const cabin = box(1.62, 0.5, 2.2, mat(0x0e1420, 0.15, 0.6));
+  cabin.position.set(0, 1.16, -0.15);
+  grp.add(cabin);
+  const glassM = new THREE.MeshStandardMaterial({ color: 0x22364f, roughness: 0.06,
+    metalness: 0.6, transparent: true, opacity: 0.65 });
+  const wind = box(1.5, 0.42, 0.08, glassM);
+  wind.position.set(0, 1.16, 0.95);
+  grp.add(wind);
+  for (const [wx, wz] of [[-0.86, 1.35], [0.86, 1.35], [-0.86, -1.35], [0.86, -1.35]]) {
+    const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.34, 0.24, 14),
+      mat(0x121417, 0.85, 0.1));
+    wheel.rotation.z = Math.PI / 2;
+    wheel.position.set(wx, 0.34, wz);
+    wheel.castShadow = true;
+    grp.add(wheel);
+  }
+  // headlamps
+  for (const lx of [-0.62, 0.62]) {
+    const lamp = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.13, 0.06),
+      new THREE.MeshStandardMaterial({ color: 0xfff2d0,
+        emissive: new THREE.Color(0xffe0a8), emissiveIntensity: night ? 2.4 : 0.9 }));
+    lamp.position.set(lx, 0.78, 2.16);
+    grp.add(lamp);
+    if (night) glow(grp, lx, 0.78, 2.3, 1.1);
+  }
+  grp.position.set(x, 0, z);
+  grp.rotation.y = rotY;
+  g.add(grp);
+}
+
+/* Night sky — a shell of points. Costs one draw call. */
+function starfield() {
+  const n = 900, pos = new Float32Array(n * 3);
+  for (let i = 0; i < n; i++) {
+    const r = 120 + Math.random() * 40;
+    const th = Math.random() * Math.PI * 2;
+    const ph = Math.acos(Math.random() * 0.85 + 0.1);
+    pos[i * 3] = r * Math.sin(ph) * Math.cos(th);
+    pos[i * 3 + 1] = Math.abs(r * Math.cos(ph)) * 0.75;
+    pos[i * 3 + 2] = r * Math.sin(ph) * Math.sin(th);
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+  return new THREE.Points(geo, new THREE.PointsMaterial({
+    color: 0xcfe0ff, size: 0.9, sizeAttenuation: true,
+    transparent: true, opacity: 0.9, depthWrite: false,
+    fog: false          // they sit beyond the fog's far plane
+  }));
+}
+
 /* Showcase podium — the dark disc with a gold ring the tour models sit on.
    It frames the design and hides the horizon, which is what makes it read as
    a presentation piece rather than a floating box. */
@@ -352,7 +410,7 @@ function podium(r) {
   const baseGeo = new THREE.CylinderGeometry(r, r * 1.03, 0.3, 64);
   baseGeo.translate(0, -0.15, 0);
   const base = new THREE.Mesh(baseGeo,
-    new THREE.MeshStandardMaterial({ color: 0x141f3a, roughness: 0.45, metalness: 0.35 }));
+    new THREE.MeshStandardMaterial({ color: 0x0d1730, roughness: 0.18, metalness: 0.85 }));
   base.receiveShadow = true;
   grp.add(base);
   const ring = new THREE.Mesh(new THREE.TorusGeometry(r, 0.03, 8, 96),
@@ -567,6 +625,7 @@ function buildHouse(cfg) {
       pl.position.set(px, 2.8, pz);
       g.add(pl);
     }
+    car(g, px, pz + 0.55, Math.PI, night);
   }
 
   if (cfg.features.pool) {
@@ -669,6 +728,7 @@ function fmtPKR(n) {
    Scene
    ============================================================ */
 let renderer, scene, camera, house, sun, hemi, rig;
+let composer = null, bloomPass = null, stars = null, flickerWins = [];
 let running = false, initialised = false, raf = 0;
 let yaw = -0.7, pitch = 0.26, dist = 34, targetYaw = -0.7;
 let dragging = false, lastX = 0, lastY = 0, pinchStart = 0;
@@ -725,6 +785,31 @@ function initScene() {
   fill.position.set(0, 9, 34);
   scene.add(fill);
 
+  // Real bloom, loaded on demand so it never touches initial page weight.
+  // Skipped on low-end/small devices where the extra pass isn't worth it.
+  const wantsBloom = !matchMedia("(prefers-reduced-motion: reduce)").matches &&
+                     innerWidth > 640 && (navigator.hardwareConcurrency || 4) >= 4;
+  if (wantsBloom) {
+    Promise.all([
+      import("./vendor/three/postprocessing/EffectComposer.js"),
+      import("./vendor/three/postprocessing/RenderPass.js"),
+      import("./vendor/three/postprocessing/UnrealBloomPass.js"),
+      import("./vendor/three/postprocessing/OutputPass.js")
+    ]).then(([EC, RP, UB, OP]) => {
+      composer = new EC.EffectComposer(renderer);
+      composer.addPass(new RP.RenderPass(scene, camera));
+      bloomPass = new UB.UnrealBloomPass(
+        new THREE.Vector2(canvas().clientWidth, canvas().clientHeight),
+        0.55,   // strength — enough to bleed the gold strips and windows
+        0.7,    // radius
+        0.85    // threshold: only genuinely bright things bloom
+      );
+      composer.addPass(bloomPass);
+      composer.addPass(new OP.OutputPass());
+      resize();
+    }).catch(() => { composer = null; });   // plain render still works
+  }
+
   bindPointer(cv);
   resize();
   addEventListener("resize", resize, { passive: true });
@@ -740,6 +825,8 @@ function resize() {
   renderer.setSize(w, h, false);
   camera.aspect = w / h;
   camera.updateProjectionMatrix();
+  if (composer) composer.setSize(w, h);
+  if (bloomPass) bloomPass.resolution.set(w, h);
 }
 
 function bindPointer(cv) {
@@ -783,6 +870,22 @@ function rebuild() {
   rig.add(house);
 
   const night = state.night;
+
+  // Collect the emissive window materials so the loop can breathe them.
+  flickerWins = [];
+  house.traverse((o) => {
+    const m = o.material;
+    if (m && m.emissiveIntensity > 0.6 && m.emissive && m.emissive.r > 0.5) {
+      m.userData.base = m.emissiveIntensity;
+      flickerWins.push(m);
+    }
+  });
+
+  // Stars only at night.
+  if (night && !stars) { stars = starfield(); scene.add(stars); }
+  if (!night && stars) { scene.remove(stars); stars.geometry.dispose(); stars.material.dispose(); stars = null; }
+  if (stars) stars.visible = night;
+
   scene.background.setHex(skyColor(night));
   scene.fog.color.setHex(skyColor(night));
   sun.intensity = night ? 0.55 : 3.1;
@@ -823,7 +926,19 @@ function loop() {
                       Math.sin(pitch) * r + 3,
                       Math.cos(yaw) * r * Math.cos(pitch));
   camera.lookAt(0, 3.2, 0);
-  renderer.render(scene, camera);
+
+  // Warm windows breathe slightly — stops the night scene feeling static.
+  if (flickerWins.length) {
+    const t = performance.now() * 0.001;
+    for (let i = 0; i < flickerWins.length; i++) {
+      const m = flickerWins[i];
+      m.emissiveIntensity = m.userData.base * (1 + Math.sin(t * 1.6 + i * 2.1) * 0.06);
+    }
+  }
+  if (stars) stars.rotation.y += 0.00012;
+
+  if (composer) composer.render();
+  else renderer.render(scene, camera);
 }
 function start() { if (!running && initialised) { running = true; loop(); } }
 function stop() { running = false; cancelAnimationFrame(raf); }
@@ -901,7 +1016,7 @@ function wireChrome() {
 
   document.getElementById("builderShot").addEventListener("click", () => {
     if (!renderer) return;
-    renderer.render(scene, camera);
+    if (composer) composer.render(); else renderer.render(scene, camera);
     const a = document.createElement("a");
     a.download = "my-home-design.png";
     a.href = renderer.domElement.toDataURL("image/png");
