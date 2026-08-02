@@ -1710,6 +1710,11 @@ function wireChrome() {
     a.click();
   });
 
+  const walkBtn = document.getElementById("builderWalk");
+  if (walkBtn) walkBtn.addEventListener("click", () => {
+    if (window.WalkTour) window.WalkTour.open("Your Design");
+  });
+
   const insideBtn = document.getElementById("builderInside");
   if (insideBtn) insideBtn.addEventListener("click", () => setInside(!inside));
 
@@ -1833,3 +1838,14 @@ window.HouseBuilder = {
     else if (booted && section.getBoundingClientRect().top < innerHeight) start();
   });
 })();
+
+/* Shared with js/house-tour.js so the walkable tour renders the very same
+   house the visitor configured — one spec, one set of builders. */
+export {
+  state, PLOTS, FINISHES, STYLES, KITCHENS, FEATURES,
+  buildHouse, buildInterior, estimate, fmtPKR,
+  mat, box, frameMat, window3d, glow, glowTex,
+  plasterTex, travertineTex, woodCladTex, paverTex, grassTex,
+  ceilingFan, coveCeiling, sectional, accentChair, table, rug, tvWall,
+  kitchen, pendant, sconce, artwork, curtains, staircase, roomLabel
+};

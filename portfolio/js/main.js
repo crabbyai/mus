@@ -941,7 +941,8 @@ function builderFinishFor(text) {
   if (/sand|courtyard|spanish/.test(t)) return "sandstone";
   return "greyWhite";
 }
-function openBuilderFor(title, sizeText, storeys) {
+/* Seed the Design Studio from a listing, then walk it. */
+function openBuilderFor(title, sizeText, storeys, walk) {
   if (!window.HouseBuilder) return false;
   // The lightbox holds scroll (lenis is stopped) — close it or the page can
   // never reach the builder section and its scene never boots.
@@ -953,20 +954,27 @@ function openBuilderFor(title, sizeText, storeys) {
     style: builderStyleFor(hay),
     finish: builderFinishFor(hay),
     roof: /spanish|kothi|heritage|colonial|model town/i.test(hay) ? "hip" : "flat",
-    inside: true
+    inside: false
   });
+  // Walking the house is the point — drop straight into the first-person tour
+  // once the studio has taken the config.
+  if (walk !== false) {
+    setTimeout(() => {
+      if (window.WalkTour) window.WalkTour.open(title || "Your Design");
+    }, 500);
+  }
   return true;
 }
 /* Keep the old name working for anything still calling it. */
 window.HouseTour = {
-  open: () => openBuilderFor("", "10 Marla", 2),
+  open: () => openBuilderFor("Your Design", "10 Marla", 2, true),
   openProperty: (i, title) => {
     const p = PROPERTIES[i] || {};
-    openBuilderFor(title || p.title, p.sizeLabel || p.area, 2);
+    openBuilderFor(title || p.title, p.sizeLabel || p.area, 2, true);
   },
   openDeal: (i, title) => {
     const d = HOT_DEALS[i] || {};
-    openBuilderFor(title || d.title, d.title, 2);
+    openBuilderFor(title || d.title, d.title, 2, true);
   }
 };
 
