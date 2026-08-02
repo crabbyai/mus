@@ -910,3 +910,7 @@ function closeViewer() {
 
 window.Estate3D = { openViewer, openViewerByType, openViewerForListing, archetypeForListing, closeViewer };
 initShowcase();
+
+/* Shared with js/house-tour.js so a sold-home tour can show the exact same
+   model the lightbox thumbnail does, rather than an approximation of it. */
+export { ARCHETYPES, PROPERTY_MODELS };

@@ -927,6 +927,11 @@ if (sortSelect) sortSelect.addEventListener("change", applySort);
 
    Index matches PROPERTIES in this file and PROPERTY_MODELS in estate3d.js,
    so the model in the lightbox and the house you walk are the same design. */
+/* The archetype each sold home's lightbox model renders — the tour shows the
+   identical model, so the exterior you walk up to is the thumbnail exactly. */
+const SOLD_ARCHETYPES = ["manor", "modern", "greyTexture", "cube5", "farmhouse",
+  "corner", "palazzo", "colonialAtrium", "modernWhite", "colonial", "linear", "brick"];
+
 const SOLD_TOURS = [
   // 0 · The Margalla View Manor — 2 Kanal, 7 bed, grand modern manor
   { plot: "2k", storeys: 2, style: "dha", finish: "greyWhite", roof: "flat",
@@ -1010,7 +1015,9 @@ window.HouseTour = {
     if (!window.WalkTour) return;
     closeLightbox();
     const p = PROPERTIES[i] || {};
-    window.WalkTour.open(SOLD_TOURS[i] || SOLD_TOURS[2], title || p.title || "Virtual Tour");
+    const cfg = Object.assign({}, SOLD_TOURS[i] || SOLD_TOURS[2],
+      { archetype: SOLD_ARCHETYPES[i] || "modern" });
+    window.WalkTour.open(cfg, title || p.title || "Virtual Tour");
   },
   openDeal: (i, title) => {
     if (!window.WalkTour) return;

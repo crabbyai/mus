@@ -2330,3 +2330,12 @@ body.wtour-open .cursor-dot { display: none !important; }
   background: rgba(201,164,92,0.75); border: 1px solid rgba(243,238,227,0.4);
 }
 @media (hover: none) { .wtour__hint { font-size: 0.72rem; } }
+.wtour__prompt {
+  position: absolute; left: 50%; bottom: 4.2rem; transform: translate(-50%, 8px);
+  padding: 0.6rem 1.1rem; border-radius: 99px;
+  background: rgba(10,15,30,0.78); backdrop-filter: blur(6px);
+  border: 1px solid rgba(201,164,92,0.5); color: var(--gold-bright);
+  font-size: 0.82rem; pointer-events: none; opacity: 0;
+  transition: opacity 0.35s var(--ease), transform 0.35s var(--ease);
+}
+.wtour__prompt.is-on { opacity: 1; transform: translate(-50%, 0); }

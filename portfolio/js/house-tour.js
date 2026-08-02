@@ -17,10 +17,12 @@ import {
   buildHouse, buildInterior,
   mat, box, plasterTex, paverTex, grassTex, glow, window3d, woodCladTex
 } from "./house-builder.js?v=7";
+import { ARCHETYPES, PROPERTY_MODELS } from "./estate3d.js?v=5";
 
 /* ---------- module state ---------- */
 let renderer, scene, camera, composer = null, bloomPass = null;
 let world = null, running = false, raf = 0;
+let exteriorGrp = null, interiorGrp = null, phase = "outside", doorZ = 0, promptEl;
 let overlay, canvas, roomEl, hintEl;
 
 const walls = [];          // AABBs for collision
@@ -109,6 +111,29 @@ function buildWorld(cfg) {
     for (const sx of [-1, 1]) put(seg, 2.2, 0.25, sx * (2.3 + seg / 2), 1.1, ld / 2);
   }
 
+  /* --- exterior ---------------------------------------------------------
+     When a tour names an archetype we drop in the *exact* model the lightbox
+     thumbnail renders, so the house you walk up to is the house you saw.
+     Those models are solid display geometry with no way through, so the front
+     door acts as a threshold: reach it and we swap to the interior. */
+  if (cfg.archetype && ARCHETYPES[cfg.archetype]) {
+    exteriorGrp = new THREE.Group();
+    const model = ARCHETYPES[cfg.archetype]();
+    model.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+    exteriorGrp.add(model);
+    g.add(exteriorGrp);
+
+    // collide with the model's real footprint, leaving the entrance open
+    const bbox = new THREE.Box3().setFromObject(model);
+    const cx = (bbox.min.x + bbox.max.x) / 2;
+    const bw = bbox.max.x - bbox.min.x, bd = bbox.max.z - bbox.min.z;
+    doorZ = bbox.max.z;
+    addWall(cx - bw / 2 - 0.3, (bbox.min.z + bbox.max.z) / 2, 0.6, bd);   // left flank
+    addWall(cx + bw / 2 + 0.3, (bbox.min.z + bbox.max.z) / 2, 0.6, bd);   // right flank
+    addWall(cx, bbox.min.z - 0.3, bw, 0.6);                               // rear
+    addZone("Front Elevation", cx, doorZ + 2.2, bw, 4.0);
+  }
+
   /* --- house shell: four walls with a doorway gap in the front --- */
   const wallMap = cfg.finish === "brick" ? plasterTex(fin.wall) : plasterTex(fin.wall);
   const shellM = mat(fin.wall, 0.9, 0.03, wallMap);
@@ -117,6 +142,7 @@ function buildWorld(cfg) {
     const b = box(w, h, d, m || shellM); b.position.set(x, y, z); g.add(b);
     if (h > 1.2) addWall(x, z, w, d);
   };
+  const shellStart = g.children.length;
   put(W, H, t, 0, H / 2, -D / 2);                      // back
   put(t, H, D, -W / 2, H / 2, 0);                      // left
   put(t, H, D, W / 2, H / 2, 0);                       // right
@@ -261,6 +287,23 @@ function buildWorld(cfg) {
   g.add(upL);
   if (night) glow(g, 0, 2.4, D / 2 + 0.4, 3.2);
 
+  // Everything built after the exterior is interior — park it in one group so
+  // the threshold can toggle between the two.
+  if (exteriorGrp) {
+    interiorGrp = new THREE.Group();
+    // Lights must stay in the world group — sweeping them into the interior
+    // and hiding it leaves the whole exterior unlit.
+    g.children.slice(shellStart).forEach((c) => {
+      if (c === exteriorGrp || c.isLight) return;
+      g.remove(c); interiorGrp.add(c);
+    });
+    g.add(interiorGrp);
+    interiorGrp.visible = false;
+    phase = "outside";
+  } else {
+    phase = "inside";
+  }
+
   return g;
 }
 
@@ -281,11 +324,13 @@ function ensureOverlay() {
       '<button class="wtour__close" id="wtourClose" type="button" aria-label="Exit tour">✕ Exit</button>' +
     '</div>' +
     '<p class="wtour__hint" id="wtourHint">Click to look · <b>W A S D</b> to walk · <b>Shift</b> run · <b>Esc</b> exit</p>' +
+    '<div class="wtour__prompt" id="wtourPrompt">Walk to the front door to step inside</div>' +
     '<div class="wtour__joy" id="wtourJoy"><div class="wtour__knob" id="wtourKnob"></div></div>';
   document.body.appendChild(overlay);
   canvas = overlay.querySelector("#wtourCanvas");
   roomEl = overlay.querySelector("#wtourRoom");
   hintEl = overlay.querySelector("#wtourHint");
+  promptEl = overlay.querySelector("#wtourPrompt");
   overlay.querySelector("#wtourClose").addEventListener("click", closeTour);
   bindControls();
 }
@@ -400,6 +445,27 @@ function loop(now) {
   camera.position.set(pos.x, pos.y + EYE, pos.z);
   camera.rotation.set(pitch, yaw, 0, "YXZ");
 
+  /* Threshold: crossing the front door swaps exterior for interior, and
+     stepping back out reverses it. Keeps the walk continuous while letting
+     the outside be the untouched thumbnail model. */
+  if (exteriorGrp && interiorGrp) {
+    const nearDoor = Math.abs(pos.x) < 2.4;
+    if (phase === "outside" && nearDoor && pos.z < doorZ - 0.4) {
+      phase = "inside";
+      exteriorGrp.visible = false;
+      interiorGrp.visible = true;
+      if (promptEl) promptEl.classList.remove("is-on");
+    } else if (phase === "inside" && nearDoor && pos.z > doorZ + 0.5) {
+      phase = "outside";
+      exteriorGrp.visible = true;
+      interiorGrp.visible = false;
+    }
+    if (promptEl) {
+      const show = phase === "outside" && pos.z < doorZ + 6 && pos.z > doorZ;
+      promptEl.classList.toggle("is-on", show);
+    }
+  }
+
   const r = roomAt(pos.x, pos.z);
   if (r && r !== curRoom) { curRoom = r; if (roomEl) roomEl.textContent = r; }
 
@@ -451,6 +517,7 @@ function openTour(cfg, title) {
   scene.background = new THREE.Color(skyC);
   scene.fog = new THREE.Fog(skyC, 26, 110);
 
+  exteriorGrp = interiorGrp = null;
   world = buildWorld(conf);
   scene.add(world);
 
