@@ -926,7 +926,12 @@ h3.likethis__reftitle:focus-visible {   /* beats the global [tabindex] ring belo
   background: linear-gradient(180deg, transparent, rgba(201,164,92,0.05) 50%, transparent);
 }
 .quote-band__portrait { width: 96px; height: 96px; margin: 0 auto 2rem; border-radius: 50%; overflow: hidden; border: 2px solid var(--gold); padding: 4px; }
-.quote-band__portrait img { width: 100%; height: 100%; object-fit: cover; object-position: top; border-radius: 50%; }
+/* The hero portrait is a full-length shot, so a plain square crop leaves the
+   face tiny in a 96px circle — zoom into the head instead. */
+.quote-band__portrait img {
+  width: 100%; height: 100%; object-fit: cover; border-radius: 50%;
+  object-position: 50% 4%; transform: scale(1.85); transform-origin: 50% 22%;
+}
 .quote-band blockquote { font-family: var(--serif); font-size: clamp(1.6rem, 3.6vw, 3rem); line-height: 1.3; max-width: 52rem; margin: 0 auto 1.6rem; }
 .quote-band cite { color: var(--muted); font-style: normal; letter-spacing: 0.3em; font-size: 0.74rem; text-transform: uppercase; }
 
