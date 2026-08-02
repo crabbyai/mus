@@ -935,50 +935,62 @@ const SOLD_ARCHETYPES = ["manor", "modern", "greyTexture", "cube5", "farmhouse",
 const SOLD_TOURS = [
   // 0 · The Margalla View Manor — 2 Kanal, 7 bed, grand modern manor
   { plot: "2k", storeys: 2, style: "dha", finish: "greyWhite", roof: "flat",
+    plan: "grand", palette: { wall: 0xe8e3d8, floor: 0xdcd6c9, sofa: 0x4a5364, accent: 0xd6a52e, stone: 0xd8cbb2 },
     kitchen: "closed", features: { pool: true, lawn: true, wall: true, porch: true,
     balcony: true, guestRoom: true, servantQtr: true, powderRoom: true, solar: false } },
   // 1 · Villa Serena — 1 Kanal, 6 bed, designer
   { plot: "1k", storeys: 2, style: "dha", finish: "whiteWood", roof: "flat",
+    plan: "openModern", palette: { wall: 0xf2efe9, floor: 0xe2ded6, sofa: 0x6b7686, accent: 0xc9a45c },
     kitchen: "closed", features: { pool: true, lawn: true, wall: true, porch: true,
     balcony: true, guestRoom: true, servantQtr: true, powderRoom: true } },
   // 2 · The Enclave Residence — 10 Marla, grey structure
   { plot: "10m", storeys: 2, style: "dha", finish: "greyWhite", roof: "flat",
+    palette: { wall: 0xe6e3dd, floor: 0xd2cec6, sofa: 0x4f5966, accent: 0xb8912f },
     kitchen: "closed", features: { lawn: true, wall: true, porch: true, balcony: true,
     guestRoom: true, powderRoom: true, servantQtr: false, pool: false } },
   // 3 · Casa Blanca E-11 — 5 Marla, compact white
   { plot: "5m", storeys: 2, style: "glass", finish: "whiteWood", roof: "flat",
+    plan: "openModern", palette: { wall: 0xf6f4f0, floor: 0xe6e2da, sofa: 0x7c8798, accent: 0xd6a52e },
     kitchen: "open", features: { lawn: true, wall: true, porch: true, balcony: true,
     guestRoom: false, servantQtr: false, powderRoom: true, pool: false } },
   // 4 · Gulberg Greens Farmhouse — 4 Kanal, sprawling, tiled roof
   { plot: "2k", storeys: 1, style: "spanish", finish: "sandstone", roof: "hip",
+    plan: "farmhouse", palette: { wall: 0xe9e0cd, floor: 0xc2a678, sofa: 0x6d5a48, accent: 0x8d6a3a, stone: 0xc2a678 },
     kitchen: "closed", features: { pool: true, lawn: true, wall: true, porch: true,
     balcony: false, guestRoom: true, servantQtr: true, powderRoom: true } },
   // 5 · The Hilltop Modern — 10 Marla, glass-forward
   { plot: "10m", storeys: 2, style: "glass", finish: "greyWhite", roof: "flat",
+    plan: "openModern", palette: { wall: 0xeceae5, floor: 0xd7d2c8, sofa: 0x3f4855, accent: 0xc9a45c },
     kitchen: "open", features: { lawn: true, wall: true, porch: true, balcony: true,
     guestRoom: false, servantQtr: false, powderRoom: true, pool: false } },
   // 6 · Phase 6 Palazzo — 1 Kanal, classical, travertine
   { plot: "1k", storeys: 2, style: "colonial", finish: "travertine", roof: "hip",
+    plan: "colonialFormal", palette: { wall: 0xf0e9db, floor: 0xd8cbb2, sofa: 0x6d5a48, accent: 0xb8912f, stone: 0xd8cbb2 },
     kitchen: "closed", features: { pool: true, lawn: true, wall: true, porch: true,
     balcony: true, guestRoom: true, servantQtr: true, powderRoom: true } },
   // 7 · The Gulberg Heritage House — 2 Kanal, brick, colonial
   { plot: "2k", storeys: 2, style: "colonial", finish: "brick", roof: "hip",
+    plan: "grand", palette: { wall: 0xe4dcd0, floor: 0xcbbfa9, sofa: 0x5a4a3c, accent: 0x9d6b3a, stone: 0xc9b79a },
     kitchen: "closed", features: { lawn: true, wall: true, porch: true, balcony: true,
     guestRoom: true, servantQtr: true, powderRoom: true, pool: false } },
   // 8 · Bahria Orchard Villa — 10 Marla, modern white
   { plot: "10m", storeys: 2, style: "dha", finish: "whiteWood", roof: "flat",
+    palette: { wall: 0xf4f2ee, floor: 0xe0dcd4, sofa: 0x5d6878, accent: 0xd6a52e },
     kitchen: "closed", features: { lawn: true, wall: true, porch: true, balcony: true,
     guestRoom: true, powderRoom: true, servantQtr: false, pool: false } },
   // 9 · Model Town Estate — 1 Kanal, colonial kothi
   { plot: "1k", storeys: 2, style: "colonial", finish: "sandstone", roof: "hip",
+    plan: "colonialFormal", palette: { wall: 0xefe7d6, floor: 0xcdbb98, sofa: 0x6b5a46, accent: 0xa8823a, stone: 0xc2a678 },
     kitchen: "closed", features: { lawn: true, wall: true, porch: true, balcony: false,
     guestRoom: true, servantQtr: true, powderRoom: true, pool: false } },
   // 10 · Lake City Linear House — 10 Marla, linear modern
   { plot: "10m", storeys: 2, style: "dha", finish: "greyWhite", roof: "flat",
+    plan: "openModern", palette: { wall: 0xeeece7, floor: 0xd9d4cb, sofa: 0x4b5462, accent: 0xc9a45c },
     kitchen: "open", features: { lawn: true, wall: true, porch: true, balcony: true,
     guestRoom: false, servantQtr: false, powderRoom: true, pool: false } },
   // 11 · The Phase 5 Courtyard — 5 Marla, brick courtyard
   { plot: "5m", storeys: 2, style: "spanish", finish: "brick", roof: "flat",
+    plan: "courtyard", palette: { wall: 0xe8ddd2, floor: 0xc9a98d, sofa: 0x6a5647, accent: 0xb8722f },
     kitchen: "closed", features: { lawn: true, wall: true, porch: true, balcony: false,
     guestRoom: false, servantQtr: false, powderRoom: true, pool: false } }
 ];

@@ -1059,18 +1059,28 @@ function roomLabel(g, text, x, z, H) {
   g.add(sp);
 }
 
+function stoneLike(PAL) {
+  return mat(PAL.stone || 0xd8cbb2, 0.8, 0.03, travertineTex());
+}
 function buildInterior(cfg) {
   const g = new THREE.Group();
   const plot = PLOTS[cfg.plot];
   const fin = FINISHES[cfg.finish];
   const W = plot.w, D = plot.d, night = cfg.night;
   const H = 3.0;
+  /* A palette per house, so no two sold homes read the same inside. Declared
+     up front because the floor is built before the walls. */
+  const PAL = cfg.palette || {};
+  const wallC = PAL.wall || 0xece7dd;
+  const floorC = PAL.floor || 0xd7d2c8;
+  const sofaC = PAL.sofa || 0x555f70;
+  const accentC = PAL.accent || 0xd6a52e;
   const inset = 0.18;               // wall thickness
   const iw = W - inset * 2, id = D - inset * 2;
 
   // floor: polished tile, which is what almost every house here uses
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(iw, id),
-    new THREE.MeshStandardMaterial({ color: 0xd7d2c8, roughness: 0.14, metalness: 0.35 }));
+    new THREE.MeshStandardMaterial({ color: floorC, roughness: 0.14, metalness: 0.35 }));
   floor.rotation.x = -Math.PI / 2;
   floor.receiveShadow = true;
   g.add(floor);
@@ -1083,7 +1093,7 @@ function buildInterior(cfg) {
   coveCeiling(g, iw, id, H, night);
 
   // shell walls (front wall omitted so the camera can see in from outside)
-  const wallM = mat(0xece7dd, 0.92, 0.02, plasterTex(0xece7dd));
+  const wallM = mat(wallC, 0.92, 0.02, plasterTex(wallC));
   const wallM2 = wallM;
   const back = box(iw, H, 0.12, wallM); back.position.set(0, H / 2, -id / 2); g.add(back);
   const left = box(0.12, H, id, wallM); left.position.set(-iw / 2, H / 2, 0); g.add(left);
@@ -1159,7 +1169,7 @@ function buildInterior(cfg) {
   // --- family lounge: private, deeper into the plan ---
   const loungeZ = -id * 0.14;
   rug(g, -iw * 0.2, loungeZ, iw * 0.46, id * 0.28, 0x6b5340);
-  sectional(g, -iw * 0.18, loungeZ + id * 0.06, 0, 0x555f70);
+  sectional(g, -iw * 0.18, loungeZ + id * 0.06, 0, sofaC);
   accentChair(g, -iw * 0.38, loungeZ - id * 0.04, 0.7);
   accentChair(g, -iw * 0.02, loungeZ - id * 0.04, -0.7);
   table(g, -iw * 0.2, loungeZ, 1.2, 0.66, 0x6b4526);
@@ -1280,6 +1290,102 @@ function buildInterior(cfg) {
   g.add(fillL);
   // a soft ambient floor so nothing is ever unreadable
   g.add(new THREE.HemisphereLight(night ? 0x6a5a48 : 0xbcd0ff, 0x2a2620, night ? 1.1 : 1.4));
+
+  /* ---- plan variants -----------------------------------------------------
+     Each sold home names a plan, so the inside differs as much as the outside:
+     a manor gets a double-height lounge, a kothi gets interior columns, the
+     farmhouse a beamed veranda room, the courtyard house an open court. ---- */
+  const plan = cfg.plan || "";
+
+  if (plan === "grand") {
+    // double-height void over the lounge with a gallery rail above
+    const voidY = H + 0.02;
+    const rail = new THREE.Mesh(new THREE.BoxGeometry(iw * 0.5, 0.95, 0.05),
+      new THREE.MeshStandardMaterial({ color: 0x9fc4e8, roughness: 0.07, metalness: 0.3,
+        transparent: true, opacity: 0.32 }));
+    rail.position.set(-iw * 0.2, voidY + 0.5, id * 0.02);
+    g.add(rail);
+    const cap = box(iw * 0.5, 0.07, 0.09, frameMat());
+    cap.position.set(-iw * 0.2, voidY + 1.0, id * 0.02);
+    g.add(cap);
+    // upper-storey band so the void reads as two floors
+    const upperWall = box(iw, 2.6, 0.1, mat(wallC, 0.92, 0.02, plasterTex(wallC)));
+    upperWall.position.set(0, voidY + 1.3, -id / 2 + 0.06);
+    g.add(upperWall);
+    artwork(g, -iw * 0.2, voidY + 1.5, -id / 2 + 0.13, 2.2, 1.6);
+    // chandelier dropping through the void
+    for (let i = 0; i < 3; i++) pendant(g, -iw * 0.2 + (i - 1) * 0.5, voidY + 1.1 - i * 0.18, id * 0.06, night);
+    zone("Double-Height Lounge", -iw * 0.2, id * 0.02);
+  }
+
+  if (plan === "colonialFormal") {
+    // interior columns and a ceiling rose — the formal kothi language
+    for (const cx of [-iw * 0.02, iw * 0.02]) {
+      for (const cz of [id * 0.04, -id * 0.24]) {
+        const col = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.24, H, 16), stoneLike(PAL));
+        col.castShadow = true;
+        col.position.set(cx * 8, H / 2, cz);
+        g.add(col);
+      }
+    }
+    const rose = new THREE.Mesh(new THREE.CylinderGeometry(0.85, 0.85, 0.12, 24),
+      mat(0xf6f2ea, 0.85));
+    rose.position.set(-iw * 0.2, H - 0.07, loungeZ);
+    g.add(rose);
+  }
+
+  if (plan === "farmhouse") {
+    // exposed beams and a long refectory table
+    for (let i = 0; i < 5; i++) {
+      const beam = box(iw, 0.22, 0.26, mat(0x4a3520, 0.85, 0.03, woodCladTex()));
+      beam.position.set(0, H - 0.14, -id / 2 + (id / 5) * (i + 0.5));
+      g.add(beam);
+    }
+    table(g, iw * 0.2, id * 0.02, 2.6, 1.0, 0x4a3520);
+    zone("Veranda Room", iw * 0.2, id * 0.02);
+  }
+
+  if (plan === "courtyard") {
+    // a small open court at the centre — the courtyard house's whole idea
+    const court = new THREE.Mesh(new THREE.PlaneGeometry(iw * 0.3, id * 0.2),
+      mat(0x6b6255, 1, 0, paverTex()));
+    court.rotation.x = -Math.PI / 2;
+    court.position.set(iw * 0.05, 0.02, -id * 0.02);
+    g.add(court);
+    for (let i = 0; i < 3; i++) {
+      const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.19, 0.44, 12),
+        mat(0x8a6a4a, 0.9));
+      pot.position.set(iw * 0.05 - 0.9 + i * 0.9, 0.22, -id * 0.02);
+      g.add(pot);
+      const bush = new THREE.Mesh(new THREE.SphereGeometry(0.34, 10, 8), mat(0x2f6b34, 0.95));
+      bush.position.set(iw * 0.05 - 0.9 + i * 0.9, 0.72, -id * 0.02);
+      g.add(bush);
+    }
+    const sky = new THREE.Mesh(new THREE.PlaneGeometry(iw * 0.3, id * 0.2),
+      new THREE.MeshStandardMaterial({ color: 0xbcd6ff,
+        emissive: new THREE.Color(night ? 0x1a2440 : 0x8fb4e8),
+        emissiveIntensity: night ? 0.5 : 1.4 }));
+    sky.rotation.x = Math.PI / 2;
+    sky.position.set(iw * 0.05, H - 0.02, -id * 0.02);
+    g.add(sky);
+    zone("Courtyard", iw * 0.05, -id * 0.02);
+  }
+
+  if (plan === "openModern") {
+    // full-width glazing to the rear garden instead of a solid back wall
+    const glazing = new THREE.Mesh(new THREE.PlaneGeometry(iw * 0.66, H * 0.78),
+      new THREE.MeshStandardMaterial({ color: 0x9fc4e8, roughness: 0.04, metalness: 0.35,
+        transparent: true, opacity: 0.26,
+        emissive: new THREE.Color(night ? 0x0a1428 : 0x5f86b8),
+        emissiveIntensity: night ? 0.4 : 0.9 }));
+    glazing.position.set(iw * 0.04, H * 0.42, -id / 2 + 0.09);
+    g.add(glazing);
+    for (let i = 0; i < 5; i++) {
+      const mull = box(0.06, H * 0.78, 0.08, frameMat());
+      mull.position.set(iw * 0.04 - iw * 0.33 + (iw * 0.66 / 4) * i, H * 0.42, -id / 2 + 0.12);
+      g.add(mull);
+    }
+  }
 
   g.userData.interior = { W: iw, D: id, H };
   return g;
