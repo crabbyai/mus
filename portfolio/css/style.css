@@ -150,7 +150,13 @@ body::before {
 }
 .btn--gold { background: var(--gold); color: var(--ink); }
 .btn--gold:hover { background: var(--gold-bright); box-shadow: 0 12px 40px -8px rgba(201,164,92,0.55); }
-.btn--ghost { border: 1px solid rgba(243,238,227,0.35); }
+/* Every other use of this is an <a>, which has no UA background. On a
+   <button> the browser's default grey came through and it rendered as a
+   solid light pill. */
+.btn--ghost {
+  border: 1px solid rgba(243,238,227,0.35);
+  background: transparent; color: var(--cream);
+}
 .btn--ghost:hover { border-color: var(--gold); color: var(--gold); }
 .btn__arrow { transition: transform 0.35s var(--ease); }
 .btn:hover .btn__arrow { transform: translateX(5px); }
@@ -794,8 +800,15 @@ h3.likethis__reftitle:focus-visible {   /* beats the global [tabindex] ring belo
   .likethis__form { border-left: 0; border-top: 1px solid rgba(243,238,227,0.08); }
   .likethis__controls { max-height: none; overflow: visible; }
 }
+@media (max-width: 700px) {
+  /* The hint and the spec stamp share the bottom edge and collide on a narrow
+     canvas — the stamp is the more useful of the two, and there is no scroll
+     wheel to explain on touch anyway. */
+  .likethis__hint { display: none; }
+}
 @media (max-width: 560px) {
   .lt-ref { width: 9.5rem; }
+  .likethis__stamp { font-size: 0.6rem; letter-spacing: 0.1em; }
 }
 
 /* ============ TOUR BUTTON IN LIGHTBOX ============ */

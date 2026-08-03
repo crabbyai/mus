@@ -79,8 +79,11 @@ let mounted = false;
    ============================================================ */
 let renderer, scene, camera, rig, house, sun, hemi, stars = null;
 let composer = null, bloomPass = null;
+let ssaoPass = null;
 let ready = false, running = false, raf = 0, flickerWins = [];
-let yaw = -0.7, targetYaw = -0.7, pitch = 0.24, dist = 30;
+// A low pitch keeps the elevation facing you. Looking down from 14° put the
+// roof front and centre, which is the one surface nobody is buying.
+let yaw = -0.7, targetYaw = -0.7, pitch = 0.13, dist = 30, focusY = 3.2;
 let dragging = false, lastX = 0, lastY = 0, pinchStart = 0;
 
 const cv = () => document.getElementById("ltCanvas");
@@ -93,11 +96,15 @@ function initScene() {
     renderer = new THREE.WebGLRenderer({ canvas: c, antialias: true, alpha: false,
       powerPreference: "high-performance" });
   } catch (e) { return false; }
+  const beefy = innerWidth >= 1024 && (navigator.hardwareConcurrency || 4) >= 8;
+
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  // Variance shadow maps take a soft radius, which is what gives the eaves and
+  // boundary wall a real penumbra instead of a hard stencil edge.
+  renderer.shadowMap.type = beefy ? THREE.VSMShadowMap : THREE.PCFSoftShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.25;
+  renderer.toneMappingExposure = 1.22;
 
   scene = new THREE.Scene();
   scene.background = new THREE.Color(sky(false));
@@ -114,12 +121,13 @@ function initScene() {
   sun = new THREE.DirectionalLight(0xffd9a0, 3.1);
   sun.position.set(16, 22, 15);
   sun.castShadow = true;
-  sun.shadow.mapSize.set(2048, 2048);
+  sun.shadow.mapSize.set(beefy ? 4096 : 2048, beefy ? 4096 : 2048);
   const s = 30;
   sun.shadow.camera.left = -s; sun.shadow.camera.right = s;
   sun.shadow.camera.top = s; sun.shadow.camera.bottom = -s;
   sun.shadow.camera.far = 90;
   sun.shadow.bias = -0.0006;
+  if (beefy) { sun.shadow.radius = 4; sun.shadow.blurSamples = 12; }
   scene.add(sun);
 
   const rim = new THREE.DirectionalLight(0x4466cc, 1.15);
@@ -129,6 +137,12 @@ function initScene() {
   fill.position.set(0, 9, 34);
   scene.add(fill);
 
+  // Warm bounce off the paving. Without it the underside of every eave and
+  // cantilever goes flat black once ambient occlusion lands on top.
+  const bounce = new THREE.DirectionalLight(0xffc98a, 0.34);
+  bounce.position.set(6, -4, 12);
+  scene.add(bounce);
+
   // Bloom is what makes the gold strips and lit windows glow. Loaded on
   // demand, and skipped where the extra pass isn't worth the frame budget.
   if (!matchMedia("(prefers-reduced-motion: reduce)").matches &&
@@ -137,16 +151,29 @@ function initScene() {
       import("./vendor/three/postprocessing/EffectComposer.js"),
       import("./vendor/three/postprocessing/RenderPass.js"),
       import("./vendor/three/postprocessing/UnrealBloomPass.js"),
-      import("./vendor/three/postprocessing/OutputPass.js")
-    ]).then(([EC, RP, UB, OP]) => {
+      import("./vendor/three/postprocessing/OutputPass.js"),
+      beefy ? import("./vendor/three/postprocessing/SSAOPass.js") : Promise.resolve(null)
+    ]).then(([EC, RP, UB, OP, SS]) => {
       const w = cv().clientWidth, h = cv().clientHeight;
       composer = new EC.EffectComposer(renderer);
       composer.addPass(new RP.RenderPass(scene, camera));
-      bloomPass = new UB.UnrealBloomPass(new THREE.Vector2(w, h), 0.55, 0.7, 0.85);
+
+      // Ambient occlusion: contact shade where the walls meet the paving, in
+      // window reveals and under the eaves. Small radius — large values go
+      // muddy at this scale.
+      if (SS) {
+        ssaoPass = new SS.SSAOPass(scene, camera, w, h);
+        ssaoPass.kernelRadius = 0.55;
+        ssaoPass.minDistance = 0.0012;
+        ssaoPass.maxDistance = 0.11;
+        composer.addPass(ssaoPass);
+      }
+
+      bloomPass = new UB.UnrealBloomPass(new THREE.Vector2(w, h), 0.62, 0.75, 0.82);
       composer.addPass(bloomPass);
       composer.addPass(new OP.OutputPass());
       resize();
-    }).catch(() => { composer = null; });
+    }).catch(() => { composer = null; ssaoPass = null; });
   }
 
   // Reveal before the first resize — a hidden canvas measures 0×0, which
@@ -179,14 +206,17 @@ function resize() {
   camera.updateProjectionMatrix();
   if (composer) composer.setSize(w, h);
   if (bloomPass) bloomPass.resolution.set(w, h);
+  if (ssaoPass) ssaoPass.setSize(w, h);
 }
 
 function bindPointer(c) {
   const down = (x, y) => { dragging = true; lastX = x; lastY = y; setSpin(false); };
+  // Both axes are inverted on purpose: dragging left swings the house left,
+  // dragging up tips the view up — you're steering the camera, not the model.
   const move = (x, y) => {
     if (!dragging) return;
-    targetYaw -= (x - lastX) * 0.008;
-    pitch = Math.max(0.04, Math.min(0.72, pitch + (y - lastY) * 0.004));
+    targetYaw += (x - lastX) * 0.008;
+    pitch = Math.max(0.02, Math.min(0.7, pitch - (y - lastY) * 0.004));
     lastX = x; lastY = y;
   };
   const up = () => { dragging = false; };
@@ -256,6 +286,9 @@ function rebuild3d() {
   if (!ready) return;
   if (house) { rig.remove(house); disposeTree(house); }
   house = buildHouse(brief);
+  // Measure at full size before the grow animation shrinks it.
+  const bb = new THREE.Box3().setFromObject(house);
+  const tall = Math.max(4, bb.max.y);
   house.scale.setScalar(0.001);
   rig.add(house);
 
@@ -282,9 +315,25 @@ function rebuild3d() {
   // so 5 Marla and 2 Kanal look the same. Backing off sub-linearly instead
   // keeps the lot in shot while letting a bigger plot actually read bigger —
   // 2 Kanal comes out roughly 1.4× the on-screen size of 5 Marla.
-  const lot = house.userData.footprint;
-  const span = Math.max(lot.lw, lot.ld);
-  dist = 42 * Math.pow(span / 22, 0.42);
+  // Aim at the middle of the elevation rather than a fixed low point, so a
+  // triple storey doesn't run off the top of the frame and a single storey
+  // doesn't sit marooned at the bottom.
+  focusY = tall * 0.46;
+
+  // Distance is solved from the diorama's real extents, not the plot alone —
+  // the podium is wider than the lot, and a fixed multiplier clipped it on the
+  // big plots. Fit the widest silhouette the podium can present as it turns,
+  // and the building height, then take whichever needs more room.
+  const halfW = Math.max(bb.max.x - bb.min.x, bb.max.z - bb.min.z) / 2;
+  const vHalf = (38 * Math.PI / 180) / 2;
+  const hHalf = Math.atan(Math.tan(vHalf) * (camera.aspect || 1.6));
+  const forWidth = halfW / Math.tan(hHalf);
+  const forHeight = (tall - focusY) * 1.5 / Math.tan(vHalf);
+
+  // Margin tightens as the plot grows, so a bigger plot genuinely reads
+  // bigger instead of every size filling the frame identically.
+  const big = Math.min(1, Math.max(0, (halfW - 11) / 15));
+  dist = Math.max(forWidth, forHeight) * (1.26 - 0.22 * big);
 
   stampSpec();
 
@@ -303,9 +352,9 @@ function loop() {
   yaw += (targetYaw - yaw) * 0.08;
 
   camera.position.set(Math.sin(yaw) * dist * Math.cos(pitch),
-                      Math.sin(pitch) * dist + 3,
+                      Math.sin(pitch) * dist + focusY,
                       Math.cos(yaw) * dist * Math.cos(pitch));
-  camera.lookAt(0, 3.2, 0);
+  camera.lookAt(0, focusY, 0);
 
   if (flickerWins.length) {
     const t = performance.now() * 0.001;
