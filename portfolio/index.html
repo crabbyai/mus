@@ -183,7 +183,7 @@
 <link rel="preload" href="assets/fonts/playfair-display-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="assets/fonts/manrope-latin-300-normal.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="stylesheet" href="css/fonts.css" />
-<link rel="stylesheet" href="css/style.css?v=26" />
+<link rel="stylesheet" href="css/style.css?v=33" />
 <link rel="stylesheet" href="css/enhance.css" />
 </head>
 <body>
@@ -836,6 +836,67 @@
     <div class="portfolio__grid" id="grid"><!-- cards injected by JS --></div>
   </section>
 
+  <!-- ======= BUILD ME ONE LIKE THIS (design studio + virtual tour) ======= -->
+  <section class="likethis" id="likethis">
+    <div class="likethis__head">
+      <p class="section-eyebrow" data-reveal>Can't Find It? Build It.</p>
+      <h2 class="section-title" data-reveal>Build me <em class="gold-italic">one like this</em></h2>
+      <p class="likethis__intro" data-reveal>Every home below is one I've already sold. Pick the one closest to
+      what you want and it builds in 3D in front of you — change the plot, the storeys, the elevation, and
+      the model changes with it. Step inside it, walk through it, then send the finished spec straight to my
+      construction partners in Lahore and Islamabad as a costed request, not a vague enquiry.</p>
+    </div>
+
+    <div class="likethis__picker" data-reveal>
+      <p class="likethis__pickerlabel">Start from a home I've handed over</p>
+      <div class="likethis__reel" id="ltReel" role="tablist" aria-label="Reference homes to build from"><!-- injected by like-this.js --></div>
+    </div>
+
+    <div class="likethis__shell glass" data-reveal>
+      <div class="likethis__ref">
+        <div class="likethis__refmedia">
+          <!-- Static art is the no-WebGL fallback; the live model hides it. -->
+          <img id="ltRefImg" src="" alt="" />
+          <canvas id="builderCanvas" aria-label="Live 3D model of the house you're briefing" role="img"></canvas>
+          <div class="builder__loading" id="builderLoading"><span></span>Loading the studio…</div>
+          <span class="likethis__refbadge" id="ltBadge">Your build · live 3D</span>
+          <div class="likethis__stagetools" id="ltTools">
+            <button class="builder__tool" id="builderDayNight" type="button" aria-pressed="false" title="Toggle day / night">🌙</button>
+            <button class="builder__tool" id="builderSpin" type="button" aria-pressed="true" title="Toggle auto-rotate">⟳</button>
+            <button class="builder__tool" id="builderInside" type="button" aria-pressed="false" title="Step inside">⌂</button>
+            <button class="builder__tool" id="builderWalk" type="button" title="Take the virtual tour">🚶</button>
+            <button class="builder__tool" id="builderShare" type="button" title="Copy a link to this design">⇗</button>
+            <button class="builder__tool" id="builderShot" type="button" title="Download an image">⤓</button>
+          </div>
+          <p class="likethis__hint" id="ltHint">Drag to rotate · scroll to zoom</p>
+          <p class="likethis__stamp" id="ltStamp" aria-live="polite"></p>
+        </div>
+        <div class="likethis__refbody">
+          <p class="likethis__refloc" id="ltRefLoc"></p>
+          <h3 class="likethis__reftitle" id="ltRefTitle"></h3>
+          <p class="likethis__refdesc" id="ltRefDesc"></p>
+          <ul class="likethis__reflist" id="ltRefList"></ul>
+        </div>
+      </div>
+
+      <div class="likethis__form">
+        <p class="likethis__formlabel">Your brief — change anything you like</p>
+        <div class="likethis__controls" id="ltControls"><!-- injected by like-this.js --></div>
+
+        <div class="likethis__summary">
+          <div class="builder__stat"><span>Covered area</span><strong id="ltArea">—</strong></div>
+          <div class="builder__stat"><span>Indicative build cost</span><strong id="ltCost">—</strong></div>
+          <div class="builder__stat"><span>Typical build time</span><strong id="ltTime">—</strong></div>
+          <p class="builder__disclaimer">Construction only at today's material and labour rates — land not
+          included. My builders confirm the exact figure after seeing your plot.</p>
+          <button class="btn btn--wa likethis__cta" id="ltSend" type="button" data-magnetic>
+            Send this brief to my builders <span class="btn__arrow">→</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ======= AREA GUIDES ======= -->
   <section class="areas" id="areas">
     <div class="areas__head">
@@ -1136,64 +1197,6 @@
     <div class="showcase3d__hint">Keep scrolling — each home builds itself <span>↓</span></div>
   </section>
 
-  <!-- ======= BUILD ME ONE LIKE THIS ======= -->
-  <section class="likethis" id="likethis">
-    <div class="likethis__head">
-      <p class="section-eyebrow" data-reveal>Can't Find It? Build It.</p>
-      <h2 class="section-title" data-reveal>Build me <em class="gold-italic">one like this</em></h2>
-      <p class="likethis__intro" data-reveal>Every home below is one I've already sold. Pick the one closest to
-      what you want and it builds in 3D in front of you — change the plot, the storeys, the elevation, and
-      the model changes with it. Then it goes straight to my construction partners in Lahore and Islamabad
-      as a costed request, not a vague enquiry.</p>
-    </div>
-
-    <div class="likethis__picker" data-reveal>
-      <p class="likethis__pickerlabel">Start from a home I've handed over</p>
-      <div class="likethis__reel" id="ltReel" role="tablist" aria-label="Reference homes to build from"><!-- injected by like-this.js --></div>
-    </div>
-
-    <div class="likethis__shell glass" data-reveal>
-      <div class="likethis__ref">
-        <div class="likethis__refmedia">
-          <!-- Static art is the no-WebGL fallback; the live model hides it. -->
-          <img id="ltRefImg" src="" alt="" />
-          <canvas id="ltCanvas" aria-label="Live 3D model of the house you're briefing" role="img" hidden></canvas>
-          <span class="likethis__refbadge" id="ltBadge">Reference build</span>
-          <div class="likethis__stagetools" id="ltTools" hidden>
-            <button class="builder__tool" id="ltDayNight" type="button" aria-pressed="false" title="Toggle day / night">🌙</button>
-            <button class="builder__tool" id="ltSpin" type="button" aria-pressed="true" title="Toggle auto-rotate">⟳</button>
-          </div>
-          <p class="likethis__hint" id="ltHint" hidden>Drag to rotate · scroll to zoom</p>
-          <p class="likethis__stamp" id="ltStamp" aria-live="polite"></p>
-        </div>
-        <div class="likethis__refbody">
-          <p class="likethis__refloc" id="ltRefLoc"></p>
-          <h3 class="likethis__reftitle" id="ltRefTitle"></h3>
-          <p class="likethis__refdesc" id="ltRefDesc"></p>
-          <ul class="likethis__reflist" id="ltRefList"></ul>
-        </div>
-      </div>
-
-      <div class="likethis__form">
-        <p class="likethis__formlabel">Your brief — change anything you like</p>
-        <div class="likethis__controls" id="ltControls"><!-- injected by like-this.js --></div>
-
-        <div class="likethis__summary">
-          <div class="builder__stat"><span>Covered area</span><strong id="ltArea">—</strong></div>
-          <div class="builder__stat"><span>Indicative build cost</span><strong id="ltCost">—</strong></div>
-          <div class="builder__stat"><span>Typical build time</span><strong id="ltTime">—</strong></div>
-          <p class="builder__disclaimer">Construction only at today's material and labour rates — land not
-          included. My builders confirm the exact figure after seeing your plot.</p>
-          <button class="btn btn--wa likethis__cta" id="ltSend" type="button" data-magnetic>
-            Send this brief to my builders <span class="btn__arrow">→</span>
-          </button>
-          <button class="btn btn--ghost btn--sm likethis__alt" id="ltTune" type="button">
-            ⊹ Open it in the Design Studio
-          </button>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- ======= KNOWLEDGE HUB / GUIDES ======= -->
   <section class="guides" id="guides">
@@ -1379,49 +1382,6 @@
   </section>
 
   <!-- ======= COMMUNITY Q&A (live from Reddit) ======= -->
-  <!-- ======= HOUSE BUILDER (3D configurator) ======= -->
-  <section class="builder" id="builder">
-    <div class="builder__head">
-      <p class="section-eyebrow" data-reveal>Design Studio</p>
-      <h2 class="section-title" data-reveal>Build your <em class="gold-italic">dream home</em></h2>
-      <p class="builder__intro" data-reveal>Design it exactly how you want it — plot size, storeys, elevation, finishes, the lot. Watch it come to life in 3D, then send the spec straight to my trusted builders for a real quote.</p>
-    </div>
-
-    <div class="builder__shell glass" data-reveal>
-      <div class="builder__stage">
-        <canvas id="builderCanvas" aria-label="3D preview of your house design" role="img"></canvas>
-        <div class="builder__loading" id="builderLoading"><span></span>Loading design studio…</div>
-        <div class="builder__stagetools">
-          <button class="builder__tool" id="builderDayNight" type="button" aria-pressed="false" title="Toggle day / night">🌙</button>
-          <button class="builder__tool" id="builderSpin" type="button" aria-pressed="true" title="Toggle auto-rotate">⟳</button>
-          <button class="builder__tool" id="builderWalk" type="button" title="Walk through your design">🚶</button>
-          <button class="builder__tool" id="builderInside" type="button" aria-pressed="false" title="Step inside your design">⌂</button>
-          <button class="builder__tool" id="builderShare" type="button" title="Copy a link to this design">⇗</button>
-          <button class="builder__tool" id="builderShot" type="button" title="Download an image of your design">⤓</button>
-        </div>
-        <p class="builder__hint">Drag to orbit · scroll to zoom</p>
-      </div>
-
-      <div class="builder__panel">
-        <div class="builder__controls" id="builderControls"><!-- generated --></div>
-
-        <div class="builder__summary">
-          <div class="builder__stat">
-            <span>Covered area</span>
-            <strong id="bldArea">—</strong>
-          </div>
-          <div class="builder__stat">
-            <span>Indicative build cost</span>
-            <strong id="bldCost">—</strong>
-          </div>
-          <p class="builder__disclaimer">Rough construction estimate at current rates — excludes land. Your builder quote will be exact.</p>
-          <button class="btn btn--wa builder__cta" id="bldRequest" type="button" data-magnetic>
-            Request this build from my builders <span class="btn__arrow">→</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <section class="forum" id="forum">
     <div class="forum__head">
@@ -1675,9 +1635,9 @@
 { "imports": { "three": "./js/vendor/three.module.min.js" } }
 </script>
 <script type="module" src="js/estate3d.js?v=5"></script>
-<script type="module" src="js/house-builder.js?v=11"></script>
+<script type="module" src="js/house-builder.js?v=12"></script>
 <script type="module" src="js/house-tour.js?v=6"></script>
-<script type="module" src="js/like-this.js?v=4"></script>
+<script type="module" src="js/like-this.js?v=5"></script>
 <script src="js/tools.js?v=4" defer></script>
 <script src="js/enhance.js?v=4" defer></script>
 <script src="js/feed.js?v=12" defer></script>

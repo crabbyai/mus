@@ -14,9 +14,8 @@
    Design Studio so the two never quote different numbers, and the
    "fine-tune in 3D" button hands the exact same spec across.
    ============================================================ */
-import * as THREE from "three";
-import { PLOTS, STYLES, FINISHES, KITCHENS, FEATURES, estimate, fmtPKR,
-  buildHouse, starfield } from "./house-builder.js?v=11";
+import { PLOTS, STYLES, FINISHES, KITCHENS, FEATURES, estimate, fmtPKR }
+  from "./house-builder.js?v=12";
 
 const WA = "16134083945";
 
@@ -59,209 +58,19 @@ const brief = {
   plot: "10m", storeys: 2, style: "dha", finish: "greyWhite",
   roof: "flat", kitchen: "closed",
   features: {},
-  area: "", status: "own", timing: "3m",
-  night: false, spin: true
+  area: "", status: "own", timing: "3m"
 };
 
 let mounted = false;
 
-
-/* ============================================================
-   LIVE MODEL — the brief you're building, rotating on its podium
-   ------------------------------------------------------------
-   A still photograph of a sold house can't answer "what does 2
-   Kanal look like instead of 10 Marla?". This renders the actual
-   brief, so every chip you tap changes the thing you're looking at.
-
-   Same geometry and lighting rig as the Design Studio (buildHouse
-   is imported, not reimplemented), kept to one scene that boots
-   lazily and pauses whenever it's off-screen or the tab is hidden.
-   ============================================================ */
-let renderer, scene, camera, rig, house, sun, hemi, stars = null;
-let composer = null, bloomPass = null;
-let ssaoPass = null;
-let ready = false, running = false, raf = 0, flickerWins = [];
-// A low pitch keeps the elevation facing you. Looking down from 14° put the
-// roof front and centre, which is the one surface nobody is buying.
-let yaw = -0.7, targetYaw = -0.7, pitch = 0.11, dist = 30, focusY = 3.2;
-let dragging = false, lastX = 0, lastY = 0, pinchStart = 0;
-
-const cv = () => document.getElementById("ltCanvas");
-const sky = (night) => (night ? 0x05070f : 0x0a0f1e);
-
-function initScene() {
-  const c = cv();
-  if (!c) return false;
-  try {
-    renderer = new THREE.WebGLRenderer({ canvas: c, antialias: true, alpha: false,
-      powerPreference: "high-performance" });
-  } catch (e) { return false; }
-  const beefy = innerWidth >= 1024 && (navigator.hardwareConcurrency || 4) >= 8;
-
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-  renderer.shadowMap.enabled = true;
-  // Variance shadow maps take a soft radius, which is what gives the eaves and
-  // boundary wall a real penumbra instead of a hard stencil edge.
-  renderer.shadowMap.type = beefy ? THREE.VSMShadowMap : THREE.PCFSoftShadowMap;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.22;
-
-  scene = new THREE.Scene();
-  scene.background = new THREE.Color(sky(false));
-  scene.fog = new THREE.Fog(sky(false), 34, 88);
-
-  camera = new THREE.PerspectiveCamera(38, 1, 0.5, 220);
-  rig = new THREE.Group();
-  scene.add(rig);
-
-  hemi = new THREE.HemisphereLight(0x9aa8c4, 0x3a4030, 1.35);
-  scene.add(hemi);
-  scene.add(new THREE.AmbientLight(0x5a6a96, 0.85));
-
-  sun = new THREE.DirectionalLight(0xffd9a0, 3.1);
-  sun.position.set(16, 22, 15);
-  sun.castShadow = true;
-  sun.shadow.mapSize.set(beefy ? 4096 : 2048, beefy ? 4096 : 2048);
-  const s = 30;
-  sun.shadow.camera.left = -s; sun.shadow.camera.right = s;
-  sun.shadow.camera.top = s; sun.shadow.camera.bottom = -s;
-  sun.shadow.camera.far = 90;
-  sun.shadow.bias = -0.0006;
-  if (beefy) { sun.shadow.radius = 4; sun.shadow.blurSamples = 12; }
-  scene.add(sun);
-
-  const rim = new THREE.DirectionalLight(0x4466cc, 1.15);
-  rim.position.set(-18, 11, -17);
-  scene.add(rim);
-  const fill = new THREE.DirectionalLight(0xbcd0ff, 0.5);
-  fill.position.set(0, 9, 34);
-  scene.add(fill);
-
-  // Warm bounce off the paving. Without it the underside of every eave and
-  // cantilever goes flat black once ambient occlusion lands on top.
-  const bounce = new THREE.DirectionalLight(0xffc98a, 0.34);
-  bounce.position.set(6, -4, 12);
-  scene.add(bounce);
-
-  // Bloom is what makes the gold strips and lit windows glow. Loaded on
-  // demand, and skipped where the extra pass isn't worth the frame budget.
-  if (!matchMedia("(prefers-reduced-motion: reduce)").matches &&
-      innerWidth > 640 && (navigator.hardwareConcurrency || 4) >= 4) {
-    Promise.all([
-      import("./vendor/three/postprocessing/EffectComposer.js"),
-      import("./vendor/three/postprocessing/RenderPass.js"),
-      import("./vendor/three/postprocessing/UnrealBloomPass.js"),
-      import("./vendor/three/postprocessing/OutputPass.js"),
-      beefy ? import("./vendor/three/postprocessing/SSAOPass.js") : Promise.resolve(null)
-    ]).then(([EC, RP, UB, OP, SS]) => {
-      const w = cv().clientWidth, h = cv().clientHeight;
-      composer = new EC.EffectComposer(renderer);
-      composer.addPass(new RP.RenderPass(scene, camera));
-
-      // Ambient occlusion: contact shade where the walls meet the paving, in
-      // window reveals and under the eaves. Small radius — large values go
-      // muddy at this scale.
-      if (SS) {
-        ssaoPass = new SS.SSAOPass(scene, camera, w, h);
-        ssaoPass.kernelRadius = 0.55;
-        ssaoPass.minDistance = 0.0012;
-        ssaoPass.maxDistance = 0.11;
-        composer.addPass(ssaoPass);
-      }
-
-      bloomPass = new UB.UnrealBloomPass(new THREE.Vector2(w, h), 0.62, 0.75, 0.82);
-      composer.addPass(bloomPass);
-      composer.addPass(new OP.OutputPass());
-      resize();
-    }).catch(() => { composer = null; ssaoPass = null; });
-  }
-
-  // Reveal before the first resize — a hidden canvas measures 0×0, which
-  // would leave the renderer stuck at its 300×150 default.
-  c.hidden = false;
-  const img = document.getElementById("ltRefImg");
-  if (img) img.style.display = "none";
-  ["ltTools", "ltHint"].forEach((id) => {
-    const el = document.getElementById(id);
-    if (el) el.hidden = false;
-  });
-  const badge = document.getElementById("ltBadge");
-  if (badge) badge.textContent = "Your build · live 3D";
-
-  bindPointer(c);
-  wireStageTools();
-  resize();
-  addEventListener("resize", resize, { passive: true });
-  ready = true;
-  return true;
-}
-
-function resize() {
-  if (!renderer) return;
-  const c = cv();
-  const w = c.clientWidth, h = c.clientHeight;
-  if (!w || !h) return;
-  renderer.setSize(w, h, false);
-  camera.aspect = w / h;
-  camera.updateProjectionMatrix();
-  if (composer) composer.setSize(w, h);
-  if (bloomPass) bloomPass.resolution.set(w, h);
-  if (ssaoPass) ssaoPass.setSize(w, h);
-}
-
-function bindPointer(c) {
-  const down = (x, y) => { dragging = true; lastX = x; lastY = y; setSpin(false); };
-  // Grab-the-model feel: the surface under your finger follows it. Drag right
-  // and the elevation you're holding comes round to the right; drag down and
-  // the roof tips away from you.
-  const move = (x, y) => {
-    if (!dragging) return;
-    targetYaw -= (x - lastX) * 0.008;
-    pitch = Math.max(0.02, Math.min(0.7, pitch + (y - lastY) * 0.004));
-    lastX = x; lastY = y;
-  };
-  const up = () => { dragging = false; };
-
-  c.addEventListener("pointerdown", (e) => { c.setPointerCapture(e.pointerId); down(e.clientX, e.clientY); });
-  c.addEventListener("pointermove", (e) => move(e.clientX, e.clientY));
-  c.addEventListener("pointerup", up);
-  c.addEventListener("pointercancel", up);
-  c.addEventListener("wheel", (e) => {
-    e.preventDefault();
-    dist = Math.max(12, Math.min(90, dist + e.deltaY * 0.03));
-  }, { passive: false });
-
-  // Two-finger pinch to zoom; one finger already orbits via pointer events.
-  c.addEventListener("touchstart", (e) => {
-    if (e.touches.length === 2) pinchStart = touchGap(e) || 1;
-  }, { passive: true });
-  c.addEventListener("touchmove", (e) => {
-    if (e.touches.length !== 2) return;
-    const g = touchGap(e);
-    if (g && pinchStart) { dist = Math.max(12, Math.min(90, dist * (pinchStart / g))); pinchStart = g; }
-  }, { passive: true });
-  function touchGap(e) {
-    const [a, b] = e.touches;
-    return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
-  }
-}
-
-function setSpin(on) {
-  brief.spin = on;
-  const b = document.getElementById("ltSpin");
-  if (b) { b.setAttribute("aria-pressed", String(on)); b.style.opacity = on ? "1" : "0.5"; }
-}
-
-function wireStageTools() {
-  const dn = document.getElementById("ltDayNight");
-  if (dn) dn.addEventListener("click", () => {
-    brief.night = !brief.night;
-    dn.setAttribute("aria-pressed", String(brief.night));
-    dn.textContent = brief.night ? "☀" : "🌙";
-    rebuild3d();
-  });
-  const sp = document.getElementById("ltSpin");
-  if (sp) sp.addEventListener("click", () => setSpin(!brief.spin));
+/* The 3D model, the day/night and spin toggles, "step inside", the virtual
+   tour, the share link and the screenshot are all the Design Studio engine in
+   js/house-builder.js, rendering into the canvas in this section. This file
+   owns the brief; that file owns the picture. Pushing the brief across on
+   every change is the only thing that keeps them one design. */
+function pushToStudio() {
+  stampSpec();
+  if (window.HouseBuilder) window.HouseBuilder.apply(brief);
 }
 
 /* Names what's on screen, so a size change is unmistakable even at a glance. */
@@ -271,111 +80,6 @@ function stampSpec() {
   const storeys = ["", "Single storey", "Double storey", "Triple storey"][brief.storeys] || "";
   el.textContent = [PLOTS[brief.plot].label, storeys, STYLES[brief.style]].filter(Boolean).join(" · ");
 }
-
-function disposeTree(obj) {
-  obj.traverse((o) => {
-    if (o.geometry) o.geometry.dispose();
-    if (o.material) {
-      const list = Array.isArray(o.material) ? o.material : [o.material];
-      list.forEach((m) => m.dispose());   // cached textures are shared, not disposed
-    }
-  });
-}
-
-/* Called on every option change — this is the whole point of the section. */
-function rebuild3d() {
-  if (!ready) return;
-  if (house) { rig.remove(house); disposeTree(house); }
-  house = buildHouse(brief);
-  // Measure at full size before the grow animation shrinks it.
-  const bb = new THREE.Box3().setFromObject(house);
-  const tall = Math.max(4, bb.max.y);
-  house.scale.setScalar(0.001);
-  rig.add(house);
-
-  const aniso = renderer.capabilities.getMaxAnisotropy();
-  flickerWins = [];
-  house.traverse((o) => {
-    const m = o.material;
-    if (!m) return;
-    // Anisotropic filtering: paving, roof tiles and boundary walls are all seen
-    // at grazing angles, where trilinear filtering smears them into mush.
-    if (m.map && m.map.anisotropy !== aniso) { m.map.anisotropy = aniso; m.map.needsUpdate = true; }
-    if (m.emissiveIntensity > 0.6 && m.emissive && m.emissive.r > 0.5) {
-      m.userData.base = m.emissiveIntensity;
-      flickerWins.push(m);
-    }
-  });
-
-  const night = brief.night;
-  if (night && !stars) { stars = starfield(); scene.add(stars); }
-  if (stars) stars.visible = night;
-  scene.background.setHex(sky(night));
-  scene.fog.color.setHex(sky(night));
-  sun.intensity = night ? 0.55 : 3.1;
-  sun.color.setHex(night ? 0x7e9ae0 : 0xffd9a0);
-  hemi.intensity = night ? 0.55 : 1.25;
-
-  // Framing is the whole trick here. Backing off in proportion to the plot
-  // (what the Design Studio does) makes every size fill the frame identically,
-  // so 5 Marla and 2 Kanal look the same. Backing off sub-linearly instead
-  // keeps the lot in shot while letting a bigger plot actually read bigger —
-  // 2 Kanal comes out roughly 1.4× the on-screen size of 5 Marla.
-  // Aim at the middle of the elevation rather than a fixed low point, so a
-  // triple storey doesn't run off the top of the frame and a single storey
-  // doesn't sit marooned at the bottom.
-  focusY = tall * 0.46;
-
-  // Distance is solved from the diorama's real extents, not the plot alone —
-  // the podium is wider than the lot, and a fixed multiplier clipped it on the
-  // big plots. Fit the widest silhouette the podium can present as it turns,
-  // and the building height, then take whichever needs more room.
-  const halfW = Math.max(bb.max.x - bb.min.x, bb.max.z - bb.min.z) / 2;
-  const vHalf = (38 * Math.PI / 180) / 2;
-  const hHalf = Math.atan(Math.tan(vHalf) * (camera.aspect || 1.6));
-  const forWidth = halfW / Math.tan(hHalf);
-  const forHeight = (tall - focusY) * 1.5 / Math.tan(vHalf);
-
-  // Margin tightens as the plot grows, so a bigger plot genuinely reads
-  // bigger instead of every size filling the frame identically.
-  const big = Math.min(1, Math.max(0, (halfW - 11) / 15));
-  dist = Math.max(forWidth, forHeight) * (1.26 - 0.22 * big);
-
-  stampSpec();
-
-  const t0 = performance.now();
-  (function grow() {
-    const k = Math.min(1, (performance.now() - t0) / 480);
-    house.scale.setScalar(0.001 + (1 - Math.pow(1 - k, 3)) * 0.999);
-    if (k < 1) requestAnimationFrame(grow);
-  })();
-}
-
-function loop() {
-  if (!running) return;
-  raf = requestAnimationFrame(loop);
-  if (brief.spin && !dragging) targetYaw += 0.0022;
-  yaw += (targetYaw - yaw) * 0.08;
-
-  camera.position.set(Math.sin(yaw) * dist * Math.cos(pitch),
-                      Math.sin(pitch) * dist + focusY,
-                      Math.cos(yaw) * dist * Math.cos(pitch));
-  camera.lookAt(0, focusY, 0);
-
-  if (flickerWins.length) {
-    const t = performance.now() * 0.001;
-    for (let i = 0; i < flickerWins.length; i++) {
-      const m = flickerWins[i];
-      m.emissiveIntensity = m.userData.base * (1 + Math.sin(t * 1.6 + i * 2.1) * 0.06);
-    }
-  }
-  if (stars) stars.rotation.y += 0.00012;
-
-  if (composer) composer.render();
-  else renderer.render(scene, camera);
-}
-function startLoop() { if (!running && ready) { running = true; loop(); } }
-function stopLoop() { running = false; cancelAnimationFrame(raf); }
 
 /* ---------- the reference homes ---------- */
 function homes() {
@@ -490,12 +194,12 @@ function renderControls() {
   el.querySelectorAll("[data-ltset]").forEach((b) => b.addEventListener("click", () => {
     const k = b.dataset.ltset;
     brief[k] = k === "storeys" ? +b.dataset.value : b.dataset.value;
-    renderControls(); updateSummary(); rebuild3d();
+    renderControls(); updateSummary(); pushToStudio();
   }));
   el.querySelectorAll("[data-ltfeature]").forEach((b) => b.addEventListener("click", () => {
     const k = b.dataset.ltfeature;
     brief.features[k] = !brief.features[k];
-    renderControls(); updateSummary(); rebuild3d();
+    renderControls(); updateSummary(); pushToStudio();
   }));
   const sel = document.getElementById("ltArea2");
   if (sel) sel.addEventListener("change", () => { brief.area = sel.value; });
@@ -555,7 +259,7 @@ function select(i, scroll) {
   if (!list.length) return;
   seedFrom(Math.max(0, Math.min(list.length - 1, i | 0)));
   mount();
-  renderReel(); renderRef(); renderControls(); updateSummary(); rebuild3d();
+  renderReel(); renderRef(); renderControls(); updateSummary(); pushToStudio();
   if (scroll) {
     const s = document.getElementById("likethis");
     if (s) s.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -597,7 +301,7 @@ function selectFromText(text, label) {
   const hit = AREAS.find(([v]) => v && loc && loc.toLowerCase().indexOf(v.split(",")[0].toLowerCase()) >= 0);
   if (hit) brief.area = hit[0];
 
-  renderControls(); updateSummary(); rebuild3d();
+  renderControls(); updateSummary(); pushToStudio();
 }
 
 /* ---------- wiring ---------- */
@@ -606,15 +310,6 @@ function mount() {
   mounted = true;
   const send$ = document.getElementById("ltSend");
   if (send$) send$.addEventListener("click", send);
-  const tune = document.getElementById("ltTune");
-  if (tune) tune.addEventListener("click", () => {
-    if (!window.HouseBuilder) return;
-    window.HouseBuilder.openFrom({
-      plot: brief.plot, storeys: brief.storeys, style: brief.style,
-      finish: brief.finish, roof: brief.roof, kitchen: brief.kitchen,
-      features: brief.features, inside: false
-    });
-  });
 }
 
 window.LikeThis = {
@@ -629,31 +324,14 @@ window.LikeThis = {
 function boot() {
   if (!homes().length) { setTimeout(boot, 120); return; }
   select(0, false);
+
+  // A shared #design= link is read by the studio at module load. Seeding from
+  // reference home 0 would stomp it, so copy it back over the brief instead.
+  if (/design=/.test(location.hash) && window.HouseBuilder) {
+    const st = window.HouseBuilder.state();
+    ["plot", "storeys", "style", "finish", "roof", "kitchen"].forEach((k) => { brief[k] = st[k]; });
+    for (const k in FEATURES) brief.features[k] = !!st.features[k];
+    renderControls(); updateSummary(); stampSpec();
+  }
 }
 boot();
-
-/* The scene costs nothing until the section is nearly in view, and the render
-   loop stops the moment it scrolls away or the tab is hidden. */
-(function bootScene() {
-  const section = document.getElementById("likethis");
-  if (!section || !cv()) return;
-  let tried = false;
-
-  const io = new IntersectionObserver((entries) => {
-    for (const e of entries) {
-      if (!e.isIntersecting) { stopLoop(); continue; }
-      if (!tried) {
-        tried = true;
-        if (!initScene()) { io.disconnect(); return; }   // no WebGL — static art stays
-        rebuild3d();
-      }
-      startLoop();
-    }
-  }, { rootMargin: "260px" });
-  io.observe(section);
-
-  document.addEventListener("visibilitychange", () => {
-    if (document.hidden) stopLoop();
-    else if (ready && section.getBoundingClientRect().top < innerHeight) startLoop();
-  });
-})();

@@ -1835,7 +1835,10 @@ function optionRow(title, name, options, current, isFeature) {
 }
 
 function renderControls() {
+  // The brief in js/like-this.js is the only control surface now; this only
+  // still runs when something re-opens the old panel.
   const el = document.getElementById("builderControls");
+  if (!el) return;
   el.innerHTML =
     optionRow("Plot size", "plot", Object.entries(PLOTS).map(([k, v]) => [k, v.label]), state.plot) +
     optionRow("Storeys", "storeys", [["1", "Single"], ["2", "Double"], ["3", "Triple"]], String(state.storeys)) +
@@ -1859,8 +1862,9 @@ function renderControls() {
 
 function updateSummary() {
   const { area, cost } = estimate(state);
-  document.getElementById("bldArea").textContent = area.toLocaleString("en-US") + " sq ft";
-  document.getElementById("bldCost").textContent = fmtPKR(cost);
+  const a = document.getElementById("bldArea"), c = document.getElementById("bldCost");
+  if (a) a.textContent = area.toLocaleString("en-US") + " sq ft";
+  if (c) c.textContent = fmtPKR(cost);
 }
 
 function specText() {
@@ -1880,9 +1884,14 @@ function specText() {
     "My design: " + designUrl();
 }
 
+/* What the walkable tour calls the house it's showing. */
+function tourTitle() {
+  return PLOTS[state.plot].label + " " + STYLES[state.style];
+}
+
 function wireChrome() {
   const dn = document.getElementById("builderDayNight");
-  dn.addEventListener("click", () => {
+  if (dn) dn.addEventListener("click", () => {
     state.night = !state.night;
     dn.textContent = state.night ? "☀" : "🌙";
     dn.setAttribute("aria-pressed", String(state.night));
@@ -1890,9 +1899,10 @@ function wireChrome() {
   });
 
   const spin = document.getElementById("builderSpin");
-  spin.addEventListener("click", () => { state.spin = !state.spin; syncSpinBtn(); });
+  if (spin) spin.addEventListener("click", () => { state.spin = !state.spin; syncSpinBtn(); });
 
-  document.getElementById("builderShot").addEventListener("click", () => {
+  const shot = document.getElementById("builderShot");
+  if (shot) shot.addEventListener("click", () => {
     if (!renderer) return;
     if (composer) composer.render(); else renderer.render(scene, camera);
     const a = document.createElement("a");
@@ -1903,7 +1913,7 @@ function wireChrome() {
 
   const walkBtn = document.getElementById("builderWalk");
   if (walkBtn) walkBtn.addEventListener("click", () => {
-    if (window.WalkTour) window.WalkTour.open(null, "Your Design");
+    if (window.WalkTour) window.WalkTour.open(null, tourTitle());
   });
 
   const insideBtn = document.getElementById("builderInside");
@@ -1934,7 +1944,8 @@ function wireChrome() {
     }
   }
 
-  document.getElementById("bldRequest").addEventListener("click", () => {
+  const req = document.getElementById("bldRequest");
+  if (req) req.addEventListener("click", () => {
     const msg = specText();
     if (window.LeadRelay) window.LeadRelay.send(msg);
     else window.open("https://wa.me/16134083945?text=" + encodeURIComponent(msg), "_blank", "noopener");
@@ -1976,6 +1987,24 @@ window.HouseBuilder = {
     };
     go();
   },
+  /* Drive the model from the brief in js/like-this.js. Same as openFrom but
+     it stays where it is — no scrolling, no flying inside. The brief owns the
+     controls now, so this is the only path that changes the design. */
+  apply(cfg) {
+    cfg = cfg || {};
+    if (cfg.plot && PLOTS[cfg.plot]) state.plot = cfg.plot;
+    if (cfg.storeys) state.storeys = Math.min(3, Math.max(1, cfg.storeys));
+    if (cfg.style && STYLES[cfg.style]) state.style = cfg.style;
+    if (cfg.finish && FINISHES[cfg.finish]) state.finish = cfg.finish;
+    if (cfg.roof) state.roof = cfg.roof === "hip" ? "hip" : "flat";
+    if (cfg.kitchen && KITCHENS[cfg.kitchen]) state.kitchen = cfg.kitchen;
+    if (cfg.features) for (const k in FEATURES) state.features[k] = !!cfg.features[k];
+    syncUrl();
+    if (initialised) rebuild();
+  },
+  /* the brief reads these back so the two never disagree */
+  state: () => state,
+  ready: () => initialised,
   /* so callers can map a listing's size text onto a plot */
   plotFromText(text) {
     const t = (text || "").toLowerCase();
@@ -1991,7 +2020,9 @@ window.HouseBuilder = {
    Lazy boot — nothing runs until the section is close to view
    ============================================================ */
 (function boot() {
-  const section = document.getElementById("builder");
+  // The studio no longer has a section of its own — it lives inside
+  // "Build me one like this", which owns the brief and the controls.
+  const section = document.getElementById("likethis");
   if (!section || !canvas()) return;
 
   readDesignFromUrl();   // a shared link wins over the defaults
@@ -2004,7 +2035,7 @@ window.HouseBuilder = {
       if (e.isIntersecting) {
         if (!booted) {
           booted = true;
-          if (!initScene()) {   // no WebGL — leave the configurator usable without 3D
+          if (!initScene()) {   // no WebGL — leave the brief usable without 3D
             section.classList.add("builder--no3d");
             const l = document.getElementById("builderLoading");
             if (l) l.textContent = "3D preview unavailable on this device — the designer still works.";
