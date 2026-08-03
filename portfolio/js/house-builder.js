@@ -154,14 +154,24 @@ function brickTex() {
     }
   }, [3, 3]);
 }
+/* Barrel tiles in courses, each course shadowed by the one above and offset
+   half a tile. The old version drew a single grid of small arcs that averaged
+   out to a flat red sheet at any real viewing distance. */
 function tileTex() {
   return tex("roofTile", (g, s) => {
-    g.fillStyle = "#8d4530"; g.fillRect(0, 0, s, s);
-    for (let y = 0; y < 8; y++) for (let x = 0; x < 8; x++) {
-      g.fillStyle = `hsl(${12 + Math.random() * 8}, 48%, ${32 + Math.random() * 12}%)`;
-      g.beginPath();
-      g.arc(x * s / 8 + s / 16, y * s / 8 + s / 16, s / 17, Math.PI, 0);
-      g.fill();
+    g.fillStyle = "#5f2c20"; g.fillRect(0, 0, s, s);
+    const rows = 7, rh = s / rows, cw = s / 7;
+    for (let y = 0; y < rows; y++) {
+      const ry = y * rh;
+      g.fillStyle = "rgba(0,0,0,0.42)";
+      g.fillRect(0, ry, s, rh * 0.26);
+      const off = (y % 2) * cw * 0.5;
+      for (let x = -1; x <= 7; x++) {
+        g.fillStyle = `hsl(${10 + Math.random() * 8}, ${33 + Math.random() * 11}%, ${27 + Math.random() * 11}%)`;
+        g.beginPath();
+        g.arc(x * cw + off + cw / 2, ry + rh * 0.78, cw * 0.46, Math.PI, 0);
+        g.fill();
+      }
     }
   }, [6, 4]);
 }
@@ -417,6 +427,81 @@ function starfield() {
   }));
 }
 
+/* A real hip roof, not a pyramid.
+   ------------------------------------------------------------------
+   This used to be a 4-sided cone with a radius of 0.8 x the *longer* wall,
+   which on a 2 Kanal put a 22m roof over an 18m house — a plan area bigger
+   than the building itself, so the elevation disappeared under it. A hip roof
+   is four slopes meeting a ridge that runs along the longer axis, with the
+   hips coming in at 45 degrees in plan. Sized off the real footprint with a
+   normal eave overhang, it reads as a Lahore kothi instead of a tent. */
+function hipRoof(W, D, topY, tileMat, fasciaMat) {
+  const g = new THREE.Group();
+  const ov = 0.62;                                  // eave overhang
+  const rw = W / 2 + ov, rd = D / 2 + ov;
+  const short = Math.min(rw, rd);
+  // Modest pitch, capped so a wide plot doesn't sprout a spire.
+  const h = Math.min(3.1, short * 0.42);
+  const alongZ = rd >= rw;
+  const ridge = Math.max(0.02, (alongZ ? rd : rw) - short);
+
+  const e = [[-rw, 0, -rd], [rw, 0, -rd], [rw, 0, rd], [-rw, 0, rd]];
+  const r = alongZ ? [[0, h, -ridge], [0, h, ridge]]
+                   : [[-ridge, h, 0], [ridge, h, 0]];
+
+  const pos = [], uv = [];
+  const sub = (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+  const cross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+  const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+  const mid = [0, h * 0.4, 0];
+  // Winding is decided against the roof's own centre so every face ends up
+  // outward-facing without hand-tracking vertex order per slope.
+  const tri = (a, b, c) => {
+    if (dot(cross(sub(b, a), sub(c, a)), sub(a, mid)) < 0) { const t = b; b = c; c = t; }
+    [a, b, c].forEach((p) => { pos.push(p[0], p[1], p[2]); uv.push(p[0] / 3.4, (p[2] + p[1] * 1.4) / 3.4); });
+  };
+  const quad = (a, b, c, d) => { tri(a, b, c); tri(a, c, d); };
+
+  if (alongZ) {
+    quad(e[1], e[2], r[1], r[0]);      // east slope
+    quad(e[3], e[0], r[0], r[1]);      // west slope
+    tri(e[0], e[1], r[0]);             // north hip
+    tri(e[2], e[3], r[1]);             // south hip
+  } else {
+    quad(e[2], e[1], r[1], r[0]);
+    quad(e[0], e[3], r[0], r[1]);
+    tri(e[1], e[2], r[1]);
+    tri(e[3], e[0], r[0]);
+  }
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+  geo.setAttribute("uv", new THREE.Float32BufferAttribute(uv, 2));
+  geo.computeVertexNormals();
+  const slopes = new THREE.Mesh(geo, tileMat);
+  slopes.castShadow = true;
+  slopes.receiveShadow = true;
+  g.add(slopes);
+
+  // Fascia: without a band of thickness at the eave the roof ends in a knife
+  // edge and looks like paper from any angle below it.
+  const fh = 0.24;
+  [[0, -rd, rw * 2 + 0.06, 0.12], [0, rd, rw * 2 + 0.06, 0.12]].forEach(([x, z, w, d]) => {
+    const b = box(w, fh, d, fasciaMat); b.position.set(x, -fh / 2, z); g.add(b);
+  });
+  [[-rw, 0, 0.12, rd * 2 + 0.06], [rw, 0, 0.12, rd * 2 + 0.06]].forEach(([x, z, w, d]) => {
+    const b = box(w, fh, d, fasciaMat); b.position.set(x, -fh / 2, z); g.add(b);
+  });
+
+  // Ridge cap
+  const cap = alongZ ? box(0.34, 0.16, ridge * 2, fasciaMat) : box(ridge * 2, 0.16, 0.34, fasciaMat);
+  cap.position.y = h + 0.05;
+  g.add(cap);
+
+  g.position.y = topY;
+  return g;
+}
+
 /* Showcase podium — the dark disc with a gold ring the tour models sit on.
    It frames the design and hides the horizon, which is what makes it read as
    a presentation piece rather than a floating box. */
@@ -565,13 +650,9 @@ function buildHouse(cfg) {
 
   /* ---- roof ---- */
   if (cfg.roof === "hip") {
-    const roof = new THREE.Mesh(
-      new THREE.ConeGeometry(Math.max(W, D) * 0.80, 2.6, 4),
-      mat(0x8d4530, 0.9, 0.02, tileTex()));
-    roof.rotation.y = Math.PI / 4;
-    roof.position.y = topY + 1.3;
-    roof.castShadow = true;
-    g.add(roof);
+    // Matte, and browner than the old pillar-box red — a saturated roof pulls
+    // the eye straight off the elevation you're trying to sell.
+    g.add(hipRoof(W, D, topY, mat(0x9c6a5a, 0.97, 0.0, tileTex()), trimMat));
   } else {
     // parapet with a contrasting coping — never a bare slab edge here
     const par = box(W + 0.2, 1.0, D + 0.2, wallMat);

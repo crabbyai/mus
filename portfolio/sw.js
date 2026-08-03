@@ -13,7 +13,7 @@
 
    Bump VERSION to invalidate every cache after a deploy.
    ============================================================ */
-const VERSION = "v4";
+const VERSION = "v5";
 const SHELL_CACHE = `ar-shell-${VERSION}`;
 const ASSET_CACHE = `ar-assets-${VERSION}`;
 const DATA_CACHE = `ar-data-${VERSION}`;
@@ -49,7 +49,19 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-const isAsset = (p) => /\.(css|js|webp|jpg|jpeg|png|svg|woff2?|ico)$/i.test(p);
+/* Code and media are cached differently on purpose.
+
+   Stylesheets and scripts used to be stale-while-revalidate like everything
+   else, which meant a deploy only reached a returning visitor on their SECOND
+   load — and if a release changed style.css without changing its ?v= query,
+   never. That shipped a build where the JS was current and the CSS was a
+   release behind. Code now goes network-first: current whenever there's a
+   connection, still served from cache when there isn't.
+
+   Media stays stale-while-revalidate — it's heavy, it rarely changes, and an
+   image one version behind costs nothing. */
+const isCode = (p) => /\.(css|js)$/i.test(p);
+const isMedia = (p) => /\.(webp|jpg|jpeg|png|svg|woff2?|ico)$/i.test(p);
 const isData = (p) => p.includes("/data/") && p.endsWith(".json");
 
 async function networkFirst(request, cacheName, fallback) {
@@ -96,7 +108,11 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(networkFirst(req, DATA_CACHE));
     return;
   }
-  if (isAsset(url.pathname)) {
+  if (isCode(url.pathname)) {
+    event.respondWith(networkFirst(req, ASSET_CACHE));
+    return;
+  }
+  if (isMedia(url.pathname)) {
     event.respondWith(staleWhileRevalidate(req, ASSET_CACHE));
   }
 });

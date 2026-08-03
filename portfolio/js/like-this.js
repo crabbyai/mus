@@ -16,7 +16,7 @@
    ============================================================ */
 import * as THREE from "three";
 import { PLOTS, STYLES, FINISHES, KITCHENS, FEATURES, estimate, fmtPKR,
-  buildHouse, starfield } from "./house-builder.js?v=10";
+  buildHouse, starfield } from "./house-builder.js?v=11";
 
 const WA = "16134083945";
 
@@ -83,7 +83,7 @@ let ssaoPass = null;
 let ready = false, running = false, raf = 0, flickerWins = [];
 // A low pitch keeps the elevation facing you. Looking down from 14° put the
 // roof front and centre, which is the one surface nobody is buying.
-let yaw = -0.7, targetYaw = -0.7, pitch = 0.13, dist = 30, focusY = 3.2;
+let yaw = -0.7, targetYaw = -0.7, pitch = 0.11, dist = 30, focusY = 3.2;
 let dragging = false, lastX = 0, lastY = 0, pinchStart = 0;
 
 const cv = () => document.getElementById("ltCanvas");
@@ -211,12 +211,13 @@ function resize() {
 
 function bindPointer(c) {
   const down = (x, y) => { dragging = true; lastX = x; lastY = y; setSpin(false); };
-  // Both axes are inverted on purpose: dragging left swings the house left,
-  // dragging up tips the view up — you're steering the camera, not the model.
+  // Grab-the-model feel: the surface under your finger follows it. Drag right
+  // and the elevation you're holding comes round to the right; drag down and
+  // the roof tips away from you.
   const move = (x, y) => {
     if (!dragging) return;
-    targetYaw += (x - lastX) * 0.008;
-    pitch = Math.max(0.02, Math.min(0.7, pitch - (y - lastY) * 0.004));
+    targetYaw -= (x - lastX) * 0.008;
+    pitch = Math.max(0.02, Math.min(0.7, pitch + (y - lastY) * 0.004));
     lastX = x; lastY = y;
   };
   const up = () => { dragging = false; };
@@ -292,10 +293,15 @@ function rebuild3d() {
   house.scale.setScalar(0.001);
   rig.add(house);
 
+  const aniso = renderer.capabilities.getMaxAnisotropy();
   flickerWins = [];
   house.traverse((o) => {
     const m = o.material;
-    if (m && m.emissiveIntensity > 0.6 && m.emissive && m.emissive.r > 0.5) {
+    if (!m) return;
+    // Anisotropic filtering: paving, roof tiles and boundary walls are all seen
+    // at grazing angles, where trilinear filtering smears them into mush.
+    if (m.map && m.map.anisotropy !== aniso) { m.map.anisotropy = aniso; m.map.needsUpdate = true; }
+    if (m.emissiveIntensity > 0.6 && m.emissive && m.emissive.r > 0.5) {
       m.userData.base = m.emissiveIntensity;
       flickerWins.push(m);
     }

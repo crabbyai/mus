@@ -16,7 +16,7 @@ import {
   state, PLOTS, FINISHES,
   buildHouse, buildInterior,
   mat, box, plasterTex, paverTex, grassTex, glow, window3d, woodCladTex
-} from "./house-builder.js?v=10";
+} from "./house-builder.js?v=11";
 import { ARCHETYPES, PROPERTY_MODELS } from "./estate3d.js?v=5";
 
 /* ---------- module state ---------- */
