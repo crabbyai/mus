@@ -2483,3 +2483,120 @@ body.wtour-open .cursor-dot { display: none !important; }
   transition: opacity 0.35s var(--ease), transform 0.35s var(--ease);
 }
 .wtour__prompt.is-on { opacity: 1; transform: translate(-50%, 0); }
+
+/* ============================================================
+   HERO GOLD DUST — canvas motes over the aurora
+   ============================================================ */
+.hero__dust {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 1; opacity: 0.9;
+}
+@media (prefers-reduced-motion: reduce) { .hero__dust { display: none; } }
+
+/* ============================================================
+   LIVE PRESENCE — the dot changes with the real hour in Islamabad
+   ============================================================ */
+.online-dot[data-state="soon"] { background: var(--gold-bright); animation-name: online-pulse-gold; }
+.online-dot[data-state="off"]  { background: #6d7488; animation: none; }
+@keyframes online-pulse-gold {
+  0%   { box-shadow: 0 0 0 0 rgba(201,164,92,0.55); }
+  100% { box-shadow: 0 0 0 8px rgba(201,164,92,0); }
+}
+[data-presence] strong { color: var(--cream); font-weight: 600; }
+[data-presence][data-state="on"] strong { color: #56d98d; }
+[data-presence][data-state="soon"] strong { color: var(--gold-bright); }
+
+/* ============================================================
+   CONTEXTUAL CTA RAIL — the ask follows the section you're reading
+   ============================================================ */
+.cta-rail {
+  position: fixed; right: 1.6rem; bottom: 1.6rem; z-index: 915;
+  width: 17.5rem; padding: 1.1rem 1.2rem 1rem;
+  border-radius: 16px; border: 1px solid rgba(201,164,92,0.34);
+  background: rgba(12,17,33,0.9); backdrop-filter: blur(14px);
+  box-shadow: 0 26px 60px -22px rgba(0,0,0,0.85);
+  opacity: 0; transform: translateY(14px) scale(0.98);
+  pointer-events: none;
+  transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
+}
+.cta-rail.is-on { opacity: 1; transform: none; pointer-events: auto; }
+/* Step aside once the booking form itself is on screen. */
+.cta-rail.is-parked { opacity: 0; transform: translateY(14px) scale(0.98); pointer-events: none; }
+.cta-rail__x {
+  position: absolute; top: 0.45rem; right: 0.5rem;
+  width: 28px; height: 28px; border-radius: 50%; cursor: pointer;
+  background: transparent; border: 0; color: var(--muted); font-size: 0.8rem;
+  display: grid; place-items: center; transition: color 0.25s;
+}
+.cta-rail__x:hover { color: var(--cream); }
+.cta-rail__title {
+  font-family: var(--serif); font-size: 1.02rem; line-height: 1.35;
+  color: var(--cream); margin: 0 1.4rem 0.85rem 0;
+}
+.cta-rail__btn { width: 100%; justify-content: center; font-size: 0.8rem; padding: 0.75rem 1rem; }
+.cta-rail__presence {
+  display: flex; align-items: center; gap: 0.45rem;
+  margin-top: 0.7rem; font-size: 0.68rem; color: var(--muted);
+}
+/* Soft swap when the ask changes rather than a hard text switch. */
+.cta-rail.is-swapping .cta-rail__title,
+.cta-rail.is-swapping .cta-rail__btn { animation: cta-swap 0.42s var(--ease) both; }
+.cta-rail.is-swapping .cta-rail__btn { animation-delay: 0.05s; }
+@keyframes cta-swap {
+  from { opacity: 0; transform: translateY(7px); }
+  to   { opacity: 1; transform: none; }
+}
+/* The WhatsApp bubble and the rail share the corner — lift the bubble clear. */
+@media (min-width: 1100px) {
+  body.has-cta-rail .whatsapp-fab { transform: translateY(-12rem); }
+  body.has-cta-rail .whatsapp-fab:hover { transform: translateY(-12rem) scale(1.1); }
+  body.has-cta-rail .to-top { transform: translateY(-2rem); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cta-rail, .cta-rail__title, .cta-rail__btn { transition: none; animation: none; }
+}
+
+/* ============================================================
+   WHAT HAPPENS NEXT — removes the friction before the first message
+   ============================================================ */
+.nextsteps {
+  padding: clamp(4rem, 8vw, 6.5rem) 6vw;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(201,164,92,0.09), transparent 62%),
+    linear-gradient(180deg, var(--ink), #0c1226);
+  border-top: 1px solid rgba(201,164,92,0.16);
+}
+.nextsteps__inner { max-width: 72rem; margin: 0 auto; }
+.nextsteps__head { text-align: center; max-width: 46rem; margin: 0 auto 2.8rem; }
+.nextsteps__lead { color: #c9cedb; margin-top: 1rem; }
+.nextsteps__list {
+  list-style: none; padding: 0; margin: 0;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.2rem;
+}
+.nextsteps__step {
+  position: relative; padding: 2.1rem 1.5rem 1.6rem; border-radius: 16px;
+  border: 1px solid rgba(243,238,227,0.1);
+  transition: border-color 0.35s var(--ease), transform 0.35s var(--ease);
+}
+.nextsteps__step:hover { border-color: rgba(201,164,92,0.5); transform: translateY(-4px); }
+.nextsteps__n {
+  position: absolute; top: 1rem; right: 1.2rem;
+  font-family: var(--serif); font-style: italic; font-size: 1.6rem;
+  color: rgba(201,164,92,0.42);
+}
+.nextsteps__step h3 {
+  font-family: var(--serif); font-size: 1.16rem; line-height: 1.35;
+  margin: 0 3rem 0.7rem 0; color: var(--cream);
+}
+.nextsteps__step p { font-size: 0.88rem; line-height: 1.7; color: #c9cedb; margin: 0; }
+.nextsteps__meta {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  margin-top: 0.7rem; font-size: 0.72rem;
+}
+.nextsteps__fine {
+  text-align: center; margin-top: 2rem;
+  font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted);
+}
+@media (max-width: 900px) {
+  .nextsteps__list { grid-template-columns: minmax(0, 1fr); }
+}
