@@ -183,7 +183,7 @@
 <link rel="preload" href="assets/fonts/playfair-display-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="assets/fonts/manrope-latin-300-normal.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="stylesheet" href="css/fonts.css" />
-<link rel="stylesheet" href="css/style.css?v=38" />
+<link rel="stylesheet" href="css/style.css?v=41" />
 <link rel="stylesheet" href="css/enhance.css" />
 </head>
 <body>
@@ -245,6 +245,7 @@
   <a href="#portals">Top Portals</a>
   <a href="#portfolio">Sold Portfolio</a>
   <a href="#areas">Area Guides</a>
+  <a href="#market">Market Data</a>
   <a href="#likethis">Build One Like This</a>
   <a href="#guides">Guides</a>
   <a href="#faq">FAQ</a>
@@ -942,6 +943,57 @@
   </section>
 
   <!-- ======= AREA MAP ======= -->
+
+  <!-- ======= MARKET INTELLIGENCE ======= -->
+  <section class="market" id="market">
+    <div class="market__head">
+      <p class="section-eyebrow" data-reveal>Market Intelligence</p>
+      <h2 class="section-title" data-reveal>What these areas <em class="gold-italic">actually cost</em></h2>
+      <p class="market__lead" data-reveal>Per-marla history, the twelve-month and five-year move, rental yield and
+      how fast stock is shifting — for every area I work in. Pick one.</p>
+    </div>
+
+    <div class="market__areas" id="mktAreas" role="tablist" aria-label="Choose an area"><!-- injected --></div>
+
+    <div class="market__grid">
+      <div class="market__panel glass" data-reveal>
+        <div class="market__panelhead">
+          <div>
+            <p class="market__label">Price per marla · <span id="mktWhere"></span></p>
+            <strong class="market__big" id="mktNow">—</strong>
+            <span class="market__delta" id="mktDelta"></span>
+          </div>
+          <p class="market__range">2021 → 2026</p>
+        </div>
+        <div class="market__chart" id="mktChart"><!-- svg injected --></div>
+        <p class="market__note" id="mktNote"></p>
+      </div>
+
+      <aside class="market__side">
+        <div class="market__stat glass" data-reveal>
+          <span>Five-year move</span><strong id="mkt5y">—</strong>
+        </div>
+        <div class="market__stat glass" data-reveal>
+          <span>Gross rental yield</span><strong id="mktYield">—</strong>
+        </div>
+        <div class="market__stat glass" data-reveal>
+          <span>Median time to sell</span><strong id="mktDays">—</strong>
+        </div>
+        <div class="market__bands glass" id="mktBands" data-reveal><!-- injected --></div>
+        <button class="btn btn--wa market__cta" id="mktCta" type="button" data-magnetic>Send me the brief</button>
+      </aside>
+    </div>
+
+    <div class="market__compare glass" data-reveal>
+      <p class="market__label">Every area I cover, by price per marla — tap one to load it</p>
+      <div class="market__bars" id="mktBars"><!-- injected --></div>
+    </div>
+
+    <p class="market__disc" data-reveal>Indicative figures compiled from my own closings and area comparables as of
+    <span id="mktStamp">today</span> — not a live index. Plot-level pricing swings hard on block, road width and
+    condition, so treat these as the starting point of a conversation, not a quote.</p>
+  </section>
+
   <section class="map" id="map">
     <div class="map__head">
       <p class="section-eyebrow" data-reveal>On The Ground</p>
@@ -1682,6 +1734,7 @@
 <script src="js/social.js?v=1" defer></script>
 <script src="js/convert.js?v=3" defer></script>
 <script src="js/currency.js?v=4" defer></script>
+<script src="js/market.js?v=2" defer></script>
 <script>
   /* Service worker: offline fallback + instant repeat visits.
      Relative scope so it works on both the Pages sub-path and pakistani.luxury. */
