@@ -183,7 +183,7 @@
 <link rel="preload" href="assets/fonts/playfair-display-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="assets/fonts/manrope-latin-300-normal.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="stylesheet" href="css/fonts.css" />
-<link rel="stylesheet" href="css/style.css?v=42" />
+<link rel="stylesheet" href="css/style.css?v=44" />
 <link rel="stylesheet" href="css/enhance.css" />
 </head>
 <body>
@@ -245,6 +245,7 @@
   <a href="#portals">Top Portals</a>
   <a href="#portfolio">Sold Portfolio</a>
   <a href="#areas">Area Guides</a>
+  <a href="#city3d">City in 3D</a>
   <a href="#budget">Budget Matcher</a>
   <a href="#market">Market Data</a>
   <a href="#likethis">Build One Like This</a>
@@ -945,6 +946,37 @@
 
   <!-- ======= AREA MAP ======= -->
 
+
+
+  <!-- ======= THE CITY IN 3D ======= -->
+  <section class="city3d" id="city3d">
+    <div class="city3d__head">
+      <p class="section-eyebrow" data-reveal>Sector by Sector</p>
+      <h2 class="section-title" data-reveal>The whole city, <em class="gold-italic">in 3D</em></h2>
+      <p class="city3d__lead" data-reveal>Every sector as a block — the taller and warmer it glows, the more it
+      costs. Tap any one for what a Kanal goes for, what's around the corner, and where you'd actually eat.</p>
+    </div>
+
+    <div class="city3d__switch" role="group" aria-label="Choose a city" data-reveal>
+      <button class="chip is-active" type="button" data-city3d="isb" aria-pressed="true">Islamabad</button>
+      <button class="chip" type="button" data-city3d="lhr" aria-pressed="false">Lahore</button>
+    </div>
+
+    <div class="city3d__shell glass" data-reveal>
+      <div class="city3d__stage">
+        <canvas id="cityCanvas" aria-label="Interactive 3D model of the city, coloured by price per sector" role="img"></canvas>
+        <div class="city3d__loading" id="cityLoading"><span></span>Building the city…</div>
+        <p class="city3d__hint" id="cityHint">Drag to orbit · scroll to zoom · tap any sector</p>
+        <div class="city3d__legend" id="cityLegend"><!-- injected --></div>
+      </div>
+      <aside class="city-info" id="cityInfo" aria-live="polite">
+        <p class="city-info__idle">Tap a sector to see what it costs and what's around it.</p>
+      </aside>
+    </div>
+
+    <p class="city3d__disc" data-reveal>A stylised model, not a survey — block positions follow the real grid but
+    are simplified, and prices are the same indicative figures as the market data above.</p>
+  </section>
 
   <!-- ======= BUDGET MATCHER ======= -->
   <section class="budget" id="budget">
@@ -1770,6 +1802,7 @@
 <script type="module" src="js/house-builder.js?v=12"></script>
 <script type="module" src="js/house-tour.js?v=6"></script>
 <script type="module" src="js/like-this.js?v=5"></script>
+<script type="module" src="js/city3d.js?v=5"></script>
 <script src="js/tools.js?v=4" defer></script>
 <script src="js/enhance.js?v=5" defer></script>
 <script src="js/feed.js?v=12" defer></script>
