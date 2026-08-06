@@ -80,7 +80,7 @@ const ISB = [
   { id: "G-13", n: "G-13", col: 13, row: 3, p: 5.2, band: "8–13", tier: 2,
     tag: "Younger families",
     marks: ["G-13 Markaz", "Kashmir Highway access"], eats: ["G-13 Markaz"] },
-  { id: "G-15", n: "G-15", col: 15, row: 3, p: 3.5, band: "5–9", tier: 1,
+  { id: "G-15", n: "G-15", col: 14.2, row: 3, p: 3.5, band: "5–9", tier: 1,
     tag: "Entry point on the grid",
     marks: ["Motorway access", "Still filling in"], eats: [] },
   { id: "H-8", n: "H-8", col: 8, row: 4, p: 0, band: null, tier: 6,
@@ -111,7 +111,7 @@ const ISB = [
   { id: "GULBERG", n: "Gulberg Greens", col: 6.0, row: 7.1, p: 3.6, band: "5.5–9", tier: 1,
     tag: "Farmhouse plots",
     marks: ["Gulberg Greens", "Gulberg Residencia", "Big open plots"], eats: ["Gulberg commercial"] },
-  { id: "B17", n: "B-17", col: 15.6, row: 1.4, p: 3.75, band: "6–9", tier: 1,
+  { id: "B17", n: "B-17", col: 14.4, row: 1.5, p: 3.75, band: "6–9", tier: 1,
     tag: "Most upside left",
     marks: ["Multi Gardens B-17", "M-1 motorway", "New commercial"], eats: ["B-17 Markaz"] }
 ];
@@ -460,7 +460,7 @@ function buildCity() {
   const w = bb.max.x - bb.min.x, d2 = bb.max.z - bb.min.z;
   const diag = Math.sqrt(w * w + d2 * d2);
   const vHalf = (40 * Math.PI / 180) / 2;
-  targetDist = dist = Math.min(200, (diag / 2) / Math.tan(vHalf) * 1.12);
+  targetDist = dist = Math.min(200, (diag / 2) / Math.tan(vHalf) * 1.18);
   selected = null;
 
   // Never open on an empty panel — lead with the sector everyone knows.
