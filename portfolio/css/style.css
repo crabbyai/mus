@@ -2600,3 +2600,43 @@ body.wtour-open .cursor-dot { display: none !important; }
 @media (max-width: 900px) {
   .nextsteps__list { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* ============================================================
+   CURRENCY PICKER — overseas buyers shouldn't have to convert crore
+   ============================================================ */
+/* Sits in the sold-homes toolbar and inherits its input styling. */
+.fx-pick { display: inline-flex; align-items: center; gap: 0.5rem; }
+.fx-pick__label {
+  font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--muted); white-space: nowrap;
+}
+.fx-pick select:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.fx-pick option { background: #0c1226; color: var(--cream); }
+
+/* the converted line sits under whatever price it belongs to */
+.fx-alt {
+  display: block; margin-top: 0.15rem;
+  font-family: var(--sans); font-style: normal; font-weight: 500;
+  font-size: 0.68rem; letter-spacing: 0.06em; text-transform: none;
+  color: var(--muted);
+}
+.card__price .fx-alt, .deal__price .fx-alt { color: rgba(201,164,92,0.8); }
+#lbPrice .fx-alt, #spotPrice .fx-alt { font-size: 0.74rem; }
+
+/* ============================================================
+   GLOSS SWEEP — a slow highlight across cards on hover
+   ============================================================ */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .card__media, .deal__media, .lt-ref, .nextsteps__step { position: relative; }
+  .card__media::after, .deal__media::after,
+  .lt-ref::after, .nextsteps__step::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(105deg, transparent 38%,
+      rgba(255,255,255,0.13) 47%, rgba(201,164,92,0.18) 52%, transparent 62%);
+    transform: translateX(-130%);
+    transition: transform 0.85s var(--ease);
+  }
+  .card:hover .card__media::after, .deal:hover .deal__media::after,
+  .lt-ref:hover::after, .nextsteps__step:hover::after { transform: translateX(130%); }
+  .lt-ref, .nextsteps__step { overflow: hidden; }
+}

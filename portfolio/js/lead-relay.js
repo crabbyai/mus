@@ -99,6 +99,13 @@
     /* Hand a message to WhatsApp with a guaranteed fallback. */
     send: function (message) {
       if (!message) return;
+      // If they've switched the site into another currency they're almost
+      // certainly buying from abroad, and which currency says which market.
+      // Worth one line at the bottom of every enquiry.
+      try {
+        var cur = window.Currency && window.Currency.get();
+        if (cur && cur !== "PKR") message += "\n\n(Viewing your site with prices in " + cur + ".)";
+      } catch (e) { /* never block the send */ }
       save(message);
       var url = WA + "?text=" + encodeURIComponent(message);
       var win = null;
