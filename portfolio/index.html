@@ -183,7 +183,7 @@
 <link rel="preload" href="assets/fonts/playfair-display-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="assets/fonts/manrope-latin-300-normal.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="stylesheet" href="css/fonts.css" />
-<link rel="stylesheet" href="css/style.css?v=41" />
+<link rel="stylesheet" href="css/style.css?v=42" />
 <link rel="stylesheet" href="css/enhance.css" />
 </head>
 <body>
@@ -245,6 +245,7 @@
   <a href="#portals">Top Portals</a>
   <a href="#portfolio">Sold Portfolio</a>
   <a href="#areas">Area Guides</a>
+  <a href="#budget">Budget Matcher</a>
   <a href="#market">Market Data</a>
   <a href="#likethis">Build One Like This</a>
   <a href="#guides">Guides</a>
@@ -943,6 +944,48 @@
   </section>
 
   <!-- ======= AREA MAP ======= -->
+
+
+  <!-- ======= BUDGET MATCHER ======= -->
+  <section class="budget" id="budget">
+    <div class="budget__head">
+      <p class="section-eyebrow" data-reveal>Start From The Money</p>
+      <h2 class="section-title" data-reveal>What will <em class="gold-italic">your budget</em> actually buy?</h2>
+      <p class="budget__lead" data-reveal>Everyone else asks what your house is worth. This asks the question you
+      actually arrived with — move the slider and see which areas and plot sizes open up.</p>
+    </div>
+
+    <div class="budget__panel glass" data-reveal>
+      <div class="budget__controls">
+        <div class="budget__amount">
+          <span class="market__label">My budget</span>
+          <strong id="budValue">PKR 8 Crore</strong>
+        </div>
+        <div class="budget__cities" id="budCity" role="group" aria-label="City">
+          <button class="chip is-active" type="button" data-city="all" aria-pressed="true">Both cities</button>
+          <button class="chip" type="button" data-city="islamabad" aria-pressed="false">Islamabad</button>
+          <button class="chip" type="button" data-city="lahore" aria-pressed="false">Lahore</button>
+        </div>
+      </div>
+
+      <label class="budget__slider">
+        <span class="sr-only">Budget in crore</span>
+        <input type="range" id="budSlider" min="1" max="45" step="0.5" value="8"
+               aria-label="Budget in crore" />
+        <span class="budget__scale" aria-hidden="true"><i>1 Cr</i><i>15 Cr</i><i>30 Cr</i><i>45 Cr</i></span>
+      </label>
+
+      <p class="budget__count" id="budCount" aria-live="polite"></p>
+      <div class="budget__results" id="budResults"><!-- injected --></div>
+      <p class="budget__more" id="budMore" hidden></p>
+
+      <button class="btn btn--wa budget__cta" id="budCta" type="button" data-magnetic>
+        Send me what's available at this budget <span class="btn__arrow">→</span>
+      </button>
+      <p class="budget__fine">Ranges are the same indicative figures as the market data above — a real shortlist
+      depends on block, condition and what's actually on the market this week.</p>
+    </div>
+  </section>
 
   <!-- ======= MARKET INTELLIGENCE ======= -->
   <section class="market" id="market">
@@ -1734,7 +1777,8 @@
 <script src="js/social.js?v=1" defer></script>
 <script src="js/convert.js?v=3" defer></script>
 <script src="js/currency.js?v=4" defer></script>
-<script src="js/market.js?v=2" defer></script>
+<script src="js/market.js?v=3" defer></script>
+<script src="js/budget.js?v=3" defer></script>
 <script>
   /* Service worker: offline fallback + instant repeat visits.
      Relative scope so it works on both the Pages sub-path and pakistani.luxury. */

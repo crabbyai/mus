@@ -332,4 +332,17 @@
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else init();
+
+  /* The budget matcher runs off exactly these numbers — one dataset, so the
+     two sections can never disagree about what an area costs. */
+  window.MarketData = {
+    areas: AREAS,
+    bandLabel: BAND_LABEL,
+    select: select,
+    focus: function (id) {
+      select(id);
+      var el = document.getElementById("market");
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
 })();
