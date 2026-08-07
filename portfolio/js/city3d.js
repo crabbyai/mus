@@ -29,142 +29,182 @@ import * as THREE from "three";
    ============================================================ */
 const ISB = [
   // grid sectors — col runs east(5) to west(17), row D=0 … I=5
-  { id: "E-7", n: "E-7", col: 7, row: 1, p: 20, band: "32–55", tier: 5,
+  { id: "E-7", n: "E-7", col: 7, row: 1, p: 20, band: "32–55",
     tag: "Diplomatic quarter",
     marks: ["Diplomatic Enclave", "Margalla foothills", "Serena Hotel"],
     eats: ["Monal, up at Pir Sohawa", "Des Pardes in Saidpur Village"] },
-  { id: "E-11", n: "E-11", col: 11, row: 1, p: 10.75, band: "18–25", tier: 4,
+  { id: "E-11", n: "E-11", col: 11, row: 1, p: 10.75, band: "18–25",
     tag: "Best-connected value",
     marks: ["E-11 Markaz", "Kashmir Highway", "Faisal Mosque, ten minutes"],
     eats: ["E-11 Markaz food strip", "Tehzeeb Bakers"] },
-  { id: "F-6", n: "F-6", col: 6, row: 2, p: 18.5, band: "30–48", tier: 5,
+  { id: "F-6", n: "F-6", col: 6, row: 2, p: 18.5, band: "30–48",
     tag: "The oldest money",
     marks: ["Kohsar Market", "Super Market", "Islamabad Club"],
     eats: ["Chaaye Khana, Kohsar", "Street 1 Café", "Burning Brownie"] },
-  { id: "F-7", n: "F-7", col: 7, row: 2, p: 18.25, band: "28–45", tier: 5,
+  { id: "F-7", n: "F-7", col: 7, row: 2, p: 18.25, band: "28–45",
     tag: "The address everyone knows",
     marks: ["Jinnah Super Market", "F-7 Markaz", "Margalla trail head"],
     eats: ["Monal", "Tuscany Courtyard", "Kabul Restaurant", "Howdy"] },
-  { id: "F-8", n: "F-8", col: 8, row: 2, p: 15.5, band: "24–38", tier: 5,
+  { id: "F-8", n: "F-8", col: 8, row: 2, p: 15.5, band: "24–38",
     tag: "Central and quiet",
     marks: ["F-8 Markaz", "Ayub Market", "District Courts"],
     eats: ["F-8 Markaz strip", "Tehzeeb Bakers"] },
-  { id: "F-10", n: "F-10", col: 10, row: 2, p: 12.5, band: "20–30", tier: 4,
+  { id: "F-10", n: "F-10", col: 10, row: 2, p: 12.5, band: "20–30",
     tag: "Family sector",
     marks: ["F-10 Markaz", "Fatima Jinnah Park next door"],
     eats: ["F-10 Markaz restaurants"] },
-  { id: "F-11", n: "F-11", col: 11, row: 2, p: 11.5, band: "18–28", tier: 4,
+  { id: "F-11", n: "F-11", col: 11, row: 2, p: 11.5, band: "18–28",
     tag: "Newest of the F sectors",
     marks: ["F-11 Markaz", "Centaurus Mall, nearby"],
     eats: ["F-11 Markaz food court"] },
-  { id: "BLUE", n: "Blue Area", col: 8.6, row: 2.72, p: 0, band: null, tier: 6,
+  { id: "BLUE", n: "Blue Area", col: 8.6, row: 2.72, p: 0, band: null,
     tag: "The commercial spine", commercial: true,
     marks: ["Jinnah Avenue", "Centaurus Mall", "Head offices and banks"],
     eats: ["Jinnah Avenue restaurants"] },
-  { id: "F-9", n: "F-9 Park", col: 9, row: 2, p: 0, band: null, tier: 7,
+  { id: "F-9", n: "F-9 Park", col: 9, row: 2, p: 0, band: null,
     tag: "Fatima Jinnah Park", park: true,
     marks: ["Fatima Jinnah Park — the city's green lung"], eats: [] },
-  { id: "G-6", n: "G-6", col: 6, row: 3, p: 8, band: "12–20", tier: 3,
+  { id: "G-6", n: "G-6", col: 6, row: 3, p: 8, band: "12–20",
     tag: "Aabpara and Melody",
     marks: ["Aabpara Market", "Melody Food Park"],
     eats: ["Melody Food Park", "Savour Foods"] },
-  { id: "G-9", n: "G-9", col: 9, row: 3, p: 7.2, band: "11–18", tier: 3,
+  { id: "G-9", n: "G-9", col: 9, row: 3, p: 7.2, band: "11–18",
     tag: "Karachi Company",
     marks: ["Karachi Company market", "Central location"], eats: ["G-9 Markaz"] },
-  { id: "G-10", n: "G-10", col: 10, row: 3, p: 7.8, band: "12–19", tier: 3,
+  { id: "G-10", n: "G-10", col: 10, row: 3, p: 7.8, band: "12–19",
     tag: "Settled and central",
     marks: ["G-10 Markaz", "Peshawar Mor Metro"], eats: ["G-10 Markaz"] },
-  { id: "G-11", n: "G-11", col: 11, row: 3, p: 8, band: "12–20", tier: 3,
+  { id: "G-11", n: "G-11", col: 11, row: 3, p: 8, band: "12–20",
     tag: "Well-planned G sector",
     marks: ["G-11 Markaz", "Metro bus corridor"], eats: ["G-11 Markaz"] },
-  { id: "G-13", n: "G-13", col: 13, row: 3, p: 5.2, band: "8–13", tier: 2,
+  { id: "G-13", n: "G-13", col: 13, row: 3, p: 5.2, band: "8–13",
     tag: "Younger families",
     marks: ["G-13 Markaz", "Kashmir Highway access"], eats: ["G-13 Markaz"] },
-  { id: "G-15", n: "G-15", col: 14.2, row: 3, p: 3.5, band: "5–9", tier: 1,
+  { id: "G-15", n: "G-15", col: 14.2, row: 3, p: 3.5, band: "5–9",
     tag: "Entry point on the grid",
     marks: ["Motorway access", "Still filling in"], eats: [] },
-  { id: "H-8", n: "H-8", col: 8, row: 4, p: 0, band: null, tier: 6,
+  { id: "H-8", n: "H-8", col: 8, row: 4, p: 0, band: null,
     tag: "Institutional", commercial: true,
     marks: ["Federal offices", "H-8 graveyard and colleges"], eats: [] },
-  { id: "H-11", n: "H-11", col: 11, row: 4, p: 0, band: null, tier: 6,
+  { id: "H-11", n: "H-11", col: 11, row: 4, p: 0, band: null,
     tag: "Universities", commercial: true,
     marks: ["NUST", "Air University", "Student housing demand"], eats: [] },
-  { id: "I-8", n: "I-8", col: 8, row: 5, p: 6.5, band: "10–16", tier: 2,
+  { id: "I-8", n: "I-8", col: 8, row: 5, p: 6.5, band: "10–16",
     tag: "Central, well priced",
     marks: ["I-8 Markaz", "Faizabad interchange"],
     eats: ["Savour Foods", "I-8 Markaz"] },
-  { id: "D-12", n: "D-12", col: 12, row: 0, p: 6.6, band: "10–16", tier: 2,
+  { id: "D-12", n: "D-12", col: 12, row: 0, p: 6.6, band: "10–16",
     tag: "Against the hills",
     marks: ["D-12 Markaz", "Margalla views"], eats: ["D-12 Markaz"] },
   // off-grid schemes, placed roughly where they sit relative to the sectors
-  { id: "DHA2", n: "DHA Phase 2", col: 5.6, row: 5.2, p: 7.25, band: "13–16", tier: 3,
+  { id: "DHA2", n: "DHA Phase 2", col: 5.6, row: 5.2, p: 7.25, band: "13–16",
     tag: "Expressway side",
     marks: ["Islamabad Expressway", "DHA Phase 2 commercial", "Giga Mall nearby"],
     eats: ["Giga Mall food court", "DHA commercial strip"] },
-  { id: "BAHRIA", n: "Bahria Town", col: 4.6, row: 6.2, p: 4.4, band: "7–12", tier: 2,
+  { id: "BAHRIA", n: "Bahria Town", col: 4.6, row: 6.2, p: 4.4, band: "7–12",
     tag: "Self-contained living",
     marks: ["Bahria Phase 1–8", "Own power and security", "Safari Villas"],
     eats: ["Bahria commercial", "Cinepax food court"] },
-  { id: "ENCLAVE", n: "Bahria Enclave", col: 7.4, row: 6.4, p: 4.25, band: "7–10", tier: 2,
+  { id: "ENCLAVE", n: "Bahria Enclave", col: 7.4, row: 6.4, p: 4.25, band: "7–10",
     tag: "Margalla views, half the price",
     marks: ["Bahria Enclave", "Park Enclave next door", "Hill views"], eats: ["Enclave commercial"] },
-  { id: "GULBERG", n: "Gulberg Greens", col: 6.0, row: 7.1, p: 3.6, band: "5.5–9", tier: 1,
+  { id: "GULBERG", n: "Gulberg Greens", col: 6.0, row: 7.1, p: 3.6, band: "5.5–9",
     tag: "Farmhouse plots",
     marks: ["Gulberg Greens", "Gulberg Residencia", "Big open plots"], eats: ["Gulberg commercial"] },
-  { id: "B17", n: "B-17", col: 14.4, row: 1.5, p: 3.75, band: "6–9", tier: 1,
+  { id: "B17", n: "B-17", col: 14.4, row: 1.5, p: 3.75, band: "6–9",
     tag: "Most upside left",
-    marks: ["Multi Gardens B-17", "M-1 motorway", "New commercial"], eats: ["B-17 Markaz"] }
+    marks: ["Multi Gardens B-17", "M-1 motorway", "New commercial"], eats: ["B-17 Markaz"] },
+  // ---- the private schemes ringing the city ----------------------------
+  // These are where most Islamabad buying actually happens now; the lettered
+  // sectors are largely built out. Positions are relative, not surveyed.
+  { id: "DHA5I", n: "DHA Phase 5", col: 4.0, row: 4.6, p: 5.8, band: "9–14",
+    tag: "The newer DHA",
+    marks: ["Islamabad Expressway", "Airport corridor", "DHA commercial"],
+    eats: ["DHA Phase 5 commercial"] },
+  { id: "NAVAL", n: "Naval Anchorage", col: 4.4, row: 5.8, p: 3.3, band: "5–8",
+    tag: "Quiet and fully built",
+    marks: ["Islamabad Expressway", "Navy-managed", "Mature trees"],
+    eats: ["Anchorage commercial"] },
+  { id: "PARKVIEW", n: "Park View City", col: 6.5, row: 7.7, p: 2.9, band: "4.5–7",
+    tag: "Against the national park",
+    marks: ["Malot Road", "Bani Gala side", "Hill and lake views"],
+    eats: ["Park View commercial"] },
+  { id: "TAJ", n: "Taj Residencia", col: 10.0, row: 6.6, p: 2.5, band: "4–6",
+    tag: "Fast-building, well placed",
+    marks: ["Near I-14 / I-15", "Kuri Road", "Centaurus developer"],
+    eats: ["Taj commercial"] },
+  { id: "FAISALT", n: "Faisal Town", col: 13.4, row: 0.6, p: 2.3, band: "3.5–5.5",
+    tag: "North-west, near the hills",
+    marks: ["Near Tarnol", "M-1 access", "Faisal Hills next door"], eats: ["Faisal Town commercial"] },
+  { id: "SMART", n: "Capital Smart City", col: 12.6, row: 8.0, p: 2.3, band: "3.5–5.5",
+    tag: "The big M-2 project",
+    marks: ["Dedicated M-2 interchange", "Lahore-side of the motorway"], eats: ["Smart City commercial"] },
+  { id: "TOPCITY", n: "Top City-1", col: 14.8, row: 4.8, p: 2.0, band: "3–5",
+    tag: "Airport-side",
+    marks: ["Minutes from Islamabad Airport", "M-1 / M-2 access"], eats: ["Top City commercial"] },
+  { id: "MUMTAZ", n: "Mumtaz City", col: 14.2, row: 5.9, p: 1.9, band: "3–4.5",
+    tag: "Airport-side, established",
+    marks: ["Near Islamabad Airport", "Srinagar Highway"], eats: ["Mumtaz City commercial"] },
+  { id: "NOVA", n: "Nova City", col: 3.2, row: 7.5, p: 1.6, band: "2.5–4",
+    tag: "Rawalpindi side",
+    marks: ["Near Rawalpindi Ring Road", "Chakri interchange"], eats: ["Nova commercial"] },
+  { id: "BLUEW", n: "Blue World City", col: 15.4, row: 8.4, p: 1.2, band: "1.8–3",
+    tag: "Cheapest entry on the map",
+    marks: ["Chakri Road", "Rawalpindi Ring Road", "Longest horizon"], eats: ["Blue World commercial"] },
+  { id: "RUDN", n: "Rudn Enclave", col: 11.0, row: 8.4, p: 1.1, band: "1.6–2.8",
+    tag: "Adyala side, early stage",
+    marks: ["Adyala Road", "Rawalpindi Ring Road", "Long-hold play"], eats: ["Rudn commercial"] }
 ];
 
 const LHR = [
-  { id: "GULBERG3", n: "Gulberg III", x: 0.4, z: -0.6, p: 18.25, band: "28–45", tier: 5,
+  { id: "GULBERG3", n: "Gulberg III", x: 0.4, z: -0.6, p: 18.25, band: "28–45",
     tag: "Lahore's prestige address",
     marks: ["MM Alam Road", "Liberty Market", "Main Boulevard"],
     eats: ["Cafe Aylanto", "Cosa Nostra", "Butt Karahi", "Freddy's Cafe"] },
-  { id: "CANTT", n: "Cantt", x: 1.5, z: 0.1, p: 11, band: "16–28", tier: 4,
+  { id: "CANTT", n: "Cantt", x: 1.5, z: 0.1, p: 11, band: "16–28",
     tag: "Old Lahore establishment",
     marks: ["Fortress Stadium", "Gaddafi Stadium", "Lahore Gymkhana"],
     eats: ["Cafe Zouk", "Fortress food strip"] },
-  { id: "MODEL", n: "Model Town", x: 0.1, z: 1.0, p: 13.25, band: "18–35", tier: 4,
+  { id: "MODEL", n: "Model Town", x: 0.1, z: 1.0, p: 13.25, band: "18–35",
     tag: "Enormous plots, old money",
     marks: ["Model Town Park", "Model Town Link Road", "Central Lahore"],
     eats: ["Model Town Link Road restaurants"] },
-  { id: "DHA5", n: "DHA Phase 5", x: 2.5, z: 0.9, p: 14.25, band: "22–35", tier: 5,
+  { id: "DHA5", n: "DHA Phase 5", x: 2.5, z: 0.9, p: 14.25, band: "22–35",
     tag: "The most liquid market here",
     marks: ["Y-Block Commercial", "H-Block", "Phase 5 park belt"],
     eats: ["Y-Block restaurants", "Broadway Pizza"] },
-  { id: "DHA6", n: "DHA Phase 6", x: 3.3, z: 1.4, p: 8.25, band: "13–20", tier: 3,
+  { id: "DHA6", n: "DHA Phase 6", x: 3.3, z: 1.4, p: 8.25, band: "13–20",
     tag: "Where the designer builds are",
     marks: ["Sector C Commercial", "New builds everywhere"],
     eats: ["Phase 6 commercial", "Kababjees"] },
-  { id: "DHA8", n: "DHA Phase 7 / 8", x: 4.0, z: 2.1, p: 6.5, band: "10–16", tier: 3,
+  { id: "DHA8", n: "DHA Phase 7 / 8", x: 4.0, z: 2.1, p: 6.5, band: "10–16",
     tag: "Newer, greener, further",
     marks: ["Air Avenue", "Phase 8 Commercial", "Ring Road access"],
     eats: ["Air Avenue restaurants"] },
-  { id: "ASKARI", n: "Askari", x: 2.0, z: -0.3, p: 6.5, band: "10–16", tier: 3,
+  { id: "ASKARI", n: "Askari", x: 2.0, z: -0.3, p: 6.5, band: "10–16",
     tag: "Secure and settled",
     marks: ["Askari X and XI", "Army-managed", "Walk-to-school living"], eats: ["Askari commercial"] },
-  { id: "GARDEN", n: "Garden / Faisal Town", x: -0.7, z: 0.6, p: 8, band: "12–20", tier: 3,
+  { id: "GARDEN", n: "Garden / Faisal Town", x: -0.7, z: 0.6, p: 8, band: "12–20",
     tag: "Central and mature",
     marks: ["Garden Town", "Faisal Town", "Kalma Chowk"], eats: ["Faisal Town food street"] },
-  { id: "JOHAR", n: "Johar Town", x: -1.6, z: 0.9, p: 6, band: "9–15", tier: 2,
+  { id: "JOHAR", n: "Johar Town", x: -1.6, z: 0.9, p: 6, band: "9–15",
     tag: "Everything within reach",
     marks: ["Emporium Mall", "Expo Centre", "Doctors Hospital"],
     eats: ["Emporium food court", "Johar Town commercial"] },
-  { id: "WAPDA", n: "Wapda Town", x: -2.2, z: 1.7, p: 5, band: "8–13", tier: 2,
+  { id: "WAPDA", n: "Wapda Town", x: -2.2, z: 1.7, p: 5, band: "8–13",
     tag: "Solid family value",
     marks: ["Wapda Town roundabouts", "Valencia next door"], eats: ["Wapda Town commercial"] },
-  { id: "BAHRIA_L", n: "Bahria Town", x: -3.2, z: 2.6, p: 6, band: "9–15", tier: 2,
+  { id: "BAHRIA_L", n: "Bahria Town", x: -3.2, z: 2.6, p: 6, band: "9–15",
     tag: "A city inside the city",
     marks: ["Grand Jamia Mosque", "Eiffel Tower replica", "Takht-e-Lahore"],
     eats: ["Bahria commercial", "Cinegold food court"] },
-  { id: "LAKECITY", n: "Lake City", x: -2.6, z: 3.4, p: 5.75, band: "9–14", tier: 2,
+  { id: "LAKECITY", n: "Lake City", x: -2.6, z: 3.4, p: 5.75, band: "9–14",
     tag: "Best yield in Lahore",
     marks: ["Lake City Golf & Country Club", "Raiwind Road"], eats: ["Lake City commercial"] },
-  { id: "EME", n: "EME / Raiwind Rd", x: -3.6, z: 1.6, p: 4.8, band: "8–12", tier: 1,
+  { id: "EME", n: "EME / Raiwind Rd", x: -3.6, z: 1.6, p: 4.8, band: "8–12",
     tag: "Motorway side",
     marks: ["EME Society", "Motorway access", "Ring Road"], eats: ["EME commercial"] },
-  { id: "WALLED", n: "Walled City", x: 0.8, z: -2.4, p: 0, band: null, tier: 7,
+  { id: "WALLED", n: "Walled City", x: 0.8, z: -2.4, p: 0, band: null,
     tag: "Where Lahore began", park: true,
     marks: ["Badshahi Mosque", "Lahore Fort", "Fort Road Food Street"],
     eats: ["Cuckoo's Den", "Andaaz", "Haveli Restaurant"] }
@@ -173,15 +213,28 @@ const LHR = [
 /* Tier → colour. Deliberately a single warm ramp rather than a rainbow: the
    point is "how expensive", and a hue scale would read as "different kinds". */
 const TIER = {
-  1: { c: 0x2f4460, label: "Under PKR 4M / marla" },
-  2: { c: 0x4a5c72, label: "PKR 4–7M / marla" },
-  3: { c: 0x7d7357, label: "PKR 7–10M / marla" },
-  4: { c: 0xb08b45, label: "PKR 10–15M / marla" },
-  5: { c: 0xdfae55, label: "PKR 15M+ / marla" },
-  6: { c: 0x39435a, label: "Commercial / institutional" },
-  7: { c: 0x2c5241, label: "Park / heritage" }
+  1: { c: 0x3d6fa8, label: "Under PKR 2M / marla" },
+  2: { c: 0x3f9e9e, label: "PKR 2–4M / marla" },
+  3: { c: 0x6fae5c, label: "PKR 4–7M / marla" },
+  4: { c: 0xd9b23c, label: "PKR 7–11M / marla" },
+  5: { c: 0xe08a3c, label: "PKR 11–16M / marla" },
+  6: { c: 0xd8503f, label: "PKR 16M+ / marla" },
+  7: { c: 0x8d8fa3, label: "Commercial / institutional" },
+  8: { c: 0x4e9b5f, label: "Park / heritage" }
 };
 
+/* Band is derived from the price rather than stored beside it, so the colour
+   on the map can never drift out of step with the figure in the panel. */
+function tierOf(d) {
+  if (d.park) return 8;
+  if (d.commercial || !d.p) return 7;
+  if (d.p < 2) return 1;
+  if (d.p < 4) return 2;
+  if (d.p < 7) return 3;
+  if (d.p < 11) return 4;
+  if (d.p < 16) return 5;
+  return 6;
+}
 const WA = "16134083945";
 const SP = 7.2;          // grid spacing, world units
 
@@ -226,24 +279,27 @@ function place(d) {
    the hit testing all agree about where things are.
    ============================================================ */
 const PAL = {
-  land:  "#dfd8c6",
-  land2: "#d6cdb7",
-  green: "#a8bf8a",
-  green2:"#93ad74",
-  water: "#8fb6cf",
+  land:  "#e3dcc7",
+  land2: "#d2c9ae",
+  green: "#9fc084",
+  green2:"#77a45f",
+  crop:  "#c3cf94",
+  crop2: "#aebf7d",
+  water: "#4f97c4",
   road:  "#ffffff",
-  roadc: "#c9c0aa",
-  arter: "#f6e2b2",
-  arterc:"#d8bf83"
+  roadc: "#b8ae94",
+  arter: "#ffd977",
+  arterc:"#c9a04a"
 };
 const TINT = {
-  1: "rgba(120,150,190,0.20)",
-  2: "rgba(140,165,200,0.22)",
-  3: "rgba(210,180,110,0.26)",
-  4: "rgba(226,175,80,0.34)",
-  5: "rgba(236,166,52,0.46)",
-  6: "rgba(150,150,160,0.24)",
-  7: "rgba(120,170,110,0.34)"
+  1: "rgba(61,111,168,0.62)",
+  2: "rgba(63,158,158,0.62)",
+  3: "rgba(111,174,92,0.62)",
+  4: "rgba(217,178,60,0.70)",
+  5: "rgba(224,138,60,0.76)",
+  6: "rgba(216,80,63,0.80)",
+  7: "rgba(141,143,163,0.52)",
+  8: "rgba(78,155,95,0.80)"
 };
 
 let MAP = null;   // { minX, minZ, w, h, px }
@@ -275,13 +331,27 @@ function mapTexture(data) {
 
   // --- land, with enough mottling that it doesn't read as flat paper ---
   g.fillStyle = PAL.land; g.fillRect(0, 0, W, H);
-  for (let i = 0; i < 900; i++) {
-    g.fillStyle = r() > 0.5 ? PAL.land2 : PAL.green;
-    g.globalAlpha = 0.05 + r() * 0.12;
-    const rad = 20 + r() * 130;
+
+  // Scrub and tree cover first, farmland over it — drawn the other way round
+  // the fields disappeared under 600 soft green blobs.
+  for (let i = 0; i < 520; i++) {
+    g.fillStyle = r() > 0.45 ? PAL.green : PAL.green2;
+    g.globalAlpha = 0.10 + r() * 0.2;
     g.beginPath();
-    g.arc(r() * W, r() * H, rad, 0, 6.2832);
+    g.arc(r() * W, r() * H, 14 + r() * 90, 0, 6.2832);
     g.fill();
+  }
+  // Farmland: the country around both cities is a patchwork of small fields,
+  // and blocks of crop colour do far more for the aerial read than soft blur.
+  for (let i = 0; i < 340; i++) {
+    g.save();
+    g.translate(r() * W, r() * H);
+    g.rotate(r() * 1.6 - 0.8);
+    g.globalAlpha = 0.5 + r() * 0.4;
+    const pick = r();
+    g.fillStyle = pick > 0.66 ? PAL.crop : pick > 0.33 ? PAL.crop2 : PAL.land2;
+    g.fillRect(0, 0, (14 + r() * 46) * px * 0.4, (10 + r() * 30) * px * 0.4);
+    g.restore();
   }
   g.globalAlpha = 1;
 
@@ -289,7 +359,7 @@ function mapTexture(data) {
   if (city === "isb") {
     // Margalla foothills along the north edge
     const grad = g.createLinearGradient(0, 0, 0, Z(-SP * 3.4));
-    grad.addColorStop(0, PAL.green2); grad.addColorStop(1, "rgba(147,173,116,0)");
+    grad.addColorStop(0, "#5f8f4c"); grad.addColorStop(1, "rgba(119,164,95,0)");
     g.fillStyle = grad;
     g.fillRect(0, 0, W, Z(-SP * 3.4));
     // Rawal Lake, out to the east
@@ -316,7 +386,7 @@ function mapTexture(data) {
   // Each area is joined to the two nearest others. On Islamabad's grid that
   // reproduces the avenues almost exactly; in Lahore it gives the organic
   // web the city actually has.
-  const pts = data.map((d) => { const p = place(d); return { x: p.x, z: p.z, t: d.tier, d: d }; });
+  const pts = data.map((d) => { const p = place(d); return { x: p.x, z: p.z, t: tierOf(d), d: d }; });
   const links = [];
   pts.forEach((a, i) => {
     const near = pts.map((b2, j) => ({ j: j, dd: (a.x - b2.x) ** 2 + (a.z - b2.z) ** 2 }))
@@ -352,12 +422,12 @@ function mapTexture(data) {
     g.beginPath();
     g.roundRect(x0, z0, ww, hh, 6 * px * 0.5);
     if (d.park) g.fillStyle = PAL.green2;
-    else { g.fillStyle = PAL.land; g.fill(); g.fillStyle = TINT[d.tier]; }
+    else { g.fillStyle = PAL.land; g.fill(); g.fillStyle = TINT[tierOf(d)]; }
     g.fill();
     // plot grain: the fine street pattern inside a sector
     if (!d.park) {
       g.clip();
-      g.strokeStyle = "rgba(255,255,255,0.5)"; g.lineWidth = 0.28 * px;
+      g.strokeStyle = "rgba(255,255,255,0.26)"; g.lineWidth = 0.24 * px;
       for (let k = 1; k < 7; k++) {
         g.beginPath(); g.moveTo(x0 + (ww / 7) * k, z0); g.lineTo(x0 + (ww / 7) * k, z0 + hh); g.stroke();
         g.beginPath(); g.moveTo(x0, z0 + (hh / 7) * k); g.lineTo(x0 + ww, z0 + (hh / 7) * k); g.stroke();
@@ -405,11 +475,23 @@ function initScene() {
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.0;
+  renderer.toneMappingExposure = 1.12;
 
   scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xbcd2e6);
-  scene.fog = new THREE.Fog(0xc4d7e8, 190, 420);
+  // A gradient sky rather than a flat fill — the horizon is what tells you
+  // you're looking at ground from the air.
+  const sky = document.createElement("canvas");
+  sky.width = 8; sky.height = 256;
+  const sg = sky.getContext("2d");
+  const grd = sg.createLinearGradient(0, 0, 0, 256);
+  grd.addColorStop(0, "#4b86c4");
+  grd.addColorStop(0.55, "#9dc4e2");
+  grd.addColorStop(1, "#e6ddc8");
+  sg.fillStyle = grd; sg.fillRect(0, 0, 8, 256);
+  const skyTex = new THREE.CanvasTexture(sky);
+  skyTex.colorSpace = THREE.SRGBColorSpace;
+  scene.background = skyTex;
+  scene.fog = new THREE.Fog(0xd7dfd4, 320, 620);
 
   camera = new THREE.PerspectiveCamera(38, 1, 0.5, 700);
   root = new THREE.Group();
@@ -418,7 +500,7 @@ function initScene() {
   // Daylight: a strong warm sun with a cool sky fill is what makes an aerial
   // read as a photograph rather than a diagram.
   scene.add(new THREE.HemisphereLight(0xdfeaf7, 0x9a9a8d, 1.15));
-  const sun = new THREE.DirectionalLight(0xfff2d8, 2.5);
+  const sun = new THREE.DirectionalLight(0xfff0cf, 2.9);
   sun.position.set(60, 110, 48);
   sun.castShadow = true;
   sun.shadow.mapSize.set(2048, 2048);
@@ -569,9 +651,9 @@ function buildCity() {
 
     // Density and height both rise with price, which is what makes the
     // expensive parts of the city legible from the air.
-    const n = d.commercial ? 46 : 26 + d.tier * 9;
+    const n = d.commercial ? 46 : 26 + tierOf(d) * 9;
     for (let i = 0; i < n; i++) {
-      const base = d.commercial ? 3.6 : 0.85 + d.tier * 0.44;
+      const base = d.commercial ? 3.6 : 0.85 + tierOf(d) * 0.44;
       boxes.push({
         x: p.x + (seed() - 0.5) * p.w * 0.86,
         z: p.z + (seed() - 0.5) * p.h * 0.86,
@@ -599,13 +681,36 @@ function buildCity() {
     m4.makeScale(b.w, b.h, b.d);
     m4.setPosition(b.x, b.h / 2, b.z);
     bMesh.setMatrixAt(i, m4);
-    // the warm off-whites and sand tones of a Pakistani city from above
-    col.setHSL(0.09 + b.tone * 0.03, 0.14 + b.tone * 0.12, 0.63 + b.tone * 0.24);
+    // Sand, cream, grey and the occasional painted block — a flat off-white
+    // city reads as polystyrene from this height.
+    if (b.tone > 0.86) col.setHSL(0.55, 0.16, 0.66);        // cool grey-blue
+    else if (b.tone > 0.72) col.setHSL(0.11, 0.30, 0.70);   // warm sand
+    else col.setHSL(0.09 + b.tone * 0.05, 0.10 + b.tone * 0.18, 0.66 + b.tone * 0.22);
     bMesh.setColorAt(i, col);
   });
   bMesh.instanceMatrix.needsUpdate = true;
   if (bMesh.instanceColor) bMesh.instanceColor.needsUpdate = true;
   root.add(bMesh);
+
+  // Terracotta roofs on the low-rise. Almost all of both cities is two and
+  // three storey, and from the air the roofs are most of the colour you see.
+  const lows = boxes.filter((b) => b.h < 3.4);
+  const rMesh = new THREE.InstancedMesh(
+    new THREE.BoxGeometry(1, 1, 1),
+    new THREE.MeshStandardMaterial({ roughness: 0.9, metalness: 0 }),
+    lows.length
+  );
+  rMesh.castShadow = true;
+  lows.forEach((b, i) => {
+    m4.makeScale(b.w * 1.1, 0.16, b.d * 1.1);
+    m4.setPosition(b.x, b.h + 0.06, b.z);
+    rMesh.setMatrixAt(i, m4);
+    col.setHSL(0.045 + b.tone * 0.02, 0.42 + b.tone * 0.2, 0.38 + b.tone * 0.14);
+    rMesh.setColorAt(i, col);
+  });
+  rMesh.instanceMatrix.needsUpdate = true;
+  if (rMesh.instanceColor) rMesh.instanceColor.needsUpdate = true;
+  root.add(rMesh);
 
   const tMesh = new THREE.InstancedMesh(
     new THREE.ConeGeometry(0.5, 1.3, 6),
@@ -617,7 +722,7 @@ function buildCity() {
     m4.makeScale(t.s, t.s * (1 + t.s * 0.4), t.s);
     m4.setPosition(t.x, t.s * 0.7, t.z);
     tMesh.setMatrixAt(i, m4);
-    col.setHSL(0.26, 0.3 + t.s * 0.12, 0.3 + t.s * 0.1);
+    col.setHSL(0.24 + t.s * 0.06, 0.34 + t.s * 0.18, 0.26 + t.s * 0.14);
     tMesh.setColorAt(i, col);
   });
   tMesh.instanceMatrix.needsUpdate = true;
@@ -636,7 +741,7 @@ function buildCity() {
   // --- labels ---
   data.forEach((d, di) => {
     const p = place(d);
-    const sp = labelSprite(d.n, d.tier, d.p > 0 ? "PKR " + d.p.toFixed(1) + "M / marla" : null);
+    const sp = labelSprite(d.n, tierOf(d), d.p > 0 ? "PKR " + d.p.toFixed(1) + "M / marla" : null);
     sp.userData.lift = 7.2 + (di % 3) * 3.1;   // three levels: two weren't enough in the DHA run
     sp.position.set(p.x, sp.userData.lift, p.z);
     root.add(sp);
@@ -792,7 +897,7 @@ function loop() {
   const k = Math.max(0, Math.min(1, (200 - dist) / 90));
   labels.forEach((sp, i) => {
     const r = rects[i];
-    const keep = r && (r.d.tier >= 4 || r.d.commercial || k > 0.45 ||
+    const keep = r && (tierOf(r.d) >= 4 || r.d.commercial || k > 0.45 ||
                        (selected && r.d.id === selected.id));
     const want = keep ? Math.min(1, 0.35 + k) : 0;
     sp.material.opacity += (want - sp.material.opacity) * 0.12;
@@ -809,7 +914,7 @@ function stop() { running = false; cancelAnimationFrame(raf); }
 function legend() {
   const el = document.getElementById("cityLegend");
   if (!el) return;
-  el.innerHTML = [5, 4, 3, 2, 1].map((k) =>
+  el.innerHTML = [6, 5, 4, 3, 2, 1].map((k) =>
     '<span class="city-key"><i style="background:#' +
     TIER[k].c.toString(16).padStart(6, "0") + '"></i>' + TIER[k].label + "</span>").join("");
 }
