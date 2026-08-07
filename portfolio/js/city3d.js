@@ -186,25 +186,215 @@ const WA = "16134083945";
 const SP = 7.2;          // grid spacing, world units
 
 /* ============================================================
-   SCENE
+
+/* ============================================================
+   RENDERER — a map seen from the air
+   ------------------------------------------------------------
+   The first version put each sector on its own floating slab over
+   a black void, which read as a chart rather than a city. This
+   draws the whole thing as one continuous piece of ground: a map
+   painted into a canvas texture (terrain, parks, water, the road
+   network, and a price tint per sector) with real buildings and
+   trees standing on top of it, lit like daylight and viewed from
+   the air.
    ============================================================ */
 let renderer, scene, camera, root, composer, bloom;
-let tiles = [], labels = [], buildings = null, ray, pointer = new THREE.Vector2();
+let ground = null, hi = null, labels = [], rects = [], ray;
+let pointer = new THREE.Vector2();
 let city = "isb", selected = null, hovered = null;
 let running = false, raf = 0, ready = false;
-// A steeper pitch shows more of the plan inside the same vertical field of
-// view, which is what a city laid out flat needs.
-let yaw = -0.62, targetYaw = -0.62, pitch = 0.82, dist = 78, targetDist = 78;
+let yaw = -0.5, targetYaw = -0.5, pitch = 0.98, dist = 120, targetDist = 120;
 let dragging = false, lastX = 0, lastY = 0, moved = 0, pinch = 0;
 
 const cv = () => document.getElementById("cityCanvas");
 
-function rnd(seed) {            // deterministic, so the skyline never reshuffles
+function rnd(seed) {
   let s = seed % 2147483647;
   if (s <= 0) s += 2147483646;
   return () => (s = (s * 16807) % 2147483647) / 2147483647;
 }
 
+/* Where each area sits, in world units. */
+function place(d) {
+  if (city === "isb") return { x: (11 - d.col) * SP, z: (d.row - 2.6) * SP, w: SP * 0.88, h: SP * 0.88 };
+  return { x: d.x * SP * 0.95, z: d.z * SP * 0.8, w: SP * 0.95, h: SP * 0.95 };
+}
+
+/* ============================================================
+   THE MAP TEXTURE
+   Painted in world coordinates so the ground, the buildings and
+   the hit testing all agree about where things are.
+   ============================================================ */
+const PAL = {
+  land:  "#dfd8c6",
+  land2: "#d6cdb7",
+  green: "#a8bf8a",
+  green2:"#93ad74",
+  water: "#8fb6cf",
+  road:  "#ffffff",
+  roadc: "#c9c0aa",
+  arter: "#f6e2b2",
+  arterc:"#d8bf83"
+};
+const TINT = {
+  1: "rgba(120,150,190,0.20)",
+  2: "rgba(140,165,200,0.22)",
+  3: "rgba(210,180,110,0.26)",
+  4: "rgba(226,175,80,0.34)",
+  5: "rgba(236,166,52,0.46)",
+  6: "rgba(150,150,160,0.24)",
+  7: "rgba(120,170,110,0.34)"
+};
+
+let MAP = null;   // { minX, minZ, w, h, px }
+
+function worldBounds(data) {
+  let minX = 1e9, maxX = -1e9, minZ = 1e9, maxZ = -1e9;
+  data.forEach((d) => {
+    const p = place(d);
+    minX = Math.min(minX, p.x - p.w); maxX = Math.max(maxX, p.x + p.w);
+    minZ = Math.min(minZ, p.z - p.h); maxZ = Math.max(maxZ, p.z + p.h);
+  });
+  const pad = SP * 4.5;
+  return { minX: minX - pad, maxX: maxX + pad, minZ: minZ - pad, maxZ: maxZ + pad };
+}
+
+function mapTexture(data) {
+  const b = worldBounds(data);
+  const w = b.maxX - b.minX, h = b.maxZ - b.minZ;
+  const px = Math.min(2048 / Math.max(w, h), 26);       // pixels per world unit
+  const W = Math.round(w * px), H = Math.round(h * px);
+  MAP = { minX: b.minX, minZ: b.minZ, w: w, h: h, px: px };
+
+  const c = document.createElement("canvas");
+  c.width = W; c.height = H;
+  const g = c.getContext("2d");
+  const X = (x) => (x - b.minX) * px;
+  const Z = (z) => (z - b.minZ) * px;
+  const r = rnd(city === "isb" ? 91 : 47);
+
+  // --- land, with enough mottling that it doesn't read as flat paper ---
+  g.fillStyle = PAL.land; g.fillRect(0, 0, W, H);
+  for (let i = 0; i < 900; i++) {
+    g.fillStyle = r() > 0.5 ? PAL.land2 : PAL.green;
+    g.globalAlpha = 0.05 + r() * 0.12;
+    const rad = 20 + r() * 130;
+    g.beginPath();
+    g.arc(r() * W, r() * H, rad, 0, 6.2832);
+    g.fill();
+  }
+  g.globalAlpha = 1;
+
+  // --- terrain features ---
+  if (city === "isb") {
+    // Margalla foothills along the north edge
+    const grad = g.createLinearGradient(0, 0, 0, Z(-SP * 3.4));
+    grad.addColorStop(0, PAL.green2); grad.addColorStop(1, "rgba(147,173,116,0)");
+    g.fillStyle = grad;
+    g.fillRect(0, 0, W, Z(-SP * 3.4));
+    // Rawal Lake, out to the east
+    g.fillStyle = PAL.water;
+    g.beginPath();
+    g.ellipse(X(52), Z(2), 46 * px * 0.34, 20 * px * 0.34, -0.5, 0, 6.2832);
+    g.fill();
+  } else {
+    // The Ravi runs north-west of the city, and the canal is a thin diagonal
+    // through it. The first version had both several times too wide, crossing
+    // in a blue X straight over the middle of Lahore.
+    g.fillStyle = PAL.water;
+    g.save();
+    g.translate(X(-38), Z(-8)); g.rotate(-0.4);
+    g.fillRect(-3.2 * px, -55 * px, 6.4 * px, 110 * px);
+    g.restore();
+    g.strokeStyle = PAL.water; g.lineWidth = 1.5 * px; g.lineCap = "round";
+    g.beginPath();
+    g.moveTo(X(-26), Z(22)); g.quadraticCurveTo(X(0), Z(5), X(28), Z(-11));
+    g.stroke();
+  }
+
+  // --- the road network -------------------------------------------------
+  // Each area is joined to the two nearest others. On Islamabad's grid that
+  // reproduces the avenues almost exactly; in Lahore it gives the organic
+  // web the city actually has.
+  const pts = data.map((d) => { const p = place(d); return { x: p.x, z: p.z, t: d.tier, d: d }; });
+  const links = [];
+  pts.forEach((a, i) => {
+    const near = pts.map((b2, j) => ({ j: j, dd: (a.x - b2.x) ** 2 + (a.z - b2.z) ** 2 }))
+      .filter((o) => o.j !== i).sort((p1, p2) => p1.dd - p2.dd).slice(0, 3);
+    near.forEach((o) => {
+      const key = i < o.j ? i + "-" + o.j : o.j + "-" + i;
+      if (!links.some((l) => l.key === key)) links.push({ key: key, a: a, b: pts[o.j] });
+    });
+  });
+  const drawLinks = (colour, width) => {
+    g.strokeStyle = colour; g.lineWidth = width * px; g.lineCap = "round"; g.lineJoin = "round";
+    links.forEach((l) => {
+      g.beginPath(); g.moveTo(X(l.a.x), Z(l.a.z)); g.lineTo(X(l.b.x), Z(l.b.z)); g.stroke();
+    });
+  };
+  drawLinks(PAL.roadc, 1.5);     // casing
+  drawLinks(PAL.road, 1.0);      // carriageway
+
+  // one named arterial across each city, drawn heavier
+  g.strokeStyle = PAL.arterc; g.lineWidth = 3.0 * px;
+  g.beginPath();
+  if (city === "isb") { g.moveTo(X(-40), Z(-4)); g.lineTo(X(48), Z(10)); }
+  else { g.moveTo(X(-40), Z(20)); g.lineTo(X(40), Z(-14)); }
+  g.stroke();
+  g.strokeStyle = PAL.arter; g.lineWidth = 2.2 * px; g.stroke();
+
+  // --- sector plots, tinted by price ---
+  data.forEach((d) => {
+    const p = place(d);
+    const x0 = X(p.x - p.w / 2), z0 = Z(p.z - p.h / 2);
+    const ww = p.w * px, hh = p.h * px;
+    g.save();
+    g.beginPath();
+    g.roundRect(x0, z0, ww, hh, 6 * px * 0.5);
+    if (d.park) g.fillStyle = PAL.green2;
+    else { g.fillStyle = PAL.land; g.fill(); g.fillStyle = TINT[d.tier]; }
+    g.fill();
+    // plot grain: the fine street pattern inside a sector
+    if (!d.park) {
+      g.clip();
+      g.strokeStyle = "rgba(255,255,255,0.5)"; g.lineWidth = 0.28 * px;
+      for (let k = 1; k < 7; k++) {
+        g.beginPath(); g.moveTo(x0 + (ww / 7) * k, z0); g.lineTo(x0 + (ww / 7) * k, z0 + hh); g.stroke();
+        g.beginPath(); g.moveTo(x0, z0 + (hh / 7) * k); g.lineTo(x0 + ww, z0 + (hh / 7) * k); g.stroke();
+      }
+    }
+    g.restore();
+    g.strokeStyle = "rgba(120,110,90,0.35)"; g.lineWidth = 0.5 * px;
+    g.beginPath(); g.roundRect(x0, z0, ww, hh, 6 * px * 0.5); g.stroke();
+  });
+
+  // Feather the outer band back to flat land so the sheet dissolves into the
+  // country around it instead of ending on a visible seam.
+  const fade = Math.round(Math.min(W, H) * 0.16);
+  const edges = [
+    [0, 0, fade, H, "l"], [W - fade, 0, fade, H, "r"],
+    [0, 0, W, fade, "t"], [0, H - fade, W, fade, "b"]
+  ];
+  edges.forEach(([x, y, w2, h2, side]) => {
+    const gr = side === "l" ? g.createLinearGradient(x + w2, 0, x, 0)
+             : side === "r" ? g.createLinearGradient(x, 0, x + w2, 0)
+             : side === "t" ? g.createLinearGradient(0, y + h2, 0, y)
+             : g.createLinearGradient(0, y, 0, y + h2);
+    gr.addColorStop(0, "rgba(223,216,198,0)");
+    gr.addColorStop(1, "rgba(223,216,198,1)");
+    g.fillStyle = gr;
+    g.fillRect(x, y, w2, h2);
+  });
+
+  const tex = new THREE.CanvasTexture(c);
+  tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+/* ============================================================
+   SCENE
+   ============================================================ */
 function initScene() {
   const c = cv();
   if (!c) return false;
@@ -215,56 +405,35 @@ function initScene() {
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.16;
+  renderer.toneMappingExposure = 1.0;
 
   scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x070b16);
-  scene.fog = new THREE.Fog(0x070b16, 95, 210);
+  scene.background = new THREE.Color(0xbcd2e6);
+  scene.fog = new THREE.Fog(0xc4d7e8, 190, 420);
 
-  camera = new THREE.PerspectiveCamera(40, 1, 0.5, 400);
+  camera = new THREE.PerspectiveCamera(38, 1, 0.5, 700);
   root = new THREE.Group();
   scene.add(root);
 
-  scene.add(new THREE.HemisphereLight(0x8ea2c8, 0x1a1e2c, 1.1));
-  scene.add(new THREE.AmbientLight(0x51608c, 0.7));
-
-  const key = new THREE.DirectionalLight(0xffd9a0, 2.5);
-  key.position.set(38, 60, 26);
-  key.castShadow = true;
-  key.shadow.mapSize.set(2048, 2048);
-  const s = 78;
-  key.shadow.camera.left = -s; key.shadow.camera.right = s;
-  key.shadow.camera.top = s; key.shadow.camera.bottom = -s;
-  key.shadow.camera.far = 220;
-  key.shadow.bias = -0.0009;
-  scene.add(key);
-
-  const rim = new THREE.DirectionalLight(0x4d6fd0, 1.0);
-  rim.position.set(-44, 26, -40);
-  scene.add(rim);
+  // Daylight: a strong warm sun with a cool sky fill is what makes an aerial
+  // read as a photograph rather than a diagram.
+  scene.add(new THREE.HemisphereLight(0xdfeaf7, 0x9a9a8d, 1.15));
+  const sun = new THREE.DirectionalLight(0xfff2d8, 2.5);
+  sun.position.set(60, 110, 48);
+  sun.castShadow = true;
+  sun.shadow.mapSize.set(2048, 2048);
+  const s = 120;
+  sun.shadow.camera.left = -s; sun.shadow.camera.right = s;
+  sun.shadow.camera.top = s; sun.shadow.camera.bottom = -s;
+  sun.shadow.camera.far = 320;
+  sun.shadow.bias = -0.0007;
+  scene.add(sun);
+  scene.add(new THREE.AmbientLight(0xcfe0f0, 0.55));
 
   ray = new THREE.Raycaster();
   bind(c);
   resize();
   addEventListener("resize", resize, { passive: true });
-
-  if (!matchMedia("(prefers-reduced-motion: reduce)").matches && innerWidth > 700) {
-    Promise.all([
-      import("./vendor/three/postprocessing/EffectComposer.js"),
-      import("./vendor/three/postprocessing/RenderPass.js"),
-      import("./vendor/three/postprocessing/UnrealBloomPass.js"),
-      import("./vendor/three/postprocessing/OutputPass.js")
-    ]).then(([EC, RP, UB, OP]) => {
-      const w = cv().clientWidth, h = cv().clientHeight;
-      composer = new EC.EffectComposer(renderer);
-      composer.addPass(new RP.RenderPass(scene, camera));
-      bloom = new UB.UnrealBloomPass(new THREE.Vector2(w, h), 0.7, 0.8, 0.72);
-      composer.addPass(bloom);
-      composer.addPass(new OP.OutputPass());
-      resize();
-    }).catch(() => { composer = null; });
-  }
-
   ready = true;
   return true;
 }
@@ -280,191 +449,216 @@ function resize() {
   if (bloom) bloom.resolution.set(w, h);
 }
 
-/* ---------- labels ---------- */
-function labelSprite(text, tier) {
-  const pad = 18, fs = 46;
-  const cvs = document.createElement("canvas");
-  const g = cvs.getContext("2d");
-  g.font = "600 " + fs + "px Inter, system-ui, sans-serif";
-  const w = Math.ceil(g.measureText(text).width) + pad * 2;
-  cvs.width = w; cvs.height = fs + pad * 2;
-  const g2 = cvs.getContext("2d");
-  g2.font = "600 " + fs + "px Inter, system-ui, sans-serif";
-  g2.textBaseline = "middle";
-  g2.fillStyle = "rgba(8,12,24,0.82)";
-  g2.beginPath();
-  g2.roundRect(0, 0, cvs.width, cvs.height, 26);
-  g2.fill();
-  g2.strokeStyle = "rgba(201,164,92,0.55)"; g2.lineWidth = 3; g2.stroke();
-  g2.fillStyle = tier >= 4 ? "#f0d79a" : "#dfe3ee";
-  g2.fillText(text, pad, cvs.height / 2 + 2);
+/* ---------- map-style labels ---------- */
+function labelSprite(text, tier, sub) {
+  const fs = 44, sf = 30, pad = 20;
+  const c = document.createElement("canvas");
+  let g = c.getContext("2d");
+  g.font = "700 " + fs + "px Inter, system-ui, sans-serif";
+  const w1 = g.measureText(text).width;
+  g.font = "500 " + sf + "px Inter, system-ui, sans-serif";
+  const w2 = sub ? g.measureText(sub).width : 0;
+  c.width = Math.ceil(Math.max(w1, w2)) + pad * 2;
+  c.height = fs + (sub ? sf + 8 : 0) + pad * 2;
+  g = c.getContext("2d");
 
-  const tex = new THREE.CanvasTexture(cvs);
+  g.fillStyle = "rgba(255,255,255,0.93)";
+  g.beginPath(); g.roundRect(0, 0, c.width, c.height, 18); g.fill();
+  g.strokeStyle = tier >= 4 ? "rgba(191,140,40,0.85)" : "rgba(90,100,120,0.35)";
+  g.lineWidth = 3; g.stroke();
+
+  g.textAlign = "center";
+  g.fillStyle = "#20262f";
+  g.font = "700 " + fs + "px Inter, system-ui, sans-serif";
+  g.textBaseline = "top";
+  g.fillText(text, c.width / 2, pad - 2);
+  if (sub) {
+    g.fillStyle = tier >= 4 ? "#8a6114" : "#5c6674";
+    g.font = "500 " + sf + "px Inter, system-ui, sans-serif";
+    g.fillText(sub, c.width / 2, pad + fs + 4);
+  }
+
+  const tex = new THREE.CanvasTexture(c);
   tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  tex.colorSpace = THREE.SRGBColorSpace;
   const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthTest: false, transparent: true }));
-  sp.scale.set((cvs.width / cvs.height) * 2.0, 2.0, 1);
-  sp.renderOrder = 10;
+  sp.scale.set((c.width / c.height) * 3.4, 3.4, 1);
+  sp.renderOrder = 20;
   return sp;
 }
 
-/* ---------- build a city ---------- */
+/* ---------- build ---------- */
 function clearCity() {
   while (root.children.length) {
     const o = root.children.pop();
     o.traverse && o.traverse((n) => {
       if (n.geometry) n.geometry.dispose();
-      if (n.material) {
-        (Array.isArray(n.material) ? n.material : [n.material]).forEach((m) => {
-          if (m.map) m.map.dispose();
-          m.dispose();
-        });
-      }
+      if (n.material) (Array.isArray(n.material) ? n.material : [n.material]).forEach((m) => {
+        if (m.map) m.map.dispose();
+        m.dispose();
+      });
     });
   }
-  tiles = []; labels = []; buildings = null;
-}
-
-function place(d) {
-  // Islamabad rides its lettered grid; Lahore is positioned by district.
-  if (city === "isb") return { x: (11 - d.col) * SP, z: (d.row - 2.6) * SP, w: SP * 0.86, h: SP * 0.86 };
-  // Lahore's districts run on a long north-east diagonal; flattening the
-  // depth axis keeps that shape readable without the far end walking out of
-  // the bottom of the frame.
-  return { x: d.x * SP * 0.95, z: d.z * SP * 0.8, w: SP * 0.9, h: SP * 0.9 };
+  labels = []; rects = []; ground = null; hi = null;
 }
 
 function buildCity() {
   clearCity();
   const data = city === "isb" ? ISB : LHR;
 
-  // ground
-  const ground = new THREE.Mesh(
-    new THREE.PlaneGeometry(420, 420),
-    new THREE.MeshStandardMaterial({ color: 0x0a0f1c, roughness: 1, metalness: 0 })
+  // --- the ground, wearing the map ---
+  const tex = mapTexture(data);
+  ground = new THREE.Mesh(
+    new THREE.PlaneGeometry(MAP.w, MAP.h),
+    new THREE.MeshStandardMaterial({ map: tex, roughness: 0.96, metalness: 0 })
   );
   ground.rotation.x = -Math.PI / 2;
-  ground.position.y = -0.35;
+  ground.position.set(MAP.minX + MAP.w / 2, 0, MAP.minZ + MAP.h / 2);
   ground.receiveShadow = true;
   root.add(ground);
 
-  // the Margallas along Islamabad's north edge — the single most recognisable
-  // thing about the city's shape, and it orients the whole model
+  // The map is a finite sheet; without country around it you can see it end
+  // in mid-air. This runs the land out past the horizon, where the fog takes
+  // over, and sits a hair lower so it never z-fights the map.
+  const around = new THREE.Mesh(
+    new THREE.PlaneGeometry(MAP.w * 6, MAP.h * 6),
+    new THREE.MeshStandardMaterial({ color: 0xdfd8c6, roughness: 1, metalness: 0 })
+  );
+  around.rotation.x = -Math.PI / 2;
+  around.position.set(ground.position.x, -0.06, ground.position.z);
+  around.receiveShadow = true;
+  root.add(around);
+
+  // --- relief: the Margallas actually rise out of the map ---
   if (city === "isb") {
-    const ridge = new THREE.Group();
-    const r = rnd(7);
-    for (let i = 0; i < 26; i++) {
-      const h = 7 + r() * 13;
+    // A band of foothills, not a mountain range: at full height they swallowed
+    // the city they're supposed to sit behind.
+    const hills = new THREE.Group();
+    const r = rnd(11);
+    for (let i = 0; i < 30; i++) {
+      const hgt = 3.5 + r() * 7;
       const m = new THREE.Mesh(
-        new THREE.ConeGeometry(6 + r() * 7, h, 5),
-        new THREE.MeshStandardMaterial({ color: 0x1d2740, roughness: 0.98, flatShading: true })
+        new THREE.ConeGeometry(4 + r() * 5, hgt, 6),
+        new THREE.MeshStandardMaterial({ color: 0x8fa877, roughness: 1, flatShading: true })
       );
-      m.position.set(-58 + i * 6.4 + r() * 3, h / 2 - 1, -36 - r() * 9);
+      m.position.set(MAP.minX + 4 + i * (MAP.w / 30) + r() * 4,
+                     hgt / 2 - 1.2,
+                     MAP.minZ + 3 + r() * 7);
       m.rotation.y = r() * 3;
-      m.castShadow = true;
-      ridge.add(m);
+      m.castShadow = true; m.receiveShadow = true;
+      hills.add(m);
     }
-    root.add(ridge);
+    root.add(hills);
   }
 
-  // buildings: one instanced mesh for the entire city
-  const boxes = [];
+  // --- buildings and trees, both instanced ---
+  const boxes = [], trees = [];
   data.forEach((d, di) => {
-    const pos = place(d);
-    const seed = rnd(di * 977 + 13);
-    const tier = TIER[d.tier];
+    const p = place(d);
+    const seed = rnd(di * 733 + 29);
+    rects.push({ d: d, x: p.x, z: p.z, w: p.w, h: p.h });
 
-    // the sector tile
-    const tile = new THREE.Mesh(
-      new THREE.BoxGeometry(pos.w, 0.7, pos.h),
-      new THREE.MeshStandardMaterial({
-        color: tier.c, roughness: 0.82, metalness: 0.05,
-        emissive: new THREE.Color(tier.c).multiplyScalar(0.16)
-      })
-    );
-    tile.position.set(pos.x, 0, pos.z);
-    tile.receiveShadow = true;
-    tile.castShadow = true;
-    tile.userData = { d: d, baseY: 0 };
-    root.add(tile);
-    tiles.push(tile);
-
-    // gold outline so the grid reads even at a distance
-    const edge = new THREE.LineSegments(
-      new THREE.EdgesGeometry(new THREE.BoxGeometry(pos.w, 0.7, pos.h)),
-      new THREE.LineBasicMaterial({ color: 0xc9a45c, transparent: true, opacity: 0.34 })
-    );
-    edge.position.copy(tile.position);
-    tile.userData.edge = edge;
-    root.add(edge);
-
-    // skyline: denser and taller where it costs more
-    if (!d.park) {
-      const n = d.commercial ? 22 : 10 + d.tier * 4;
-      for (let i = 0; i < n; i++) {
-        const bw = 0.5 + seed() * 0.9;
-        const bd = 0.5 + seed() * 0.9;
-        const base = d.commercial ? 3.2 : 0.9 + d.tier * 0.62;
-        const bh = base * (0.45 + seed() * 1.5);
-        boxes.push({
-          x: pos.x + (seed() - 0.5) * pos.w * 0.82,
-          z: pos.z + (seed() - 0.5) * pos.h * 0.82,
-          w: bw, d: bd, h: bh,
-          lit: seed() > (d.commercial ? 0.35 : 0.62),
-          tier: d.tier
-        });
+    if (d.park) {
+      for (let i = 0; i < 46; i++) {
+        trees.push({ x: p.x + (seed() - 0.5) * p.w * 0.92,
+                     z: p.z + (seed() - 0.5) * p.h * 0.92,
+                     s: 0.7 + seed() * 0.7 });
       }
+      return;
     }
 
-    // Stagger the height by row so adjacent sectors' labels don't sit on top
-    // of each other in the tight F/G block.
-    const sp = labelSprite(d.n, d.tier);
-    sp.userData.lift = 4.4 + ((di % 2) ? 2.8 : 0);
-    sp.position.set(pos.x, sp.userData.lift, pos.z);
+    // Density and height both rise with price, which is what makes the
+    // expensive parts of the city legible from the air.
+    const n = d.commercial ? 46 : 26 + d.tier * 9;
+    for (let i = 0; i < n; i++) {
+      const base = d.commercial ? 3.6 : 0.85 + d.tier * 0.44;
+      boxes.push({
+        x: p.x + (seed() - 0.5) * p.w * 0.86,
+        z: p.z + (seed() - 0.5) * p.h * 0.86,
+        w: 0.42 + seed() * 0.72,
+        d: 0.42 + seed() * 0.72,
+        h: base * (0.5 + seed() * 1.35),
+        tone: seed()
+      });
+    }
+    for (let i = 0; i < 12; i++) {
+      trees.push({ x: p.x + (seed() - 0.5) * p.w * 0.95,
+                   z: p.z + (seed() - 0.5) * p.h * 0.95,
+                   s: 0.5 + seed() * 0.5 });
+    }
+  });
+
+  const bMesh = new THREE.InstancedMesh(
+    new THREE.BoxGeometry(1, 1, 1),
+    new THREE.MeshStandardMaterial({ roughness: 0.78, metalness: 0.04 }),
+    boxes.length
+  );
+  bMesh.castShadow = true; bMesh.receiveShadow = true;
+  const m4 = new THREE.Matrix4(), col = new THREE.Color();
+  boxes.forEach((b, i) => {
+    m4.makeScale(b.w, b.h, b.d);
+    m4.setPosition(b.x, b.h / 2, b.z);
+    bMesh.setMatrixAt(i, m4);
+    // the warm off-whites and sand tones of a Pakistani city from above
+    col.setHSL(0.09 + b.tone * 0.03, 0.14 + b.tone * 0.12, 0.63 + b.tone * 0.24);
+    bMesh.setColorAt(i, col);
+  });
+  bMesh.instanceMatrix.needsUpdate = true;
+  if (bMesh.instanceColor) bMesh.instanceColor.needsUpdate = true;
+  root.add(bMesh);
+
+  const tMesh = new THREE.InstancedMesh(
+    new THREE.ConeGeometry(0.5, 1.3, 6),
+    new THREE.MeshStandardMaterial({ roughness: 1, flatShading: true }),
+    trees.length
+  );
+  tMesh.castShadow = true;
+  trees.forEach((t, i) => {
+    m4.makeScale(t.s, t.s * (1 + t.s * 0.4), t.s);
+    m4.setPosition(t.x, t.s * 0.7, t.z);
+    tMesh.setMatrixAt(i, m4);
+    col.setHSL(0.26, 0.3 + t.s * 0.12, 0.3 + t.s * 0.1);
+    tMesh.setColorAt(i, col);
+  });
+  tMesh.instanceMatrix.needsUpdate = true;
+  if (tMesh.instanceColor) tMesh.instanceColor.needsUpdate = true;
+  root.add(tMesh);
+
+  // --- selection ring, one mesh moved around ---
+  hi = new THREE.Mesh(
+    new THREE.RingGeometry(0.86, 1, 48),
+    new THREE.MeshBasicMaterial({ color: 0xc9a45c, transparent: true, opacity: 0, side: THREE.DoubleSide })
+  );
+  hi.rotation.x = -Math.PI / 2;
+  hi.renderOrder = 5;
+  root.add(hi);
+
+  // --- labels ---
+  data.forEach((d, di) => {
+    const p = place(d);
+    const sp = labelSprite(d.n, d.tier, d.p > 0 ? "PKR " + d.p.toFixed(1) + "M / marla" : null);
+    sp.userData.lift = 7.2 + (di % 3) * 3.1;   // three levels: two weren't enough in the DHA run
+    sp.position.set(p.x, sp.userData.lift, p.z);
     root.add(sp);
     labels.push(sp);
   });
 
-  const geo = new THREE.BoxGeometry(1, 1, 1);
-  const mat = new THREE.MeshStandardMaterial({ roughness: 0.62, metalness: 0.12, vertexColors: false });
-  buildings = new THREE.InstancedMesh(geo, mat, boxes.length);
-  buildings.castShadow = true;
-  buildings.receiveShadow = true;
-  buildings.instanceColor = new THREE.InstancedBufferAttribute(new Float32Array(boxes.length * 3), 3);
-  const m4 = new THREE.Matrix4(), col = new THREE.Color();
-  boxes.forEach((b, i) => {
-    m4.makeScale(b.w, b.h, b.d);
-    m4.setPosition(b.x, 0.35 + b.h / 2, b.z);
-    buildings.setMatrixAt(i, m4);
-    // lit windows read as gold; the rest take the sector's own tone
-    col.setHex(b.lit ? 0xffd9a0 : TIER[b.tier].c).multiplyScalar(b.lit ? 1 : 0.75);
-    buildings.setColorAt(i, col);
+  root.rotation.y = 0;
+
+  // Frame the built-up area, not the sheet of ground it sits on — fitting the
+  // whole plane shrank the city to a smudge in the middle of a field.
+  let bx0 = 1e9, bx1 = -1e9, bz0 = 1e9, bz1 = -1e9;
+  rects.forEach((r) => {
+    bx0 = Math.min(bx0, r.x - r.w); bx1 = Math.max(bx1, r.x + r.w);
+    bz0 = Math.min(bz0, r.z - r.h); bz1 = Math.max(bz1, r.z + r.h);
   });
-  buildings.instanceMatrix.needsUpdate = true;
-  if (buildings.instanceColor) buildings.instanceColor.needsUpdate = true;
-  // Emissive on the shared material would light every block; the gold ones are
-  // bright enough in colour alone for the bloom pass to find them.
-  root.add(buildings);
-
-  // Centre on what was actually built. Islamabad's off-grid schemes sit well
-  // south-east of the lettered grid, so a fixed origin left the city hanging
-  // in one corner of the frame.
-  const bb = new THREE.Box3();
-  tiles.forEach((t) => bb.expandByObject(t));
-  const mid = bb.getCenter(new THREE.Vector3());
-  root.position.set(-mid.x, 0, -mid.z);
-
-  root.rotation.y = city === "isb" ? 0.16 : 0;
-  // Fit the diagonal, not the widest side: the view rotates, so the longest
-  // silhouette the city can present has to clear the frame or districts swing
-  // off the edge as it turns. Labels overhang their tiles, hence the margin.
-  const w = bb.max.x - bb.min.x, d2 = bb.max.z - bb.min.z;
-  const diag = Math.sqrt(w * w + d2 * d2);
-  const vHalf = (40 * Math.PI / 180) / 2;
-  targetDist = dist = Math.min(200, (diag / 2) / Math.tan(vHalf) * 1.18);
+  const bw = bx1 - bx0, bh = bz1 - bz0;
+  const diag = Math.sqrt(bw * bw + bh * bh);
+  targetDist = dist = Math.min(230, (diag / 2) / Math.tan((38 * Math.PI / 180) / 2) * 0.94);
+  // …and look at the middle of the city rather than the middle of the plane.
+  root.position.set(-(bx0 + bw / 2), 0, -(bz0 + bh / 2));
   selected = null;
-
-  // Never open on an empty panel — lead with the sector everyone knows.
-  select(data.filter(function (x) { return x.id === (city === "isb" ? "F-7" : "GULBERG3"); })[0] || data[0]);
+  select(data.filter((x) => x.id === (city === "isb" ? "F-7" : "GULBERG3"))[0] || data[0]);
 }
 
 /* ---------- interaction ---------- */
@@ -481,26 +675,20 @@ function bind(c) {
     const dx = e.clientX - lastX, dy = e.clientY - lastY;
     moved += Math.abs(dx) + Math.abs(dy);
     targetYaw -= dx * 0.006;
-    pitch = Math.max(0.28, Math.min(1.35, pitch + dy * 0.004));
+    pitch = Math.max(0.42, Math.min(1.45, pitch + dy * 0.004));
     lastX = e.clientX; lastY = e.clientY;
   });
-  const up = (e) => {
-    if (dragging && moved < 6) pick();      // a click, not a drag
-    dragging = false;
-  };
-  c.addEventListener("pointerup", up);
+  c.addEventListener("pointerup", () => { if (dragging && moved < 6) pick(); dragging = false; });
   c.addEventListener("pointercancel", () => { dragging = false; });
   c.addEventListener("wheel", (e) => {
     e.preventDefault();
-    targetDist = Math.max(34, Math.min(180, targetDist + e.deltaY * 0.09));
+    targetDist = Math.max(38, Math.min(260, targetDist + e.deltaY * 0.12));
   }, { passive: false });
-  c.addEventListener("touchstart", (e) => {
-    if (e.touches.length === 2) pinch = gap(e);
-  }, { passive: true });
+  c.addEventListener("touchstart", (e) => { if (e.touches.length === 2) pinch = gap(e); }, { passive: true });
   c.addEventListener("touchmove", (e) => {
     if (e.touches.length !== 2) return;
-    const g = gap(e);
-    if (g && pinch) { targetDist = Math.max(34, Math.min(180, targetDist * (pinch / g))); pinch = g; }
+    const g2 = gap(e);
+    if (g2 && pinch) { targetDist = Math.max(38, Math.min(260, targetDist * (pinch / g2))); pinch = g2; }
   }, { passive: true });
   function gap(e) {
     const [a, b] = e.touches;
@@ -508,20 +696,32 @@ function bind(c) {
   }
 }
 
-function pick() {
+/* The ground is one mesh now, so a hit is resolved by asking which sector
+   rectangle contains the point rather than by hitting a per-sector object. */
+function atPointer() {
+  if (!ground) return null;
   ray.setFromCamera(pointer, camera);
-  const hit = ray.intersectObjects(tiles, false)[0];
-  if (hit) select(hit.object.userData.d);
+  const hit = ray.intersectObject(ground, false)[0];
+  if (!hit) return null;
+  const lp = root.worldToLocal(hit.point.clone());
+  for (let i = 0; i < rects.length; i++) {
+    const r = rects[i];
+    if (Math.abs(lp.x - r.x) <= r.w / 2 && Math.abs(lp.z - r.z) <= r.h / 2) return r;
+  }
+  return null;
+}
+
+function pick() {
+  const r = atPointer();
+  if (r) select(r.d);
 }
 
 function select(d) {
   selected = d;
   paintPanel(d);
-  const t = tiles.filter((x) => x.userData.d.id === d.id)[0];
-  if (t) targetDist = Math.max(46, Math.min(targetDist, 74));
 }
 
-/* ---------- the info panel ---------- */
+/* ---------- panel ---------- */
 function paintPanel(d) {
   const box = document.getElementById("cityInfo");
   if (!box) return;
@@ -538,7 +738,7 @@ function paintPanel(d) {
     (d.eats.length ? '<p class="city-info__h">Where you\'d eat</p><ul class="city-info__eats">' +
       d.eats.map((m) => "<li>" + m + "</li>").join("") + "</ul>" : "") +
     '<button class="btn btn--wa city-info__cta" type="button" id="cityWant">' +
-      "I want to live here <span class=\"btn__arrow\">→</span></button>";
+      'I want to live here <span class="btn__arrow">→</span></button>';
 
   document.getElementById("cityWant").addEventListener("click", () => {
     const where = d.n + (city === "isb" ? ", Islamabad" : ", Lahore");
@@ -558,7 +758,7 @@ function loop() {
   if (!running) return;
   raf = requestAnimationFrame(loop);
 
-  if (!dragging) targetYaw += 0.0008;
+  if (!dragging) targetYaw += 0.0006;
   yaw += (targetYaw - yaw) * 0.07;
   dist += (targetDist - dist) * 0.08;
 
@@ -567,35 +767,39 @@ function loop() {
                       Math.cos(yaw) * dist * Math.cos(pitch));
   camera.lookAt(0, 0, 0);
 
-  // hover: raycast only while the pointer is actually over something
   if (!dragging) {
-    ray.setFromCamera(pointer, camera);
-    const hit = ray.intersectObjects(tiles, false)[0];
-    const next = hit ? hit.object : null;
-    if (next !== hovered) {
-      if (hovered) hovered.material.emissiveIntensity = 1;
-      hovered = next;
+    const r = atPointer();
+    if (r !== hovered) {
+      hovered = r;
       cv().style.cursor = hovered ? "pointer" : "grab";
     }
   }
-  const t = performance.now() * 0.001;
-  tiles.forEach((tile) => {
-    const on = tile === hovered || (selected && tile.userData.d.id === selected.id);
-    const want = on ? 1.1 : 0;
-    tile.position.y += (want - tile.position.y) * 0.16;
-    if (tile.userData.edge) {
-      tile.userData.edge.position.y = tile.position.y;
-      tile.userData.edge.material.opacity = on ? 0.85 : 0.34;
+
+  const mark = hovered || (selected && rects.filter((r) => r.d.id === selected.id)[0]);
+  if (hi) {
+    if (mark) {
+      const s = Math.max(mark.w, mark.h) * 0.78;
+      hi.position.set(mark.x, 0.12, mark.z);
+      hi.scale.set(s, s, 1);
+      hi.material.opacity += (0.95 - hi.material.opacity) * 0.16;
+    } else {
+      hi.material.opacity += (0 - hi.material.opacity) * 0.16;
     }
-    tile.material.emissive.setHex(TIER[tile.userData.d.tier].c);
-    tile.material.emissive.multiplyScalar(on ? 0.55 + Math.sin(t * 3) * 0.08 : 0.16);
-  });
+  }
+
+  // Labels thin out as you pull back, the way map labels do, so the dense
+  // middle of the city doesn't turn into a wall of pills.
+  const k = Math.max(0, Math.min(1, (200 - dist) / 90));
   labels.forEach((sp, i) => {
-    const tile = tiles[i];
-    if (tile) sp.position.y = sp.userData.lift + tile.position.y;
+    const r = rects[i];
+    const keep = r && (r.d.tier >= 4 || r.d.commercial || k > 0.45 ||
+                       (selected && r.d.id === selected.id));
+    const want = keep ? Math.min(1, 0.35 + k) : 0;
+    sp.material.opacity += (want - sp.material.opacity) * 0.12;
+    sp.visible = sp.material.opacity > 0.03;
   });
 
-  if (composer) composer.render(); else renderer.render(scene, camera);
+  renderer.render(scene, camera);
 }
 
 function start() { if (!running && ready) { running = true; loop(); } }
@@ -618,8 +822,6 @@ function setCity(next) {
     b.classList.toggle("is-active", on);
     b.setAttribute("aria-pressed", String(on));
   });
-  const info = document.getElementById("cityInfo");
-  if (info) { info.classList.remove("is-on"); info.innerHTML = ""; }
   const hint = document.getElementById("cityHint");
   if (hint) hint.textContent = next === "isb"
     ? "Drag to orbit · scroll to zoom · tap any sector"
@@ -642,11 +844,7 @@ function setCity(next) {
       if (!e.isIntersecting) { stop(); return; }
       if (!booted) {
         booted = true;
-        if (!initScene()) {
-          section.classList.add("city--no3d");
-          io.disconnect();
-          return;
-        }
+        if (!initScene()) { section.classList.add("city--no3d"); io.disconnect(); return; }
         buildCity();
         legend();
         const l = document.getElementById("cityLoading");
