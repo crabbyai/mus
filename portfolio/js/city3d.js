@@ -97,61 +97,61 @@ const ISB = [
     tag: "Against the hills",
     marks: ["D-12 Markaz", "Margalla views"], eats: ["D-12 Markaz"] },
   // off-grid schemes, placed roughly where they sit relative to the sectors
-  { id: "DHA2", n: "DHA Phase 2", col: 5.6, row: 5.2, p: 7.25, band: "13–16",
+  { id: "DHA2", n: "DHA Phase 2", col: 5.6, row: 5.2, p: 7.25, band: "13–16", plots: "5 & 10 Marla · 1 & 2 Kanal", by: "Defence Housing Authority",
     tag: "Expressway side",
     marks: ["Islamabad Expressway", "DHA Phase 2 commercial", "Giga Mall nearby"],
     eats: ["Giga Mall food court", "DHA commercial strip"] },
-  { id: "BAHRIA", n: "Bahria Town", col: 4.6, row: 6.2, p: 4.4, band: "7–12",
+  { id: "BAHRIA", n: "Bahria Town", col: 4.6, row: 6.2, p: 4.4, band: "7–12", plots: "5, 8 & 10 Marla · 1 & 2 Kanal", by: "Bahria Town",
     tag: "Self-contained living",
     marks: ["Bahria Phase 1–8", "Own power and security", "Safari Villas"],
     eats: ["Bahria commercial", "Cinepax food court"] },
-  { id: "ENCLAVE", n: "Bahria Enclave", col: 7.4, row: 6.4, p: 4.25, band: "7–10",
+  { id: "ENCLAVE", n: "Bahria Enclave", col: 7.4, row: 6.4, p: 4.25, band: "7–10", plots: "5, 8 & 10 Marla · 1 & 2 Kanal", by: "Bahria Town",
     tag: "Margalla views, half the price",
     marks: ["Bahria Enclave", "Park Enclave next door", "Hill views"], eats: ["Enclave commercial"] },
-  { id: "GULBERG", n: "Gulberg Greens", col: 6.0, row: 7.1, p: 3.6, band: "5.5–9",
+  { id: "GULBERG", n: "Gulberg Greens", col: 6.0, row: 7.1, p: 3.6, band: "5.5–9", plots: "1, 2 & 4 Kanal farmhouse plots", by: "Intelligence Bureau Employees Society",
     tag: "Farmhouse plots",
     marks: ["Gulberg Greens", "Gulberg Residencia", "Big open plots"], eats: ["Gulberg commercial"] },
-  { id: "B17", n: "B-17", col: 14.4, row: 1.5, p: 3.75, band: "6–9",
+  { id: "B17", n: "B-17", col: 14.4, row: 1.5, p: 3.75, band: "6–9", plots: "5, 8 & 10 Marla · 1 & 2 Kanal", by: "Multi Professionals Cooperative",
     tag: "Most upside left",
     marks: ["Multi Gardens B-17", "M-1 motorway", "New commercial"], eats: ["B-17 Markaz"] },
   // ---- the private schemes ringing the city ----------------------------
   // These are where most Islamabad buying actually happens now; the lettered
   // sectors are largely built out. Positions are relative, not surveyed.
-  { id: "DHA5I", n: "DHA Phase 5", col: 4.0, row: 4.6, p: 5.8, band: "9–14",
+  { id: "DHA5I", n: "DHA Phase 5", col: 4.0, row: 4.6, p: 5.8, band: "9–14", plots: "5 & 10 Marla · 1 & 2 Kanal", by: "Defence Housing Authority",
     tag: "The newer DHA",
     marks: ["Islamabad Expressway", "Airport corridor", "DHA commercial"],
     eats: ["DHA Phase 5 commercial"] },
-  { id: "NAVAL", n: "Naval Anchorage", col: 4.4, row: 5.8, p: 3.3, band: "5–8",
+  { id: "NAVAL", n: "Naval Anchorage", col: 4.4, row: 5.8, p: 3.3, band: "5–8", plots: "10 Marla · 1 Kanal", by: "Pakistan Navy",
     tag: "Quiet and fully built",
     marks: ["Islamabad Expressway", "Navy-managed", "Mature trees"],
     eats: ["Anchorage commercial"] },
-  { id: "PARKVIEW", n: "Park View City", col: 6.5, row: 7.7, p: 2.9, band: "4.5–7",
+  { id: "PARKVIEW", n: "Park View City", col: 6.5, row: 7.7, p: 2.9, band: "4.5–7", plots: "5, 8 & 10 Marla · 1 & 2 Kanal", by: "Vision Group",
     tag: "Against the national park",
     marks: ["Malot Road", "Bani Gala side", "Hill and lake views"],
     eats: ["Park View commercial"] },
-  { id: "TAJ", n: "Taj Residencia", col: 10.0, row: 6.6, p: 2.5, band: "4–6",
+  { id: "TAJ", n: "Taj Residencia", col: 10.0, row: 6.6, p: 2.5, band: "4–6", plots: "5, 7 & 10 Marla · 1 Kanal", by: "Sardar Group",
     tag: "Fast-building, well placed",
     marks: ["Near I-14 / I-15", "Kuri Road", "Centaurus developer"],
     eats: ["Taj commercial"] },
-  { id: "FAISALT", n: "Faisal Town", col: 13.4, row: 0.6, p: 2.3, band: "3.5–5.5",
+  { id: "FAISALT", n: "Faisal Town", col: 13.4, row: 0.6, p: 2.3, band: "3.5–5.5", plots: "5, 8 & 10 Marla · 1 & 2 Kanal", by: "Zedem International",
     tag: "North-west, near the hills",
     marks: ["Near Tarnol", "M-1 access", "Faisal Hills next door"], eats: ["Faisal Town commercial"] },
-  { id: "SMART", n: "Capital Smart City", col: 12.6, row: 8.0, p: 2.3, band: "3.5–5.5",
+  { id: "SMART", n: "Capital Smart City", col: 12.6, row: 8.0, p: 2.3, band: "3.5–5.5", plots: "5, 7, 10 & 12 Marla · 1 & 2 Kanal", by: "Future Development Holdings",
     tag: "The big M-2 project",
     marks: ["Dedicated M-2 interchange", "Lahore-side of the motorway"], eats: ["Smart City commercial"] },
-  { id: "TOPCITY", n: "Top City-1", col: 14.8, row: 4.8, p: 2.0, band: "3–5",
+  { id: "TOPCITY", n: "Top City-1", col: 14.8, row: 4.8, p: 2.0, band: "3–5", plots: "4, 5, 8 & 10 Marla · 1 Kanal",
     tag: "Airport-side",
     marks: ["Minutes from Islamabad Airport", "M-1 / M-2 access"], eats: ["Top City commercial"] },
-  { id: "MUMTAZ", n: "Mumtaz City", col: 14.2, row: 5.9, p: 1.9, band: "3–4.5",
+  { id: "MUMTAZ", n: "Mumtaz City", col: 14.2, row: 5.9, p: 1.9, band: "3–4.5", plots: "5, 8 & 10 Marla · 1 Kanal",
     tag: "Airport-side, established",
     marks: ["Near Islamabad Airport", "Srinagar Highway"], eats: ["Mumtaz City commercial"] },
-  { id: "NOVA", n: "Nova City", col: 3.2, row: 7.5, p: 1.6, band: "2.5–4",
+  { id: "NOVA", n: "Nova City", col: 3.2, row: 7.5, p: 1.6, band: "2.5–4", plots: "3.5, 5, 8 & 10 Marla · 1 Kanal",
     tag: "Rawalpindi side",
     marks: ["Near Rawalpindi Ring Road", "Chakri interchange"], eats: ["Nova commercial"] },
-  { id: "BLUEW", n: "Blue World City", col: 15.4, row: 8.4, p: 1.2, band: "1.8–3",
+  { id: "BLUEW", n: "Blue World City", col: 15.4, row: 8.4, p: 1.2, band: "1.8–3", plots: "5, 8 & 10 Marla · 1 Kanal", by: "Blue Group of Companies",
     tag: "Cheapest entry on the map",
     marks: ["Chakri Road", "Rawalpindi Ring Road", "Longest horizon"], eats: ["Blue World commercial"] },
-  { id: "RUDN", n: "Rudn Enclave", col: 11.0, row: 8.4, p: 1.1, band: "1.6–2.8",
+  { id: "RUDN", n: "Rudn Enclave", col: 11.0, row: 8.4, p: 1.1, band: "1.6–2.8", plots: "5, 7 & 10 Marla · 1 Kanal",
     tag: "Adyala side, early stage",
     marks: ["Adyala Road", "Rawalpindi Ring Road", "Long-hold play"], eats: ["Rudn commercial"] }
 ];
@@ -838,6 +838,9 @@ function paintPanel(d) {
       ? '<div class="city-info__price"><span>1 Kanal</span><strong>PKR ' + d.band + " Crore</strong></div>" +
         '<div class="city-info__price"><span>Per marla</span><strong>PKR ' + d.p.toFixed(2) + "M</strong></div>"
       : '<p class="city-info__none">Not a residential sector — but it shapes what the ones around it are worth.</p>') +
+    (d.plots ? '<div class="city-info__price"><span>Typically sold in</span><strong>' +
+        d.plots + "</strong></div>" : "") +
+    (d.by ? '<div class="city-info__price"><span>Developer</span><strong>' + d.by + "</strong></div>" : "") +
     (d.marks.length ? '<p class="city-info__h">Around here</p><ul>' +
       d.marks.map((m) => "<li>" + m + "</li>").join("") + "</ul>" : "") +
     (d.eats.length ? '<p class="city-info__h">Where you\'d eat</p><ul class="city-info__eats">' +
