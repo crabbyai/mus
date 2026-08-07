@@ -14,7 +14,7 @@
   function fmtShort(v) {
     v = Math.max(0, Math.round(v));
     if (v >= 1e7) return "PKR " + (v / 1e7).toFixed(2) + " Crore";
-    if (v >= 1e5) return "PKR " + (v / 1e5).toFixed(2) + " Lakh";
+    if (v >= 1e5) return "PKR " + (v / 1e5).toFixed(2) + " Lac";
     return "PKR " + v.toLocaleString("en-US");
   }
   // Precise amount with South-Asian digit grouping (e.g. 3,24,500)

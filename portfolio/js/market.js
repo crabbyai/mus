@@ -84,7 +84,13 @@
   }
 
   /* ---------- numbers ---------- */
-  function pkrM(v) { return "PKR " + (v >= 10 ? v.toFixed(1) : v.toFixed(2)) + "M"; }
+  /* Crore is how prices are actually spoken here, so it leads; under a crore
+     reads better in lac than as a fraction of one. Input is PKR millions. */
+  function pkrM(v) {
+    var cr = v / 10;
+    if (cr >= 1) return "PKR " + (cr >= 10 ? cr.toFixed(1) : cr.toFixed(2)).replace(/\.?0+$/, "") + " Crore";
+    return "PKR " + (v * 10).toFixed(v * 10 < 10 ? 1 : 0) + " Lac";
+  }
   function pct(a, b) {
     var d = ((b - a) / a) * 100;
     return (d >= 0 ? "+" : "") + d.toFixed(d >= 10 || d <= -10 ? 0 : 1) + "%";
@@ -122,7 +128,7 @@
       grid += '<line x1="' + PAD_L + '" y1="' + y.toFixed(1) + '" x2="' + (W - PAD_R) +
               '" y2="' + y.toFixed(1) + '" class="mkt-grid"/>' +
               '<text x="' + (PAD_L - 10) + '" y="' + (y + 5).toFixed(1) +
-              '" class="mkt-axis" text-anchor="end">' + v.toFixed(1) + 'M</text>';
+              '" class="mkt-axis" text-anchor="end">' + (v / 10).toFixed(2) + ' Cr</text>';
     }
 
     var xlab = YEARS.map(function (y, k) {
@@ -216,7 +222,7 @@
       return '<button class="mkt-bar' + (a.id === current.id ? " is-on" : "") + '" type="button" data-area="' + a.id + '">' +
         '<span class="mkt-bar__name">' + a.name + ' <em>' + a.city + '</em></span>' +
         '<span class="mkt-bar__track"><i style="--w:' + ((v / max) * 100).toFixed(1) + '%"></i></span>' +
-        '<span class="mkt-bar__val">' + v.toFixed(1) + "M</span>" +
+        '<span class="mkt-bar__val">' + (v / 10).toFixed(2) + " Cr</span>" +
         "</button>";
     }).join("");
   }

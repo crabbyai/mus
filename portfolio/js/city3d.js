@@ -213,12 +213,12 @@ const LHR = [
 /* Tier → colour. Deliberately a single warm ramp rather than a rainbow: the
    point is "how expensive", and a hue scale would read as "different kinds". */
 const TIER = {
-  1: { c: 0x3d6fa8, label: "Under PKR 2M / marla" },
-  2: { c: 0x3f9e9e, label: "PKR 2–4M / marla" },
-  3: { c: 0x6fae5c, label: "PKR 4–7M / marla" },
-  4: { c: 0xd9b23c, label: "PKR 7–11M / marla" },
-  5: { c: 0xe08a3c, label: "PKR 11–16M / marla" },
-  6: { c: 0xd8503f, label: "PKR 16M+ / marla" },
+  1: { c: 0x3d6fa8, label: "Under 20 Lac / marla" },
+  2: { c: 0x3f9e9e, label: "20–40 Lac / marla" },
+  3: { c: 0x6fae5c, label: "40–70 Lac / marla" },
+  4: { c: 0xd9b23c, label: "70 Lac–1.1 Cr / marla" },
+  5: { c: 0xe08a3c, label: "1.1–1.6 Cr / marla" },
+  6: { c: 0xd8503f, label: "1.6 Cr+ / marla" },
   7: { c: 0x8d8fa3, label: "Commercial / institutional" },
   8: { c: 0x4e9b5f, label: "Park / heritage" }
 };
@@ -236,6 +236,14 @@ function tierOf(d) {
   return 6;
 }
 const WA = "16134083945";
+
+/* Crore is how prices are actually spoken here, so it leads. Anything under a
+   crore reads better in lac than as a fraction of one. Input is PKR millions. */
+function pkr(m) {
+  const cr = m / 10;
+  if (cr >= 1) return "PKR " + (cr >= 10 ? cr.toFixed(1) : cr.toFixed(2)).replace(/\.?0+$/, "") + " Crore";
+  return "PKR " + (m * 10).toFixed(m * 10 < 10 ? 1 : 0) + " Lac";
+}
 const SP = 7.2;          // grid spacing, world units
 
 /* ============================================================
@@ -258,6 +266,7 @@ let city = "isb", selected = null, hovered = null;
 let running = false, raf = 0, ready = false;
 let yaw = -0.5, targetYaw = -0.5, pitch = 0.98, dist = 120, targetDist = 120;
 let dragging = false, lastX = 0, lastY = 0, moved = 0, pinch = 0;
+let fitDist = 120;   // the distance the city was framed at
 
 const cv = () => document.getElementById("cityCanvas");
 
@@ -564,7 +573,10 @@ function labelSprite(text, tier, sub) {
   tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
   tex.colorSpace = THREE.SRGBColorSpace;
   const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthTest: false, transparent: true }));
-  sp.scale.set((c.width / c.height) * 3.4, 3.4, 1);
+  // On a phone these were bigger than the sectors they name, covering the
+   // very thing you were trying to tap.
+  const k = innerWidth < 700 ? 2.2 : 3.2;
+  sp.scale.set((c.width / c.height) * k, k, 1);
   sp.renderOrder = 20;
   return sp;
 }
@@ -741,7 +753,7 @@ function buildCity() {
   // --- labels ---
   data.forEach((d, di) => {
     const p = place(d);
-    const sp = labelSprite(d.n, tierOf(d), d.p > 0 ? "PKR " + d.p.toFixed(1) + "M / marla" : null);
+    const sp = labelSprite(d.n, tierOf(d), d.p > 0 ? pkr(d.p) + " / marla" : null);
     sp.userData.lift = 7.2 + (di % 3) * 3.1;   // three levels: two weren't enough in the DHA run
     sp.position.set(p.x, sp.userData.lift, p.z);
     root.add(sp);
@@ -759,7 +771,7 @@ function buildCity() {
   });
   const bw = bx1 - bx0, bh = bz1 - bz0;
   const diag = Math.sqrt(bw * bw + bh * bh);
-  targetDist = dist = Math.min(230, (diag / 2) / Math.tan((38 * Math.PI / 180) / 2) * 0.94);
+  targetDist = dist = fitDist = Math.min(230, (diag / 2) / Math.tan((38 * Math.PI / 180) / 2) * 0.94);
   // …and look at the middle of the city rather than the middle of the plane.
   root.position.set(-(bx0 + bw / 2), 0, -(bz0 + bh / 2));
   selected = null;
@@ -803,27 +815,49 @@ function bind(c) {
 
 /* The ground is one mesh now, so a hit is resolved by asking which sector
    rectangle contains the point rather than by hitting a per-sector object. */
-function atPointer() {
+function atPointer(forgiving) {
   if (!ground) return null;
   ray.setFromCamera(pointer, camera);
+
+  // The label is the biggest, most obvious thing on screen, so let it be the
+  // target. Tapping the "F-10" pill picks F-10 — that alone fixes most of the
+  // fiddliness on a phone.
+  const onLabel = ray.intersectObjects(labels.filter((l) => l.visible), false)[0];
+  if (onLabel) {
+    const li = labels.indexOf(onLabel.object);
+    if (li >= 0 && rects[li]) return rects[li];
+  }
+
   const hit = ray.intersectObject(ground, false)[0];
   if (!hit) return null;
   const lp = root.worldToLocal(hit.point.clone());
+
+  let best = null, bestD = Infinity;
   for (let i = 0; i < rects.length; i++) {
     const r = rects[i];
     if (Math.abs(lp.x - r.x) <= r.w / 2 && Math.abs(lp.z - r.z) <= r.h / 2) return r;
+    // how far outside this plot the point fell, for the snap below
+    const dx = Math.max(0, Math.abs(lp.x - r.x) - r.w / 2);
+    const dz = Math.max(0, Math.abs(lp.z - r.z) - r.h / 2);
+    const d = Math.hypot(dx, dz);
+    if (d < bestD) { bestD = d; best = r; }
   }
+  // A tap that lands in the street between two sectors almost certainly meant
+  // one of them. Only snap on a real click, never on hover.
+  if (forgiving && best && bestD < SP * 0.55) return best;
   return null;
 }
 
 function pick() {
-  const r = atPointer();
+  const r = atPointer(true);
   if (r) select(r.d);
 }
 
 function select(d) {
   selected = d;
   paintPanel(d);
+  const sel = document.getElementById("cityPick");
+  if (sel && sel.value !== d.id) sel.value = d.id;
 }
 
 /* ---------- panel ---------- */
@@ -836,7 +870,7 @@ function paintPanel(d) {
     "<h3>" + d.n + (city === "isb" ? ", Islamabad" : ", Lahore") + "</h3>" +
     (priced
       ? '<div class="city-info__price"><span>1 Kanal</span><strong>PKR ' + d.band + " Crore</strong></div>" +
-        '<div class="city-info__price"><span>Per marla</span><strong>PKR ' + d.p.toFixed(2) + "M</strong></div>"
+        '<div class="city-info__price"><span>Per marla</span><strong>' + pkr(d.p) + "</strong></div>"
       : '<p class="city-info__none">Not a residential sector — but it shapes what the ones around it are worth.</p>') +
     (d.plots ? '<div class="city-info__price"><span>Typically sold in</span><strong>' +
         d.plots + "</strong></div>" : "") +
@@ -851,8 +885,8 @@ function paintPanel(d) {
   document.getElementById("cityWant").addEventListener("click", () => {
     const where = d.n + (city === "isb" ? ", Islamabad" : ", Lahore");
     let msg = "Hello Adeel — I want to live in " + where + ".\n\n";
-    if (priced) msg += "Your site shows 1 Kanal there at PKR " + d.band + " Crore (about PKR " +
-      d.p.toFixed(2) + "M per marla).\n\n";
+    if (priced) msg += "Your site shows 1 Kanal there at PKR " + d.band + " Crore (about " +
+      pkr(d.p) + " per marla).\n\n";
     msg += "What's actually available right now, and what would you recommend for someone " +
       "looking at this area?";
     if (window.LeadRelay) window.LeadRelay.send(msg);
@@ -895,14 +929,16 @@ function loop() {
     }
   }
 
-  // Labels thin out as you pull back, the way map labels do, so the dense
-  // middle of the city doesn't turn into a wall of pills.
-  const k = Math.max(0, Math.min(1, (200 - dist) / 90));
+  // Labels thin out as you pull back, the way map labels do. Measured against
+  // the distance the city was framed at rather than a fixed number — on a
+  // phone the fit sits further out, and an absolute threshold hid every label
+  // at the default view.
+  const k = Math.max(0, Math.min(1, (fitDist * 1.06 - dist) / (fitDist * 0.5)));
   labels.forEach((sp, i) => {
     const r = rects[i];
-    const keep = r && (tierOf(r.d) >= 4 || r.d.commercial || k > 0.45 ||
+    const keep = r && (tierOf(r.d) >= 4 || r.d.commercial || k > 0.35 ||
                        (selected && r.d.id === selected.id));
-    const want = keep ? Math.min(1, 0.35 + k) : 0;
+    const want = keep ? Math.min(1, 0.6 + k) : 0;
     sp.material.opacity += (want - sp.material.opacity) * 0.12;
     sp.visible = sp.material.opacity > 0.03;
   });
@@ -922,6 +958,19 @@ function legend() {
     TIER[k].c.toString(16).padStart(6, "0") + '"></i>' + TIER[k].label + "</span>").join("");
 }
 
+/* Populate the jump-to list. Clicking a 3D canvas is not something a keyboard
+   or a screen reader can do, and on a phone it's fiddly even with a mouse-free
+   thumb — this is the dependable path to any of the 35 areas. */
+function fillPicker() {
+  const sel = document.getElementById("cityPick");
+  if (!sel) return;
+  const data = city === "isb" ? ISB : LHR;
+  const sorted = data.slice().sort((a, b) => (b.p || 0) - (a.p || 0));
+  sel.innerHTML = '<option value="">Jump to an area…</option>' +
+    sorted.map((d) => '<option value="' + d.id + '">' + d.n +
+      (d.p > 0 ? " — " + pkr(d.p) + " / marla" : "") + "</option>").join("");
+}
+
 function setCity(next) {
   if (next === city) return;
   city = next;
@@ -935,6 +984,7 @@ function setCity(next) {
     ? "Drag to orbit · scroll to zoom · tap any sector"
     : "Drag to orbit · scroll to zoom · tap any district";
   buildCity();
+  fillPicker();
 }
 
 /* ---------- boot ---------- */
@@ -946,6 +996,13 @@ function setCity(next) {
     b.addEventListener("click", () => setCity(b.getAttribute("data-city3d")));
   });
 
+  const sel = document.getElementById("cityPick");
+  if (sel) sel.addEventListener("change", () => {
+    const data = city === "isb" ? ISB : LHR;
+    const d = data.filter((x) => x.id === sel.value)[0];
+    if (d) select(d);
+  });
+
   let booted = false;
   const io = new IntersectionObserver((es) => {
     es.forEach((e) => {
@@ -955,6 +1012,7 @@ function setCity(next) {
         if (!initScene()) { section.classList.add("city--no3d"); io.disconnect(); return; }
         buildCity();
         legend();
+        fillPicker();
         const l = document.getElementById("cityLoading");
         if (l) l.remove();
       }

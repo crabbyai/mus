@@ -2968,3 +2968,17 @@ body.wtour-open .cursor-dot { display: none !important; }
   .city-key { font-size: 0.58rem; }
   .city3d__hint { font-size: 0.58rem; left: 0.7rem; bottom: 3.6rem; }
 }
+
+/* Jump-to list beside the city switch — the dependable way to reach any of
+   the 35 areas, and the only one a keyboard can use. */
+.city3d__jump { display: inline-flex; }
+.city3d__jump select {
+  font: inherit; font-size: 0.76rem; color: var(--cream); cursor: pointer;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(243,238,227,0.22);
+  border-radius: 99px; padding: 0.5rem 0.9rem; min-height: 40px;
+  max-width: min(17rem, 60vw);
+}
+.city3d__jump select:hover { border-color: rgba(201,164,92,0.6); }
+.city3d__jump select:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.city3d__jump option { background: #0c1226; color: var(--cream); }
+@media (max-width: 620px) { .city3d__switch { flex-wrap: wrap; } }
