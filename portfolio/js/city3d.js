@@ -259,8 +259,8 @@ const SP = 7.2;          // grid spacing, world units
    trees standing on top of it, lit like daylight and viewed from
    the air.
    ============================================================ */
-let renderer, scene, camera, root, composer, bloom;
-let ground = null, hi = null, labels = [], rects = [], ray;
+let renderer, scene, camera, root, composer, bloom, ssao;
+let ground = null, hi = null, labels = [], rects = [], picks = [], plinths = [], ray;
 let pointer = new THREE.Vector2();
 let city = "isb", selected = null, hovered = null;
 let running = false, raf = 0, ready = false;
@@ -483,8 +483,9 @@ function initScene() {
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.12;
+  renderer.toneMappingExposure = 1.16;
 
   scene = new THREE.Scene();
   // A gradient sky rather than a flat fill — the horizon is what tells you
@@ -512,7 +513,7 @@ function initScene() {
   const sun = new THREE.DirectionalLight(0xfff0cf, 2.9);
   sun.position.set(60, 110, 48);
   sun.castShadow = true;
-  sun.shadow.mapSize.set(2048, 2048);
+  sun.shadow.mapSize.set(innerWidth >= 1024 ? 4096 : 2048, innerWidth >= 1024 ? 4096 : 2048);
   const s = 120;
   sun.shadow.camera.left = -s; sun.shadow.camera.right = s;
   sun.shadow.camera.top = s; sun.shadow.camera.bottom = -s;
@@ -520,6 +521,35 @@ function initScene() {
   sun.shadow.bias = -0.0007;
   scene.add(sun);
   scene.add(new THREE.AmbientLight(0xcfe0f0, 0.55));
+
+  // Bloom and ambient occlusion. AO is what stops a procedural city looking
+  // like a pile of clean boxes — it puts real shade down every street and in
+  // every corner. Desktop only; on a phone the passes cost more than they add.
+  const beefy = innerWidth >= 1024 && (navigator.hardwareConcurrency || 4) >= 4;
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches && innerWidth > 700) {
+    Promise.all([
+      import("./vendor/three/postprocessing/EffectComposer.js"),
+      import("./vendor/three/postprocessing/RenderPass.js"),
+      import("./vendor/three/postprocessing/UnrealBloomPass.js"),
+      import("./vendor/three/postprocessing/OutputPass.js"),
+      beefy ? import("./vendor/three/postprocessing/SSAOPass.js") : Promise.resolve(null)
+    ]).then(([EC, RP, UB, OP, SS]) => {
+      const w = cv().clientWidth, h = cv().clientHeight;
+      composer = new EC.EffectComposer(renderer);
+      composer.addPass(new RP.RenderPass(scene, camera));
+      if (SS) {
+        ssao = new SS.SSAOPass(scene, camera, w, h);
+        ssao.kernelRadius = 1.6;
+        ssao.minDistance = 0.0018;
+        ssao.maxDistance = 0.14;
+        composer.addPass(ssao);
+      }
+      bloom = new UB.UnrealBloomPass(new THREE.Vector2(w, h), 0.34, 0.7, 0.88);
+      composer.addPass(bloom);
+      composer.addPass(new OP.OutputPass());
+      resize();
+    }).catch(() => { composer = null; ssao = null; });
+  }
 
   ray = new THREE.Raycaster();
   bind(c);
@@ -538,6 +568,7 @@ function resize() {
   camera.updateProjectionMatrix();
   if (composer) composer.setSize(w, h);
   if (bloom) bloom.resolution.set(w, h);
+  if (ssao) ssao.setSize(w, h);
 }
 
 /* ---------- map-style labels ---------- */
@@ -593,7 +624,7 @@ function clearCity() {
       });
     });
   }
-  labels = []; rects = []; ground = null; hi = null;
+  labels = []; rects = []; picks = []; plinths = []; ground = null; hi = null;
 }
 
 function buildCity() {
@@ -652,6 +683,23 @@ function buildCity() {
     const seed = rnd(di * 733 + 29);
     rects.push({ d: d, x: p.x, z: p.z, w: p.w, h: p.h });
 
+    // A low plinth under every sector. It gives each one an edge and a
+    // shadow, so the city reads as blocks of land rather than buildings
+    // scattered on a photograph — and it makes them far easier to aim at.
+    const plinth = new THREE.Mesh(
+      new THREE.BoxGeometry(p.w, 0.55, p.h),
+      new THREE.MeshStandardMaterial({
+        color: TIER[tierOf(d)].c, roughness: 0.88, metalness: 0.04,
+        emissive: new THREE.Color(TIER[tierOf(d)].c).multiplyScalar(0.1)
+      })
+    );
+    plinth.position.set(p.x, 0.26, p.z);
+    plinth.castShadow = true;
+    plinth.receiveShadow = true;
+    plinth.userData.d = d;
+    root.add(plinth);
+    plinths.push(plinth);
+
     if (d.park) {
       for (let i = 0; i < 46; i++) {
         trees.push({ x: p.x + (seed() - 0.5) * p.w * 0.92,
@@ -691,7 +739,7 @@ function buildCity() {
   const m4 = new THREE.Matrix4(), col = new THREE.Color();
   boxes.forEach((b, i) => {
     m4.makeScale(b.w, b.h, b.d);
-    m4.setPosition(b.x, b.h / 2, b.z);
+    m4.setPosition(b.x, 0.53 + b.h / 2, b.z);
     bMesh.setMatrixAt(i, m4);
     // Sand, cream, grey and the occasional painted block — a flat off-white
     // city reads as polystyrene from this height.
@@ -715,7 +763,7 @@ function buildCity() {
   rMesh.castShadow = true;
   lows.forEach((b, i) => {
     m4.makeScale(b.w * 1.1, 0.16, b.d * 1.1);
-    m4.setPosition(b.x, b.h + 0.06, b.z);
+    m4.setPosition(b.x, 0.53 + b.h + 0.06, b.z);
     rMesh.setMatrixAt(i, m4);
     col.setHSL(0.045 + b.tone * 0.02, 0.42 + b.tone * 0.2, 0.38 + b.tone * 0.14);
     rMesh.setColorAt(i, col);
@@ -732,7 +780,7 @@ function buildCity() {
   tMesh.castShadow = true;
   trees.forEach((t, i) => {
     m4.makeScale(t.s, t.s * (1 + t.s * 0.4), t.s);
-    m4.setPosition(t.x, t.s * 0.7, t.z);
+    m4.setPosition(t.x, 0.53 + t.s * 0.7, t.z);
     tMesh.setMatrixAt(i, m4);
     col.setHSL(0.24 + t.s * 0.06, 0.34 + t.s * 0.18, 0.26 + t.s * 0.14);
     tMesh.setColorAt(i, col);
@@ -742,17 +790,43 @@ function buildCity() {
   root.add(tMesh);
 
   // --- selection ring, one mesh moved around ---
-  hi = new THREE.Mesh(
-    new THREE.RingGeometry(0.86, 1, 48),
-    new THREE.MeshBasicMaterial({ color: 0xc9a45c, transparent: true, opacity: 0, side: THREE.DoubleSide })
+  hi = new THREE.Group();
+  const ring = new THREE.Mesh(
+    new THREE.RingGeometry(0.86, 1, 64),
+    new THREE.MeshBasicMaterial({ color: 0xffd27a, transparent: true, opacity: 0,
+      side: THREE.DoubleSide, depthTest: false })
   );
-  hi.rotation.x = -Math.PI / 2;
-  hi.renderOrder = 5;
+  ring.rotation.x = -Math.PI / 2;
+  ring.position.y = 0.62;
+  ring.renderOrder = 6;
+  // A soft column of light standing on the selected sector — the thing that
+  // makes it obvious across the whole city which one you picked.
+  const beam = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.62, 0.92, 16, 24, 1, true),
+    new THREE.MeshBasicMaterial({ color: 0xffd27a, transparent: true, opacity: 0,
+      side: THREE.DoubleSide, depthWrite: false, blending: THREE.AdditiveBlending })
+  );
+  beam.position.y = 8.6;
+  hi.add(ring); hi.add(beam);
+  hi.userData = { ring: ring, beam: beam };
   root.add(hi);
 
   // --- labels ---
   data.forEach((d, di) => {
     const p = place(d);
+    // An invisible box standing over each sector, tall enough to enclose its
+    // buildings. Without this the ray flew straight through the skyline and
+    // hit the ground BEHIND it — at this camera angle that lands several
+    // units off, which is exactly why tapping a sector kept missing it.
+    const proxy = new THREE.Mesh(
+      new THREE.BoxGeometry(p.w * 1.12, 9, p.h * 1.12),
+      new THREE.MeshBasicMaterial({ visible: false })
+    );
+    proxy.position.set(p.x, 4.5, p.z);
+    proxy.userData.d = d;
+    root.add(proxy);
+    picks.push(proxy);
+
     const sp = labelSprite(d.n, tierOf(d), d.p > 0 ? pkr(d.p) + " / marla" : null);
     sp.userData.lift = 7.2 + (di % 3) * 3.1;   // three levels: two weren't enough in the DHA run
     sp.position.set(p.x, sp.userData.lift, p.z);
@@ -771,7 +845,7 @@ function buildCity() {
   });
   const bw = bx1 - bx0, bh = bz1 - bz0;
   const diag = Math.sqrt(bw * bw + bh * bh);
-  targetDist = dist = fitDist = Math.min(230, (diag / 2) / Math.tan((38 * Math.PI / 180) / 2) * 0.94);
+  targetDist = dist = fitDist = Math.min(230, (diag / 2) / Math.tan((38 * Math.PI / 180) / 2) * 0.82);
   // …and look at the middle of the city rather than the middle of the plane.
   root.position.set(-(bx0 + bw / 2), 0, -(bz0 + bh / 2));
   selected = null;
@@ -828,6 +902,13 @@ function atPointer(forgiving) {
     if (li >= 0 && rects[li]) return rects[li];
   }
 
+  // The sector volumes come first — they are what you actually see.
+  const onPick = ray.intersectObjects(picks, false)[0];
+  if (onPick) {
+    const d = onPick.object.userData.d;
+    for (let i = 0; i < rects.length; i++) if (rects[i].d.id === d.id) return rects[i];
+  }
+
   const hit = ray.intersectObject(ground, false)[0];
   if (!hit) return null;
   const lp = root.worldToLocal(hit.point.clone());
@@ -844,7 +925,7 @@ function atPointer(forgiving) {
   }
   // A tap that lands in the street between two sectors almost certainly meant
   // one of them. Only snap on a real click, never on hover.
-  if (forgiving && best && bestD < SP * 0.55) return best;
+  if (forgiving && best && bestD < SP * 1.1) return best;
   return null;
 }
 
@@ -919,15 +1000,30 @@ function loop() {
 
   const mark = hovered || (selected && rects.filter((r) => r.d.id === selected.id)[0]);
   if (hi) {
+    const ring = hi.userData.ring, beam = hi.userData.beam;
     if (mark) {
-      const s = Math.max(mark.w, mark.h) * 0.78;
-      hi.position.set(mark.x, 0.12, mark.z);
-      hi.scale.set(s, s, 1);
-      hi.material.opacity += (0.95 - hi.material.opacity) * 0.16;
+      const sc = Math.max(mark.w, mark.h) * 0.62;
+      hi.position.set(mark.x, 0, mark.z);
+      ring.scale.set(sc, sc, 1);
+      beam.scale.set(sc * 0.5, 1, sc * 0.5);
+      const pulse = 0.72 + Math.sin(t * 2.6) * 0.2;
+      ring.material.opacity += (pulse - ring.material.opacity) * 0.16;
+      beam.material.opacity += (0.16 + Math.sin(t * 2.6) * 0.05 - beam.material.opacity) * 0.16;
+      ring.rotation.z += 0.006;
     } else {
-      hi.material.opacity += (0 - hi.material.opacity) * 0.16;
+      ring.material.opacity += (0 - ring.material.opacity) * 0.16;
+      beam.material.opacity += (0 - beam.material.opacity) * 0.16;
     }
   }
+
+  // the chosen sector's plinth glows
+  plinths.forEach((pl) => {
+    const on = mark && pl.userData.d.id === mark.d.id;
+    const want = on ? 0.55 : 0.1;
+    const e = pl.material.emissive;
+    const base = new THREE.Color(TIER[tierOf(pl.userData.d)].c);
+    e.lerp(base.multiplyScalar(want), 0.14);
+  });
 
   // Labels thin out as you pull back, the way map labels do. Measured against
   // the distance the city was framed at rather than a fixed number — on a
@@ -938,12 +1034,12 @@ function loop() {
     const r = rects[i];
     const keep = r && (tierOf(r.d) >= 4 || r.d.commercial || k > 0.35 ||
                        (selected && r.d.id === selected.id));
-    const want = keep ? Math.min(1, 0.6 + k) : 0;
+    const want = keep ? Math.min(1, 0.78 + k) : 0;
     sp.material.opacity += (want - sp.material.opacity) * 0.12;
     sp.visible = sp.material.opacity > 0.03;
   });
 
-  renderer.render(scene, camera);
+  if (composer) composer.render(); else renderer.render(scene, camera);
 }
 
 function start() { if (!running && ready) { running = true; loop(); } }
