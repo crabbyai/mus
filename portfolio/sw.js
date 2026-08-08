@@ -13,7 +13,7 @@
 
    Bump VERSION to invalidate every cache after a deploy.
    ============================================================ */
-const VERSION = "v23";
+const VERSION = "v25";
 const SHELL_CACHE = `ar-shell-${VERSION}`;
 const ASSET_CACHE = `ar-assets-${VERSION}`;
 const DATA_CACHE = `ar-data-${VERSION}`;
@@ -29,6 +29,9 @@ const PRECACHE = [
   "./js/main.js",
   "./assets/adeel-portrait.webp"
 ];
+// The tool pages are separate documents, so a visitor who lands on one offline
+// gets the shell rather than the offline card. They're fetched lazily on first
+// visit; navigations are network-first regardless, so they stay current.
 
 self.addEventListener("install", (event) => {
   event.waitUntil(

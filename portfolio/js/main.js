@@ -172,9 +172,23 @@ function guardImage(img, i, label) {
   if (img.complete && img.naturalWidth === 0 && img.src.startsWith("http")) img.src = fallbackArt(i, label);
 }
 
+
+/* Bind a listener only if the element is there. main.js is shared with the
+   standalone tool pages, which have the nav, the menu and the footer but none
+   of the main page's sections, and an unguarded getElementById(...).addEventListener
+   throws at load and takes the rest of this file down with it. */
+function onId(id, ev, fn, opts) {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener(ev, fn, opts);
+  return el;
+}
+
 /* ---------- RENDER CARDS ---------- */
+// This file is shared with the standalone tool pages, which carry the nav, the
+// menu and the footer but none of the main page's sections. Everything from
+// here on has to tolerate its container being absent.
 const grid = document.getElementById("grid");
-PROPERTIES.forEach((p, i) => {
+if (grid) PROPERTIES.forEach((p, i) => {
   const card = document.createElement("article");
   card.className = "card";
   card.dataset.city = p.city;
@@ -233,6 +247,9 @@ function dismissPreloader() {
 }
 
 function startPreloader() {
+  // The tool pages share this file but carry no preloader — there's nothing
+  // heavy to wait for on them.
+  if (!preloader || !preloaderBar || !preloaderCount) { preloaderDone = true; return; }
   if (!HAS_GSAP) {
     preloaderBar.style.width = "100%";
     preloaderCount.textContent = "100";
@@ -373,7 +390,7 @@ faqItems.forEach((item) => {
 });
 
 /* ---------- FILTERS ---------- */
-document.getElementById("filters").addEventListener("click", (e) => {
+onId("filters", "click", (e) => {
   const btn = e.target.closest(".chip");
   if (!btn) return;
   document.querySelectorAll(".chip").forEach((c) => c.classList.remove("is-active"));
@@ -445,8 +462,8 @@ function closeLightbox() {
   if (lenis) lenis.start();
   if (window.Estate3D) window.Estate3D.closeViewer();
 }
-document.getElementById("lightboxClose").addEventListener("click", closeLightbox);
-document.getElementById("lightboxBackdrop").addEventListener("click", closeLightbox);
+onId("lightboxClose", "click", closeLightbox);
+onId("lightboxBackdrop", "click", closeLightbox);
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeLightbox(); });
 
 /* Live YouTube listings (Available Listings + Market Watch) link straight to
@@ -464,6 +481,7 @@ slides.forEach((_, i) => {
   dotsWrap.appendChild(dot);
 });
 function goSlide(i) {
+  if (!slides.length || !dotsWrap) return;
   slideIdx = (i + slides.length) % slides.length;
   slides.forEach((s, j) => s.classList.toggle("is-active", j === slideIdx));
   dotsWrap.querySelectorAll("i").forEach((d, j) => d.classList.toggle("is-active", j === slideIdx));
@@ -473,9 +491,11 @@ function restartAuto() {
   clearInterval(slideTimer);
   slideTimer = setInterval(() => goSlide(slideIdx + 1), 6000);
 }
-document.getElementById("prevT").addEventListener("click", () => goSlide(slideIdx - 1));
-document.getElementById("nextT").addEventListener("click", () => goSlide(slideIdx + 1));
-restartAuto();
+onId("prevT", "click", () => goSlide(slideIdx - 1));
+onId("nextT", "click", () => goSlide(slideIdx + 1));
+// Only where there are testimonials to rotate. Started unconditionally, the
+// six-second timer fired on the tool pages and threw once a page.
+if (slides.length && dotsWrap) restartAuto();
 
 /* ---------- CUSTOM CURSOR & MAGNETIC (pointer devices, gsap only) ---------- */
 if (HAS_GSAP && window.matchMedia("(hover: hover)").matches) {

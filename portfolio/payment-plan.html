@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https:; media-src 'self' https:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; font-src 'self' data:; connect-src 'self' https:; frame-src https://www.google.com https://maps.google.com https://www.youtube.com https://www.youtube-nocookie.com; base-uri 'self'; form-action 'self' https://wa.me; object-src 'none'" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Instalment planner — what a Pakistani property payment plan really costs | Adeel Rahman, MBA</title>
+<meta name="description" content="Lay out a society payment plan month by month: down payment, quarterly instalments, half-yearly extras and the lump on possession. See the heaviest month and the first-year outflow before you commit." />
+<meta name="theme-color" content="#0a0f1e" />
+<link rel="canonical" href="https://crabbyai.github.io/mus/payment-plan.html" />
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+<link rel="manifest" href="site.webmanifest" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Adeel Rahman Estates" />
+<meta property="og:title" content="Instalment planner — what a Pakistani property payment plan really costs | Adeel Rahman, MBA" />
+<meta property="og:description" content="Lay out a society payment plan month by month: down payment, quarterly instalments, half-yearly extras and the lump on possession. See the heaviest month and the first-year outflow before you commit." />
+<meta property="og:url" content="https://crabbyai.github.io/mus/payment-plan.html" />
+<link rel="stylesheet" href="css/style.css?v=57" />
+</head>
+<body>
+<a class="skip-link" href="#toolmain">Skip to content</a>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="scroll-progress" id="scrollProgress"></div>
+<header class="nav" id="nav">
+  <a href="index.html" class="nav__logo" data-magnetic>
+    <span class="nav__monogram">AR</span>
+    <span class="nav__logo-text">ADEEL&nbsp;RAHMAN<em>, MBA</em></span>
+  </a>
+  <nav class="nav__links">
+    <a href="index.html#about" data-magnetic>About</a>
+    <a href="index.html#credentials" data-magnetic>Credentials</a>
+    <a href="index.html#services" data-magnetic>Services</a>
+    <a href="tools.html" data-magnetic>Tools</a>
+    <a href="index.html#forum" data-magnetic>Community</a>
+    <a href="index.html#portfolio" data-magnetic>Sold</a>
+    <a href="index.html#guides" data-magnetic>Guides</a>
+    <a href="index.html#faq" data-magnetic>FAQ</a>
+    <a href="index.html#contact" class="nav__cta" data-magnetic>Work With Me</a>
+  </nav>
+  <a href="index.html#valuation" class="nav__val" data-magnetic>Free Valuation →</a>
+  <button class="nav__fav" id="navFav" type="button" aria-label="View saved homes" data-magnetic>
+    <span class="nav__fav-heart">♥</span><span class="nav__fav-count" id="favCount">0</span>
+  </button>
+  <button class="nav__burger" id="navBurger" aria-label="Menu"><span></span><span></span></button>
+</header>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html#marketwatch">Live Listings</a>
+  <a href="index.html#about">About</a>
+  <a href="index.html#credentials">Credentials</a>
+  <a href="index.html#services">Services</a>
+  <a href="index.html#tools">Finance Calculator</a>
+  <a href="index.html#valuation">Free Valuation</a>
+  <a href="index.html#process">How I Work</a>
+  <a href="index.html#featured">Featured Listing</a>
+  <a href="index.html#forum">Community</a>
+  <a href="index.html#portals">Top Portals</a>
+  <a href="index.html#portfolio">Sold Portfolio</a>
+  <a href="index.html#areas">Area Guides</a>
+  <a href="index.html#budget">Budget Matcher</a>
+  <a href="index.html#market">Market Data</a>
+  <a href="index.html#city3d">City in 3D</a>
+  <a href="index.html#likethis">Build One Like This</a>
+  <a href="index.html#guides">Guides</a>
+  <a href="index.html#faq">FAQ</a>
+  <a class="mobile-menu__head">Tools</a>
+  <a href="sun-study.html">Which Way Does It Face?</a>
+  <a href="payment-plan.html">Instalment Planner</a>
+  <a class="mobile-menu__head">Tools</a>
+  <a href="sun-study.html">Which Way Does It Face?</a>
+  <a href="payment-plan.html">Instalment Planner</a>
+  <a href="index.html#contact">Work With Me</a>
+</div>
+<main id="toolmain">
+  <p class="toolpage__back"><a href="index.html">&larr; Back to the main site</a></p>
+  <section class="payplan" id="payplan">
+    <div class="payplan__head">
+      <p class="section-eyebrow" data-reveal>Before You Sign</p>
+      <h2 class="section-title" data-reveal>What the plan <em class="gold-italic">actually costs you</em></h2>
+      <p class="payplan__lead" data-reveal>Almost nothing here is bought outright. Everyone works out whether they
+        can manage the down payment and stops. The month that catches people is the one where a quarterly
+        instalment and a half-yearly payment land together. Lay the whole thing out and look at it.</p>
+    </div>
+
+    <div class="payplan__shell glass" data-reveal>
+      <div class="payplan__controls">
+        <label class="pp-field">
+          <span>Price <strong id="ppPrice">PKR 1.2 Cr</strong></span>
+          <input type="range" id="ppPriceR" min="2000000" max="150000000" step="500000" value="12000000" />
+        </label>
+        <label class="pp-field">
+          <span>Down payment <strong id="ppDownVal">20%</strong></span>
+          <input type="range" id="ppDown" min="0" max="60" step="1" value="20" />
+        </label>
+        <label class="pp-field">
+          <span>Plan runs <strong id="ppYearsVal">3 years</strong></span>
+          <input type="range" id="ppYears" min="1" max="6" step="1" value="3" />
+        </label>
+        <div class="pp-field">
+          <span>Instalments</span>
+          <span class="chip-row" id="ppFreq" role="group" aria-label="Instalment frequency">
+            <button class="chip" type="button" data-v="12" aria-pressed="false">Monthly</button>
+            <button class="chip is-active" type="button" data-v="4" aria-pressed="true">Quarterly</button>
+            <button class="chip" type="button" data-v="2" aria-pressed="false">Half-yearly</button>
+          </span>
+        </div>
+        <label class="pp-field">
+          <span>Half-yearly extra <strong id="ppBalloonVal">None</strong></span>
+          <input type="range" id="ppBalloon" min="0" max="10" step="0.5" value="0" />
+        </label>
+        <label class="pp-field">
+          <span>On possession <strong id="ppPossVal">10%</strong></span>
+          <input type="range" id="ppPoss" min="0" max="40" step="1" value="10" />
+        </label>
+      </div>
+
+      <p class="pp-warn" id="ppWarn" hidden></p>
+
+      <div class="payplan__chart">
+        <div class="pp-bars" id="ppBars" role="img"
+          aria-label="Every payment in the plan, month by month, drawn to scale"></div>
+        <div class="pp-axis" id="ppAxis"></div>
+      </div>
+
+      <div class="payplan__out">
+        <div class="pp-stat"><span>Each instalment</span><strong id="ppEach">—</strong><em id="ppEachNote"></em></div>
+        <div class="pp-stat"><span>First twelve months</span><strong id="ppYear1">—</strong><em>the number that decides it</em></div>
+        <div class="pp-stat pp-stat--warn"><span>Heaviest single month</span><strong id="ppWorst">—</strong><em id="ppWorstWhen"></em></div>
+        <div class="pp-stat"><span>Paid in total</span><strong id="ppTotal">—</strong><em>across the whole plan</em></div>
+      </div>
+
+      <button class="btn btn--wa payplan__cta" id="ppCta" type="button">
+        Send me plans that match this <span class="btn__arrow">→</span></button>
+    </div>
+
+    <p class="payplan__disc" data-reveal>Every figure here is your own input and plain arithmetic &mdash; nothing is
+      assumed about any particular society&rsquo;s terms. Real plans vary in how they treat development charges,
+      possession dues and early settlement, so treat this as the shape of the commitment and let me check the
+      actual schedule before you sign anything.</p>
+  </section>
+
+</main>
+<footer class="footer">
+    <div class="footer__monogram">AR</div>
+    <p>© 2026 Adeel Rahman, MBA — Estates · Islamabad &amp; Lahore</p>
+    <div class="footer__social">
+      <a href="https://wa.me/16134083945" target="_blank" rel="noopener" aria-label="WhatsApp">
+        <svg viewBox="0 0 32 32" width="20" height="20" fill="currentColor"><path d="M16 3C9.4 3 4 8.3 4 14.9c0 2.1.6 4.2 1.7 6L4 29l8.3-1.6c1.2.5 2.4.7 3.7.7 6.6 0 12-5.3 12-11.9S22.6 3 16 3zm5.4 16.5c-.3-.2-1.8-.9-2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-.9 1.1-.2.2-.3.2-.6.1-.3-.2-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.5-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.6l-1-2.3c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.8.4-.3.3-1.1 1-1.1 2.5s1.1 2.9 1.3 3.1c.2.2 2.2 3.4 5.4 4.8.8.3 1.3.5 1.8.7.8.2 1.5.2 2 .1.6-.1 1.8-.7 2.1-1.5.3-.7.3-1.3.2-1.5-.1-.2-.3-.3-.6-.4z"/></svg>
+        WhatsApp
+      </a>
+      <a href="https://www.instagram.com/adeelrahman.realestate/" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        Instagram
+      </a>
+      <a href="https://www.linkedin.com/in/adeelahmedrahman/" target="_blank" rel="noopener" aria-label="LinkedIn">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        LinkedIn
+      </a>
+    </div>
+    <p class="footer__fine">MBA, Carleton University, Ottawa, Canada. All properties shown are previously sold and closed. Imagery representative.</p>
+  </footer>
+<!-- ======= STICKY MOBILE ACTION BAR ======= -->
+<nav class="mobile-bar" aria-label="Quick contact">
+  <a class="mobile-bar__btn" href="tel:+16134083945">
+    <span class="mobile-bar__ico">📞</span>Call
+  </a>
+  <a class="mobile-bar__btn mobile-bar__btn--wa"
+     href="https://wa.me/16134083945?text=Hello%20Adeel%2C%20I%20found%20your%20site%20and%20I%27m%20interested%20in%20buying%2Fselling%20a%20home."
+     target="_blank" rel="noopener">
+    <span class="mobile-bar__ico">💬</span>WhatsApp
+  </a>
+  <a class="mobile-bar__btn mobile-bar__btn--gold" href="index.html#book">
+    <span class="mobile-bar__ico">📅</span>Book
+  </a>
+</nav>
+
+<!-- ======= BACK TO TOP ======= -->
+<button class="to-top" id="toTop" aria-label="Back to top">↑</button>
+<script src="js/vendor/gsap.min.js"></script>
+<script src="js/vendor/ScrollTrigger.min.js"></script>
+<script src="js/lead-relay.js?v=2"></script>
+<script src="js/main.js?v=18"></script>
+<script type="importmap">
+{ "imports": { "three": "./js/vendor/three.module.min.js" } }
+</script>
+
+<script src="js/payplan.js?v=2" defer></script>
+<script>
+  if ("serviceWorker" in navigator) {
+    addEventListener("load", function () { navigator.serviceWorker.register("sw.js"); });
+  }
+</script>
+</body>
+</html>
