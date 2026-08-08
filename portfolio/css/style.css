@@ -2876,7 +2876,16 @@ body.wtour-open .cursor-dot { display: none !important; }
 }
 .city3d__head { text-align: center; max-width: 52rem; margin: 0 auto 1.8rem; }
 .city3d__lead { color: #c9cedb; margin-top: 1rem; }
-.city3d__switch { display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1.4rem; }
+.city3d__switch {
+  display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1.4rem;
+  flex-wrap: wrap; align-items: center;
+}
+.city3d__look { display: inline-flex; gap: 0.5rem; }
+.city3d__sep {
+  width: 1px; align-self: stretch; margin: 0.15rem 0.35rem;
+  background: rgba(243,238,227,0.16);
+}
+@media (max-width: 640px) { .city3d__sep { display: none; } }
 
 .city3d__shell {
   max-width: 82rem; margin: 0 auto; border-radius: 18px; overflow: hidden;
@@ -2884,6 +2893,18 @@ body.wtour-open .cursor-dot { display: none !important; }
   border: 1px solid rgba(243,238,227,0.1);
 }
 .city3d__stage { position: relative; background: #070b16; }
+/* Name and price under the cursor. Positioned by js/city3d.js from the
+   sector's projected position, so it tracks the block and not the mouse —
+   it stays put while the city drifts underneath it. */
+.city3d__tip {
+  position: absolute; z-index: 3; pointer-events: none;
+  transform: translate(-50%, -150%);
+  padding: 0.34rem 0.66rem; border-radius: 999px; white-space: nowrap;
+  background: rgba(10,14,26,0.88); border: 1px solid rgba(201,164,92,0.5);
+  color: var(--cream); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.01em;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.45);
+}
+.city3d__tip[hidden] { display: none; }
 #cityCanvas {
   display: block; width: 100%; aspect-ratio: 16 / 11;
   cursor: grab; touch-action: pan-y;

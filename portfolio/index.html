@@ -183,7 +183,7 @@
 <link rel="preload" href="assets/fonts/playfair-display-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="assets/fonts/manrope-latin-300-normal.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="stylesheet" href="css/fonts.css" />
-<link rel="stylesheet" href="css/style.css?v=47" />
+<link rel="stylesheet" href="css/style.css?v=49" />
 <link rel="stylesheet" href="css/enhance.css" />
 </head>
 <body>
@@ -1052,6 +1052,11 @@
     <div class="city3d__switch" role="group" aria-label="Choose a city" data-reveal>
       <button class="chip is-active" type="button" data-city3d="isb" aria-pressed="true">Islamabad</button>
       <button class="chip" type="button" data-city3d="lhr" aria-pressed="false">Lahore</button>
+      <span class="city3d__sep" aria-hidden="true"></span>
+      <span role="group" aria-label="Time of day" class="city3d__look">
+        <button class="chip is-active" type="button" data-city3dlook="day" aria-pressed="true">☀ Day</button>
+        <button class="chip" type="button" data-city3dlook="night" aria-pressed="false">☾ Night</button>
+      </span>
       <label class="city3d__jump">
         <span class="sr-only">Jump to an area</span>
         <select id="cityPick" aria-label="Jump to an area"></select>
@@ -1062,6 +1067,7 @@
       <div class="city3d__stage">
         <canvas id="cityCanvas" aria-label="Interactive 3D model of the city, coloured by price per sector" role="img"></canvas>
         <div class="city3d__loading" id="cityLoading"><span></span>Building the city…</div>
+        <div class="city3d__tip" id="cityTip" aria-hidden="true" hidden></div>
         <p class="city3d__hint" id="cityHint">Drag to orbit · scroll to zoom · tap any sector</p>
         <div class="city3d__legend" id="cityLegend"><!-- injected --></div>
       </div>
@@ -1809,7 +1815,7 @@
 <script type="module" src="js/house-builder.js?v=12"></script>
 <script type="module" src="js/house-tour.js?v=6"></script>
 <script type="module" src="js/like-this.js?v=5"></script>
-<script type="module" src="js/city3d.js?v=19"></script>
+<script type="module" src="js/city3d.js?v=23"></script>
 <script src="js/tools.js?v=5" defer></script>
 <script src="js/enhance.js?v=5" defer></script>
 <script src="js/feed.js?v=12" defer></script>
