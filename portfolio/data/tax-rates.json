@@ -15,52 +15,69 @@
     "most recent 1 July. It deliberately does not try to parse rates out of them:",
     "a mis-parsed tax rate on a live estate agency site costs a client money."
   ],
-
   "schema": 1,
   "financeAct": "Finance Act 2024",
   "effectiveFrom": "2024-07-01",
   "verified": false,
   "verifiedBy": null,
   "verifiedOn": null,
-  "checkedAt": null,
-
+  "checkedAt": "2026-08-08",
   "sources": [
     {
       "id": "fbr-wht",
       "label": "FBR withholding tax rate card",
       "url": "https://www.fbr.gov.pk/categ/withholding-tax-rates/51149/131188/131211",
-      "covers": ["236K", "236C"],
+      "covers": [
+        "236K",
+        "236C"
+      ],
       "hash": null
     },
     {
       "id": "fbr-ordinance",
       "label": "Income Tax Ordinance 2001 (updated)",
       "url": "https://www.fbr.gov.pk/categ/income-tax/51147/131183/131184",
-      "covers": ["cgt"],
+      "covers": [
+        "cgt"
+      ],
       "hash": null
     },
     {
       "id": "punjab-stamp",
       "label": "Punjab Board of Revenue — stamp duty & registration",
       "url": "https://www.punjab-zameen.gov.pk/",
-      "covers": ["lhr"],
-      "hash": null
+      "covers": [
+        "lhr"
+      ],
+      "hash": "f0dd5154e75f1fad"
     },
     {
       "id": "ict-cvt",
       "label": "ICT / FBR — capital value tax, Islamabad",
       "url": "https://www.fbr.gov.pk/categ/capital-value-tax/51151/131199/131200",
-      "covers": ["isb"],
-      "hash": null
+      "covers": [
+        "isb"
+      ],
+      "hash": "b1c2b0fc734b88a5"
     }
   ],
-
   "statuses": [
-    { "id": "filer", "n": "On the active taxpayer list", "short": "Filer" },
-    { "id": "late", "n": "Late filer", "short": "Late filer" },
-    { "id": "non", "n": "Not on the list", "short": "Non-filer" }
+    {
+      "id": "filer",
+      "n": "On the active taxpayer list",
+      "short": "Filer"
+    },
+    {
+      "id": "late",
+      "n": "Late filer",
+      "short": "Late filer"
+    },
+    {
+      "id": "non",
+      "n": "Not on the list",
+      "short": "Non-filer"
+    }
   ],
-
   "federal": {
     "236K": {
       "label": "Advance income tax on purchase",
@@ -69,9 +86,24 @@
       "note": "Adjustable against your annual income tax — it is not money gone, it is money paid early. Non-filers pay it as a penalty and cannot adjust it if they never file.",
       "confidence": "medium",
       "slabs": [
-        { "upTo": 50000000, "filer": 3, "late": 6, "non": 12 },
-        { "upTo": 100000000, "filer": 3.5, "late": 7, "non": 16 },
-        { "upTo": null, "filer": 4, "late": 8, "non": 20 }
+        {
+          "upTo": 50000000,
+          "filer": 3,
+          "late": 6,
+          "non": 12
+        },
+        {
+          "upTo": 100000000,
+          "filer": 3.5,
+          "late": 7,
+          "non": 16
+        },
+        {
+          "upTo": null,
+          "filer": 4,
+          "late": 8,
+          "non": 20
+        }
       ]
     },
     "236C": {
@@ -81,9 +113,24 @@
       "note": "Also adjustable for a filer. Deducted by the registering authority at the time of transfer.",
       "confidence": "medium",
       "slabs": [
-        { "upTo": 50000000, "filer": 3, "late": 6, "non": 10 },
-        { "upTo": 100000000, "filer": 3.5, "late": 7, "non": 10 },
-        { "upTo": null, "filer": 4, "late": 8, "non": 10 }
+        {
+          "upTo": 50000000,
+          "filer": 3,
+          "late": 6,
+          "non": 10
+        },
+        {
+          "upTo": 100000000,
+          "filer": 3.5,
+          "late": 7,
+          "non": 10
+        },
+        {
+          "upTo": null,
+          "filer": 4,
+          "late": 8,
+          "non": 10
+        }
       ]
     },
     "cgt": {
@@ -92,29 +139,67 @@
       "paidBy": "seller",
       "note": "Applies to the gain, not the price. For property acquired on or after 1 July 2024 the holding period no longer reduces it for filers. Property bought before that date is still on the older holding-period slabs — tell me the purchase date and I will work it out properly.",
       "confidence": "low",
-      "flatOnGain": { "filer": 15, "late": 15, "non": 15 }
+      "flatOnGain": {
+        "filer": 15,
+        "late": 15,
+        "non": 15
+      }
     }
   },
-
   "regions": {
     "isb": {
       "n": "Islamabad",
       "lines": [
-        { "id": "stamp", "label": "Stamp duty", "pct": 1, "paidBy": "buyer", "confidence": "low" },
-        { "id": "cvt", "label": "Capital value tax", "pct": 2, "paidBy": "buyer", "confidence": "low" },
-        { "id": "reg", "label": "Registration fee", "pct": 1, "paidBy": "buyer", "confidence": "low" }
+        {
+          "id": "stamp",
+          "label": "Stamp duty",
+          "pct": 1,
+          "paidBy": "buyer",
+          "confidence": "low"
+        },
+        {
+          "id": "cvt",
+          "label": "Capital value tax",
+          "pct": 2,
+          "paidBy": "buyer",
+          "confidence": "low"
+        },
+        {
+          "id": "reg",
+          "label": "Registration fee",
+          "pct": 1,
+          "paidBy": "buyer",
+          "confidence": "low"
+        }
       ]
     },
     "lhr": {
       "n": "Lahore",
       "lines": [
-        { "id": "stamp", "label": "Stamp duty", "pct": 1, "paidBy": "buyer", "confidence": "low" },
-        { "id": "reg", "label": "Registration fee", "pct": 1, "paidBy": "buyer", "confidence": "low" },
-        { "id": "tma", "label": "TMA / town tax", "pct": 1, "paidBy": "buyer", "confidence": "low" }
+        {
+          "id": "stamp",
+          "label": "Stamp duty",
+          "pct": 1,
+          "paidBy": "buyer",
+          "confidence": "low"
+        },
+        {
+          "id": "reg",
+          "label": "Registration fee",
+          "pct": 1,
+          "paidBy": "buyer",
+          "confidence": "low"
+        },
+        {
+          "id": "tma",
+          "label": "TMA / town tax",
+          "pct": 1,
+          "paidBy": "buyer",
+          "confidence": "low"
+        }
       ]
     }
   },
-
   "other": [
     {
       "id": "society",
