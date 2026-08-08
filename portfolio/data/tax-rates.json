@@ -41,10 +41,11 @@
     {
       "id": "fbr-ordinance",
       "label": "Income Tax Ordinance 2001 (updated)",
-      "url": "https://iris.fbr.gov.pk/public/txplogin.xhtml",
+      "url": "https://www.fbr.gov.pk/income-tax/51147/131183",
       "root": "https://www.fbr.gov.pk/",
       "find": [
-        "income tax"
+        "income tax",
+        "ordinance"
       ],
       "covers": [
         "cgt"
@@ -58,7 +59,8 @@
       "url": "https://www.punjab-zameen.gov.pk/",
       "root": "https://www.punjab-zameen.gov.pk/",
       "find": [
-        "stamp"
+        "stamp",
+        "duty"
       ],
       "covers": [
         "lhr"
@@ -242,41 +244,19 @@
       {
         "source": "fbr-wht",
         "path": "federal.236K.slabs.0.filer",
-        "label": "236K · purchase · filer",
+        "label": "236K · purchase",
         "keywords": [
           "236k",
-          "purchase",
-          "filer"
-        ]
-      },
-      {
-        "source": "fbr-wht",
-        "path": "federal.236K.slabs.0.non",
-        "label": "236K · purchase · non-filer",
-        "keywords": [
-          "236k",
-          "purchase",
-          "non-filer"
+          "purchase"
         ]
       },
       {
         "source": "fbr-wht",
         "path": "federal.236C.slabs.0.filer",
-        "label": "236C · sale · filer",
+        "label": "236C · sale",
         "keywords": [
           "236c",
-          "sale",
-          "filer"
-        ]
-      },
-      {
-        "source": "fbr-wht",
-        "path": "federal.236C.slabs.0.non",
-        "label": "236C · sale · non-filer",
-        "keywords": [
-          "236c",
-          "sale",
-          "non-filer"
+          "sale"
         ]
       },
       {
@@ -295,51 +275,7 @@
           "stamp duty"
         ]
       }
-    ],
-    "status": {
-      "federal.236K.slabs.0.filer": {
-        "label": "236K · purchase · filer",
-        "ok": false,
-        "found": [],
-        "lastSeen": null
-      },
-      "federal.236K.slabs.0.non": {
-        "label": "236K · purchase · non-filer",
-        "ok": false,
-        "found": [],
-        "lastSeen": null
-      },
-      "federal.236C.slabs.0.filer": {
-        "label": "236C · sale · filer",
-        "ok": false,
-        "found": [],
-        "lastSeen": null
-      },
-      "federal.236C.slabs.0.non": {
-        "label": "236C · sale · non-filer",
-        "ok": false,
-        "found": [],
-        "lastSeen": null
-      },
-      "regions.isb.lines.1.pct": {
-        "label": "Islamabad · capital value tax",
-        "ok": false,
-        "found": [],
-        "lastSeen": null
-      },
-      "regions.lhr.lines.0.pct": {
-        "label": "Lahore · stamp duty",
-        "ok": false,
-        "found": [],
-        "lastSeen": null
-      }
-    },
-    "lastRun": {
-      "at": "2026-08-08",
-      "confirmed": 0,
-      "total": 6,
-      "unreachable": 0
-    }
+    ]
   },
   "proposed": null
 }

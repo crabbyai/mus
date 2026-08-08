@@ -130,6 +130,14 @@ export function checkRule(text, rule, held, boundaries) {
   return { path: rule.path, label: rule.label, held, found, ok, propose };
 }
 
+/** Sign-in pages, portals and file downloads are never the rate card. The
+ *  first live run proved the point: hunting "income tax" from the FBR home
+ *  page landed on the IRIS login screen, which matches the words and contains
+ *  no rates at all. */
+export function looksLikePortal(url) {
+  return /login|signin|sign-in|txplogin|\biris\b|logout|\.zip$|\.xlsx?$/i.test(url);
+}
+
 /** Absolute links whose anchor text matches every keyword — used to find a
  *  page again after its URL has rotted. */
 export function discoverLinks(html, baseUrl, keywords) {
@@ -142,7 +150,7 @@ export function discoverLinks(html, baseUrl, keywords) {
     if (!label || !want.every((k) => label.includes(k))) continue;
     try {
       const u = new URL(m[1], baseUrl).toString();
-      if (/^https?:/.test(u) && !out.includes(u)) out.push(u);
+      if (/^https?:/.test(u) && !looksLikePortal(u) && !out.includes(u)) out.push(u);
     } catch { /* a malformed href is not worth a crash */ }
   }
   return out;
@@ -189,6 +197,24 @@ export function report(results, meta) {
     L.push("Found a new URL for:");
     meta.rediscovered.forEach((u) => L.push("- " + u.id + " → " + u.url));
   }
+  if (meta.rejected && meta.rejected.length) {
+    L.push("");
+    L.push("Rejected while hunting for a replacement page:");
+    meta.rejected.forEach((u) => L.push("- " + u));
+  }
+  if (meta.diagnostics && meta.diagnostics.length) {
+    L.push("");
+    L.push("<details><summary>Why nothing was found (" + meta.diagnostics.length + ")</summary>");
+    L.push("");
+    meta.diagnostics.forEach((d) => {
+      L.push("**" + d.label + "** — page has " + d.chars + " characters of text.");
+      L.push("- keywords present: " + (d.present.length ? "`" + d.present.join("`, `") + "`" : "_none_"));
+      L.push("- keywords missing: " + (d.missing.length ? "`" + d.missing.join("`, `") + "`" : "_none_"));
+      if (d.snippet) L.push("- around the first hit: `" + d.snippet.replace(/`/g, "'") + "`");
+      L.push("");
+    });
+    L.push("</details>");
+  }
   if (meta.stale) {
     L.push("");
     L.push("The rates on file are dated **" + meta.effectiveFrom + "**, before 1 July " +
@@ -219,7 +245,7 @@ async function get(url, tries = 3) {
 export async function run({ fs, path, now = new Date() }) {
   const FILE = path;
   const data = JSON.parse(fs.readFileSync(FILE, "utf8"));
-  const meta = { unreachable: [], rediscovered: [], stale: false,
+  const meta = { unreachable: [], rediscovered: [], rejected: [], diagnostics: [], stale: false,
                  effectiveFrom: data.effectiveFrom, staleYear: lastJuly(now).getUTCFullYear() };
   const pages = {};
 
@@ -230,15 +256,26 @@ export async function run({ fs, path, now = new Date() }) {
     if (html && html.error && src.root && src.find) {
       const rootHtml = await get(src.root);
       if (rootHtml && !rootHtml.error) {
+        // A page only replaces the old URL if it actually talks about the
+        // thing we came for. Without this the crawl happily adopts any page
+        // that loads, and a login screen loads perfectly.
+        const wanted = ((data.audit && data.audit.rules) || [])
+          .filter((r) => r.source === src.id)
+          .map((r) => r.keywords[0].toLowerCase());
         const candidates = discoverLinks(rootHtml, src.root, src.find);
-        for (const c of candidates.slice(0, 4)) {
+        for (const c of candidates.slice(0, 5)) {
           const attempt = await get(c, 1);
-          if (attempt && !attempt.error) {
-            html = attempt;
-            src.url = c;
-            meta.rediscovered.push({ id: src.id, url: c });
-            break;
+          if (!attempt || attempt.error) continue;
+          const t = textOf(attempt);
+          if (wanted.length && !wanted.some((k) => t.includes(k))) {
+            meta.rejected.push(src.id + " → " + c + " (loads, but mentions none of: " +
+              wanted.join(", ") + ")");
+            continue;
           }
+          html = attempt;
+          src.url = c;
+          meta.rediscovered.push({ id: src.id, url: c });
+          break;
         }
       }
     }
@@ -269,6 +306,18 @@ export async function run({ fs, path, now = new Date() }) {
     if (typeof held !== "number") continue;
     const r = checkRule(text, rule, held, bounds[rule.source] || []);
     results.push(r);
+    // A rule that finds nothing is the interesting case, and the only way to
+    // fix it is to know what the page actually says. Report which of its
+    // keywords appeared at all, and the text around the first one.
+    if (!r.found.length) {
+      const present = rule.keywords.filter((k) => text.includes(k.toLowerCase()));
+      const at = present.length ? text.indexOf(present[0].toLowerCase()) : -1;
+      meta.diagnostics.push({
+        label: rule.label, chars: text.length,
+        present, missing: rule.keywords.filter((k) => !present.includes(k)),
+        snippet: at >= 0 ? text.slice(Math.max(0, at - 90), at + 210) : null
+      });
+    }
     // Kept in one audit map rather than sprinkled through the rate data, so
     // the site can say which lines were actually seen on the source and when
     // — and so the rates themselves stay clean enough to hand-edit.
