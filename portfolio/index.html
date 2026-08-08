@@ -183,7 +183,7 @@
 <link rel="preload" href="assets/fonts/playfair-display-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="assets/fonts/manrope-latin-300-normal.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="stylesheet" href="css/fonts.css" />
-<link rel="stylesheet" href="css/style.css?v=49" />
+<link rel="stylesheet" href="css/style.css?v=51" />
 <link rel="stylesheet" href="css/enhance.css" />
 </head>
 <body>
@@ -915,31 +915,37 @@
         <div class="area__top"><h3>DHA</h3><span>Islamabad &amp; Lahore</span></div>
         <p>Gated security, wide carpeted roads and the most liquid resale market in the country. The benchmark for prestige living.</p>
         <div class="area__meta"><span>5 Marla – 2 Kanal</span><strong>PKR 2.8 – 38 Cr</strong></div>
+        <button class="area__go" type="button" data-city3d-go="isb:DHA2">See DHA Phase 2 in 3D <span aria-hidden="true">→</span></button>
       </article>
       <article class="area" data-reveal>
         <div class="area__top"><h3>Bahria Town</h3><span>Rawalpindi &amp; Lahore</span></div>
         <p>Resort-grade amenities, uninterrupted utilities and family-first planning. Outstanding value for brand-new designer homes.</p>
         <div class="area__meta"><span>5 Marla – 1 Kanal</span><strong>PKR 2.3 – 12 Cr</strong></div>
+        <button class="area__go" type="button" data-city3d-go="isb:BAHRIA">See Bahria Town in 3D <span aria-hidden="true">→</span></button>
       </article>
       <article class="area" data-reveal>
         <div class="area__top"><h3>Gulberg</h3><span>Greens &amp; Gulberg III</span></div>
         <p>Farmhouse living minutes from the city in Islamabad; heritage prestige in Lahore. For buyers who want space and status.</p>
         <div class="area__meta"><span>10 Marla – 4 Kanal</span><strong>PKR 5.8 – 34 Cr</strong></div>
+        <button class="area__go" type="button" data-city3d-go="isb:GULBERG">See Gulberg Greens in 3D <span aria-hidden="true">→</span></button>
       </article>
       <article class="area" data-reveal>
         <div class="area__top"><h3>F-7 &amp; E-11</h3><span>Islamabad</span></div>
         <p>The capital's most coveted sectors — Margalla views, central location and addresses that hold value through every cycle.</p>
         <div class="area__meta"><span>5 Marla – 2 Kanal</span><strong>PKR 3.2 – 38 Cr</strong></div>
+        <button class="area__go" type="button" data-city3d-go="isb:F-7">See F-7 in 3D <span aria-hidden="true">→</span></button>
       </article>
       <article class="area" data-reveal>
         <div class="area__top"><h3>Model Town</h3><span>Lahore</span></div>
         <p>Mature gardens, colonial bones and old-Lahore prestige. Legacy kanal estates for buyers who value character.</p>
         <div class="area__meta"><span>1 – 2 Kanal</span><strong>PKR 12 – 34 Cr</strong></div>
+        <button class="area__go" type="button" data-city3d-go="lhr:MODEL">See Model Town in 3D <span aria-hidden="true">→</span></button>
       </article>
       <article class="area" data-reveal>
         <div class="area__top"><h3>Emerging Picks</h3><span>B-17 · Lake City</span></div>
         <p>Where smart capital is moving — strong appreciation runway and modern homes at entry-friendly rates.</p>
         <div class="area__meta"><span>5 – 10 Marla</span><strong>PKR 2.3 – 4.2 Cr</strong></div>
+        <button class="area__go" type="button" data-city3d-go="isb:B17">See B-17 in 3D <span aria-hidden="true">→</span></button>
       </article>
     </div>
   </section>
@@ -1324,18 +1330,22 @@
         <strong>The Margalla View Manor</strong>
         <span>F-7/2, Islamabad</span>
         <em>Sold · PKR 38 Crore</em>
+        <button class="showcase3d__cta" type="button" data-showcase-cta="The Margalla View Manor|F-7/2, Islamabad">Find me one like this <span aria-hidden="true">→</span></button>
       </div>
       <div class="showcase3d__caption glass">
         <strong>Phase 6 Palazzo</strong>
         <span>DHA Phase 6, Lahore</span>
         <em>Sold · PKR 13 Crore</em>
+        <button class="showcase3d__cta" type="button" data-showcase-cta="Phase 6 Palazzo|DHA Phase 6, Lahore">Find me one like this <span aria-hidden="true">→</span></button>
       </div>
       <div class="showcase3d__caption glass">
         <strong>Model Town Estate</strong>
         <span>Model Town Block C, Lahore</span>
         <em>Sold · PKR 16 Crore</em>
+        <button class="showcase3d__cta" type="button" data-showcase-cta="Model Town Estate|Model Town Block C, Lahore">Find me one like this <span aria-hidden="true">→</span></button>
       </div>
     </div>
+    <button class="showcase3d__look" id="showcaseLook" type="button" aria-pressed="false" title="Toggle day / night">☀</button>
     <div class="showcase3d__counter">01 / 03</div>
     <div class="showcase3d__hint">Keep scrolling — each home builds itself <span>↓</span></div>
   </section>
@@ -1811,11 +1821,11 @@
 <script type="importmap">
 { "imports": { "three": "./js/vendor/three.module.min.js" } }
 </script>
-<script type="module" src="js/estate3d.js?v=5"></script>
+<script type="module" src="js/estate3d.js?v=6"></script>
 <script type="module" src="js/house-builder.js?v=12"></script>
 <script type="module" src="js/house-tour.js?v=6"></script>
 <script type="module" src="js/like-this.js?v=5"></script>
-<script type="module" src="js/city3d.js?v=29"></script>
+<script type="module" src="js/city3d.js?v=32"></script>
 <script src="js/tools.js?v=5" defer></script>
 <script src="js/enhance.js?v=5" defer></script>
 <script src="js/feed.js?v=12" defer></script>

@@ -683,7 +683,8 @@ const PROPERTY_MODELS = [
 function makeScene() {
   const scene = new THREE.Scene();
   scene.fog = new THREE.Fog(0x0a0f1e, 17, 36);
-  scene.add(new THREE.AmbientLight(0x5a6a96, 1.7));
+  const amb = new THREE.AmbientLight(0x5a6a96, 1.7);
+  scene.add(amb);
   const key = new THREE.DirectionalLight(0xffd9a0, 2.3);
   key.position.set(6, 9, 5);
   key.castShadow = true;
@@ -697,7 +698,33 @@ function makeScene() {
   const rim = new THREE.DirectionalLight(0x4466cc, 1.05);
   rim.position.set(-7, 5, -6);
   scene.add(rim);
+  // Kept so the showcase can be switched between dusk and daylight, the way
+  // the city model and the design studio both can. The gold light strips and
+  // window glow are modelled as emissive, so they simply stop reading as lit
+  // once there's a real sun on the elevation — which is the point.
+  scene.userData.rig = { amb: amb, key: key, rim: rim };
   return scene;
+}
+
+/* Dusk is the default because it flatters the elevations, but a buyer wants to
+   know what a house looks like at two in the afternoon. */
+const ESTATE_LOOKS = {
+  dusk: { fog: 0x0a0f1e, near: 17, far: 36,
+          amb: [0x5a6a96, 1.7], key: [0xffd9a0, 2.3], rim: [0x4466cc, 1.05], exposure: 1.2 },
+  day:  { fog: 0xa8c2dc, near: 22, far: 52,
+          amb: [0xcfe0f2, 2.1], key: [0xfff4dc, 3.5], rim: [0x9fc0e8, 0.6], exposure: 1.0 }
+};
+function setEstateLook(scene, renderer, name) {
+  const L = ESTATE_LOOKS[name] || ESTATE_LOOKS.dusk;
+  const r = scene.userData.rig;
+  if (!r) return;
+  scene.fog.color.setHex(L.fog);
+  scene.fog.near = L.near;
+  scene.fog.far = L.far;
+  r.amb.color.setHex(L.amb[0]); r.amb.intensity = L.amb[1];
+  r.key.color.setHex(L.key[0]); r.key.intensity = L.key[1];
+  r.rim.color.setHex(L.rim[0]); r.rim.intensity = L.rim[1];
+  if (renderer) renderer.toneMappingExposure = L.exposure;
 }
 function cinematic(renderer) {
   renderer.shadowMap.enabled = true;
@@ -753,6 +780,34 @@ function initShowcase() {
 
   const captions = Array.from(section.querySelectorAll(".showcase3d__caption"));
   const counter = section.querySelector(".showcase3d__counter");
+
+  // Dusk / daylight, matching the switch on the city model and the studio.
+  const lookBtn = document.getElementById("showcaseLook");
+  if (lookBtn) {
+    let day = false;
+    lookBtn.addEventListener("click", () => {
+      day = !day;
+      setEstateLook(scene, renderer, day ? "day" : "dusk");
+      lookBtn.textContent = day ? "☾" : "☀";
+      lookBtn.setAttribute("aria-pressed", String(day));
+      lookBtn.title = day ? "Switch to dusk" : "Switch to daylight";
+    });
+  }
+
+  // Three homes at tens of crore each, and nothing to press. Each caption now
+  // opens WhatsApp naming the house on screen, so the message arrives with
+  // the context already in it rather than "hi, saw your site".
+  section.querySelectorAll("[data-showcase-cta]").forEach((b) => {
+    b.addEventListener("click", () => {
+      const [title, where] = (b.getAttribute("data-showcase-cta") || "").split("|");
+      const msg = "Hello Adeel — I've just been looking at " + title + " in " + where +
+        " on your site.\n\nI'd like something like it. What have you got at the moment, " +
+        "and what would one cost to build from scratch?";
+      if (window.LeadRelay) window.LeadRelay.send(msg);
+      else window.open("https://wa.me/16134083945?text=" + encodeURIComponent(msg),
+        "_blank", "noopener");
+    });
+  });
 
   function size() {
     const w = section.clientWidth, h = section.clientHeight;

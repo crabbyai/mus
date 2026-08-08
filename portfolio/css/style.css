@@ -321,6 +321,40 @@ body::before {
   position: absolute; right: 4vw; bottom: 9vh;
   font-family: var(--serif); font-style: italic; color: var(--gold); font-size: 1.1rem; letter-spacing: 0.2em;
 }
+/* Three homes worth tens of crore each, and until now nothing to press. The
+   caption strip is pointer-events: none so it can't eat drags on the model,
+   so the button on the visible caption has to opt back in. */
+.showcase3d__cta {
+  margin-top: 0.9rem; align-self: flex-start; min-height: 44px;
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  padding: 0 1.15rem; border-radius: 999px; cursor: pointer;
+  background: rgba(201,164,92,0.16); color: var(--cream);
+  border: 1px solid rgba(201,164,92,0.5);
+  font-size: 0.78rem; font-weight: 600; letter-spacing: 0.06em;
+  pointer-events: none;
+  transition: background 0.35s var(--ease), border-color 0.35s;
+}
+.showcase3d__caption.is-active .showcase3d__cta { pointer-events: auto; }
+.showcase3d__cta span { transition: transform 0.35s var(--ease); }
+.showcase3d__cta:hover, .showcase3d__cta:focus-visible {
+  background: rgba(201,164,92,0.3); border-color: var(--gold);
+}
+.showcase3d__cta:hover span { transform: translateX(4px); }
+/* Anchored to the bottom, with the counter. The section is pinned and scrubbed,
+   so it slides up past the top of the viewport as you scroll through it — a
+   top-anchored control disappears off the top edge half way through the
+   sequence, which is exactly when you'd want to press it. */
+.showcase3d__look {
+  position: absolute; right: 4vw; bottom: calc(9vh + 3.4rem); z-index: 2;
+  width: 44px; height: 44px; border-radius: 50%; cursor: pointer;
+  display: grid; place-items: center; font-size: 1rem; line-height: 1;
+  background: rgba(10,14,26,0.62); color: var(--gold-bright);
+  border: 1px solid rgba(201,164,92,0.4);
+  transition: background 0.35s var(--ease), border-color 0.35s;
+}
+.showcase3d__look:hover, .showcase3d__look:focus-visible {
+  background: rgba(201,164,92,0.24); border-color: var(--gold);
+}
 .showcase3d__hint {
   position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
   font-size: 0.68rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--muted);
@@ -1270,6 +1304,24 @@ h3.likethis__reftitle:focus-visible {   /* beats the global [tabindex] ring belo
 }
 .area__meta span { font-size: 0.74rem; letter-spacing: 0.1em; color: var(--muted); }
 .area__meta strong { font-family: var(--serif); color: var(--gold-bright); font-size: 1.05rem; }
+/* The way out of a guide and into the block it describes. Quiet until the
+   card is hovered, so six of these don't turn the grid into a wall of
+   buttons — but always a real 44px target for a thumb. */
+.area__go {
+  margin-top: 1rem; width: 100%; min-height: 44px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+  border-radius: 999px; cursor: pointer;
+  background: transparent; color: var(--gold-bright);
+  border: 1px solid rgba(201,164,92,0.32);
+  font-size: 0.76rem; font-weight: 600; letter-spacing: 0.06em;
+  transition: background 0.35s var(--ease), border-color 0.35s, color 0.35s;
+}
+.area__go span { transition: transform 0.35s var(--ease); }
+.area:hover .area__go { border-color: rgba(201,164,92,0.6); }
+.area__go:hover, .area__go:focus-visible {
+  background: rgba(201,164,92,0.14); border-color: var(--gold); color: var(--cream);
+}
+.area__go:hover span { transform: translateX(4px); }
 
 /* ============ COMPARE / MBA DIFFERENCE ============ */
 .compare { padding: clamp(5rem, 9vw, 8rem) 4vw; }

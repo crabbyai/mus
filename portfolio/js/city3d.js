@@ -157,54 +157,54 @@ const ISB = [
 ];
 
 const LHR = [
-  { id: "GULBERG3", n: "Gulberg III", x: 0.4, z: -0.6, p: 18.25, band: "28–45",
+  { id: "GULBERG3", n: "Gulberg III", x: 0.6, z: -0.4, p: 18.25, band: "28–45",
     tag: "Lahore's prestige address",
     marks: ["MM Alam Road", "Liberty Market", "Main Boulevard"],
     eats: ["Cafe Aylanto", "Cosa Nostra", "Butt Karahi", "Freddy's Cafe"] },
-  { id: "CANTT", n: "Cantt", x: 1.5, z: 0.1, p: 11, band: "16–28",
+  { id: "CANTT", n: "Cantt", x: 1.8, z: 0.2, p: 11, band: "16–28",
     tag: "Old Lahore establishment",
     marks: ["Fortress Stadium", "Gaddafi Stadium", "Lahore Gymkhana"],
     eats: ["Cafe Zouk", "Fortress food strip"] },
-  { id: "MODEL", n: "Model Town", x: 0.1, z: 1.0, p: 13.25, band: "18–35",
+  { id: "MODEL", n: "Model Town", x: 0.2, z: 1.2, p: 13.25, band: "18–35",
     tag: "Enormous plots, old money",
     marks: ["Model Town Park", "Model Town Link Road", "Central Lahore"],
     eats: ["Model Town Link Road restaurants"] },
-  { id: "DHA5", n: "DHA Phase 5", x: 2.5, z: 0.9, p: 14.25, band: "22–35",
+  { id: "DHA5", n: "DHA Phase 5", x: 2.6, z: 1.5, p: 14.25, band: "22–35",
     tag: "The most liquid market here",
     marks: ["Y-Block Commercial", "H-Block", "Phase 5 park belt"],
     eats: ["Y-Block restaurants", "Broadway Pizza"] },
-  { id: "DHA6", n: "DHA Phase 6", x: 3.3, z: 1.4, p: 8.25, band: "13–20",
+  { id: "DHA6", n: "DHA Phase 6", x: 3.6, z: 2.3, p: 8.25, band: "13–20",
     tag: "Where the designer builds are",
     marks: ["Sector C Commercial", "New builds everywhere"],
     eats: ["Phase 6 commercial", "Kababjees"] },
-  { id: "DHA8", n: "DHA Phase 7 / 8", x: 4.0, z: 2.1, p: 6.5, band: "10–16",
+  { id: "DHA8", n: "DHA Phase 7 / 8", x: 4.4, z: 3.2, p: 6.5, band: "10–16",
     tag: "Newer, greener, further",
     marks: ["Air Avenue", "Phase 8 Commercial", "Ring Road access"],
     eats: ["Air Avenue restaurants"] },
-  { id: "ASKARI", n: "Askari", x: 2.0, z: -0.3, p: 6.5, band: "10–16",
+  { id: "ASKARI", n: "Askari", x: 2.9, z: -0.9, p: 6.5, band: "10–16",
     tag: "Secure and settled",
     marks: ["Askari X and XI", "Army-managed", "Walk-to-school living"], eats: ["Askari commercial"] },
-  { id: "GARDEN", n: "Garden / Faisal Town", x: -0.7, z: 0.6, p: 8, band: "12–20",
+  { id: "GARDEN", n: "Garden / Faisal Town", x: -0.9, z: 0.7, p: 8, band: "12–20",
     tag: "Central and mature",
     marks: ["Garden Town", "Faisal Town", "Kalma Chowk"], eats: ["Faisal Town food street"] },
-  { id: "JOHAR", n: "Johar Town", x: -1.6, z: 0.9, p: 6, band: "9–15",
+  { id: "JOHAR", n: "Johar Town", x: -2.0, z: 0.9, p: 6, band: "9–15",
     tag: "Everything within reach",
     marks: ["Emporium Mall", "Expo Centre", "Doctors Hospital"],
     eats: ["Emporium food court", "Johar Town commercial"] },
-  { id: "WAPDA", n: "Wapda Town", x: -2.2, z: 1.7, p: 5, band: "8–13",
+  { id: "WAPDA", n: "Wapda Town", x: -2.2, z: 2.0, p: 5, band: "8–13",
     tag: "Solid family value",
     marks: ["Wapda Town roundabouts", "Valencia next door"], eats: ["Wapda Town commercial"] },
-  { id: "BAHRIA_L", n: "Bahria Town", x: -3.2, z: 2.6, p: 6, band: "9–15",
+  { id: "BAHRIA_L", n: "Bahria Town", x: -2.8, z: 4.0, p: 6, band: "9–15",
     tag: "A city inside the city",
     marks: ["Grand Jamia Mosque", "Eiffel Tower replica", "Takht-e-Lahore"],
     eats: ["Bahria commercial", "Cinegold food court"] },
-  { id: "LAKECITY", n: "Lake City", x: -2.6, z: 3.4, p: 5.75, band: "9–14",
+  { id: "LAKECITY", n: "Lake City", x: -1.6, z: 3.4, p: 5.75, band: "9–14",
     tag: "Best yield in Lahore",
     marks: ["Lake City Golf & Country Club", "Raiwind Road"], eats: ["Lake City commercial"] },
-  { id: "EME", n: "EME / Raiwind Rd", x: -3.6, z: 1.6, p: 4.8, band: "8–12",
+  { id: "EME", n: "EME / Raiwind Rd", x: -3.4, z: 1.3, p: 4.8, band: "8–12",
     tag: "Motorway side",
     marks: ["EME Society", "Motorway access", "Ring Road"], eats: ["EME commercial"] },
-  { id: "WALLED", n: "Walled City", x: 0.8, z: -2.4, p: 0, band: null,
+  { id: "WALLED", n: "Walled City", x: 0.2, z: -3.0, p: 0, band: null,
     tag: "Where Lahore began", park: true,
     marks: ["Badshahi Mosque", "Lahore Fort", "Fort Road Food Street"],
     eats: ["Cuckoo's Den", "Andaaz", "Haveli Restaurant"] }
@@ -483,16 +483,20 @@ function mapTexture(data) {
     g.beginPath(); g.ellipse(7 * px, 3 * px, 5 * px, 1.8 * px, 0.6, 0, 6.2832); g.fill();
     g.restore();
   } else {
-    // The Ravi runs north-west of the city, and the canal is a thin diagonal
-    // through it.
-    g.fillStyle = P.water;
-    g.save();
-    g.translate(X(-38), Z(-8)); g.rotate(-0.4);
-    g.fillRect(-3.2 * px, -55 * px, 6.4 * px, 110 * px);
-    g.restore();
-    g.strokeStyle = P.water; g.lineWidth = 1.5 * px; g.lineCap = "round";
+    // The Ravi curls round the north-west of the city, just beyond the Walled
+    // City — which is why the old city is where it is. Drawn as a bowed band
+    // running north-east to south-west rather than a straight rule.
+    g.strokeStyle = P.water; g.lineWidth = 2.4 * px; g.lineCap = "round";
     g.beginPath();
-    g.moveTo(X(-26), Z(22)); g.quadraticCurveTo(X(0), Z(5), X(28), Z(-11));
+    g.moveTo(X(26), Z(-46));
+    g.bezierCurveTo(X(2), Z(-34), X(-16), Z(-32), X(-44), Z(-14));
+    g.stroke();
+    // The BRB canal cuts the other way, north-east to south-west across the
+    // city — Jallo down to Thokar, past Gulberg and Model Town.
+    g.strokeStyle = P.water; g.lineWidth = 1.4 * px;
+    g.beginPath();
+    g.moveTo(X(34), Z(-22));
+    g.quadraticCurveTo(X(4), Z(0), X(-30), Z(16));
     g.stroke();
   }
 
@@ -511,7 +515,8 @@ function mapTexture(data) {
   g.strokeStyle = P.arterc; g.lineWidth = 1.9 * px; g.lineCap = "round";
   g.beginPath();
   if (city === "isb") { g.moveTo(X(-40), Z(-4)); g.lineTo(X(48), Z(10)); }
-  else { g.moveTo(X(-40), Z(20)); g.lineTo(X(40), Z(-14)); }
+  // Lahore's is Ferozepur Road: out of the old city, south past Model Town.
+  else { g.moveTo(X(4), Z(-22)); g.lineTo(X(-14), Z(30)); }
   g.stroke();
   g.strokeStyle = P.arter; g.lineWidth = 1.25 * px; g.stroke();
 
@@ -1629,9 +1634,37 @@ function setCity(next) {
 }
 
 /* ---------- boot ---------- */
+/* The rest of the page drives the model through this. The neighbourhood
+   guides describe six addresses in prose and the model holds thirty-five of
+   them in 3D; until now the two didn't know about each other, so a visitor
+   reading about DHA had no way through to the block itself. A jump can arrive
+   before the section has booted — it lazy-boots on scroll — so it's held and
+   applied on the first frame. */
+let pending = null;
+function jumpTo(which, id) {
+  if (which && which !== city) setCity(which);
+  const data = city === "isb" ? ISB : LHR;
+  const d = data.filter((x) => x.id === id)[0];
+  if (d) { drift = false; select(d, true); }
+}
+window.City3D = {
+  show: function (which, id) {
+    const section = document.getElementById("city3d");
+    if (!section) return;
+    section.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (ready) jumpTo(which, id);
+    else pending = { which: which, id: id };
+  }
+};
+
 (function boot() {
   const section = document.getElementById("city3d");
   if (!section || !cv()) return;
+
+  document.querySelectorAll("[data-city3d-go]").forEach((b) => {
+    const [which, id] = (b.getAttribute("data-city3d-go") || "").split(":");
+    b.addEventListener("click", () => window.City3D.show(which, id));
+  });
 
   document.querySelectorAll("[data-city3d]").forEach((b) => {
     b.addEventListener("click", () => setCity(b.getAttribute("data-city3d")));
@@ -1661,6 +1694,7 @@ function setCity(next) {
         if (l) l.remove();
       }
       start();
+      if (pending) { jumpTo(pending.which, pending.id); pending = null; }
     });
   }, { rootMargin: "220px" });
   io.observe(section);
