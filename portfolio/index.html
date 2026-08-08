@@ -183,7 +183,7 @@
 <link rel="preload" href="assets/fonts/playfair-display-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="assets/fonts/manrope-latin-300-normal.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="stylesheet" href="css/fonts.css" />
-<link rel="stylesheet" href="css/style.css?v=53" />
+<link rel="stylesheet" href="css/style.css?v=55" />
 <link rel="stylesheet" href="css/enhance.css" />
 </head>
 <body>
@@ -901,6 +901,61 @@
         </div>
       </div>
     </div>
+  </section>
+
+  <!-- ======= SUN STUDY ======= -->
+  <section class="sunstudy" id="sunstudy">
+    <div class="sunstudy__head">
+      <p class="section-eyebrow" data-reveal>The Question Everyone Asks</p>
+      <h2 class="section-title" data-reveal>Which way does it <em class="gold-italic">face?</em></h2>
+      <p class="sunstudy__lead" data-reveal>Everyone wants east-facing and almost nobody can tell you what it
+        buys them. Put a real house on a real plot, move the sun where it actually goes over Islamabad or
+        Lahore, and watch the shadows land. The numbers below are measured off this model, not quoted.</p>
+    </div>
+
+    <div class="sunstudy__controls" data-reveal>
+      <label class="sun-field"><span>Plot</span><span class="chip-row" id="sunPlot"></span></label>
+      <label class="sun-field"><span>Front faces</span><span class="chip-row" id="sunFace"></span></label>
+      <label class="sun-field"><span>City</span><span class="chip-row" id="sunCity"></span></label>
+      <label class="sun-field"><span>Date</span><span class="chip-row" id="sunSeason"></span></label>
+    </div>
+
+    <div class="sunstudy__shell glass" data-reveal>
+      <div class="sunstudy__stage">
+        <canvas id="sunCanvas" role="img"
+          aria-label="3D model of a plot with the house and boundary wall, showing where the sun falls"></canvas>
+        <div class="sunstudy__loading" id="sunLoading"><span></span>Placing the sun…</div>
+        <p class="sunstudy__hint">Drag to walk around &middot; scroll to zoom</p>
+        <div class="sunstudy__time">
+          <button class="btn btn--ghost sunstudy__play" id="sunPlay" type="button" aria-pressed="false">▶ Run the day</button>
+          <input type="range" id="sunTime" min="5" max="20" step="0.05" value="9"
+            aria-label="Time of day" />
+          <output class="sunstudy__clock" id="sunClock">09:00</output>
+        </div>
+      </div>
+
+      <aside class="sun-info">
+        <p class="sun-info__size" id="sunPlotSize">4,500 sq ft &middot; 50 × 90 ft</p>
+        <div class="sun-stat">
+          <span>Lawn in shade now</span>
+          <strong id="sunShade">—</strong>
+          <i class="sun-bar" id="sunShadeBar" aria-hidden="true"></i>
+        </div>
+        <div class="sun-stat"><span>Sun on the front today</span><strong id="sunFacade">—</strong></div>
+        <div class="sun-stat"><span>Sun height now</span><strong id="sunAlt">—</strong></div>
+        <div class="sun-stat sun-stat--pair">
+          <span>Sunrise</span><strong id="sunRise">—</strong>
+          <span>Sunset</span><strong id="sunSet">—</strong>
+        </div>
+        <p class="sun-verdict" id="sunVerdict"></p>
+        <button class="btn btn--wa sun-info__cta" id="sunCta" type="button">
+          Find me one facing this way <span class="btn__arrow">→</span></button>
+      </aside>
+    </div>
+
+    <p class="sunstudy__disc" data-reveal>Sun positions are calculated for the city&rsquo;s latitude and longitude
+      on the date shown, corrected for the equation of time. Plot dimensions are the standard sizes sold here
+      and the house is a typical massing with normal setbacks &mdash; a real design will shade differently.</p>
   </section>
 
   <!-- ======= AREA GUIDES ======= -->
@@ -1826,6 +1881,7 @@
 <script type="module" src="js/house-tour.js?v=7"></script>
 <script type="module" src="js/like-this.js?v=5"></script>
 <script type="module" src="js/city3d.js?v=32"></script>
+<script type="module" src="js/sunstudy.js?v=7"></script>
 <script src="js/tools.js?v=5" defer></script>
 <script src="js/enhance.js?v=5" defer></script>
 <script src="js/feed.js?v=12" defer></script>
