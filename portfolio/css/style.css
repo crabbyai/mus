@@ -360,6 +360,19 @@ body::before {
   font-size: 0.68rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--muted);
 }
 .showcase3d__hint span { color: var(--gold); }
+/* On a phone the bottom 78px belong to the fixed Call / WhatsApp / Book dock,
+   and the bottom-left corner to the back-to-top button, so everything anchored
+   to the bottom of this section has to clear both — the caption and its button
+   were landing underneath them. */
+@media (max-width: 700px) {
+  /* 7vh puts the eyebrow behind the fixed nav on a phone. */
+  .showcase3d__head { top: calc(7vh + 2.6rem); }
+  .showcase3d__captions { left: 5vw; right: 26vw; bottom: calc(9vh + 4.6rem); }
+  .showcase3d__caption { width: auto; max-width: 100%; }
+  .showcase3d__counter { bottom: calc(9vh + 4.6rem); }
+  .showcase3d__look { bottom: calc(9vh + 8rem); }
+  .showcase3d__hint { bottom: calc(2rem + 4.6rem); }
+}
 
 /* ============ PORTFOLIO ============ */
 .portfolio { padding: clamp(5rem, 9vw, 8rem) 4vw; }

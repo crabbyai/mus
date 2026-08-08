@@ -17,7 +17,11 @@ import {
   buildHouse, buildInterior,
   mat, box, plasterTex, paverTex, grassTex, glow, window3d, woodCladTex
 } from "./house-builder.js?v=12";
-import { ARCHETYPES, PROPERTY_MODELS } from "./estate3d.js?v=5";
+// Must match the ?v= on the <script> tag for estate3d.js in index.html. A
+// module is keyed by its full URL, so two different query strings load two
+// copies of it — see the guard at the bottom of estate3d.js for what that
+// cost last time they drifted apart.
+import { ARCHETYPES, PROPERTY_MODELS } from "./estate3d.js?v=6";
 
 /* ---------- module state ---------- */
 let renderer, scene, camera, composer = null, bloomPass = null, ssaoPass = null;

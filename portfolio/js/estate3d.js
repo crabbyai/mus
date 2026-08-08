@@ -964,7 +964,22 @@ function closeViewer() {
 }
 
 window.Estate3D = { openViewer, openViewerByType, openViewerForListing, archetypeForListing, closeViewer };
-initShowcase();
+
+/* Run the showcase once per page, however many times this file gets evaluated.
+   A module is keyed by its full URL including the query string, so the moment
+   index.html's <script src="js/estate3d.js?v=6"> and house-tour.js's
+   import "./estate3d.js?v=5" disagreed, the browser loaded two separate copies
+   of this module and ran initShowcase twice. Two pinned ScrollTriggers on the
+   same section means the pin spacer reserves the scroll distance twice over,
+   and the second 2800px is empty — a screen-and-a-half of nothing below the
+   houses, plus a second WebGL renderer fighting for the same canvas.
+
+   The two version strings are back in step, but they are edited by hand in two
+   files and will drift again. This makes that harmless. */
+if (!window.__estate3dShowcase) {
+  window.__estate3dShowcase = true;
+  initShowcase();
+}
 
 /* Shared with js/house-tour.js so a sold-home tour can show the exact same
    model the lightbox thumbnail does, rather than an approximation of it. */
