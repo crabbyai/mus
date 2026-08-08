@@ -165,8 +165,22 @@ export function isThin(text, min = 3000) {
   return !text || text.length < min;
 }
 
+/** The year a document is about, read off its URL or its link text. FBR names
+ *  its cards like 20238215830342WithholdingRatesCards.pdf, so the year is the
+ *  first four digits; a label like "Withholding Tax Card 2025-26" carries it
+ *  in plain sight. Used only to put the newest first. */
+export function docYear(url, label = "") {
+  const hay = url + " " + label;
+  const years = (hay.match(/20\d{2}/g) || []).map(Number).filter((y) => y >= 2015 && y <= 2100);
+  return years.length ? Math.max(...years) : 0;
+}
+
 /** Links to PDFs whose anchor text matches — this is where a rate card
- *  actually lives once a department has moved to a JavaScript front end. */
+ *  actually lives once a department has moved to a JavaScript front end.
+ *
+ *  Sorted newest first. The first live run proved why: FBR's page links
+ *  several years of cards, the crawler took whichever came first in the HTML,
+ *  and that was the 2023-24 card — whose rates are not the current ones. */
 export function pdfLinks(html, baseUrl, keywords) {
   const out = [];
   const re = /<a\b[^>]*href\s*=\s*["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
@@ -178,9 +192,9 @@ export function pdfLinks(html, baseUrl, keywords) {
     if (!/\.pdf(\?|$)/i.test(u)) continue;
     const label = (textOf(m[2]) + " " + u).toLowerCase();
     if (want.length && !want.some((k) => label.includes(k))) continue;
-    if (!out.includes(u)) out.push(u);
+    if (!out.some((o) => o.url === u)) out.push({ url: u, year: docYear(u, textOf(m[2])) });
   }
-  return out;
+  return out.sort((a, b) => b.year - a.year).map((o) => o.url);
 }
 
 /** Text out of a PDF, using pdf.js. Kept behind a dynamic import so the
@@ -255,7 +269,11 @@ export function report(results, meta) {
   if (meta.pdfs && meta.pdfs.length) {
     L.push("");
     L.push("Read the figures out of a PDF for:");
-    meta.pdfs.forEach((p) => L.push("- " + p.id + " → " + p.url + " (" + p.chars + " characters)"));
+    meta.pdfs.forEach((p) => L.push("- " + p.id + " → " + p.url + " (" + p.chars +
+      " characters" + (p.year ? ", looks like a " + p.year + " document" : "") + ")" +
+      (p.year && p.year < new Date().getUTCFullYear() - 1
+        ? "  \n  ⚠️ **that is not this year's card** — the figures below are from it, so treat them as historic"
+        : "")));
   }
   if (meta.notes && meta.notes.length) {
     L.push("");
@@ -317,7 +335,7 @@ async function deepen(html, src, meta) {
     const got = await pdfText(buf);
     if (got.error) { meta.notes.push(src.id + ": " + link + " — " + got.error); continue; }
     if (got.text && got.text.length > 200) {
-      meta.pdfs.push({ id: src.id, url: link, chars: got.text.length });
+      meta.pdfs.push({ id: src.id, url: link, chars: got.text.length, year: docYear(link) });
       return got.text;
     }
   }

@@ -5,7 +5,7 @@
 */
 import {
   textOf, ratesNear, checkRule, discoverLinks, getPath, setPath, isStale, report,
-  looksLikePortal, isThin, pdfLinks, pdfText
+  looksLikePortal, isThin, pdfLinks, pdfText, docYear
 } from "./tax-watch.mjs";
 
 let pass = 0, fail = 0;
@@ -143,6 +143,22 @@ console.log("pdfLinks");
      ["https://www.fbr.gov.pk/docs/wht-card-2025.pdf"], "only PDFs, only matching ones");
   is(pdfLinks(html, "https://www.fbr.gov.pk/", []).length, 2, "no filter takes every PDF");
   is(pdfLinks(html, "https://www.fbr.gov.pk/", ["nothing"]), [], "no match, no guess");
+}
+
+console.log("docYear / newest card first");
+{
+  // The real filename the live run picked up, and the real mistake it made.
+  is(docYear("https://download1.fbr.gov.pk/Docs/20238215830342WithholdingRatesCards.pdf"), 2023,
+     "reads the year out of an FBR filename");
+  is(docYear("/docs/card.pdf", "Withholding Tax Card 2025-26"), 2025, "or out of the link text");
+  is(docYear("/docs/card.pdf"), 0, "and admits when there isn't one");
+
+  const many = `<a href="/Docs/20238215830342WithholdingRatesCards.pdf">Withholding Rates Card</a>
+                <a href="/Docs/20257110000000WithholdingRatesCards.pdf">Withholding Rates Card</a>
+                <a href="/Docs/20241010000000WithholdingRatesCards.pdf">Withholding Rates Card</a>`;
+  is(pdfLinks(many, "https://download1.fbr.gov.pk/", ["withholding"])[0],
+     "https://download1.fbr.gov.pk/Docs/20257110000000WithholdingRatesCards.pdf",
+     "newest card first — the run took a 2023 one because they were unsorted");
 }
 
 console.log("pdfText — against a real PDF built here");
