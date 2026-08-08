@@ -37,15 +37,21 @@
   function $(id) { return document.getElementById(id); }
 
   /* Crore and lac, because that's how the money is spoken about here. */
+  /* Drop a trailing ".0" or ".50" but never touch a whole number: /\.?0+$/
+     turned "20" into "2" and "100" into "1", so 20 Lac was displayed as 2 Lac
+     and a 100 Crore deal as 1 Crore. */
+  function trimZeros(s) {
+    return s.indexOf(".") < 0 ? s : s.replace(/0+$/, "").replace(/\.$/, "");
+  }
+
   function pkr(v) {
     if (!isFinite(v)) return "—";
     var a = Math.abs(v);
     if (a >= 10000000) {
       var cr = v / 10000000;
-      return (cr >= 100 ? cr.toFixed(0) : cr >= 10 ? cr.toFixed(1) : cr.toFixed(2))
-        .replace(/\.?0+$/, "") + " Cr";
+      return trimZeros(cr >= 100 ? cr.toFixed(0) : cr >= 10 ? cr.toFixed(1) : cr.toFixed(2)) + " Cr";
     }
-    if (a >= 100000) return (v / 100000).toFixed(a >= 1000000 ? 0 : 1).replace(/\.?0+$/, "") + " Lac";
+    if (a >= 100000) return trimZeros((v / 100000).toFixed(a >= 1000000 ? 0 : 1)) + " Lac";
     return Math.round(v).toLocaleString("en-US");
   }
 

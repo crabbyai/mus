@@ -3336,3 +3336,139 @@ body.wtour-open .cursor-dot { display: none !important; }
 }
 .toolcard__go span { transition: transform 0.35s var(--ease); }
 .toolcard:hover .toolcard__go span { transform: translateX(4px); }
+
+/* ============ TRANSFER COSTS ============ */
+.costs { padding: 2.2rem 6vw clamp(3rem, 6vw, 5rem); }
+.costs__head { text-align: center; max-width: 54rem; margin: 0 auto 1.6rem; }
+.costs__lead { color: #c9cedb; margin-top: 1rem; }
+/* Amber, not red: the numbers aren't wrong, they're unconfirmed — and that
+   distinction is the whole point of the notice. */
+.cx-banner {
+  max-width: 62rem; margin: 0 auto 1.6rem; padding: 0.95rem 1.2rem; border-radius: 14px;
+  font-size: 0.85rem; line-height: 1.7; color: #ffe2bd;
+  background: rgba(186,130,40,0.14); border: 1px solid rgba(226,168,70,0.45);
+}
+.cx-banner.is-ok {
+  color: #bfe3c8; background: rgba(40,120,70,0.14); border-color: rgba(90,180,120,0.4);
+}
+.cx-banner[hidden] { display: none; }
+.costs__grid {
+  max-width: 74rem; margin: 0 auto; border-radius: 18px; overflow: hidden;
+  display: grid; grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+}
+.costs__controls {
+  padding: 1.5rem 1.4rem; display: flex; flex-direction: column; gap: 1.1rem;
+  border-right: 1px solid rgba(243,238,227,0.08); background: rgba(10,15,30,0.5);
+}
+.cx-field { display: flex; flex-direction: column; gap: 0.5rem; }
+.cx-field > span:first-child {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 0.6rem;
+  font-size: 0.7rem; letter-spacing: 0.1em; color: var(--muted);
+}
+.cx-field strong { font-family: var(--serif); font-size: 0.92rem; color: var(--gold-bright); }
+.cx-field input[type="range"] { accent-color: var(--gold); height: 22px; width: 100%; }
+.cx-field[hidden] { display: none; }
+
+.costs__out { padding: 1.5rem 1.5rem 1.6rem; }
+.cx-rows { display: flex; flex-direction: column; }
+.cx-row {
+  display: grid; grid-template-columns: 1fr auto auto; gap: 0.6rem 1rem; align-items: baseline;
+  padding: 0.8rem 0; border-bottom: 1px solid rgba(243,238,227,0.08);
+}
+/* A column flex stretches its children, which turned the little "unconfirmed"
+   pill into a full-width bar. Title and flag now share a row of their own. */
+.cx-row__label {
+  font-size: 0.88rem; color: var(--cream);
+  display: flex; flex-direction: column; align-items: flex-start; gap: 0.25rem;
+}
+.cx-row__title { display: flex; align-items: baseline; gap: 0.1rem; flex-wrap: wrap; }
+.cx-row__label em { font-style: normal; font-size: 0.74rem; color: var(--muted); line-height: 1.6; }
+.cx-row__note { max-width: 34rem; }
+.cx-row__pct { font-size: 0.8rem; color: var(--muted); min-width: 3rem; text-align: right; }
+.cx-row__amt { font-family: var(--serif); font-size: 1.02rem; color: var(--cream); min-width: 7rem; text-align: right; }
+.cx-row.is-unsure .cx-row__amt { color: #f0cf9a; }
+.cx-flag {
+  font-style: normal; font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: #e8b45c; border: 1px solid rgba(226,168,70,0.45); border-radius: 99px;
+  padding: 0.08rem 0.42rem; margin-left: 0.4rem; white-space: nowrap;
+}
+.cx-totals {
+  display: grid; gap: 0.9rem; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  padding-top: 1.1rem; margin-top: 0.4rem;
+}
+.cx-total { display: flex; flex-direction: column; gap: 0.2rem; }
+.cx-total span { font-size: 0.7rem; letter-spacing: 0.1em; color: var(--muted); }
+.cx-total strong { font-family: var(--serif); font-size: 1.4rem; color: var(--gold-bright); }
+.cx-total em { font-style: normal; font-size: 0.68rem; color: var(--muted); }
+.costs__cta { width: 100%; justify-content: center; margin-top: 1.3rem; }
+.costs__disc {
+  max-width: 62rem; margin: 1.4rem auto 0; text-align: center;
+  font-size: 0.72rem; color: var(--muted); line-height: 1.7;
+}
+@media (max-width: 900px) {
+  .costs__grid { grid-template-columns: minmax(0, 1fr); }
+  .costs__controls { border-right: 0; border-bottom: 1px solid rgba(243,238,227,0.08); }
+}
+@media (max-width: 560px) {
+  .cx-row { grid-template-columns: 1fr auto; }
+  .cx-row__pct { grid-row: 2; grid-column: 1; text-align: left; }
+}
+
+/* ============ QUICK JUMP ============ */
+.qj { position: fixed; inset: 0; z-index: 1150; }
+.qj[hidden] { display: none; }
+.qj__backdrop {
+  position: absolute; inset: 0; background: rgba(4,7,14,0.72);
+  backdrop-filter: blur(6px); opacity: 0; transition: opacity 0.22s var(--ease);
+}
+.qj.is-open .qj__backdrop { opacity: 1; }
+.qj__panel {
+  position: relative; max-width: 34rem; margin: 12vh auto 0; padding: 0.9rem;
+  border-radius: 18px; background: rgba(14,20,36,0.98);
+  border: 1px solid rgba(201,164,92,0.35);
+  box-shadow: 0 50px 110px -40px rgba(0,0,0,0.9);
+  opacity: 0; transform: translateY(-10px) scale(0.985);
+  transition: opacity 0.22s var(--ease), transform 0.22s var(--ease);
+}
+.qj.is-open .qj__panel { opacity: 1; transform: none; }
+.qj__label {
+  display: block; font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--gold); margin: 0.2rem 0.3rem 0.55rem;
+}
+.qj__input {
+  width: 100%; padding: 0.8rem 0.95rem; border-radius: 12px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(243,238,227,0.16);
+  color: var(--cream); font: inherit; font-size: 1rem;
+}
+.qj__input:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+.qj__input::placeholder { color: var(--muted); }
+.qj__list { list-style: none; margin: 0.65rem 0 0; padding: 0; max-height: 46vh; overflow-y: auto; }
+.qj__item {
+  display: flex; flex-direction: column; gap: 0.1rem; cursor: pointer;
+  padding: 0.6rem 0.75rem; border-radius: 10px; border: 1px solid transparent;
+}
+.qj__item strong { font-size: 0.92rem; font-weight: 600; color: var(--cream); }
+.qj__item span { font-size: 0.74rem; color: var(--muted); }
+.qj__item.is-active {
+  background: rgba(201,164,92,0.14); border-color: rgba(201,164,92,0.4);
+}
+.qj__item.is-active strong { color: var(--gold-bright); }
+.qj__none { padding: 0.9rem 0.75rem; font-size: 0.85rem; color: var(--muted); }
+.qj__hint {
+  margin: 0.7rem 0.3rem 0.2rem; font-size: 0.66rem; color: var(--muted);
+  display: flex; align-items: center; gap: 0.32rem; flex-wrap: wrap;
+}
+.qj__hint kbd {
+  font: inherit; font-size: 0.62rem; padding: 0.1rem 0.34rem; border-radius: 5px;
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(243,238,227,0.18); color: var(--cream);
+}
+/* The keyboard shortcut is invisible on a touch device, so the menu carries a
+   real, tappable way in. */
+.mobile-menu__search {
+  display: inline-flex; align-items: center; gap: 0.6rem; cursor: pointer;
+  padding: 0.55rem 1.3rem; border-radius: 999px; min-height: 44px;
+  background: rgba(201,164,92,0.12); border: 1px solid rgba(201,164,92,0.4);
+  color: var(--gold-bright) !important; font-family: var(--serif);
+  font-size: 1.05rem !important;
+}
+@media (max-width: 560px) { .qj__panel { margin-top: 8vh; max-width: none; } }

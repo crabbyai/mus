@@ -1,0 +1,134 @@
+{
+  "_readme": [
+    "Single source of truth for every property transaction rate the site quotes.",
+    "js/costs.js renders whatever is in here — no rate is written into the code.",
+    "",
+    "IMPORTANT: 'verified' below is false. These figures were seeded from the",
+    "Finance Act 2024 and have NOT been confirmed against the current Act by a",
+    "human. While it is false the calculator says so on the page, in amber, and",
+    "refuses to present itself as authoritative. Set it to true, with your name",
+    "and the date, once you have checked each line against FBR and the relevant",
+    "provincial board — and only then.",
+    "",
+    ".github/workflows/tax-watch.yml re-fetches every source below on a schedule,",
+    "and opens an issue when one of them changes or when this file predates the",
+    "most recent 1 July. It deliberately does not try to parse rates out of them:",
+    "a mis-parsed tax rate on a live estate agency site costs a client money."
+  ],
+
+  "schema": 1,
+  "financeAct": "Finance Act 2024",
+  "effectiveFrom": "2024-07-01",
+  "verified": false,
+  "verifiedBy": null,
+  "verifiedOn": null,
+  "checkedAt": null,
+
+  "sources": [
+    {
+      "id": "fbr-wht",
+      "label": "FBR withholding tax rate card",
+      "url": "https://www.fbr.gov.pk/categ/withholding-tax-rates/51149/131188/131211",
+      "covers": ["236K", "236C"],
+      "hash": null
+    },
+    {
+      "id": "fbr-ordinance",
+      "label": "Income Tax Ordinance 2001 (updated)",
+      "url": "https://www.fbr.gov.pk/categ/income-tax/51147/131183/131184",
+      "covers": ["cgt"],
+      "hash": null
+    },
+    {
+      "id": "punjab-stamp",
+      "label": "Punjab Board of Revenue — stamp duty & registration",
+      "url": "https://www.punjab-zameen.gov.pk/",
+      "covers": ["lhr"],
+      "hash": null
+    },
+    {
+      "id": "ict-cvt",
+      "label": "ICT / FBR — capital value tax, Islamabad",
+      "url": "https://www.fbr.gov.pk/categ/capital-value-tax/51151/131199/131200",
+      "covers": ["isb"],
+      "hash": null
+    }
+  ],
+
+  "statuses": [
+    { "id": "filer", "n": "On the active taxpayer list", "short": "Filer" },
+    { "id": "late", "n": "Late filer", "short": "Late filer" },
+    { "id": "non", "n": "Not on the list", "short": "Non-filer" }
+  ],
+
+  "federal": {
+    "236K": {
+      "label": "Advance income tax on purchase",
+      "section": "236K",
+      "paidBy": "buyer",
+      "note": "Adjustable against your annual income tax — it is not money gone, it is money paid early. Non-filers pay it as a penalty and cannot adjust it if they never file.",
+      "confidence": "medium",
+      "slabs": [
+        { "upTo": 50000000, "filer": 3, "late": 6, "non": 12 },
+        { "upTo": 100000000, "filer": 3.5, "late": 7, "non": 16 },
+        { "upTo": null, "filer": 4, "late": 8, "non": 20 }
+      ]
+    },
+    "236C": {
+      "label": "Advance income tax on sale",
+      "section": "236C",
+      "paidBy": "seller",
+      "note": "Also adjustable for a filer. Deducted by the registering authority at the time of transfer.",
+      "confidence": "medium",
+      "slabs": [
+        { "upTo": 50000000, "filer": 3, "late": 6, "non": 10 },
+        { "upTo": 100000000, "filer": 3.5, "late": 7, "non": 10 },
+        { "upTo": null, "filer": 4, "late": 8, "non": 10 }
+      ]
+    },
+    "cgt": {
+      "label": "Capital gains tax on sale",
+      "section": "37(1A)",
+      "paidBy": "seller",
+      "note": "Applies to the gain, not the price. For property acquired on or after 1 July 2024 the holding period no longer reduces it for filers. Property bought before that date is still on the older holding-period slabs — tell me the purchase date and I will work it out properly.",
+      "confidence": "low",
+      "flatOnGain": { "filer": 15, "late": 15, "non": 15 }
+    }
+  },
+
+  "regions": {
+    "isb": {
+      "n": "Islamabad",
+      "lines": [
+        { "id": "stamp", "label": "Stamp duty", "pct": 1, "paidBy": "buyer", "confidence": "low" },
+        { "id": "cvt", "label": "Capital value tax", "pct": 2, "paidBy": "buyer", "confidence": "low" },
+        { "id": "reg", "label": "Registration fee", "pct": 1, "paidBy": "buyer", "confidence": "low" }
+      ]
+    },
+    "lhr": {
+      "n": "Lahore",
+      "lines": [
+        { "id": "stamp", "label": "Stamp duty", "pct": 1, "paidBy": "buyer", "confidence": "low" },
+        { "id": "reg", "label": "Registration fee", "pct": 1, "paidBy": "buyer", "confidence": "low" },
+        { "id": "tma", "label": "TMA / town tax", "pct": 1, "paidBy": "buyer", "confidence": "low" }
+      ]
+    }
+  },
+
+  "other": [
+    {
+      "id": "society",
+      "label": "Society transfer fee",
+      "note": "Set by the society, not by law — DHA, Bahria and the rest each have their own schedule, usually a fixed amount per marla. Ask me for the current one on your file.",
+      "perMarla": 0,
+      "editable": true
+    },
+    {
+      "id": "commission",
+      "label": "Agent commission",
+      "note": "Mine is 1% from each side, in writing, and I do not take anything from the other party's agent.",
+      "pct": 1,
+      "editable": true
+    }
+  ]
+}
