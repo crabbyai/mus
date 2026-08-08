@@ -275,7 +275,39 @@
           "stamp duty"
         ]
       }
-    ]
+    ],
+    "status": {
+      "federal.236K.slabs.0.filer": {
+        "label": "236K · purchase",
+        "ok": false,
+        "found": [],
+        "lastSeen": null
+      },
+      "federal.236C.slabs.0.filer": {
+        "label": "236C · sale",
+        "ok": false,
+        "found": [],
+        "lastSeen": null
+      },
+      "regions.isb.lines.1.pct": {
+        "label": "Islamabad · capital value tax",
+        "ok": false,
+        "found": [],
+        "lastSeen": null
+      },
+      "regions.lhr.lines.0.pct": {
+        "label": "Lahore · stamp duty",
+        "ok": false,
+        "found": [],
+        "lastSeen": null
+      }
+    },
+    "lastRun": {
+      "at": "2026-08-08",
+      "confirmed": 0,
+      "total": 4,
+      "unreachable": 0
+    }
   },
   "proposed": null
 }
