@@ -4,18 +4,19 @@
 <meta charset="UTF-8" />
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https:; media-src 'self' https:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; font-src 'self' data:; connect-src 'self' https:; frame-src https://www.google.com https://maps.google.com https://www.youtube.com https://www.youtube-nocookie.com; base-uri 'self'; form-action 'self' https://wa.me; object-src 'none'" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Instalment planner — what a Pakistani property payment plan really costs | Adeel Rahman, MBA</title>
-<meta name="description" content="Lay out a society payment plan month by month: down payment, quarterly instalments, half-yearly extras and the lump on possession. See the heaviest month and the first-year outflow before you commit." />
+<title>Explore Islamabad & Lahore on the map — prices by sector | Adeel Rahman, MBA</title>
+<meta name="description" content="A real, zoomable map of Islamabad and Lahore with the per-marla price of every sector painted over it, plus the markets, landmarks and restaurants around each one." />
 <meta name="theme-color" content="#0a0f1e" />
-<link rel="canonical" href="https://crabbyai.github.io/mus/payment-plan.html" />
+<link rel="canonical" href="https://crabbyai.github.io/mus/explore.html" />
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
 <link rel="manifest" href="site.webmanifest" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Adeel Rahman Estates" />
-<meta property="og:title" content="Instalment planner — what a Pakistani property payment plan really costs | Adeel Rahman, MBA" />
-<meta property="og:description" content="Lay out a society payment plan month by month: down payment, quarterly instalments, half-yearly extras and the lump on possession. See the heaviest month and the first-year outflow before you commit." />
-<meta property="og:url" content="https://crabbyai.github.io/mus/payment-plan.html" />
+<meta property="og:title" content="Explore Islamabad & Lahore on the map — prices by sector | Adeel Rahman, MBA" />
+<meta property="og:description" content="A real, zoomable map of Islamabad and Lahore with the per-marla price of every sector painted over it, plus the markets, landmarks and restaurants around each one." />
+<meta property="og:url" content="https://crabbyai.github.io/mus/explore.html" />
+<link rel="stylesheet" href="js/vendor/leaflet/leaflet.css" />
 <link rel="stylesheet" href="css/style.css?v=64" />
 </head>
 <body>
@@ -79,70 +80,47 @@
 </div>
 <main id="toolmain">
   <p class="toolpage__back"><a href="index.html">&larr; Back to the main site</a></p>
-  <section class="payplan" id="payplan">
-    <div class="payplan__head">
-      <p class="section-eyebrow" data-reveal>Before You Sign</p>
-      <h2 class="section-title" data-reveal>What the plan <em class="gold-italic">actually costs you</em></h2>
-      <p class="payplan__lead" data-reveal>Almost nothing here is bought outright. Everyone works out whether they
-        can manage the down payment and stops. The month that catches people is the one where a quarterly
-        instalment and a half-yearly payment land together. Lay the whole thing out and look at it.</p>
+  <section class="explore" id="explore">
+    <div class="explore__head">
+      <p class="section-eyebrow" data-reveal>Look Around First</p>
+      <h2 class="section-title" data-reveal>Explore the city <em class="gold-italic">street by street</em></h2>
+      <p class="explore__lead" data-reveal>A real map you can pinch all the way down to the streets, with what
+        every sector actually costs painted over the top &mdash; and the markets, landmarks and places you&rsquo;d
+        eat once you&rsquo;re close enough for them to matter.</p>
     </div>
 
-    <div class="payplan__shell glass" data-reveal>
-      <div class="payplan__controls">
-        <label class="pp-field">
-          <span>Price <strong id="ppPrice">PKR 1.2 Cr</strong></span>
-          <input type="range" id="ppPriceR" min="2000000" max="150000000" step="500000" value="12000000" />
-        </label>
-        <label class="pp-field">
-          <span>Down payment <strong id="ppDownVal">20%</strong></span>
-          <input type="range" id="ppDown" min="0" max="60" step="1" value="20" />
-        </label>
-        <label class="pp-field">
-          <span>Plan runs <strong id="ppYearsVal">3 years</strong></span>
-          <input type="range" id="ppYears" min="1" max="6" step="1" value="3" />
-        </label>
-        <div class="pp-field">
-          <span>Instalments</span>
-          <span class="chip-row" id="ppFreq" role="group" aria-label="Instalment frequency">
-            <button class="chip" type="button" data-v="12" aria-pressed="false">Monthly</button>
-            <button class="chip is-active" type="button" data-v="4" aria-pressed="true">Quarterly</button>
-            <button class="chip" type="button" data-v="2" aria-pressed="false">Half-yearly</button>
-          </span>
-        </div>
-        <label class="pp-field">
-          <span>Half-yearly extra <strong id="ppBalloonVal">None</strong></span>
-          <input type="range" id="ppBalloon" min="0" max="10" step="0.5" value="0" />
-        </label>
-        <label class="pp-field">
-          <span>On possession <strong id="ppPossVal">10%</strong></span>
-          <input type="range" id="ppPoss" min="0" max="40" step="1" value="10" />
-        </label>
+    <div class="xp-map" id="xpMapWrap">
+      <div class="xp-map__canvas" id="xpMap"></div>
+      <div class="xp-loading" id="xpLoading"><span></span>Loading the city…</div>
+
+      <div class="xp-top">
+        <span class="xp-cities" role="group" aria-label="Choose a city">
+          <button class="chip is-active" type="button" data-xpcity="isb" aria-pressed="true">Islamabad</button>
+          <button class="chip" type="button" data-xpcity="lhr" aria-pressed="false">Lahore</button>
+        </span>
+        <span class="chip-row xp-filters" id="xpFilters" role="group" aria-label="What to show"></span>
       </div>
 
-      <p class="pp-warn" id="ppWarn" hidden></p>
+      <label class="xp-jump">
+        <span class="sr-only">Jump to an area</span>
+        <select id="xpJump" aria-label="Jump to an area"></select>
+      </label>
 
-      <div class="payplan__chart">
-        <div class="pp-bars" id="ppBars" role="img"
-          aria-label="Every payment in the plan, month by month, drawn to scale"></div>
-        <div class="pp-axis" id="ppAxis"></div>
-      </div>
+      <p class="xp-tilewarn" id="xpTileWarn" hidden>Map imagery didn&rsquo;t load &mdash; everything below still
+        works, it&rsquo;s just missing the streets behind it.</p>
 
-      <div class="payplan__out">
-        <div class="pp-stat"><span>Each instalment</span><strong id="ppEach">—</strong><em id="ppEachNote"></em></div>
-        <div class="pp-stat"><span>First twelve months</span><strong id="ppYear1">—</strong><em>the number that decides it</em></div>
-        <div class="pp-stat pp-stat--warn"><span>Heaviest single month</span><strong id="ppWorst">—</strong><em id="ppWorstWhen"></em></div>
-        <div class="pp-stat"><span>Paid in total</span><strong id="ppTotal">—</strong><em>across the whole plan</em></div>
-      </div>
+      <div class="xp-legend" id="xpLegend" aria-hidden="true"></div>
+      <p class="xp-zoomhint" id="xpZoomHint">Zoom in to see markets, landmarks and restaurants</p>
+      <span class="xp-stat" id="xpStat">0% explored</span>
+      <button class="xp-locate" id="xpLocate" type="button" aria-label="Find where I am">➤</button>
 
-      <button class="btn btn--wa payplan__cta" id="ppCta" type="button">
-        Send me plans that match this <span class="btn__arrow">→</span></button>
+      <aside class="xp-sheet" id="xpSheet" aria-live="polite" aria-hidden="true"></aside>
     </div>
 
-    <p class="payplan__disc" data-reveal>Every figure here is your own input and plain arithmetic &mdash; nothing is
-      assumed about any particular society&rsquo;s terms. Real plans vary in how they treat development charges,
-      possession dues and early settlement, so treat this as the shape of the commitment and let me check the
-      actual schedule before you sign anything.</p>
+    <p class="explore__disc" data-reveal>Sector centres are real to about the middle of the neighbourhood, not a
+      survey of its boundary, and the markets and restaurants are placed near the sector they belong to rather
+      than at their exact address. Prices are the same indicative per-marla figures used everywhere else on this
+      site. Map imagery &copy; OpenStreetMap contributors.</p>
   </section>
 
 </main>
@@ -182,6 +160,7 @@
 
 <!-- ======= BACK TO TOP ======= -->
 <button class="to-top" id="toTop" aria-label="Back to top">↑</button>
+<script src="js/vendor/leaflet/leaflet.js"></script>
 <script src="js/vendor/gsap.min.js"></script>
 <script src="js/vendor/ScrollTrigger.min.js"></script>
 <script src="js/lead-relay.js?v=2"></script>
@@ -191,7 +170,7 @@
 { "imports": { "three": "./js/vendor/three.module.min.js" } }
 </script>
 
-<script src="js/payplan.js?v=2" defer></script>
+<script src="js/explore.js?v=2" defer></script>
 <script>
   if ("serviceWorker" in navigator) {
     addEventListener("load", function () { navigator.serviceWorker.register("sw.js"); });

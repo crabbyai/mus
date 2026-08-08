@@ -10,8 +10,9 @@
   X-Content-Type-Options: nosniff
   # Send the origin (not the full path) to third parties like YouTube.
   Referrer-Policy: strict-origin-when-cross-origin
-  # This site needs none of these — deny them outright.
-  Permissions-Policy: geolocation=(), camera=(), microphone=(), payment=(), usb=(), magnetometer=()
+  # Everything denied except geolocation, which the Explore map needs for its
+  # "find where I am" button — and only for this origin, never for embeds.
+  Permissions-Policy: geolocation=(self), camera=(), microphone=(), payment=(), usb=(), magnetometer=()
   # Force HTTPS for a year, including subdomains.
   Strict-Transport-Security: max-age=31536000; includeSubDomains
   Cross-Origin-Opener-Policy: same-origin-allow-popups
