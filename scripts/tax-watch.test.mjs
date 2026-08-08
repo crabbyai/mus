@@ -4,7 +4,8 @@
    Run with: node scripts/tax-watch.test.mjs
 */
 import {
-  textOf, ratesNear, checkRule, discoverLinks, getPath, setPath, isStale, report
+  textOf, ratesNear, checkRule, discoverLinks, getPath, setPath, isStale, report,
+  looksLikePortal, isThin, pdfLinks, pdfText
 } from "./tax-watch.mjs";
 
 let pass = 0, fail = 0;
@@ -114,6 +115,64 @@ console.log("report");
   is(md.includes("1 of 2 confirmed"), true, "counts");
   is(md.includes("Punjab BOR: HTTP 500"), true, "surfaces unreachable sources");
   is(md.includes("before 1 July 2026"), true, "surfaces staleness");
+}
+
+console.log("looksLikePortal");
+{
+  // The URL the first live run actually wandered onto.
+  is(looksLikePortal("https://iris.fbr.gov.pk/public/txplogin.xhtml"), true, "the IRIS login screen");
+  is(looksLikePortal("https://x.gov.pk/user/login"), true, "any login path");
+  is(looksLikePortal("https://x.gov.pk/rates.xlsx"), true, "a spreadsheet download");
+  is(looksLikePortal("https://www.fbr.gov.pk/withholding-tax-rates/51147/81155"), false, "a real rate page");
+}
+
+console.log("isThin");
+{
+  // The character counts the live run reported.
+  is(isThin("x".repeat(83)), true, "83 chars — the Punjab board's shell");
+  is(isThin("x".repeat(2164)), true, "2164 chars — FBR's shell");
+  is(isThin("x".repeat(9000)), false, "a real document is not thin");
+}
+
+console.log("pdfLinks");
+{
+  const html = `<a href="/docs/wht-card-2025.pdf">Withholding Tax Card 2025-26</a>
+                <a href="/docs/sales.pdf">Sales Tax Card</a>
+                <a href="/page.html">Withholding Tax Rates</a>`;
+  is(pdfLinks(html, "https://www.fbr.gov.pk/", ["withholding"]),
+     ["https://www.fbr.gov.pk/docs/wht-card-2025.pdf"], "only PDFs, only matching ones");
+  is(pdfLinks(html, "https://www.fbr.gov.pk/", []).length, 2, "no filter takes every PDF");
+  is(pdfLinks(html, "https://www.fbr.gov.pk/", ["nothing"]), [], "no match, no guess");
+}
+
+console.log("pdfText — against a real PDF built here");
+{
+  // Departments keep the rate card in a PDF behind a JavaScript page, so this
+  // path has to actually work. Build one and read it back.
+  const body = "Stamp duty on urban immovable property 1% Registration fee 1%";
+  const objs = [];
+  objs[1] = "<</Type/Catalog/Pages 2 0 R>>";
+  objs[2] = "<</Type/Pages/Kids[3 0 R]/Count 1>>";
+  objs[3] = "<</Type/Page/Parent 2 0 R/MediaBox[0 0 300 200]/Contents 4 0 R/Resources<</Font<</F1 5 0 R>>>>>>";
+  const stream = "BT /F1 12 Tf 20 150 Td (" + body + ") Tj ET";
+  objs[4] = "<</Length " + stream.length + ">>\nstream\n" + stream + "\nendstream";
+  objs[5] = "<</Type/Font/Subtype/Type1/BaseFont/Helvetica>>";
+  let pdf = "%PDF-1.4\n"; const off = [];
+  for (let i = 1; i <= 5; i++) { off[i] = pdf.length; pdf += i + " 0 obj\n" + objs[i] + "\nendobj\n"; }
+  const xref = pdf.length;
+  pdf += "xref\n0 6\n0000000000 65535 f \n";
+  for (let i = 1; i <= 5; i++) pdf += String(off[i]).padStart(10, "0") + " 00000 n \n";
+  pdf += "trailer\n<</Size 6/Root 1 0 R>>\nstartxref\n" + xref + "\n%%EOF";
+  const bytes = Uint8Array.from(pdf, (c) => c.charCodeAt(0) & 0xff);
+
+  const out = await pdfText(bytes.buffer);
+  if (out.error === "pdfjs-dist is not installed") {
+    console.log("  skip pdfText — pdfjs-dist not installed here (the workflow installs it)");
+  } else {
+    is(!!out.text, true, "reads text out of a PDF");
+    is(out.text.includes("stamp duty on urban"), true, "and it is the right text");
+    is(ratesNear(out.text, ["stamp duty", "urban"]), [1], "and a rate parses straight out of it");
+  }
 }
 
 console.log("\n" + pass + " passed, " + fail + " failed");

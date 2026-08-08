@@ -156,6 +156,61 @@ export function discoverLinks(html, baseUrl, keywords) {
   return out;
 }
 
+/** A page that serves almost no text is a JavaScript shell or a redirect, not
+ *  a document. The first live run made this concrete: FBR's withholding page
+ *  returned 2,164 characters and the Punjab board 83 — nav, footer, nothing
+ *  else. Saying "the rate wasn't found" there is misleading; the page was
+ *  never readable in the first place. */
+export function isThin(text, min = 3000) {
+  return !text || text.length < min;
+}
+
+/** Links to PDFs whose anchor text matches — this is where a rate card
+ *  actually lives once a department has moved to a JavaScript front end. */
+export function pdfLinks(html, baseUrl, keywords) {
+  const out = [];
+  const re = /<a\b[^>]*href\s*=\s*["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
+  const want = (keywords || []).map((k) => k.toLowerCase());
+  let m;
+  while ((m = re.exec(html))) {
+    let u;
+    try { u = new URL(m[1], baseUrl).toString(); } catch { continue; }
+    if (!/\.pdf(\?|$)/i.test(u)) continue;
+    const label = (textOf(m[2]) + " " + u).toLowerCase();
+    if (want.length && !want.some((k) => label.includes(k))) continue;
+    if (!out.includes(u)) out.push(u);
+  }
+  return out;
+}
+
+/** Text out of a PDF, using pdf.js. Kept behind a dynamic import so the
+ *  10MB dependency is only needed when a source actually turns out to be a
+ *  PDF, and a missing install degrades to "couldn't read it" rather than a
+ *  crash. */
+export async function pdfText(buffer) {
+  let pdfjs;
+  try {
+    pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
+  } catch {
+    return { error: "pdfjs-dist is not installed" };
+  }
+  try {
+    const doc = await pdfjs.getDocument({
+      data: new Uint8Array(buffer), useSystemFonts: false,
+      isEvalSupported: false, disableFontFace: true
+    }).promise;
+    const parts = [];
+    for (let i = 1; i <= doc.numPages; i++) {
+      const page = await doc.getPage(i);
+      const content = await page.getTextContent();
+      parts.push(content.items.map((it) => it.str).join(" "));
+    }
+    return { text: parts.join(" ").replace(/\s+/g, " ").trim().toLowerCase() };
+  } catch (err) {
+    return { error: "could not read the PDF: " + err.message };
+  }
+}
+
 /** A Finance Act takes effect on 1 July. */
 export function lastJuly(now = new Date()) {
   const y = now.getUTCFullYear();
@@ -197,6 +252,15 @@ export function report(results, meta) {
     L.push("Found a new URL for:");
     meta.rediscovered.forEach((u) => L.push("- " + u.id + " → " + u.url));
   }
+  if (meta.pdfs && meta.pdfs.length) {
+    L.push("");
+    L.push("Read the figures out of a PDF for:");
+    meta.pdfs.forEach((p) => L.push("- " + p.id + " → " + p.url + " (" + p.chars + " characters)"));
+  }
+  if (meta.notes && meta.notes.length) {
+    L.push("");
+    meta.notes.forEach((n) => L.push("- " + n));
+  }
   if (meta.rejected && meta.rejected.length) {
     L.push("");
     L.push("Rejected while hunting for a replacement page:");
@@ -225,16 +289,16 @@ export function report(results, meta) {
 
 /* ---------- the run ---------- */
 
-async function get(url, tries = 3) {
+async function get(url, tries = 3, binary = false) {
   for (let i = 0; i < tries; i++) {
     try {
       const res = await fetch(url, {
         redirect: "follow",
         headers: { "user-agent": "Mozilla/5.0 (tax-rate watcher; adeelrahman.estates)" },
-        signal: AbortSignal.timeout(30000)
+        signal: AbortSignal.timeout(45000)
       });
       if (!res.ok) throw new Error("HTTP " + res.status);
-      return await res.text();
+      return binary ? await res.arrayBuffer() : await res.text();
     } catch (err) {
       if (i === tries - 1) return { error: err.message };
       await new Promise((r) => setTimeout(r, 4000 * (i + 1)));
@@ -242,10 +306,29 @@ async function get(url, tries = 3) {
   }
 }
 
+/** Follow a page to its rate card. Departments keep moving to JavaScript front
+ *  ends whose HTML carries nav and nothing else, while the actual figures stay
+ *  in a linked PDF — so when a page comes back thin, go and read the PDF. */
+async function deepen(html, src, meta) {
+  const links = pdfLinks(html, src.url, src.find || []);
+  for (const link of links.slice(0, 3)) {
+    const buf = await get(link, 2, true);
+    if (!buf || buf.error) continue;
+    const got = await pdfText(buf);
+    if (got.error) { meta.notes.push(src.id + ": " + link + " — " + got.error); continue; }
+    if (got.text && got.text.length > 200) {
+      meta.pdfs.push({ id: src.id, url: link, chars: got.text.length });
+      return got.text;
+    }
+  }
+  return null;
+}
+
 export async function run({ fs, path, now = new Date() }) {
   const FILE = path;
   const data = JSON.parse(fs.readFileSync(FILE, "utf8"));
-  const meta = { unreachable: [], rediscovered: [], rejected: [], diagnostics: [], stale: false,
+  const meta = { unreachable: [], rediscovered: [], rejected: [], diagnostics: [],
+                 pdfs: [], notes: [], stale: false,
                  effectiveFrom: data.effectiveFrom, staleYear: lastJuly(now).getUTCFullYear() };
   const pages = {};
 
@@ -283,7 +366,16 @@ export async function run({ fs, path, now = new Date() }) {
       meta.unreachable.push(src.label + " (" + src.url + "): " + (html ? html.error : "no response"));
       continue;
     }
-    pages[src.id] = textOf(html);
+    let text = textOf(html);
+    // A shell page is not a document. Chase the PDF the rates actually live in.
+    if (isThin(text)) {
+      const deeper = await deepen(html, src, meta);
+      if (deeper) text = deeper;
+      else meta.notes.push(src.label + ": the page served only " + text.length +
+        " characters of text and no readable PDF was linked from it — it is a " +
+        "JavaScript app or a redirect, so plain fetching cannot read it.");
+    }
+    pages[src.id] = text;
     src.lastFetched = now.toISOString().slice(0, 10);
   }
 

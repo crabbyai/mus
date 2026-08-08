@@ -1,3 +1,6 @@
 # Generated distributable — built on demand, not source
 adeel-rahman-website.zip
 *.zip
+
+# Installed on demand by the tax watcher and its tests; never committed.
+node_modules/

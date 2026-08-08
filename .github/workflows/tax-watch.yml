@@ -48,6 +48,12 @@ jobs:
         with:
           node-version: "20"
 
+      # The rate cards turned out to live in PDFs behind JavaScript front ends,
+      # so reading them needs pdf.js. Installed here rather than vendored: it
+      # is 10MB and only the watcher ever needs it.
+      - name: Install the PDF reader
+        run: npm install --no-save --no-audit --no-fund pdfjs-dist@4.7.76
+
       # A parsing bug here would write a wrong tax rate into a proposal, so the
       # fixtures gate the run.
       - name: Test the extractor
