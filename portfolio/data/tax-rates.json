@@ -25,7 +25,7 @@
     {
       "id": "fbr-wht",
       "label": "FBR withholding tax rate card",
-      "url": "https://www.fbr.gov.pk/categ/withholding-tax-rates/51149/131188/131211",
+      "url": "https://www.fbr.gov.pk/withholding-tax-rates/51147/81155",
       "root": "https://www.fbr.gov.pk/",
       "find": [
         "withholding",
@@ -35,12 +35,13 @@
         "236K",
         "236C"
       ],
-      "hash": null
+      "hash": null,
+      "lastFetched": "2026-08-08"
     },
     {
       "id": "fbr-ordinance",
       "label": "Income Tax Ordinance 2001 (updated)",
-      "url": "https://www.fbr.gov.pk/categ/income-tax/51147/131183/131184",
+      "url": "https://iris.fbr.gov.pk/public/txplogin.xhtml",
       "root": "https://www.fbr.gov.pk/",
       "find": [
         "income tax"
@@ -48,7 +49,8 @@
       "covers": [
         "cgt"
       ],
-      "hash": null
+      "hash": null,
+      "lastFetched": "2026-08-08"
     },
     {
       "id": "punjab-stamp",
@@ -61,7 +63,8 @@
       "covers": [
         "lhr"
       ],
-      "hash": "f0dd5154e75f1fad"
+      "hash": "f0dd5154e75f1fad",
+      "lastFetched": "2026-08-08"
     },
     {
       "id": "ict-cvt",
@@ -74,7 +77,8 @@
       "covers": [
         "isb"
       ],
-      "hash": "b1c2b0fc734b88a5"
+      "hash": "b1c2b0fc734b88a5",
+      "lastFetched": "2026-08-08"
     }
   ],
   "statuses": [
@@ -291,7 +295,51 @@
           "stamp duty"
         ]
       }
-    ]
+    ],
+    "status": {
+      "federal.236K.slabs.0.filer": {
+        "label": "236K · purchase · filer",
+        "ok": false,
+        "found": [],
+        "lastSeen": null
+      },
+      "federal.236K.slabs.0.non": {
+        "label": "236K · purchase · non-filer",
+        "ok": false,
+        "found": [],
+        "lastSeen": null
+      },
+      "federal.236C.slabs.0.filer": {
+        "label": "236C · sale · filer",
+        "ok": false,
+        "found": [],
+        "lastSeen": null
+      },
+      "federal.236C.slabs.0.non": {
+        "label": "236C · sale · non-filer",
+        "ok": false,
+        "found": [],
+        "lastSeen": null
+      },
+      "regions.isb.lines.1.pct": {
+        "label": "Islamabad · capital value tax",
+        "ok": false,
+        "found": [],
+        "lastSeen": null
+      },
+      "regions.lhr.lines.0.pct": {
+        "label": "Lahore · stamp duty",
+        "ok": false,
+        "found": [],
+        "lastSeen": null
+      }
+    },
+    "lastRun": {
+      "at": "2026-08-08",
+      "confirmed": 0,
+      "total": 6,
+      "unreachable": 0
+    }
   },
   "proposed": null
 }
