@@ -1,28 +1,21 @@
 name: Watch property tax sources
 
-# Keeps portfolio/data/tax-rates.json honest.
+# Reads the property transaction rates off the government pages they came from
+# and checks them against what the site is showing.
 #
-# What this deliberately does NOT do is read a rate out of a Finance Act and
-# write it into the site. Those rates live in PDFs and hand-built HTML tables
-# whose layout changes every year, and a mis-parsed tax rate on a live estate
-# agency site costs a client real money — silently, and in the week they can
-# least afford it.
+# The finding is automatic. The publishing is not: a rate that has changed
+# arrives as a pull request with a table of held-versus-found, and a person
+# merges it. That is deliberate — these numbers end up in front of buyers
+# working out what they can afford, and a mis-parse would be silent.
 #
-# What it does instead:
-#   • fetches every source listed in the data file and fingerprints it
-#   • opens an issue the moment one of them changes, naming which rates that
-#     source covers, so the change gets reviewed by a person
-#   • opens an issue if the rates predate the most recent 1 July, which is when
-#     a Finance Act takes effect, even if no page happened to change
-#   • when nothing has moved, stamps checkedAt so the site can honestly say
-#     when the rates were last verified against the source
-#
-# The site reads that stamp and, if the rates are stale, says so on the page.
+# scripts/tax-watch.mjs holds the logic; its pure half is covered by
+# scripts/tax-watch.test.mjs, which runs first here so a parsing regression
+# stops the job rather than producing a confident, wrong proposal.
 
 on:
   schedule:
-    # Weekly, plus every day through the first half of July when the Finance
-    # Act lands and the rates actually move.
+    # Weekly, plus daily through the first half of July when a Finance Act
+    # takes effect and the rates actually move.
     - cron: "0 6 * * 1"
     - cron: "0 6 1-15 7 *"
   workflow_dispatch:
@@ -31,11 +24,13 @@ on:
       - claude/portfolio-website-setup-rpyerk
     paths:
       - ".github/workflows/tax-watch.yml"
+      - "scripts/tax-watch*.mjs"
       - "portfolio/data/tax-rates.json"
 
 permissions:
   contents: write
   issues: write
+  pull-requests: write
 
 concurrency:
   group: tax-watch
@@ -49,134 +44,113 @@ jobs:
         with:
           ref: claude/portfolio-website-setup-rpyerk
 
-      - name: Fetch sources and compare fingerprints
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # A parsing bug here would write a wrong tax rate into a proposal, so the
+      # fixtures gate the run.
+      - name: Test the extractor
+        run: node scripts/tax-watch.test.mjs
+
+      - name: Read the sources
         id: check
         run: |
           node --input-type=module <<'JS'
           import fs from "node:fs";
-          import crypto from "node:crypto";
+          import { run, report } from "./scripts/tax-watch.mjs";
 
-          const PATH = "portfolio/data/tax-rates.json";
-          const data = JSON.parse(fs.readFileSync(PATH, "utf8"));
-          const changed = [];
-          const unreachable = [];
+          const out = await run({ fs, path: "portfolio/data/tax-rates.json" });
+          const md = report(out.results, out.meta);
+          fs.writeFileSync("/tmp/report.md", md);
+          console.log(md);
 
-          // Strip the parts of a page that churn without the law changing:
-          // scripts, styles, comments, tag soup and whitespace. What is left is
-          // visible text, which is what actually carries a rate.
-          const textOf = (html) => html
-            .replace(/<script[\s\S]*?<\/script>/gi, " ")
-            .replace(/<style[\s\S]*?<\/style>/gi, " ")
-            .replace(/<!--[\s\S]*?-->/g, " ")
-            .replace(/<[^>]+>/g, " ")
-            .replace(/&nbsp;/g, " ")
-            .replace(/\s+/g, " ")
-            .trim()
-            .toLowerCase();
-
-          for (const src of data.sources) {
-            let body = null;
-            for (let attempt = 0; attempt < 3 && body === null; attempt++) {
-              try {
-                const res = await fetch(src.url, {
-                  redirect: "follow",
-                  headers: { "user-agent": "Mozilla/5.0 (tax-rate watcher; adeelrahman.estates)" },
-                  signal: AbortSignal.timeout(30000)
-                });
-                if (!res.ok) throw new Error("HTTP " + res.status);
-                body = await res.text();
-              } catch (err) {
-                if (attempt === 2) {
-                  unreachable.push(src.label + " (" + src.url + "): " + err.message);
-                } else {
-                  await new Promise((r) => setTimeout(r, 4000 * (attempt + 1)));
-                }
-              }
-            }
-            if (body === null) continue;
-
-            const hash = crypto.createHash("sha256").update(textOf(body)).digest("hex").slice(0, 16);
-            if (src.hash && src.hash !== hash) {
-              changed.push({ label: src.label, url: src.url, covers: src.covers || [] });
-            }
-            src.hash = hash;
-          }
-
-          // A Finance Act takes effect on 1 July. Rates written before the most
-          // recent one are out of date whether or not a page changed.
-          const now = new Date();
-          const y = now.getUTCFullYear();
-          let cut = new Date(Date.UTC(y, 6, 1));
-          if (now < cut) cut = new Date(Date.UTC(y - 1, 6, 1));
-          const stale = new Date(data.effectiveFrom + "T00:00:00Z") < cut;
-
-          data.checkedAt = now.toISOString().slice(0, 10);
-          fs.writeFileSync(PATH, JSON.stringify(data, null, 2) + "\n");
-
-          const out = [];
-          out.push("changed=" + (changed.length ? "1" : "0"));
-          out.push("stale=" + (stale ? "1" : "0"));
-          out.push("unverified=" + (data.verified ? "0" : "1"));
-          out.push("staleyear=" + cut.getUTCFullYear());
-          fs.appendFileSync(process.env.GITHUB_OUTPUT, out.join("\n") + "\n");
-
-          const body = [];
-          if (changed.length) {
-            body.push("The following sources changed since the last check:", "");
-            changed.forEach((c) => body.push(
-              "- **" + c.label + "** — " + c.url +
-              (c.covers.length ? "  \n  Covers: `" + c.covers.join("`, `") + "`" : "")));
-            body.push("");
-          }
-          if (stale) {
-            body.push("`portfolio/data/tax-rates.json` is dated **" + data.effectiveFrom +
-              "**, which is before 1 July " + cut.getUTCFullYear() +
-              ". A Finance Act has taken effect since.", "");
-          }
-          if (!data.verified) {
-            body.push("This file is still marked `\"verified\": false`, so the calculator is " +
-              "showing an amber notice and marking every low-confidence line as unconfirmed.", "");
-          }
-          if (unreachable.length) {
-            body.push("Could not reach:", "");
-            unreachable.forEach((u) => body.push("- " + u));
-            body.push("");
-          }
-          body.push("### What to do", "",
-            "1. Check each rate in `portfolio/data/tax-rates.json` against the source.",
-            "2. Update `financeAct`, `effectiveFrom` and the rates themselves.",
-            "3. Raise `confidence` on any line you have confirmed.",
-            "4. Set `verified: true` with `verifiedBy` and `verifiedOn`.", "",
-            "Nothing here edits a rate automatically, and nothing should: these end up " +
-            "in front of buyers deciding what they can afford.");
-          fs.writeFileSync("/tmp/issue-body.md", body.join("\n"));
+          const needsIssue = out.meta.stale || out.meta.unreachable.length ||
+                             out.results.some((r) => !r.ok);
+          const set = [
+            "proposals=" + (out.proposals.length ? "1" : "0"),
+            "issue=" + (needsIssue ? "1" : "0"),
+            "confirmed=" + out.results.filter((r) => r.ok).length,
+            "total=" + out.results.length
+          ];
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, set.join("\n") + "\n");
           JS
 
-      - name: Open or update the review issue
-        if: steps.check.outputs.changed == '1' || steps.check.outputs.stale == '1'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          TITLE="Property tax rates need review"
-          EXISTING=$(gh issue list --state open --search "$TITLE in:title" --json number --jq '.[0].number' || true)
-          if [ -n "$EXISTING" ]; then
-            gh issue comment "$EXISTING" --body-file /tmp/issue-body.md
-            echo "commented on #$EXISTING"
-          else
-            gh issue create --title "$TITLE" --body-file /tmp/issue-body.md --label "" || \
-            gh issue create --title "$TITLE" --body-file /tmp/issue-body.md
-          fi
-
-      - name: Commit the new fingerprints and check date
+      - name: Commit what we confirmed
         run: |
           if git diff --quiet -- portfolio/data/tax-rates.json; then
-            echo "nothing changed"
-            exit 0
+            echo "nothing changed"; exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add portfolio/data/tax-rates.json
-          git commit -m "chore: re-check property tax sources"
+          git commit -m "chore: re-read property tax sources ($(date -u +%Y-%m-%d))"
           for i in 1 2 3 4; do
             git push && break || { echo "push failed, retrying"; sleep $((2**i)); git pull --rebase || true; }
           done
+
+      # A changed rate is a pull request, never a silent edit.
+      - name: Open a pull request for any proposed rate
+        if: steps.check.outputs.proposals == '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          BRANCH="tax/proposed-$(date -u +%Y%m%d)"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH" || git checkout "$BRANCH"
+          node -e '
+            const fs = require("fs");
+            const p = "portfolio/data/tax-rates.json";
+            const d = JSON.parse(fs.readFileSync(p, "utf8"));
+            if (!d.proposed) process.exit(0);
+            // Apply the proposal on the branch so the PR diff IS the change.
+            for (const c of d.proposed.changes) {
+              const keys = c.path.split("."); const last = keys.pop();
+              keys.reduce((o, k) => o[k], d)[last] = c.to;
+            }
+            d.verified = false; d.verifiedBy = null; d.verifiedOn = null;
+            d.proposed = null;
+            fs.writeFileSync(p, JSON.stringify(d, null, 2) + "\n");
+          '
+          git add portfolio/data/tax-rates.json
+          git commit -m "Proposed property tax rate changes from the source pages"
+          git push -u origin "$BRANCH" --force
+          {
+            echo "A rate on the site no longer matches the source page. **Nothing is live until this is merged.**"
+            echo
+            cat /tmp/report.md
+            echo
+            echo "### Before merging"
+            echo "1. Open each source and read the rate in context — the extractor finds figures near the right words, it does not understand the law."
+            echo "2. If it is right, set \`verified: true\` with \`verifiedBy\` and \`verifiedOn\`, and update \`financeAct\` / \`effectiveFrom\`."
+            echo "3. If it is wrong, close this and correct the keywords in \`audit.rules\`."
+          } > /tmp/pr.md
+          gh pr create --base claude/portfolio-website-setup-rpyerk --head "$BRANCH" \
+            --title "Property tax rates: $(date -u +%Y-%m-%d) proposal" --body-file /tmp/pr.md \
+            || gh pr edit "$BRANCH" --body-file /tmp/pr.md
+
+      - name: Open or update the review issue
+        if: steps.check.outputs.issue == '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          {
+            echo "Automatic check of the rates behind **transfer-costs.html**."
+            echo
+            echo "Confirmed ${{ steps.check.outputs.confirmed }} of ${{ steps.check.outputs.total }} against the live source pages."
+            echo
+            cat /tmp/report.md
+            echo
+            echo "### What to do"
+            echo "- A ❌ row means the figure we show was not found beside those words. It may have changed, or the page may word it differently."
+            echo "- Correct the rate in \`portfolio/data/tax-rates.json\`, or fix the keywords in \`audit.rules\` if the page simply moved."
+            echo "- Set \`verified: true\` with \`verifiedBy\` and \`verifiedOn\` once you have checked each line."
+          } > /tmp/issue.md
+          TITLE="Property tax rates need review"
+          EXISTING=$(gh issue list --state open --search "$TITLE in:title" --json number --jq '.[0].number' || true)
+          if [ -n "$EXISTING" ]; then
+            gh issue comment "$EXISTING" --body-file /tmp/issue.md
+          else
+            gh issue create --title "$TITLE" --body-file /tmp/issue.md
+          fi

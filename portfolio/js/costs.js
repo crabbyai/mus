@@ -88,11 +88,13 @@
       if (k) {
         var sl = slabFor(k.slabs, p);
         out.push({ id: "236K", label: k.label + " (" + k.section + ")",
+                   path: "federal.236K.slabs.0." + st,
                    pct: sl[st], amt: p * sl[st] / 100, note: k.note,
                    conf: k.confidence, adjustable: st !== "non" });
       }
-      reg.lines.filter(function (l) { return l.paidBy === "buyer"; }).forEach(function (l) {
+      reg.lines.filter(function (l) { return l.paidBy === "buyer"; }).forEach(function (l, i) {
         out.push({ id: l.id, label: l.label + " · " + reg.n, pct: l.pct,
+                   path: "regions." + S.region + ".lines." + reg.lines.indexOf(l) + ".pct",
                    amt: p * l.pct / 100, conf: l.confidence });
       });
     } else {
@@ -100,6 +102,7 @@
       if (c) {
         var sc = slabFor(c.slabs, p);
         out.push({ id: "236C", label: c.label + " (" + c.section + ")",
+                   path: "federal.236C.slabs.0." + st,
                    pct: sc[st], amt: p * sc[st] / 100, note: c.note,
                    conf: c.confidence, adjustable: st !== "non" });
       }
@@ -140,10 +143,16 @@
     $("cxGain").textContent = S.gainPct + "% of the price";
 
     $("cxRows").innerHTML = L.map(function (l) {
-      return '<div class="cx-row' + (l.conf === "low" ? " is-unsure" : "") + '">' +
+      var seen = l.path && D.audit && D.audit.status ? D.audit.status[l.path] : null;
+      var badge = seen && seen.ok
+        ? ' <i class="cx-flag is-ok" title="Found on the source page on ' + seen.lastSeen +
+          '">checked ' + seen.lastSeen + "</i>"
+        : (l.conf === "low"
+            ? ' <i class="cx-flag" title="Not yet confirmed against the current Act">unconfirmed</i>'
+            : "");
+      return '<div class="cx-row' + (l.conf === "low" && !(seen && seen.ok) ? " is-unsure" : "") + '">' +
         '<span class="cx-row__label">' +
-          '<span class="cx-row__title">' + l.label +
-            (l.conf === "low" ? ' <i class="cx-flag" title="Not yet confirmed against the current Act">unconfirmed</i>' : "") +
+          '<span class="cx-row__title">' + l.label + badge +
           "</span>" +
           (l.basis ? '<em>' + l.basis + "</em>" : "") +
           (l.note ? '<em class="cx-row__note">' + l.note + "</em>" : "") +
@@ -192,6 +201,24 @@
     box.className = "cx-banner";
     box.innerHTML = msgs.join("<br><br>");
     box.hidden = !msgs.length;
+  }
+
+  /* What the scheduled job found, said plainly. This is the part that makes
+     the automation worth having: not "we check sometimes" but "four of these
+     six figures were still on the FBR page on this date". */
+  function audit() {
+    var el = $("cxAudit");
+    if (!el) return;
+    var a = D.audit && D.audit.lastRun;
+    if (!a) {
+      el.textContent = "These rates haven't been machine-checked against the source yet.";
+      return;
+    }
+    el.innerHTML = "Re-read from FBR and the provincial boards on <b>" + a.at + "</b> — <b>" +
+      a.confirmed + " of " + a.total + "</b> figures were still on the source page" +
+      (a.unreachable ? ", " + a.unreachable + " source" + (a.unreachable > 1 ? "s" : "") +
+        " unreachable" : "") + ". A rate that changes opens a pull request; nothing goes live " +
+      "until it's reviewed.";
   }
 
   function send() {
@@ -253,6 +280,7 @@
         if (cta) cta.addEventListener("click", send);
 
         banners();
+        audit();
         render();
       })
       .catch(function () {

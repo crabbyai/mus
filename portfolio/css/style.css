@@ -3666,3 +3666,13 @@ body.wtour-open .cursor-dot { display: none !important; }
   .xp-locate { bottom: 9.4rem; }
   .xp-sheet { width: calc(100% - 1.6rem); max-height: 58%; }
 }
+/* What the scheduled source check found, shown to the visitor rather than
+   buried in a workflow log. */
+.cx-audit {
+  max-width: 62rem; margin: 0 auto 1.4rem; text-align: center;
+  font-size: 0.74rem; color: var(--muted); line-height: 1.65;
+}
+.cx-audit b { color: var(--cream); font-weight: 600; }
+.cx-flag.is-ok {
+  color: #8fd6a4; border-color: rgba(120,200,150,0.45);
+}

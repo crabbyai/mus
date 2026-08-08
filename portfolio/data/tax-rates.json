@@ -3,17 +3,16 @@
     "Single source of truth for every property transaction rate the site quotes.",
     "js/costs.js renders whatever is in here — no rate is written into the code.",
     "",
-    "IMPORTANT: 'verified' below is false. These figures were seeded from the",
-    "Finance Act 2024 and have NOT been confirmed against the current Act by a",
-    "human. While it is false the calculator says so on the page, in amber, and",
-    "refuses to present itself as authoritative. Set it to true, with your name",
-    "and the date, once you have checked each line against FBR and the relevant",
-    "provincial board — and only then.",
+    "IMPORTANT: while \"verified\" is false the calculator says so on the page, in",
+    "amber, and refuses to present itself as authoritative. Set it true, with your",
+    "name and the date, once you have checked each line — and only then.",
     "",
-    ".github/workflows/tax-watch.yml re-fetches every source below on a schedule,",
-    "and opens an issue when one of them changes or when this file predates the",
-    "most recent 1 July. It deliberately does not try to parse rates out of them:",
-    "a mis-parsed tax rate on a live estate agency site costs a client money."
+    "scripts/tax-watch.mjs re-reads every source below on a schedule and checks",
+    "whether the figure we show still appears next to the words that identify it",
+    "on the live page. Confirmed rates get a lastSeen date. Ones that no longer",
+    "match are reported, and where the page is unambiguous the new value lands in",
+    "\"proposed\" and opens a pull request. Nothing is ever applied automatically:",
+    "these numbers sit in front of buyers working out what they can afford."
   ],
   "schema": 1,
   "financeAct": "Finance Act 2024",
@@ -27,6 +26,11 @@
       "id": "fbr-wht",
       "label": "FBR withholding tax rate card",
       "url": "https://www.fbr.gov.pk/categ/withholding-tax-rates/51149/131188/131211",
+      "root": "https://www.fbr.gov.pk/",
+      "find": [
+        "withholding",
+        "rates"
+      ],
       "covers": [
         "236K",
         "236C"
@@ -37,6 +41,10 @@
       "id": "fbr-ordinance",
       "label": "Income Tax Ordinance 2001 (updated)",
       "url": "https://www.fbr.gov.pk/categ/income-tax/51147/131183/131184",
+      "root": "https://www.fbr.gov.pk/",
+      "find": [
+        "income tax"
+      ],
       "covers": [
         "cgt"
       ],
@@ -46,6 +54,10 @@
       "id": "punjab-stamp",
       "label": "Punjab Board of Revenue — stamp duty & registration",
       "url": "https://www.punjab-zameen.gov.pk/",
+      "root": "https://www.punjab-zameen.gov.pk/",
+      "find": [
+        "stamp"
+      ],
       "covers": [
         "lhr"
       ],
@@ -55,6 +67,10 @@
       "id": "ict-cvt",
       "label": "ICT / FBR — capital value tax, Islamabad",
       "url": "https://www.fbr.gov.pk/categ/capital-value-tax/51151/131199/131200",
+      "root": "https://www.fbr.gov.pk/",
+      "find": [
+        "capital value"
+      ],
       "covers": [
         "isb"
       ],
@@ -215,5 +231,67 @@
       "pct": 1,
       "editable": true
     }
-  ]
+  ],
+  "audit": {
+    "note": "Checked weekly by scripts/tax-watch.mjs. A rate is confirmed when the figure we show is found beside these words on the source page.",
+    "rules": [
+      {
+        "source": "fbr-wht",
+        "path": "federal.236K.slabs.0.filer",
+        "label": "236K · purchase · filer",
+        "keywords": [
+          "236k",
+          "purchase",
+          "filer"
+        ]
+      },
+      {
+        "source": "fbr-wht",
+        "path": "federal.236K.slabs.0.non",
+        "label": "236K · purchase · non-filer",
+        "keywords": [
+          "236k",
+          "purchase",
+          "non-filer"
+        ]
+      },
+      {
+        "source": "fbr-wht",
+        "path": "federal.236C.slabs.0.filer",
+        "label": "236C · sale · filer",
+        "keywords": [
+          "236c",
+          "sale",
+          "filer"
+        ]
+      },
+      {
+        "source": "fbr-wht",
+        "path": "federal.236C.slabs.0.non",
+        "label": "236C · sale · non-filer",
+        "keywords": [
+          "236c",
+          "sale",
+          "non-filer"
+        ]
+      },
+      {
+        "source": "ict-cvt",
+        "path": "regions.isb.lines.1.pct",
+        "label": "Islamabad · capital value tax",
+        "keywords": [
+          "capital value tax"
+        ]
+      },
+      {
+        "source": "punjab-stamp",
+        "path": "regions.lhr.lines.0.pct",
+        "label": "Lahore · stamp duty",
+        "keywords": [
+          "stamp duty"
+        ]
+      }
+    ]
+  },
+  "proposed": null
 }
