@@ -280,19 +280,13 @@
       "federal.236K.slabs.0.filer": {
         "label": "236K · purchase",
         "ok": false,
-        "found": [
-          5,
-          10
-        ],
+        "found": [],
         "lastSeen": null
       },
       "federal.236C.slabs.0.filer": {
         "label": "236C · sale",
         "ok": false,
-        "found": [
-          10,
-          20
-        ],
+        "found": [],
         "lastSeen": null
       },
       "regions.isb.lines.1.pct": {
