@@ -266,7 +266,7 @@ const SP = 7.2;          // grid spacing, world units
    read as a place.
    ============================================================ */
 let renderer, scene, camera, root, composer, bloom, ssao, sun;
-let ground = null, hi = null, sectors = [], ray, cars = null, clouds = null;
+let ground = null, sectors = [], ray, cars = null, clouds = null;
 let city = "isb", selected = null, hovered = null, pressed = null;
 let running = false, raf = 0, ready = false;
 let yaw = -0.5, targetYaw = -0.5, pitch = 0.98, dist = 120, targetDist = 120;
@@ -289,7 +289,10 @@ function rnd(seed) {
 /* Where each area sits, in world units. */
 function place(d) {
   if (city === "isb") return { x: (11 - d.col) * SP, z: (d.row - 2.6) * SP, w: SP * 0.88, h: SP * 0.88 };
-  return { x: d.x * SP * 0.95, z: d.z * SP * 0.8, w: SP * 0.95, h: SP * 0.95 };
+  // Districts sit closer together than Islamabad's sectors do, so the plates
+  // are drawn smaller than their spacing — touching, they hid the road network
+  // between them and left the whole city reading as one undifferentiated mass.
+  return { x: d.x * SP * 1.02, z: d.z * SP * 0.86, w: SP * 0.8, h: SP * 0.8 };
 }
 
 /* ============================================================
@@ -786,7 +789,7 @@ function labelSprite(text, tier, sub) {
   const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthTest: false, transparent: true }));
   // On a phone these were bigger than the sectors they name, covering the
   // very thing you were trying to tap.
-  const k = innerWidth < 700 ? 2.2 : 3.0;
+  const k = innerWidth < 700 ? 2.1 : 2.7;
   sp.scale.set((c.width / c.height) * k, k, 1);
   sp.renderOrder = 20;
   sp.userData.aspect = c.width / c.height;
@@ -805,7 +808,7 @@ function clearCity() {
       });
     });
   }
-  sectors = []; ground = null; hi = null; cars = null; clouds = null;
+  sectors = []; ground = null; cars = null; clouds = null;
 }
 
 /* One sector, built as its own group standing at the origin of its plot.
@@ -836,12 +839,36 @@ function buildSector(d, di) {
   // of the plinth, it draws the outline of the actual plot rather than a ring
   // around it, so there is never a question about which one is live.
   const rim = new THREE.Mesh(
-    new THREE.BoxGeometry(p.w * 1.035, 0.66, p.h * 1.035),
-    new THREE.MeshBasicMaterial({ color: 0xffd483, transparent: true, opacity: 0, depthWrite: false })
+    new THREE.BoxGeometry(p.w * 1.06, 0.78, p.h * 1.06),
+    new THREE.MeshBasicMaterial({ color: 0xffd483, transparent: true, opacity: 0,
+      depthWrite: false, toneMapped: false })
   );
-  rim.position.y = 0.28;
+  rim.position.y = 0.3;
   rim.renderOrder = 3;
+  rim.visible = false;
   g.add(rim);
+
+  // The shaft of light over the chosen sector: built into every sector and
+  // faded up on the live one, rather than a single marker repositioned each
+  // frame. Owned by the plot, it has no coordinates to get wrong. Hidden
+  // outright at zero opacity, so the thirty-five that aren't lit cost nothing.
+  //
+  // There was a gold ring on the ground here too, and it's gone on purpose:
+  // the site draws its own gold ring for the mouse cursor, so a second one
+  // lying on the map was the same shape in the same colour meaning something
+  // completely different. The rim above traces the actual plot, which says
+  // what the ring said and says it about the right shape.
+  const sc = Math.max(p.w, p.h) * 0.66;
+  const beam = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.42, 1, 13, 28, 1, true),
+    new THREE.MeshBasicMaterial({ color: 0xffc659, transparent: true, opacity: 0,
+      side: THREE.DoubleSide, depthWrite: false, toneMapped: false,
+      blending: THREE.AdditiveBlending })
+  );
+  beam.position.y = 7.1;
+  beam.scale.set(sc * 0.42, 1, sc * 0.42);
+  beam.visible = false;
+  g.add(beam);
 
   const boxes = [], trees = [];
   if (d.park) {
@@ -956,6 +983,7 @@ function buildSector(d, di) {
   root.add(g);
   return {
     d: d, g: g, rim: rim, plinth: plinth, label: label, base: base,
+    beam: beam,
     x: p.x, z: p.z, w: p.w, h: p.h,
     lift: 0, want: 0
   };
@@ -1164,30 +1192,6 @@ function buildCity() {
   buildFill();
   buildTraffic();
   buildClouds();
-
-  // --- the column of light over the chosen sector ---
-  // Parented to the chosen sector's own group rather than positioned to match
-  // it. Kept as a free-floating object it could — and did — end up drawn a
-  // sector away from the thing it was marking; as a child of the group there
-  // is no position to get wrong, and it rises with the plate.
-  hi = new THREE.Group();
-  const ring = new THREE.Mesh(
-    new THREE.RingGeometry(0.88, 1, 72),
-    new THREE.MeshBasicMaterial({ color: 0xffd27a, transparent: true, opacity: 0,
-      side: THREE.DoubleSide, depthTest: false, toneMapped: false })
-  );
-  ring.rotation.x = -Math.PI / 2;
-  ring.position.y = 0.66;
-  ring.renderOrder = 6;
-  const beam = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.42, 1, 13, 28, 1, true),
-    new THREE.MeshBasicMaterial({ color: 0xffc659, transparent: true, opacity: 0,
-      side: THREE.DoubleSide, depthWrite: false, toneMapped: false,
-      blending: THREE.AdditiveBlending })
-  );
-  beam.position.y = 7.1;
-  hi.add(ring); hi.add(beam);
-  hi.userData = { ring: ring, beam: beam, on: null };
 
   root.rotation.y = 0;
 
@@ -1489,31 +1493,22 @@ function loop(now) {
     s.want = pressed === s ? 2.4 : isSel ? 1.7 : isHov ? 0.9 : 0;
     s.lift += (s.want - s.lift) * (pressed === s ? 0.4 : 0.16);
     s.g.position.y = s.lift;
-    const rimWant = isSel ? 0.85 + Math.sin(clock * 2.4) * 0.15 : isHov ? 0.4 : 0;
+    // The gold kerb round the plot is now the whole of the selection mark, so
+    // it has to be unambiguous — it breathes on the chosen sector and comes up
+    // halfway under the cursor.
+    const rimWant = isSel ? 0.92 + Math.sin(clock * 2.4) * 0.08 : isHov ? 0.5 : 0;
     s.rim.material.opacity += (rimWant - s.rim.material.opacity) * 0.2;
+    s.rim.visible = s.rim.material.opacity > 0.01;
     const P = L();
     const em = isSel ? P.plinthSel : isHov ? P.plinthHover : P.plinthIdle;
     s.plinth.material.emissive.lerp(s.base.clone().multiplyScalar(em), 0.16);
+
+    // the shaft of light on the live sector
+    s.beam.material.opacity +=
+      ((isSel ? 0.22 + Math.sin(clock * 2.4) * 0.08 : 0) - s.beam.material.opacity) * 0.16;
+    s.beam.visible = s.beam.material.opacity > 0.01;
   });
 
-  const mark = sectors.filter((s) => s.d.id === selId)[0];
-  if (hi) {
-    const ring = hi.userData.ring, beam = hi.userData.beam;
-    if (mark && hi.userData.on !== mark) {
-      // move the whole marker into the sector's group — no coordinates involved
-      mark.g.add(hi);
-      hi.position.set(0, 0, 0);
-      const sc = Math.max(mark.w, mark.h) * 0.66;
-      ring.scale.set(sc, sc, 1);
-      beam.scale.set(sc * 0.42, 1, sc * 0.42);
-      hi.userData.on = mark;
-    }
-    const want = mark ? 0.72 + Math.sin(clock * 2.4) * 0.22 : 0;
-    ring.material.opacity += (want - ring.material.opacity) * 0.16;
-    beam.material.opacity += ((mark ? 0.2 + Math.sin(clock * 2.4) * 0.07 : 0)
-      - beam.material.opacity) * 0.16;
-    if (mark) ring.rotation.z += dt * 0.35;
-  }
 
   // traffic
   if (cars) {
