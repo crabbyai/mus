@@ -33,10 +33,23 @@
 
 /* ---------- pure helpers ---------- */
 
+/** Put section references into one shape before anything looks for them.
+ *
+ *  A live run read 18,910 characters out of FBR's withholding card, found
+ *  "236c" and "sale", and still reported nothing for 236K — because the card
+ *  does not write it the way our keyword does. Across these documents the
+ *  same section appears as "236K", "236 K", "236(K)", "236-K" and "Section
+ *  236 (k)", and a PDF text layer adds its own spacing on top of that. All of
+ *  them mean one thing, so they are all reduced to "236k" here, on both HTML
+ *  and PDF text, before any keyword is matched. */
+export function normaliseSections(text) {
+  return String(text).replace(/\b(2\d{2})\s*[-(\s]?\s*([a-z])\)?(?![a-z0-9])/g, "$1$2");
+}
+
 /** Visible text only, lowercased and whitespace-collapsed. Scripts, styles
  *  and markup carry no rates and change constantly. */
 export function textOf(html) {
-  return String(html)
+  return normaliseSections(String(html)
     .replace(/<script[\s\S]*?<\/script>/gi, " ")
     .replace(/<style[\s\S]*?<\/style>/gi, " ")
     .replace(/<!--[\s\S]*?-->/g, " ")
@@ -45,7 +58,7 @@ export function textOf(html) {
     .replace(/&amp;/gi, "&")
     .replace(/\s+/g, " ")
     .trim()
-    .toLowerCase();
+    .toLowerCase());
 }
 
 /** Percentages that belong to one rate.
@@ -208,18 +221,33 @@ export async function pdfText(buffer) {
   } catch {
     return { error: "pdfjs-dist is not installed" };
   }
+  // Without these, pdf.js logs "failed to fetch LiberationSans-Regular.ttf"
+  // for every page and falls back to a guessed glyph map, which is one of the
+  // ways a rate card comes back as gibberish. They ship inside the package.
+  // Filesystem paths, not file:// URLs: under Node pdf.js reads these with fs,
+  // and a file:// URL comes back as "Unable to load font data".
+  let fonts, cmaps;
+  try {
+    const { fileURLToPath } = await import("node:url");
+    const base = new URL("../../", import.meta.resolve("pdfjs-dist/legacy/build/pdf.mjs"));
+    fonts = fileURLToPath(new URL("standard_fonts/", base));
+    cmaps = fileURLToPath(new URL("cmaps/", base));
+  } catch { /* older Node without import.meta.resolve — carry on without them */ }
   try {
     const doc = await pdfjs.getDocument({
       data: new Uint8Array(buffer), useSystemFonts: false,
-      isEvalSupported: false, disableFontFace: true
+      isEvalSupported: false, disableFontFace: true,
+      standardFontDataUrl: fonts, cMapUrl: cmaps, cMapPacked: true
     }).promise;
     const parts = [];
     for (let i = 1; i <= doc.numPages; i++) {
       const page = await doc.getPage(i);
       const content = await page.getTextContent();
-      parts.push(content.items.map((it) => it.str).join(" "));
+      // hasEOL marks a line break; without it the last word of one row runs
+      // into the first of the next, which hides the words a rate sits beside.
+      parts.push(content.items.map((it) => it.str + (it.hasEOL ? " " : "")).join(" "));
     }
-    return { text: parts.join(" ").replace(/\s+/g, " ").trim().toLowerCase() };
+    return { text: normaliseSections(parts.join(" ").replace(/\s+/g, " ").trim().toLowerCase()) };
   } catch (err) {
     return { error: "could not read the PDF: " + err.message };
   }

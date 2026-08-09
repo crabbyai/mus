@@ -5,7 +5,7 @@
 */
 import {
   textOf, ratesNear, checkRule, discoverLinks, getPath, setPath, isStale, report,
-  looksLikePortal, isThin, pdfLinks, pdfText, docYear
+  looksLikePortal, isThin, pdfLinks, pdfText, docYear, normaliseSections
 } from "./tax-watch.mjs";
 
 let pass = 0, fail = 0;
@@ -39,6 +39,24 @@ console.log("textOf");
   is(t.includes("color:red"), false, "drops style contents");
   is(t.includes("section 236k"), true, "keeps visible text, lowercased");
   is(/\s{2,}/.test(t), false, "collapses whitespace");
+}
+
+console.log("normaliseSections");
+{
+  // The live run's actual failure: 18,910 characters of FBR's withholding
+  // card, "236c" found, "236k" not — because the card doesn't spell it the
+  // way the rule does.
+  is(normaliseSections("section 236 k applies"), "section 236k applies", "236 K");
+  is(normaliseSections("under 236(k) of the ordinance"), "under 236k of the ordinance", "236(K)");
+  is(normaliseSections("236-c on sale"), "236c on sale", "236-C");
+  is(normaliseSections("236k"), "236k", "already normal, left alone");
+  is(normaliseSections("236cb advance tax"), "236cb advance tax", "a longer section is not truncated");
+  is(normaliseSections("in 2024 the rate rose"), "in 2024 the rate rose", "a year is not a section");
+  is(normaliseSections("plot 1236 k block"), "plot 1236 k block", "only a standalone 2xx");
+  is(textOf("<p>Advance tax under section 236 (K) is 3% for filers.</p>").includes("236k"),
+     true, "and it happens inside textOf, before any keyword is matched");
+  is(ratesNear(textOf("<p>Advance tax on purchase under section 236 (K) is 4% for filers.</p>"),
+               ["236k", "purchase"]), [4], "so the rate reads straight out of it");
 }
 
 console.log("ratesNear");
