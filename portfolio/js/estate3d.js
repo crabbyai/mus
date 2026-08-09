@@ -5,6 +5,7 @@
    balcony railings, steel gate, paver driveway.
    ============================================================ */
 import * as THREE from "three";
+import { scaled } from "./gfx-budget.js?v=2";
 
 const GOLD = 0xc9a45c;
 const CHARCOAL = 0x3a3f4a;
@@ -743,16 +744,67 @@ const PROPERTY_MODELS = [
   "palazzo", "colonialAtrium", "modernWhite", "colonial", "linear", "brick"
 ];
 
+/* ---------- image-based lighting ----------
+   Three lights and an ambient tell a surface how bright it is, but they can't
+   tell it what it is looking at — so the gold trim, the glass balcony rail and
+   the brass gate bars came out as flat coloured plastic, because a metal with
+   nothing to reflect has nothing to be. This builds a small environment for
+   them to reflect: dusk sky above, a warm band at the horizon on the key
+   light's side, dark ground below. Cheap — one 256x128 canvas, prefiltered
+   once — and it is the difference between "gold-coloured" and "gold".
+
+   Keyed by renderer: a prefiltered map lives in one WebGL context, so the
+   showcase and the lightbox viewer each get their own. */
+const envMaps = new WeakMap();
+function skyEnv(renderer) {
+  if (envMaps.has(renderer)) return envMaps.get(renderer);
+  const c = document.createElement("canvas");
+  c.width = 256; c.height = 128;
+  const ctx = c.getContext("2d");
+  const g = ctx.createLinearGradient(0, 0, 0, 128);
+  g.addColorStop(0.00, "#141d38");   // zenith
+  g.addColorStop(0.40, "#4c5878");
+  g.addColorStop(0.50, "#c9b189");   // horizon
+  g.addColorStop(0.60, "#38383f");
+  g.addColorStop(1.00, "#101218");   // ground
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, 256, 128);
+  // the sun, roughly where the key light is, so highlights agree with shadows
+  const sun = ctx.createRadialGradient(196, 50, 1, 196, 50, 42);
+  sun.addColorStop(0, "rgba(255,228,182,0.95)");
+  sun.addColorStop(1, "rgba(255,228,182,0)");
+  ctx.fillStyle = sun;
+  ctx.fillRect(150, 6, 96, 92);
+
+  const tex = new THREE.CanvasTexture(c);
+  tex.mapping = THREE.EquirectangularReflectionMapping;
+  tex.colorSpace = THREE.SRGBColorSpace;
+  let map = null;
+  try {
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    map = pmrem.fromEquirectangular(tex).texture;
+    pmrem.dispose();
+  } catch (err) { map = null; }
+  tex.dispose();
+  envMaps.set(renderer, map);
+  return map;
+}
+
 /* ---------- scene factory ---------- */
 function makeScene() {
   const scene = new THREE.Scene();
   scene.fog = new THREE.Fog(0x0a0f1e, 17, 36);
-  const amb = new THREE.AmbientLight(0x8a8ea6, 1.95);
+  /* Lower than it looks: scene.environment now supplies most of the fill, and
+     leaving the flat ambient where it was turned the charcoal render grey. */
+  const amb = new THREE.AmbientLight(0x8a8ea6, 1.15);
   scene.add(amb);
   const key = new THREE.DirectionalLight(0xffd9a0, 2.9);
   key.position.set(6, 9, 5);
   key.castShadow = true;
-  key.shadow.mapSize.set(2048, 2048);
+  // Sized to the device, not fixed — see js/gfx-budget.js. The showcase shares
+  // the page with other work, so it asks for a share rather than the lot.
+  const sres = scaled(0.5).shadow || 1024;
+  key.shadow.mapSize.set(sres, sres);
   key.shadow.camera.left = key.shadow.camera.bottom = -11;
   key.shadow.camera.right = key.shadow.camera.top = 11;
   key.shadow.camera.near = 1;
@@ -780,13 +832,14 @@ function makeScene() {
    know what a house looks like at two in the afternoon. */
 const ESTATE_LOOKS = {
   dusk: { fog: 0x0a0f1e, near: 17, far: 36,
-          amb: [0x8a8ea6, 1.95], key: [0xffd9a0, 3.0], rim: [0x5573c8, 1.0],
-          bounce: [0x8899bb, 0.55], exposure: 1.25 },
+          amb: [0x8a8ea6, 1.15], key: [0xffd9a0, 3.0], rim: [0x5573c8, 0.85],
+          bounce: [0x8899bb, 0.55], exposure: 1.25, bloom: [0.52, 0.72, 0.82] },
   day:  { fog: 0xa8c2dc, near: 22, far: 52,
-          amb: [0xcfe0f2, 2.6], key: [0xfff4dc, 3.6], rim: [0x9fc0e8, 0.7],
-          bounce: [0xc7d6e8, 0.5], exposure: 1.0 }
+          amb: [0xcfe0f2, 1.85], key: [0xfff4dc, 3.6], rim: [0x9fc0e8, 0.6],
+          // Daylight washes glow out; a sun this bright doesn't need help.
+          bounce: [0xc7d6e8, 0.5], exposure: 1.0, bloom: [0.16, 0.6, 0.95] }
 };
-function setEstateLook(scene, renderer, name) {
+function setEstateLook(scene, renderer, name, bloom) {
   const L = ESTATE_LOOKS[name] || ESTATE_LOOKS.dusk;
   const r = scene.userData.rig;
   if (!r) return;
@@ -798,12 +851,54 @@ function setEstateLook(scene, renderer, name) {
   r.rim.color.setHex(L.rim[0]); r.rim.intensity = L.rim[1];
   if (r.bounce && L.bounce) { r.bounce.color.setHex(L.bounce[0]); r.bounce.intensity = L.bounce[1]; }
   if (renderer) renderer.toneMappingExposure = L.exposure;
+  if (bloom && L.bloom) {
+    bloom.strength = L.bloom[0]; bloom.radius = L.bloom[1]; bloom.threshold = L.bloom[2];
+  }
 }
 function cinematic(renderer) {
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.2;
+}
+
+/* Bloom, on the section that most needs it.
+   Everything signature about these elevations is emissive — the gold light
+   strips down the entrance, the warm windows, the gate's brass bars, the
+   inlay round the plinth. Without a bloom pass they are flat cream rectangles
+   that happen to be bright; with one they read as lit, which at dusk is the
+   whole picture. The city model and the walkable tour have had this since
+   they were built; the showcase, which is the one section of the site that
+   exists purely to be looked at, never did.
+
+   Loaded on demand and only where there's headroom, so a slow device gets the
+   plain render rather than a slideshow. */
+function addBloom(renderer, scene, camera, gfx, onReady) {
+  if (!gfx.bloom) return;
+  Promise.all([
+    import("./vendor/three/postprocessing/EffectComposer.js"),
+    import("./vendor/three/postprocessing/RenderPass.js"),
+    import("./vendor/three/postprocessing/UnrealBloomPass.js"),
+    import("./vendor/three/postprocessing/OutputPass.js"),
+    gfx.ao ? import("./vendor/three/postprocessing/SSAOPass.js") : Promise.resolve(null)
+  ]).then(([EC, RP, UB, OP, SS]) => {
+    const composer = new EC.EffectComposer(renderer);
+    composer.addPass(new RP.RenderPass(scene, camera));
+    let ssao = null;
+    if (SS) {
+      // Tight radius: this is a model on a plinth, not a street. It puts the
+      // shade back under the eaves, the balcony and the parapet.
+      ssao = new SS.SSAOPass(scene, camera, 1, 1);
+      ssao.kernelRadius = 0.5;
+      ssao.minDistance = 0.0012;
+      ssao.maxDistance = 0.1;
+      composer.addPass(ssao);
+    }
+    const bloom = new UB.UnrealBloomPass(new THREE.Vector2(1, 1), 0.42, 0.72, 0.86);
+    composer.addPass(bloom);
+    composer.addPass(new OP.OutputPass());
+    onReady({ composer, bloom, ssao });
+  }).catch(() => { /* plain render, which is still the real model */ });
 }
 const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
 
@@ -912,13 +1007,20 @@ function initShowcase() {
     section.style.display = "none";
     return;
   }
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
+  const gfx = scaled(0.5);
+  renderer.setPixelRatio(gfx.dpr);
   cinematic(renderer);
 
   const scene = makeScene();
+  scene.environment = skyEnv(renderer);
   // far was 60 with the camera pinned at 14.5. Now the camera backs off as far
   // as the framing needs, so give it room rather than clipping the plinth.
   const camera = new THREE.PerspectiveCamera(38, 1, 0.5, 400);
+  let composer = null, bloom = null, ssao = null;
+  addBloom(renderer, scene, camera, gfx, (fx) => {
+    composer = fx.composer; bloom = fx.bloom; ssao = fx.ssao;
+    size();
+  });
   const rig = new THREE.Group();
   scene.add(rig);
 
@@ -940,7 +1042,7 @@ function initShowcase() {
     let day = false;
     lookBtn.addEventListener("click", () => {
       day = !day;
-      setEstateLook(scene, renderer, day ? "day" : "dusk");
+      setEstateLook(scene, renderer, day ? "day" : "dusk", bloom);
       lookBtn.textContent = day ? "☾" : "☀";
       lookBtn.setAttribute("aria-pressed", String(day));
       lookBtn.title = day ? "Switch to dusk" : "Switch to daylight";
@@ -985,6 +1087,9 @@ function initShowcase() {
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
+    if (composer) composer.setSize(w, h);
+    if (bloom) bloom.resolution.set(w, h);
+    if (ssao) ssao.setSize(w, h);
     const phone = w < 700;
     safe.x = phone ? 0.96 : 0.94;
     safe.top = phone ? 0.52 : 0.5;
@@ -1047,7 +1152,7 @@ function initShowcase() {
     // sits behind the house instead of washing it out when the camera backs off.
     scene.fog.near = d - fit.radius * 1.3;
     scene.fog.far = d + fit.radius * 4.5;
-    renderer.render(scene, camera);
+    if (composer) composer.render(); else renderer.render(scene, camera);
   }
   gsap.ticker.add(frame);
 }
@@ -1067,9 +1172,11 @@ function ensureViewer(container) {
   } catch {
     return null;
   }
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
+  const gfx = scaled(0.5);
+  renderer.setPixelRatio(gfx.dpr);
   cinematic(renderer);
   const scene = makeScene();
+  scene.environment = skyEnv(renderer);
   const camera = new THREE.PerspectiveCamera(40, 1, 0.5, 400);
   camera.position.set(0, 4.6, 12.8);
   camera.lookAt(0, 1.4, 0);
@@ -1201,4 +1308,4 @@ if (!window.__estate3dShowcase) {
 
 /* Shared with js/house-tour.js so a sold-home tour can show the exact same
    model the lightbox thumbnail does, rather than an approximation of it. */
-export { ARCHETYPES, PROPERTY_MODELS };
+export { ARCHETYPES, PROPERTY_MODELS, skyEnv };

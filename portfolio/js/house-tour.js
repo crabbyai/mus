@@ -21,7 +21,8 @@ import {
 // module is keyed by its full URL, so two different query strings load two
 // copies of it — see the guard at the bottom of estate3d.js for what that
 // cost last time they drifted apart.
-import { ARCHETYPES, PROPERTY_MODELS } from "./estate3d.js?v=18";
+import { ARCHETYPES, PROPERTY_MODELS, skyEnv } from "./estate3d.js?v=23";
+import { scaled } from "./gfx-budget.js?v=2";
 
 /* ---------- module state ---------- */
 let renderer, scene, camera, composer = null, bloomPass = null, ssaoPass = null;
@@ -324,28 +325,32 @@ function buildWorld(cfg) {
   const sun = new THREE.DirectionalLight(night ? 0x7e9ae0 : 0xffd9a0, night ? 0.5 : 2.6);
   sun.position.set(14, 22, 12);
   sun.castShadow = true;
-  /* 4096 everywhere was the single largest thing this page ever allocated.
-     The shadow map is VSM — two float channels, so a 4096 square map plus the
-     blur target it needs runs to hundreds of megabytes of GPU memory, on a
-     page that is already holding four other WebGL contexts. A phone does not
-     have that, and the tab dies or reloads rather than the tour failing. 1024
-     is plenty at this scale and nobody will see the difference. */
-  const shadowRes = innerWidth < 700 ? 1024 : (innerWidth < 1280 ? 2048 : 4096);
-  sun.shadow.mapSize.set(shadowRes, shadowRes);
+  /* The tour has the whole screen and every other scene on the page is parked
+     while it runs, so it spends the full budget — 4096 on a machine that can
+     take it. Screen width used to decide this, which sold a fast phone short
+     and treated a small laptop window as a handset; js/gfx-budget.js asks the
+     device instead. */
+  const gfx = scaled(1);
+  sun.shadow.mapSize.set(gfx.shadow || 1024, gfx.shadow || 1024);
   sun.shadow.radius = 4;
   const sc = 26;
   sun.shadow.camera.left = -sc; sun.shadow.camera.right = sc;
   sun.shadow.camera.top = sc; sun.shadow.camera.bottom = -sc;
   sun.shadow.camera.far = 80; sun.shadow.bias = -0.0007;
   g.add(sun);
-  // warm interior fills so rooms read while walking
+  /* Warm fills so rooms read while walking. These hung 0.4m under the ceiling
+     with physical falloff, which means the ceiling right above each one was
+     taking roughly a hundred times the light the floor was — every interior
+     opened with a blown white ceiling and a blown white floor, and the bloom
+     pass then spread it over everything else. Dropped to head height and
+     dimmed to match: the light now lands on the room instead of the slab. */
   for (const [lx, lz] of [[0, D * 0.2], [0, -D * 0.2], [-W * 0.25, 0], [W * 0.25, 0]]) {
-    const pl = new THREE.PointLight(night ? 0xffcf9a : 0xf0f4ff, night ? 26 : 16, 16, 2);
-    pl.position.set(lx, H - 0.4, lz);
+    const pl = new THREE.PointLight(night ? 0xffcf9a : 0xf0f4ff, night ? 13 : 8, 15, 2);
+    pl.position.set(lx, H - 1.05, lz);
     g.add(pl);
   }
-  const upL = new THREE.PointLight(night ? 0xffcf9a : 0xf0f4ff, night ? 22 : 14, 16, 2);
-  upL.position.set(0, upY + 2.2, -D * 0.25);
+  const upL = new THREE.PointLight(night ? 0xffcf9a : 0xf0f4ff, night ? 11 : 7, 15, 2);
+  upL.position.set(0, upY + 1.7, -D * 0.25);
   g.add(upL);
   if (night) glow(g, 0, 2.4, D / 2 + 0.4, 3.2);
 
@@ -568,24 +573,21 @@ function openTour(cfg, title) {
       closeTour();
       renderer = null; composer = null; bloomPass = null; ssaoPass = null;
     });
-    /* Soft shadows and filmic tone mapping, at as much resolution as the
-       device can carry. Not 2x on a phone: a 390-point screen at DPR 3 meant
-       a 780x1690 buffer plus a VSM shadow map plus the bloom pass's render
-       targets, on top of the four WebGL contexts this page already holds.
-       That is the budget a phone runs out of. */
-    renderer.setPixelRatio(Math.min(devicePixelRatio, innerWidth < 700 ? 1.5 : 2));
+    // Soft shadows and filmic tone mapping, at whatever resolution the device
+    // has actually got — see js/gfx-budget.js.
+    const gfx = scaled(1);
+    renderer.setPixelRatio(gfx.dpr);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.VSMShadowMap;   // softest, least acne
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.12;
     camera = new THREE.PerspectiveCamera(70, 1, 0.05, 240);
 
-    // bloom, same treatment as the configurator
-    const cores = navigator.hardwareConcurrency || 4;
-    const wantsFX = innerWidth > 640 && cores >= 4 &&
-                    !matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const wantsAO = wantsFX && innerWidth >= 1024 && cores >= 8;
-    if (wantsFX) {
+    // Bloom, and ambient occlusion where there's headroom for it — AO is what
+    // grounds the furniture and darkens the corners, and it is the single
+    // biggest step up in how real a room looks.
+    if (gfx.bloom) {
+      const wantsAO = gfx.ao;
       Promise.all([
         import("./vendor/three/postprocessing/EffectComposer.js"),
         import("./vendor/three/postprocessing/RenderPass.js"),
@@ -595,8 +597,6 @@ function openTour(cfg, title) {
       ]).then(([EC, RP, UB, OP, SS]) => {
         composer = new EC.EffectComposer(renderer);
         composer.addPass(new RP.RenderPass(scene, camera));
-        // Ambient occlusion grounds furniture and darkens corners — the single
-        // biggest realism gain indoors.
         if (SS) {
           ssaoPass = new SS.SSAOPass(scene, camera, innerWidth, innerHeight);
           ssaoPass.kernelRadius = 0.45;
@@ -616,6 +616,9 @@ function openTour(cfg, title) {
   const skyC = conf.night ? 0x05070f : 0x2b3d63;
   scene.background = new THREE.Color(skyC);
   scene.fog = new THREE.Fog(skyC, 26, 110);
+  // Something for the polished marble, the glazing and the steel to reflect.
+  // Lights say how bright a surface is; only an environment says what it is.
+  scene.environment = skyEnv(renderer);
 
   exteriorGrp = interiorGrp = null;
   world = buildWorld(conf);
