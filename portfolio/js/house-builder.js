@@ -91,7 +91,17 @@ function tex(key, draw, repeat = [2, 2], size = 256) {
   const t = new THREE.CanvasTexture(c);
   t.wrapS = t.wrapT = THREE.RepeatWrapping;
   t.repeat.set(repeat[0], repeat[1]);
-  t.anisotropy = 4;
+  /* 16, not 4. A floor seen from standing height is almost edge-on, and at
+     that angle the mip chain picks a level several steps up — so every one of
+     these textures averaged out to a flat colour past about four metres, which
+     is why a fully textured marble floor still rendered as a white void.
+     three clamps this to whatever the hardware actually supports. */
+  t.anisotropy = 16;
+  /* Every one of these is a colour image drawn in sRGB, and none of them said
+     so — three then decoded them as linear data, which is why plaster came out
+     muddier and brick more saturated than the canvas they were painted on.
+     js/estate3d.js has always tagged its textures; this file never did. */
+  t.colorSpace = THREE.SRGBColorSpace;
   texCache.set(key, t);
   return t;
 }
@@ -192,6 +202,126 @@ function grassTex() {
       g.fillRect(Math.random() * s, Math.random() * s, 2, 3);
     }
   }, [8, 8]);
+}
+
+/* ---------- interior surfaces ----------
+   The exteriors have had stucco, brick, pavers and roof tile since they were
+   built. The interiors had none of it: the floor was an untextured plane, the
+   upholstery an untextured box, the tables untextured slabs. That is the whole
+   reason walking inside felt like stepping out of a render and into a
+   whitebox — nothing in there was made of anything. */
+
+/* Polished marble, laid in slabs. Soft clouding, a few branching veins and a
+   grout line every slab, because the grid is what tells you how big the room
+   is — an untextured floor gives the eye nothing to measure against. */
+function marbleTex(color) {
+  return tex("marble" + color, (g, s) => {
+    g.fillStyle = css(color);
+    g.fillRect(0, 0, s, s);
+    // clouding
+    for (let i = 0; i < 26; i++) {
+      const x = Math.random() * s, y = Math.random() * s, r = s * (0.06 + Math.random() * 0.16);
+      const rg = g.createRadialGradient(x, y, 0, x, y, r);
+      rg.addColorStop(0, `rgba(255,255,255,${0.05 + Math.random() * 0.07})`);
+      rg.addColorStop(1, "rgba(255,255,255,0)");
+      g.fillStyle = rg;
+      g.fillRect(x - r, y - r, r * 2, r * 2);
+    }
+    // veins, each with a couple of branches
+    const vein = (x0, y0, len, w, alpha) => {
+      g.strokeStyle = `rgba(74,68,58,${alpha})`;
+      g.lineWidth = w;
+      g.beginPath();
+      let x = x0, y = y0, a = Math.random() * Math.PI * 2;
+      g.moveTo(x, y);
+      for (let i = 0; i < len; i++) {
+        a += (Math.random() - 0.5) * 0.55;
+        x += Math.cos(a) * 5; y += Math.sin(a) * 5;
+        g.lineTo(x, y);
+      }
+      g.stroke();
+      return [x, y];
+    };
+    for (let i = 0; i < 11; i++) {
+      const [x, y] = vein(Math.random() * s, Math.random() * s, 26, 3, 0.42 + Math.random() * 0.28);
+      if (Math.random() > 0.35) vein(x, y, 13, 1.8, 0.3);
+    }
+    /* Slab joints, dark enough to survive a bright room. The first pass drew
+       them at 0.45 grey on cream, which the tone mapping flattened into the
+       floor — an invisible grid is the same as no grid. */
+    /* Wide on purpose. A real grout line is 3mm, which is sub-pixel from
+       across a room and mips into nothing — measured, it moved the floor's
+       contrast by less than two levels out of 255. At 14px on a tile that
+       covers 2.25m this reads as about a 6cm joint: wrong by a tape measure,
+       right by eye, and the grid is the only thing telling you how big the
+       room is. */
+    g.strokeStyle = "rgba(46,40,33,0.92)";
+    g.lineWidth = 14;
+    g.beginPath();
+    g.moveTo(0, s / 2); g.lineTo(s, s / 2);
+    g.moveTo(s / 2, 0); g.lineTo(s / 2, s);
+    g.stroke();
+    /* Alternate slabs laid a shade off, the way a real batch varies. This is
+       the part that has to survive: a floor is seen almost edge-on from
+       standing height, so fine veining mips away to a flat average within a
+       few metres, while a coarse two-tone checker keeps its contrast most of
+       the way across the room. It is what tells you the floor is made of
+       something at the far wall as well as at your feet. */
+    for (const [qx, qy] of [[0, 0], [1, 1]]) {
+      g.fillStyle = "rgba(0,0,0,0.20)";
+      g.fillRect(qx * s / 2, qy * s / 2, s / 2, s / 2);
+    }
+  }, [4, 4], 512);
+}
+
+/* Woven upholstery. Fine enough that you read it as fabric rather than as a
+   pattern, which is the difference between a sofa and a brown box. */
+function fabricTex(color) {
+  return tex("fabric" + color, (g, s) => {
+    g.fillStyle = css(color);
+    g.fillRect(0, 0, s, s);
+    for (let y = 0; y < s; y += 3) {
+      g.fillStyle = "rgba(255,255,255,0.05)";
+      g.fillRect(0, y, s, 1);
+      g.fillStyle = "rgba(0,0,0,0.06)";
+      g.fillRect(0, y + 1.5, s, 1);
+    }
+    for (let x = 0; x < s; x += 3) {
+      g.fillStyle = "rgba(0,0,0,0.045)";
+      g.fillRect(x, 0, 1, s);
+    }
+    for (let i = 0; i < 2600; i++) {
+      g.fillStyle = `rgba(255,255,255,${Math.random() * 0.05})`;
+      g.fillRect(Math.random() * s, Math.random() * s, 1.5, 1.5);
+    }
+  }, [3, 3]);
+}
+
+/* Straight-grain hardwood, for tables and joinery — woodCladTex is a slatted
+   panel and reads wrong on a flat top. */
+function timberTex(color) {
+  return tex("timber" + color, (g, s) => {
+    g.fillStyle = css(color);
+    g.fillRect(0, 0, s, s);
+    for (let i = 0; i < 150; i++) {
+      const y = Math.random() * s;
+      g.strokeStyle = `rgba(0,0,0,${0.03 + Math.random() * 0.09})`;
+      g.lineWidth = 0.6 + Math.random() * 1.6;
+      g.beginPath();
+      g.moveTo(0, y);
+      g.bezierCurveTo(s * 0.3, y + (Math.random() - 0.5) * 7,
+                      s * 0.7, y + (Math.random() - 0.5) * 7, s, y + (Math.random() - 0.5) * 4);
+      g.stroke();
+    }
+    for (let i = 0; i < 4; i++) {   // knots
+      const x = Math.random() * s, y = Math.random() * s;
+      for (let r = 2; r < 9; r += 1.6) {
+        g.strokeStyle = `rgba(0,0,0,${0.1 - r * 0.008})`;
+        g.lineWidth = 1;
+        g.beginPath(); g.ellipse(x, y, r, r * 0.55, 0, 0, Math.PI * 2); g.stroke();
+      }
+    }
+  }, [2, 2]);
 }
 
 /* ---------- material + mesh helpers ---------- */
@@ -855,7 +985,16 @@ function syncUrl() {
    you walk into is the house you just specified: bigger plots get
    more rooms, the finish drives the palette.
    ============================================================ */
-function furnitureMat(c, r = 0.8) { return mat(c, r, 0.04); }
+/* Upholstery by default, because most of what this makes is soft: sofas,
+   cushions, beds, chairs. Everything that isn't says so — a fabric weave on a
+   stone worktop reads as a mistake, and no texture at all reads as plastic. */
+function furnitureMat(c, r = 0.8, kind = "soft") {
+  const map = kind === "soft" ? fabricTex(c)
+            : kind === "wood" ? timberTex(c)
+            : null;
+  // the map already carries the colour; tinting it again just darkens it
+  return mat(map ? 0xffffff : c, r, 0.04, map);
+}
 
 function sofa(g, x, z, rotY, c) {
   const grp = new THREE.Group();
@@ -874,11 +1013,11 @@ function sofa(g, x, z, rotY, c) {
   g.add(grp);
 }
 function table(g, x, z, w, d, c) {
-  const top = box(w, 0.09, d, furnitureMat(c, 0.5));
+  const top = box(w, 0.09, d, furnitureMat(c, 0.5, "wood"));
   top.position.set(x, 0.74, z);
   g.add(top);
   for (const [dx, dz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
-    const leg = box(0.09, 0.74, 0.09, furnitureMat(0x2c2118));
+    const leg = box(0.09, 0.74, 0.09, furnitureMat(0x2c2118, 0.8, "hard"));
     leg.position.set(x + dx * (w / 2 - 0.12), 0.37, z + dz * (d / 2 - 0.12));
     g.add(leg);
   }
@@ -891,7 +1030,7 @@ function rug(g, x, z, w, d, c) {
   g.add(r);
 }
 function tvWall(g, x, z, night) {
-  const panel = box(2.6, 1.5, 0.12, furnitureMat(0x2a2118, 0.6));
+  const panel = box(2.6, 1.5, 0.12, furnitureMat(0x2a2118, 0.6, "wood"));
   panel.position.set(x, 1.35, z);
   g.add(panel);
   const screen = new THREE.Mesh(new THREE.PlaneGeometry(1.9, 1.05),
@@ -899,18 +1038,18 @@ function tvWall(g, x, z, night) {
       emissive: new THREE.Color(0x2a4a7a), emissiveIntensity: night ? 1.1 : 0.5 }));
   screen.position.set(x, 1.42, z + 0.07);
   g.add(screen);
-  const unit = box(2.8, 0.42, 0.45, furnitureMat(0x3a2c1f, 0.7));
+  const unit = box(2.8, 0.42, 0.45, furnitureMat(0x3a2c1f, 0.7, "wood"));
   unit.position.set(x, 0.21, z + 0.2);
   g.add(unit);
 }
 function kitchen(g, x, z, w, night) {
-  const counter = box(w, 0.9, 0.65, furnitureMat(0x2f3540, 0.55));
+  const counter = box(w, 0.9, 0.65, furnitureMat(0x2f3540, 0.55, "hard"));
   counter.position.set(x, 0.45, z);
   g.add(counter);
-  const top = box(w + 0.08, 0.07, 0.72, furnitureMat(0xd8cbb2, 0.35));
+  const top = box(w + 0.08, 0.07, 0.72, furnitureMat(0xd8cbb2, 0.35, "hard"));
   top.position.set(x, 0.93, z);
   g.add(top);
-  const uppers = box(w * 0.8, 0.7, 0.35, furnitureMat(0x39404d, 0.6));
+  const uppers = box(w * 0.8, 0.7, 0.35, furnitureMat(0x39404d, 0.6, "hard"));
   uppers.position.set(x, 1.95, z - 0.14);
   g.add(uppers);
   // under-cabinet strip, the detail that makes a kitchen read as modern
@@ -921,7 +1060,7 @@ function kitchen(g, x, z, w, night) {
   g.add(strip);
 }
 function pendant(g, x, y, z, night) {
-  const cord = box(0.03, 0.7, 0.03, furnitureMat(0x1a1a1a));
+  const cord = box(0.03, 0.7, 0.03, furnitureMat(0x1a1a1a, 0.8, "hard"));
   cord.position.set(x, y + 0.35, z);
   g.add(cord);
   const shade = new THREE.Mesh(new THREE.ConeGeometry(0.26, 0.3, 14, 1, true),
@@ -1159,9 +1298,17 @@ function buildInterior(cfg) {
   const inset = 0.18;               // wall thickness
   const iw = W - inset * 2, id = D - inset * 2;
 
-  // floor: polished tile, which is what almost every house here uses
+  /* Floor: polished marble slabs, which is what almost every house at this
+     level here uses. It was an untextured plane — the single largest surface
+     in every shot, and made of nothing. The slab joints matter as much as the
+     veining: without a grid the eye has no way to read how big the room is,
+     which is most of why these interiors felt like a void. */
+  // cloned, because tex() caches by key and the tiling depends on room size
+  const floorTex = marbleTex(floorC).clone();
+  floorTex.needsUpdate = true;
+  floorTex.repeat.set(Math.max(2, Math.round(iw / 1.2)), Math.max(2, Math.round(id / 1.2)));
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(iw, id),
-    new THREE.MeshStandardMaterial({ color: floorC, roughness: 0.14, metalness: 0.35 }));
+    new THREE.MeshStandardMaterial({ map: floorTex, roughness: 0.3, metalness: 0.0 }));
   floor.rotation.x = -Math.PI / 2;
   floor.receiveShadow = true;
   g.add(floor);
@@ -1179,6 +1326,25 @@ function buildInterior(cfg) {
   const back = box(iw, H, 0.12, wallM); back.position.set(0, H / 2, -id / 2); g.add(back);
   const left = box(0.12, H, id, wallM); left.position.set(-iw / 2, H / 2, 0); g.add(left);
   const right = box(0.12, H, id, wallM); right.position.set(iw / 2, H / 2, 0); g.add(right);
+
+  /* Skirting and cornice. Six boxes, and they do more for how finished a room
+     looks than anything else here: without them the walls ran straight into
+     the floor and the ceiling on a hairline, which is the one thing no real
+     room does and the tell that you are standing in a model. */
+  const trimM = mat(0xf4f1ea, 0.6, 0.02);
+  const trim = (w, h, d, x, y, z) => {
+    const b = box(w, h, d, trimM);
+    b.position.set(x, y, z);
+    b.castShadow = b.receiveShadow = true;
+    g.add(b);
+  };
+  const SK = 0.13, CO = 0.1;                      // skirting / cornice height
+  trim(iw, SK, 0.05, 0, SK / 2, -id / 2 + 0.085);          // skirting, back
+  trim(0.05, SK, id, -iw / 2 + 0.085, SK / 2, 0);          // ...left
+  trim(0.05, SK, id, iw / 2 - 0.085, SK / 2, 0);           // ...right
+  trim(iw, CO, 0.09, 0, H - CO / 2 - 0.02, -id / 2 + 0.105);  // cornice, back
+  trim(0.09, CO, id, -iw / 2 + 0.105, H - CO / 2 - 0.02, 0);  // ...left
+  trim(0.09, CO, id, iw / 2 - 0.105, H - CO / 2 - 0.02, 0);   // ...right
 
   // feature wall in the finish's accent, behind the lounge
   const featM = cfg.finish === "brick" ? mat(0x8d4a34, 0.9, 0.02, brickTex())
@@ -1298,16 +1464,16 @@ function buildInterior(cfg) {
       g.add(header);
       zone("Kitchen", iw * 0.26, -id / 2 + 1.2);
       // the working kitchen beyond
-      const dirty = box(iw * 0.3, 0.9, 0.55, furnitureMat(0x3a4048, 0.6));
+      const dirty = box(iw * 0.3, 0.9, 0.55, furnitureMat(0x3a4048, 0.6, "hard"));
       dirty.position.set(iw * 0.26, 0.45, -id / 2 + 1.5);
       g.add(dirty);
       zone("Dirty Kitchen", iw * 0.26, -id / 2 + 2.2);
     } else {
       // open plan: island facing the dining
-      const island = box(iw * 0.26, 0.92, 0.9, furnitureMat(0x2f3540, 0.55));
+      const island = box(iw * 0.26, 0.92, 0.9, furnitureMat(0x2f3540, 0.55, "hard"));
       island.position.set(iw * 0.26, 0.46, -id * 0.24);
       g.add(island);
-      const islandTop = box(iw * 0.28, 0.08, 1.0, furnitureMat(0xd8cbb2, 0.3));
+      const islandTop = box(iw * 0.28, 0.08, 1.0, furnitureMat(0xd8cbb2, 0.3, "hard"));
       islandTop.position.set(iw * 0.26, 0.94, -id * 0.24);
       g.add(islandTop);
       for (let i = 0; i < 3; i++) {
@@ -1328,7 +1494,7 @@ function buildInterior(cfg) {
     const gw = box(0.12, H, id * 0.3, wallM2);
     gw.position.set(gx + iw * 0.16, H / 2, gz);
     g.add(gw);
-    const bed = box(1.5, 0.5, 2.0, furnitureMat(0x6d5a48));
+    const bed = box(1.5, 0.5, 2.0, furnitureMat(0x6d5a48, 0.8, "wood"));
     bed.position.set(gx, 0.3, gz);
     g.add(bed);
     const head = box(1.6, 0.8, 0.12, featM);
@@ -1346,18 +1512,18 @@ function buildInterior(cfg) {
     const pwall = box(0.1, H, 1.5, wallM2);
     pwall.position.set(px2 - 0.75, H / 2, pz2);
     g.add(pwall);
-    const basin = box(0.5, 0.14, 0.36, furnitureMat(0xe8e4dc, 0.3));
+    const basin = box(0.5, 0.14, 0.36, furnitureMat(0xe8e4dc, 0.3, "hard"));
     basin.position.set(px2, 0.85, pz2 - 0.5);
     g.add(basin);
     zone("Powder Rm", px2 - 0.2, pz2);
   }
 
   // plant in the corner
-  const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.17, 0.4, 12), furnitureMat(0x8a6a4a));
+  const pot = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.17, 0.4, 12), furnitureMat(0x8a6a4a, 0.8, "hard"));
   pot.position.set(iw / 2 - 0.6, 0.2, id / 2 - 0.7);
   g.add(pot);
   for (let i = 0; i < 5; i++) {
-    const leaf = box(0.6, 0.05, 0.2, furnitureMat(0x2f6b34, 0.9));
+    const leaf = box(0.6, 0.05, 0.2, furnitureMat(0x2f6b34, 0.9, "hard"));
     leaf.geometry.translate(0.3, 0, 0);
     leaf.position.set(iw / 2 - 0.6, 0.62, id / 2 - 0.7);
     leaf.rotation.y = (i / 5) * Math.PI * 2;
@@ -2070,6 +2236,7 @@ export {
   buildHouse, buildInterior, estimate, fmtPKR, starfield,
   mat, box, frameMat, window3d, glow, glowTex,
   plasterTex, travertineTex, woodCladTex, paverTex, grassTex,
+  marbleTex, fabricTex, timberTex,
   ceilingFan, coveCeiling, sectional, accentChair, table, rug, tvWall,
   kitchen, pendant, sconce, artwork, curtains, staircase, roomLabel
 };
