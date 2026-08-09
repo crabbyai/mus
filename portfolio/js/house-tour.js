@@ -15,13 +15,13 @@ import * as THREE from "three";
 import {
   state, PLOTS, FINISHES,
   buildHouse, buildInterior,
-  mat, box, plasterTex, paverTex, grassTex, glow, window3d, woodCladTex, marbleTex
-} from "./house-builder.js?v=21";
+  mat, box, plasterTex, paverTex, grassTex, glow, window3d, woodCladTex
+} from "./house-builder.js?v=22";
 // Must match the ?v= on the <script> tag for estate3d.js in index.html. A
 // module is keyed by its full URL, so two different query strings load two
 // copies of it — see the guard at the bottom of estate3d.js for what that
 // cost last time they drifted apart.
-import { ARCHETYPES, PROPERTY_MODELS, skyEnv } from "./estate3d.js?v=24";
+import { ARCHETYPES, PROPERTY_MODELS, skyEnv } from "./estate3d.js?v=25";
 import { scaled } from "./gfx-budget.js?v=2";
 
 /* ---------- module state ---------- */
@@ -214,24 +214,9 @@ function buildWorld(cfg) {
   lintel.position.set(0, H - 0.25, D / 2 + 0.14);
   g.add(lintel);
 
-  /* Floor + ceiling. This is the floor you actually walk on — buildInterior
-     draws one too, but it is dropped a few lines below to stop the two
-     z-fighting, which is why texturing it there had no effect at all. Marble
-     slabs, sized so a joint falls about every 1.2m: the grid is what lets the
-     eye read the size of the room, and without it a big room is just a white
-     void with furniture standing in it. */
-  const marble = marbleTex((cfg.palette && cfg.palette.floor) || 0xd7d2c8).clone();
-  marble.needsUpdate = true;
-  // 2.4m per tile, so each slab is a 1.2m square — big enough to still read
-  // as a grid at the far end of an 18m room rather than mipping into a haze.
-  marble.repeat.set(Math.max(2, Math.round(W / 2.4)), Math.max(2, Math.round(D / 2.4)));
-  /* Dielectric, and only semi-polished. It was metalness 0.3 at roughness
-     0.14 — a near-mirror, and marble is not a metal: at that setting most of
-     what you saw was the environment reflected back at you, which is a smooth
-     gradient, and the stone underneath was buried beneath it. This is why the
-     floor stayed a flat white sheet no matter how strong the texture got. */
+  // floor + ceiling
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(W, D),
-    new THREE.MeshStandardMaterial({ map: marble, roughness: 0.3, metalness: 0.0 }));
+    new THREE.MeshStandardMaterial({ color: 0xd7d2c8, roughness: 0.12, metalness: 0.4 }));
   floor.rotation.x = -Math.PI / 2;
   floor.position.y = 0.01;
   floor.receiveShadow = true;
@@ -332,8 +317,7 @@ function buildWorld(cfg) {
   g.add(duvet);
 
   /* --- lighting --- */
-  const hemi = new THREE.HemisphereLight(night ? 0x50607f : 0xbcd0ff, 0x5a5240, night ? 0.85 : 1.35);
-  g.add(hemi);
+  g.add(new THREE.HemisphereLight(night ? 0x50607f : 0xbcd0ff, 0x5a5240, night ? 0.85 : 1.35));
   // warm bounce off the floor, which flat ambient alone never gives
   const bounce = new THREE.DirectionalLight(night ? 0x6a5a48 : 0xffe8c8, night ? 0.25 : 0.55);
   bounce.position.set(0, -4, 6);
@@ -354,29 +338,18 @@ function buildWorld(cfg) {
   sun.shadow.camera.top = sc; sun.shadow.camera.bottom = -sc;
   sun.shadow.camera.far = 80; sun.shadow.bias = -0.0007;
   g.add(sun);
-  /* The daylight rig is calibrated for standing on the drive looking at a
-     house. Indoors it is the wrong rig entirely: the interior has no front
-     wall, so a 2.6-intensity sun and a full hemisphere pour straight in and
-     every surface clips — which is why the rooms opened as a white void with
-     furniture floating in it. Kept as-is outside, dimmed to something a room
-     actually receives once you cross the threshold. */
-  g.userData.daylight = { sun, hemi, bounce,
-    outside: [sun.intensity, hemi.intensity, bounce.intensity],
-    inside: [sun.intensity * 0.16, hemi.intensity * 0.2, bounce.intensity * 0.4] };
   /* Warm fills so rooms read while walking. These hung 0.4m under the ceiling
      with physical falloff, which means the ceiling right above each one was
      taking roughly a hundred times the light the floor was — every interior
      opened with a blown white ceiling and a blown white floor, and the bloom
      pass then spread it over everything else. Dropped to head height and
-     dimmed hard: five of these at the old intensity put five times full white
-     on the floor, so the marble underneath was clipping to a flat sheet no
-     matter what it was made of. scene.environment carries the fill now. */
+     dimmed to match: the light now lands on the room instead of the slab. */
   for (const [lx, lz] of [[0, D * 0.2], [0, -D * 0.2], [-W * 0.25, 0], [W * 0.25, 0]]) {
-    const pl = new THREE.PointLight(night ? 0xffcf9a : 0xf0f4ff, night ? 2.8 : 1.6, 14, 2);
+    const pl = new THREE.PointLight(night ? 0xffcf9a : 0xf0f4ff, night ? 13 : 8, 15, 2);
     pl.position.set(lx, H - 1.05, lz);
     g.add(pl);
   }
-  const upL = new THREE.PointLight(night ? 0xffcf9a : 0xf0f4ff, night ? 2.4 : 1.4, 14, 2);
+  const upL = new THREE.PointLight(night ? 0xffcf9a : 0xf0f4ff, night ? 11 : 7, 15, 2);
   upL.position.set(0, upY + 1.7, -D * 0.25);
   g.add(upL);
   if (night) glow(g, 0, 2.4, D / 2 + 0.4, 3.2);
@@ -391,20 +364,6 @@ function buildWorld(cfg) {
       if (c === exteriorGrp || c.isLight) return;
       g.remove(c); interiorGrp.add(c);
     });
-    /* The sky environment is right for the elevation you walk up to and wrong
-       for the room you walk into: a floor indoors does not see the sky, but
-       scene.environment gives every upward-facing surface the full hemisphere
-       regardless — measured, it was the largest single source of light in
-       here, and no amount of dimming the lamps touched it. Turned down rather
-       than off, so the marble, the glazing and the steel still reflect
-       something; a mirror with nothing in it is what made the floor read as
-       a flat sheet in the first place. */
-    interiorGrp.traverse((o) => {
-      if (!o.material) return;
-      (Array.isArray(o.material) ? o.material : [o.material]).forEach((m) => {
-        if (!m.userData.shared && "envMapIntensity" in m) m.envMapIntensity = 0.28;
-      });
-    });
     g.add(interiorGrp);
     interiorGrp.visible = false;
     phase = "outside";
@@ -413,28 +372,6 @@ function buildWorld(cfg) {
   }
 
   return g;
-}
-
-/* Swap the daylight rig between "standing on the drive" and "standing in a
-   room". Same lights, different intensities — see buildWorld. */
-function setDaylight(which) {
-  const d = world && world.userData.daylight;
-  if (!d) return;
-  const v = d[which] || d.outside;
-  d.sun.intensity = v[0];
-  d.hemi.intensity = v[1];
-  d.bounce.intensity = v[2];
-  /* And stop down going in, the way an eye does. A room lit to look right
-     under a midday sun outside is a room where every pale surface sits at the
-     top of the range and the marble, the plaster and the joinery all clip to
-     the same white. */
-  /* 0.68 indoors, arrived at by measuring rather than by eye: at the old
-     level the floor sat at a mean of 229/255 with a standard deviation of 5,
-     which is the tone curve's shoulder — a 28% difference in albedo between
-     one marble slab and the next was being compressed into two or three
-     levels. Down here the same floor reads in the 180s with over twice the
-     spread, and the stone is visible as stone. */
-  if (renderer) renderer.toneMappingExposure = which === "inside" ? 0.7 : 1.12;
 }
 
 /* ============================================================
@@ -592,13 +529,11 @@ function loop(now) {
       phase = "inside";
       exteriorGrp.visible = false;
       interiorGrp.visible = true;
-      setDaylight("inside");
       if (promptEl) promptEl.classList.remove("is-on");
     } else if (phase === "inside" && nearDoor && pos.z > doorZ + 0.5) {
       phase = "outside";
       exteriorGrp.visible = true;
       interiorGrp.visible = false;
-      setDaylight("outside");
     }
     if (promptEl) {
       const show = phase === "outside" && pos.z < doorZ + 6 && pos.z > doorZ;
@@ -781,32 +716,5 @@ function closeTour() {
 window.WalkTour = { open: openTour, close: closeTour,
   /* test hook: jump to a spot so the walk-in doesn't have to be simulated */
   _tp: (x, z, ry) => { pos.x = x; pos.z = z; if (ry != null) { yaw = ry; } },
-  _pitch: (v) => { pitch = v; },
-  /* test hook: scale every light and the exposure at once, so the indoor
-     levels can be set by measuring the render rather than by eye */
-  _light: (k, exp) => {
-    if (!world) return;
-    world.traverse((o) => { if (o.isLight) o.intensity *= k; });
-    if (renderer && exp) renderer.toneMappingExposure = exp;
-  },
-  _dbg: () => ({ running, phase, pos: [ +pos.x.toFixed(2), +pos.y.toFixed(2), +pos.z.toFixed(2) ],
-                 keys: Object.keys(keys).filter(k => keys[k]), walls: walls.length, zones: zones.length,
-                 exposure: renderer ? +renderer.toneMappingExposure.toFixed(2) : null,
-                 lights: world ? world.children.filter((c) => c.isLight)
-                   .map((c) => c.type + ":" + c.intensity.toFixed(2)) : [] }),
-  /* test hook: what a given surface is actually made of */
-  _mat: () => {
-    if (!world) return null;
-    const out = [];
-    world.traverse((o) => {
-      if (!o.material || !o.geometry || o.geometry.type !== "PlaneGeometry") return;
-      if (Math.abs(o.rotation.x + Math.PI / 2) > 0.01) return;   // floors only
-      const m = o.material;
-      out.push({ y: +o.position.y.toFixed(3),
-                 size: [o.geometry.parameters.width, o.geometry.parameters.height],
-                 color: "#" + m.color.getHexString(), map: !!m.map,
-                 repeat: m.map ? [m.map.repeat.x, m.map.repeat.y] : null,
-                 metal: m.metalness, visible: o.visible });
-    });
-    return out;
-  } };
+  _dbg: () => ({ running, pos: [ +pos.x.toFixed(2), +pos.y.toFixed(2), +pos.z.toFixed(2) ],
+                 keys: Object.keys(keys).filter(k => keys[k]), walls: walls.length, zones: zones.length }) };

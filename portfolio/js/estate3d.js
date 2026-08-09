@@ -29,8 +29,6 @@ function canvasTex(key, draw, repeat = [2, 2], size = 256) {
   t.wrapS = t.wrapT = THREE.RepeatWrapping;
   t.repeat.set(repeat[0], repeat[1]);
   t.colorSpace = THREE.SRGBColorSpace;
-  t.anisotropy = 16;   // these are read at glancing angles too — see house-builder.js
-
   return (texCache[key] = t);
 }
 const hexCss = (h) => `#${h.toString(16).padStart(6, "0")}`;

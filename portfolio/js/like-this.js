@@ -15,7 +15,7 @@
    "fine-tune in 3D" button hands the exact same spec across.
    ============================================================ */
 import { PLOTS, STYLES, FINISHES, KITCHENS, FEATURES, estimate, fmtPKR }
-  from "./house-builder.js?v=21";
+  from "./house-builder.js?v=22";
 
 const WA = "16134083945";
 
