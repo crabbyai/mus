@@ -21,7 +21,7 @@ import {
 // module is keyed by its full URL, so two different query strings load two
 // copies of it — see the guard at the bottom of estate3d.js for what that
 // cost last time they drifted apart.
-import { ARCHETYPES, PROPERTY_MODELS } from "./estate3d.js?v=14";
+import { ARCHETYPES, PROPERTY_MODELS } from "./estate3d.js?v=17";
 
 /* ---------- module state ---------- */
 let renderer, scene, camera, composer = null, bloomPass = null, ssaoPass = null;
@@ -123,6 +123,15 @@ function buildWorld(cfg) {
   if (cfg.archetype && ARCHETYPES[cfg.archetype]) {
     exteriorGrp = new THREE.Group();
     const model = ARCHETYPES[cfg.archetype]();
+    /* Those models are built to be looked at from outside: they stand on a
+       dark display plinth and carry their own miniature gate. In here that
+       reads as a house on a dais in the middle of your lawn, two metres
+       behind a second gate. Both are tagged at source in js/estate3d.js. */
+    model.children.slice().forEach((c) => { if (c.userData.tourOmit) model.remove(c); });
+    model.updateMatrixWorld(true);
+    // ...then set it down on the ground, since it was sitting on the plinth.
+    const rest = new THREE.Box3().setFromObject(model);
+    model.position.y -= rest.min.y;
     model.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
     exteriorGrp.add(model);
     g.add(exteriorGrp);
@@ -135,7 +144,13 @@ function buildWorld(cfg) {
     addWall(cx - bw / 2 - 0.3, (bbox.min.z + bbox.max.z) / 2, 0.6, bd);   // left flank
     addWall(cx + bw / 2 + 0.3, (bbox.min.z + bbox.max.z) / 2, 0.6, bd);   // right flank
     addWall(cx, bbox.min.z - 0.3, bw, 0.6);                               // rear
-    addZone("Front Elevation", cx, doorZ + 2.2, bw, 4.0);
+    /* Reach from the front door out to where the driveway zone starts. A fixed
+       4m band left a gap between the two: dropping the boundary wall from the
+       model pulled its front edge in to the actual front door, so there were
+       several metres of lawn where the only zone that matched was the foyer —
+       and the readout said "Entrance Foyer" while you were still outside. */
+    const lawnEdge = Math.max(doorZ + 1.5, D / 2);
+    addZone("Front Elevation", cx, (doorZ + lawnEdge) / 2, Math.max(bw, W), lawnEdge - doorZ);
   }
 
   /* --- house shell: four walls with a doorway gap in the front --- */

@@ -183,7 +183,7 @@
 <link rel="preload" href="assets/fonts/playfair-display-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="assets/fonts/manrope-latin-300-normal.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="stylesheet" href="css/fonts.css" />
-<link rel="stylesheet" href="css/style.css?v=70" />
+<link rel="stylesheet" href="css/style.css?v=72" />
 <link rel="stylesheet" href="css/enhance.css" />
 </head>
 <body>
@@ -1336,19 +1336,28 @@
         <strong>The Margalla View Manor</strong>
         <span>F-7/2, Islamabad</span>
         <em>Sold · PKR 38 Crore</em>
-        <button class="showcase3d__cta" type="button" data-showcase-cta="The Margalla View Manor|F-7/2, Islamabad">Find me one like this <span aria-hidden="true">→</span></button>
+        <div class="showcase3d__acts">
+          <button class="showcase3d__cta showcase3d__cta--walk" type="button" data-showcase-walk="0">Step inside <span aria-hidden="true">▷</span></button>
+          <button class="showcase3d__cta" type="button" data-showcase-cta="The Margalla View Manor|F-7/2, Islamabad">Find me one like this <span aria-hidden="true">→</span></button>
+        </div>
       </div>
       <div class="showcase3d__caption glass">
         <strong>Phase 6 Palazzo</strong>
         <span>DHA Phase 6, Lahore</span>
         <em>Sold · PKR 13 Crore</em>
-        <button class="showcase3d__cta" type="button" data-showcase-cta="Phase 6 Palazzo|DHA Phase 6, Lahore">Find me one like this <span aria-hidden="true">→</span></button>
+        <div class="showcase3d__acts">
+          <button class="showcase3d__cta showcase3d__cta--walk" type="button" data-showcase-walk="6">Step inside <span aria-hidden="true">▷</span></button>
+          <button class="showcase3d__cta" type="button" data-showcase-cta="Phase 6 Palazzo|DHA Phase 6, Lahore">Find me one like this <span aria-hidden="true">→</span></button>
+        </div>
       </div>
       <div class="showcase3d__caption glass">
         <strong>Model Town Estate</strong>
         <span>Model Town Block C, Lahore</span>
         <em>Sold · PKR 16 Crore</em>
-        <button class="showcase3d__cta" type="button" data-showcase-cta="Model Town Estate|Model Town Block C, Lahore">Find me one like this <span aria-hidden="true">→</span></button>
+        <div class="showcase3d__acts">
+          <button class="showcase3d__cta showcase3d__cta--walk" type="button" data-showcase-walk="9">Step inside <span aria-hidden="true">▷</span></button>
+          <button class="showcase3d__cta" type="button" data-showcase-cta="Model Town Estate|Model Town Block C, Lahore">Find me one like this <span aria-hidden="true">→</span></button>
+        </div>
       </div>
     </div>
     <button class="showcase3d__look" id="showcaseLook" type="button" aria-pressed="false" title="Toggle day / night">☀</button>
@@ -1808,9 +1817,14 @@
     <div class="lightbox__body">
       <p class="lightbox__loc" id="lbLoc"></p>
       <h3 id="lbTitle"></h3>
-      <button class="btn btn--gold lightbox__tour" id="lbTourBtn" type="button">
-        <span class="lightbox__tour-ico">⌂</span> Build Me One Like This
-      </button>
+      <div class="lightbox__acts">
+        <button class="btn btn--gold lightbox__tour" id="lbTourBtn" type="button">
+          <span class="lightbox__tour-ico">⌂</span> Build Me One Like This
+        </button>
+        <button class="btn btn--ghost lightbox__walk" id="lbWalkBtn" type="button">
+          <span aria-hidden="true">▷</span> Step Inside This One
+        </button>
+      </div>
       <p class="lightbox__desc" id="lbDesc"></p>
       <div class="lightbox__specs" id="lbSpecs"></div>
       <ul class="lightbox__features" id="lbFeatures"></ul>
@@ -1823,14 +1837,14 @@
 <script src="js/vendor/ScrollTrigger.min.js"></script>
 <script src="js/vendor/lenis.min.js"></script>
 <script src="js/lead-relay.js?v=2"></script>
-<script src="js/main.js?v=19"></script>
+<script src="js/main.js?v=20"></script>
 <script src="js/palette.js?v=1" defer></script>
 <script type="importmap">
 { "imports": { "three": "./js/vendor/three.module.min.js" } }
 </script>
-<script type="module" src="js/estate3d.js?v=14"></script>
+<script type="module" src="js/estate3d.js?v=17"></script>
 <script type="module" src="js/house-builder.js?v=12"></script>
-<script type="module" src="js/house-tour.js?v=7"></script>
+<script type="module" src="js/house-tour.js?v=9"></script>
 <script type="module" src="js/like-this.js?v=5"></script>
 <script type="module" src="js/city3d.js?v=32"></script>
 <script src="js/tools.js?v=5" defer></script>

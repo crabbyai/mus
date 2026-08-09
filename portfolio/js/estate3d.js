@@ -228,6 +228,10 @@ function parapet(w, d, color = CREAM) {
 // boundary wall + black steel gate + pillar lamps + paver driveway
 function frontage({ width = 8.4, gateX = 0.9, z = 3.2 } = {}) {
   const g = new THREE.Group();
+  // Dropped in the walkable tour too — that world builds its own boundary wall
+  // at the edge of the plot, and you'd otherwise meet a second gate two metres
+  // from the front door.
+  g.userData.tourOmit = true;
   const wallH = 0.78;
   const mkWall = (len, x) => {
     const w = box(len, wallH, 0.16, CREAM);
@@ -317,6 +321,10 @@ function pool(w, d, x, z) {
    inside the edge, where nothing can intersect it. */
 function plinth(r) {
   const grp = new THREE.Group();
+  // A display device, not a building. js/house-tour.js drops it when it walks
+  // you up to one of these models, or the house stands on a black dais in the
+  // middle of the lawn.
+  grp.userData.tourOmit = true;
   const baseGeo = new THREE.CylinderGeometry(r, r * 1.02, 0.22, 56);
   baseGeo.translate(0, 0.11, 0);
   const base = new THREE.Mesh(baseGeo, mat(PLINTH, 0.95, 0.05));
@@ -932,6 +940,19 @@ function initShowcase() {
   // Three homes at tens of crore each, and nothing to press. Each caption now
   // opens WhatsApp naming the house on screen, so the message arrives with
   // the context already in it rather than "hi, saw your site".
+  /* "Walk around them in 3D" stopped at the front gate. The walkable interior
+     already exists for all twelve sold homes — js/house-tour.js — so the
+     caption now opens it for the house on screen. window.HouseTour lives in
+     main.js, which is a plain script, hence the global rather than an import. */
+  section.querySelectorAll("[data-showcase-walk]").forEach((b) => {
+    b.addEventListener("click", () => {
+      const i = parseInt(b.getAttribute("data-showcase-walk"), 10);
+      const name = b.closest(".showcase3d__caption");
+      const title = name && name.querySelector("strong") ? name.querySelector("strong").textContent : "";
+      if (window.HouseTour) window.HouseTour.openProperty(i, title);
+    });
+  });
+
   section.querySelectorAll("[data-showcase-cta]").forEach((b) => {
     b.addEventListener("click", () => {
       const [title, where] = (b.getAttribute("data-showcase-cta") || "").split("|");
@@ -971,7 +992,12 @@ function initShowcase() {
     scrub: true,
     onUpdate(self) { progress = self.progress; }
   });
-  new IntersectionObserver(([e]) => { inView = e.isIntersecting; }).observe(section);
+  new IntersectionObserver(([e]) => {
+    inView = e.isIntersecting;
+    // Stands the fixed back-to-top button down while this section owns the
+    // screen — it sits on top of the caption's buttons on a phone.
+    document.body.classList.toggle("showcase-live", inView);
+  }).observe(section);
 
   /* Scrub is tied 1:1 to the scroll position, and the smooth-scroll library
      delivers that in wheel-sized steps — so the model used to jump a few

@@ -459,8 +459,18 @@ function openLightbox(i) {
       if (window.LikeThis) window.LikeThis.open(i);
     };
   }
+  // …and before that, the chance to walk through the one on screen
+  const walkBtn = document.getElementById("lbWalkBtn");
+  if (walkBtn) {
+    walkBtn.innerHTML = '<span aria-hidden="true">▷</span> Step Inside This One';
+    walkBtn.onclick = () => window.HouseTour && window.HouseTour.openProperty(i, p.title);
+  }
 }
 function closeLightbox() {
+  // The tool pages load this script but have no lightbox, and the Escape
+  // handler below is bound on every one of them — so this threw on every
+  // press of Escape on transfer-costs.html and its siblings.
+  if (!lightbox) return;
   lightbox.classList.remove("is-open");
   lightbox.setAttribute("aria-hidden", "true");
   if (lenis) lenis.start();
@@ -659,6 +669,13 @@ function openDealLightbox(d, i) {
       closeLightbox();
       if (window.LikeThis) window.LikeThis.openFromText(d.title + " " + (d.specs || ""), d.loc || d.title);
     };
+  }
+  // A live listing has no fixed design on file, so the walk-through is built
+  // from what the listing itself says — see tourConfigFromText.
+  const walkBtn = document.getElementById("lbWalkBtn");
+  if (walkBtn) {
+    walkBtn.innerHTML = '<span aria-hidden="true">▷</span> Walk a House Like This';
+    walkBtn.onclick = () => window.HouseTour && window.HouseTour.openDeal(i, d.title);
   }
 }
 
@@ -945,61 +962,83 @@ if (sortSelect) sortSelect.addEventListener("change", applySort);
 })();
 
 
-/* ---------- BUILDABLE SPEC FOR EACH SOLD HOME ----------
-   A sold house can't be toured into a sale — it's gone. What it can do is
-   act as a reference build: "one like this, on my plot". These are the twelve
-   closings written as construction briefs, so js/like-this.js can pre-fill a
-   builder request from whichever one the visitor points at.
+/* ---------- SPEC FOR EACH SOLD HOME ----------
+   Two jobs from one description. It's a construction brief, so js/like-this.js
+   can pre-fill a builder request from whichever house the visitor points at —
+   "one like this, on my plot". And it's a floor plan, so js/house-tour.js can
+   build the inside of that house to walk through.
+
+   The walkthrough was taken out once, on the argument that a tour of a sold
+   house can only show someone a house that is already gone. That undersold
+   it: what a buyer is actually judging is whether this agent sells the kind
+   of house they want to live in, and eleven seconds inside one answers that
+   better than any photograph. Both offers are on the table now.
+
+   `plan` picks the layout variant and `palette` the colours, so no two of the
+   twelve read alike inside — see buildInterior() in js/house-builder.js.
 
    Index matches PROPERTIES in this file and PROPERTY_MODELS in estate3d.js,
-   so the model in the lightbox and the spec you brief from are one design. */
+   so the model in the lightbox, the house you walk and the spec you brief
+   from are all one design. */
 const SOLD_SPECS = [
   // 0 · The Margalla View Manor — 2 Kanal, 7 bed, grand modern manor
   { plot: "2k", storeys: 2, style: "dha", finish: "greyWhite", roof: "flat",
+    plan: "grand", palette: { wall: 0xe8e3d8, floor: 0xdcd6c9, sofa: 0x4a5364, accent: 0xd6a52e, stone: 0xd8cbb2 },
     kitchen: "closed", features: { pool: true, lawn: true, wall: true, porch: true,
     balcony: true, guestRoom: true, servantQtr: true, powderRoom: true, solar: false } },
   // 1 · Villa Serena — 1 Kanal, 6 bed, designer
   { plot: "1k", storeys: 2, style: "dha", finish: "whiteWood", roof: "flat",
+    plan: "openModern", palette: { wall: 0xf2efe9, floor: 0xe2ded6, sofa: 0x6b7686, accent: 0xc9a45c },
     kitchen: "closed", features: { pool: true, lawn: true, wall: true, porch: true,
     balcony: true, guestRoom: true, servantQtr: true, powderRoom: true } },
   // 2 · The Enclave Residence — 10 Marla, grey structure
   { plot: "10m", storeys: 2, style: "dha", finish: "greyWhite", roof: "flat",
+    palette: { wall: 0xe6e3dd, floor: 0xd2cec6, sofa: 0x4f5966, accent: 0xb8912f },
     kitchen: "closed", features: { lawn: true, wall: true, porch: true, balcony: true,
     guestRoom: true, powderRoom: true, servantQtr: false, pool: false } },
   // 3 · Casa Blanca E-11 — 5 Marla, compact white
   { plot: "5m", storeys: 2, style: "glass", finish: "whiteWood", roof: "flat",
+    plan: "openModern", palette: { wall: 0xf6f4f0, floor: 0xe6e2da, sofa: 0x7c8798, accent: 0xd6a52e },
     kitchen: "open", features: { lawn: true, wall: true, porch: true, balcony: true,
     guestRoom: false, servantQtr: false, powderRoom: true, pool: false } },
   // 4 · Gulberg Greens Farmhouse — 4 Kanal, sprawling, tiled roof
   { plot: "2k", storeys: 1, style: "spanish", finish: "sandstone", roof: "hip",
+    plan: "farmhouse", palette: { wall: 0xe9e0cd, floor: 0xc2a678, sofa: 0x6d5a48, accent: 0x8d6a3a, stone: 0xc2a678 },
     kitchen: "closed", features: { pool: true, lawn: true, wall: true, porch: true,
     balcony: false, guestRoom: true, servantQtr: true, powderRoom: true } },
   // 5 · The Hilltop Modern — 10 Marla, glass-forward
   { plot: "10m", storeys: 2, style: "glass", finish: "greyWhite", roof: "flat",
+    plan: "openModern", palette: { wall: 0xeceae5, floor: 0xd7d2c8, sofa: 0x3f4855, accent: 0xc9a45c },
     kitchen: "open", features: { lawn: true, wall: true, porch: true, balcony: true,
     guestRoom: false, servantQtr: false, powderRoom: true, pool: false } },
   // 6 · Phase 6 Palazzo — 1 Kanal, classical, travertine
   { plot: "1k", storeys: 2, style: "colonial", finish: "travertine", roof: "hip",
+    plan: "colonialFormal", palette: { wall: 0xf0e9db, floor: 0xd8cbb2, sofa: 0x6d5a48, accent: 0xb8912f, stone: 0xd8cbb2 },
     kitchen: "closed", features: { pool: true, lawn: true, wall: true, porch: true,
     balcony: true, guestRoom: true, servantQtr: true, powderRoom: true } },
   // 7 · The Gulberg Heritage House — 2 Kanal, brick, colonial
   { plot: "2k", storeys: 2, style: "colonial", finish: "brick", roof: "hip",
+    plan: "grand", palette: { wall: 0xe4dcd0, floor: 0xcbbfa9, sofa: 0x5a4a3c, accent: 0x9d6b3a, stone: 0xc9b79a },
     kitchen: "closed", features: { lawn: true, wall: true, porch: true, balcony: true,
     guestRoom: true, servantQtr: true, powderRoom: true, pool: false } },
   // 8 · Bahria Orchard Villa — 10 Marla, modern white
   { plot: "10m", storeys: 2, style: "dha", finish: "whiteWood", roof: "flat",
+    palette: { wall: 0xf4f2ee, floor: 0xe0dcd4, sofa: 0x5d6878, accent: 0xd6a52e },
     kitchen: "closed", features: { lawn: true, wall: true, porch: true, balcony: true,
     guestRoom: true, powderRoom: true, servantQtr: false, pool: false } },
   // 9 · Model Town Estate — 1 Kanal, colonial kothi
   { plot: "1k", storeys: 2, style: "colonial", finish: "sandstone", roof: "hip",
+    plan: "colonialFormal", palette: { wall: 0xefe7d6, floor: 0xcdbb98, sofa: 0x6b5a46, accent: 0xa8823a, stone: 0xc2a678 },
     kitchen: "closed", features: { lawn: true, wall: true, porch: true, balcony: false,
     guestRoom: true, servantQtr: true, powderRoom: true, pool: false } },
   // 10 · Lake City Linear House — 10 Marla, linear modern
   { plot: "10m", storeys: 2, style: "dha", finish: "greyWhite", roof: "flat",
+    plan: "openModern", palette: { wall: 0xeeece7, floor: 0xd9d4cb, sofa: 0x4b5462, accent: 0xc9a45c },
     kitchen: "open", features: { lawn: true, wall: true, porch: true, balcony: true,
     guestRoom: false, servantQtr: false, powderRoom: true, pool: false } },
   // 11 · The Phase 5 Courtyard — 5 Marla, brick courtyard
   { plot: "5m", storeys: 2, style: "spanish", finish: "brick", roof: "flat",
+    plan: "courtyard", palette: { wall: 0xe8ddd2, floor: 0xc9a98d, sofa: 0x6a5647, accent: 0xb8722f },
     kitchen: "closed", features: { lawn: true, wall: true, porch: true, balcony: false,
     guestRoom: false, servantQtr: false, powderRoom: true, pool: false } }
 ];
@@ -1008,6 +1047,64 @@ const SOLD_SPECS = [
    script-scoped consts directly. The sold homes are the reference builds
    the "build me one like this" section works from. */
 window.SoldHomes = { PROPERTIES, SOLD_SPECS };
+
+/* The archetype each sold home's model renders. The tour walks you up to that
+   same model, so the exterior you approach is the one you were just looking
+   at rather than a generic box with the right dimensions. Mirrors
+   PROPERTY_MODELS in js/estate3d.js — this file is a plain script and can't
+   import it. */
+const SOLD_ARCHETYPES = ["manor", "modern", "greyTexture", "cube5", "farmhouse",
+  "corner", "palazzo", "colonialAtrium", "modernWhite", "colonial", "linear", "brick"];
+
+/* Available listings are live YouTube posts, so there's no fixed design to
+   walk — derive a plausible one from the listing's own title. */
+function tourConfigFromText(text) {
+  const t = (text || "").toLowerCase();
+  const plot = /2\s*kanal/.test(t) ? "2k"
+    : /kanal/.test(t) ? "1k"
+    : (() => { const m = t.match(/(\d+(?:\.\d+)?)\s*marla/); return m ? (parseFloat(m[1]) <= 6 ? "5m" : "10m") : "10m"; })();
+  const style = /spanish|mehal|villa/.test(t) ? "spanish"
+    : /kothi|colonial|heritage|palazzo|classic/.test(t) ? "colonial"
+    : /glass|corner|modern facade/.test(t) ? "glass" : "dha";
+  const finish = /brick/.test(t) ? "brick"
+    : /marble|travertine|luxury|palazzo/.test(t) ? "travertine"
+    : /white/.test(t) ? "whiteWood"
+    : /spanish|sand/.test(t) ? "sandstone" : "greyWhite";
+  return {
+    plot, style, finish,
+    storeys: /triple|3\s*storey/.test(t) ? 3 : /single/.test(t) ? 1 : 2,
+    roof: /spanish|kothi|colonial|heritage/.test(t) ? "hip" : "flat",
+    kitchen: "closed",
+    features: { lawn: true, wall: true, porch: true, balcony: true,
+                guestRoom: plot !== "5m", servantQtr: plot === "1k" || plot === "2k",
+                powderRoom: true, pool: /pool|swimming/.test(t) }
+  };
+}
+
+/* Public tour API. Each entry walks its own house — the Design Studio has its
+   own separate walk-through of whatever you're configuring there. */
+window.HouseTour = {
+  openProperty: (i, title) => {
+    if (!window.WalkTour) return false;
+    closeLightbox();
+    const p = PROPERTIES[i] || {};
+    const cfg = Object.assign({}, SOLD_SPECS[i] || SOLD_SPECS[2],
+      { archetype: SOLD_ARCHETYPES[i] || "modern" });
+    return window.WalkTour.open(cfg, title || p.title || "Virtual Tour");
+  },
+  openDeal: (i, title) => {
+    if (!window.WalkTour) return false;
+    closeLightbox();
+    const d = HOT_DEALS[i] || {};
+    const name = title || d.title || "Virtual Tour";
+    return window.WalkTour.open(tourConfigFromText(name + " " + (d.specs || "")), name);
+  },
+  // Used by the 3D showcase captions, which know the model but not the index.
+  openArchetype: (type, title) => {
+    const i = SOLD_ARCHETYPES.indexOf(type);
+    return window.HouseTour.openProperty(i < 0 ? 2 : i, title);
+  }
+};
 
 /* ---------- WHATSAPP LEAD FORM ---------- */
 const leadForm = document.getElementById("leadForm");

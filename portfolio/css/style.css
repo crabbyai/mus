@@ -341,8 +341,20 @@ body::before {
 /* Three homes worth tens of crore each, and until now nothing to press. The
    caption strip is pointer-events: none so it can't eat drags on the model,
    so the button on the visible caption has to opt back in. */
+/* Two things to do with a house you're looking at: go inside it, or ask for
+   one like it. Side by side rather than stacked so the card stays short —
+   js/estate3d.js frames the model into whatever the card leaves behind. */
+.showcase3d__acts { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.9rem; }
+.showcase3d__cta--walk {
+  background: rgba(243,238,227,0.08);
+  border-color: rgba(243,238,227,0.28);
+}
+.showcase3d__caption.is-active .showcase3d__cta--walk:hover,
+.showcase3d__caption.is-active .showcase3d__cta--walk:focus-visible {
+  background: rgba(243,238,227,0.18); border-color: rgba(243,238,227,0.5);
+}
 .showcase3d__cta {
-  margin-top: 0.9rem; align-self: flex-start; min-height: 44px;
+  margin-top: 0; align-self: flex-start; min-height: 44px;
   display: inline-flex; align-items: center; gap: 0.45rem;
   padding: 0 1.15rem; border-radius: 999px; cursor: pointer;
   background: rgba(201,164,92,0.16); color: var(--cream);
@@ -388,7 +400,9 @@ body::before {
    into whatever is left, so every pixel saved here is a bigger house. */
 @media (max-width: 700px) {
   .showcase3d__head { top: calc(7vh + 2.6rem); }
-  .showcase3d__captions { left: 5vw; right: 30vw; bottom: calc(9vh + 0.6rem); }
+  /* Full width, because two buttons don't fit in 70% of a phone. The counter
+     moves up under the title to make room. */
+  .showcase3d__captions { left: 5vw; right: 5vw; bottom: calc(9vh + 0.6rem); }
   /* right: 0 as well as left: 0 — shrink-to-fit made the card only as wide as
      its longest line, so aligning the button to its right edge did nothing. */
   .showcase3d__caption { width: auto; max-width: 100%; right: 0; padding: 0.85rem 1.1rem; }
@@ -397,9 +411,10 @@ body::before {
   .showcase3d__caption em { font-size: 0.9rem; margin-top: 0.2rem; }
   /* Pushed to the right-hand end of the card: the back-to-top button is fixed
      over the bottom-left corner on a phone and was sitting on top of it. */
-  .showcase3d__cta { margin-top: 0.6rem; font-size: 0.72rem; padding: 0 0.9rem; align-self: flex-end; }
-  .showcase3d__counter { right: 5vw; bottom: calc(9vh + 0.6rem); font-size: 0.95rem; }
-  .showcase3d__look { right: 5vw; bottom: calc(9vh + 3.4rem); }
+  .showcase3d__acts { margin-top: 0.6rem; justify-content: flex-end; }
+  .showcase3d__cta { font-size: 0.72rem; padding: 0 0.85rem; }
+  .showcase3d__counter { right: 5vw; top: calc(7vh + 8.4rem); bottom: auto; font-size: 0.95rem; }
+  .showcase3d__look { right: 5vw; top: calc(7vh + 10.6rem); bottom: auto; }
   /* No room for it once the caption is where it needs to be, and the counter
      already tells you there's more to come. */
   .showcase3d__hint { display: none; }
@@ -746,6 +761,12 @@ body::before {
   transition: opacity 0.4s var(--ease), transform 0.4s var(--ease), background 0.3s;
 }
 .to-top.is-visible { opacity: 1; pointer-events: auto; transform: none; }
+/* The 3D showcase pins full-screen and puts its own controls in every corner.
+   On a phone this button lands squarely on the caption's "Step inside", and
+   there is nowhere else for either to go — so it stands down while that
+   section holds the viewport. js/estate3d.js sets the class from the same
+   observer that decides whether to render. */
+body.showcase-live .to-top { opacity: 0; pointer-events: none; }
 .to-top:hover { background: var(--gold); color: var(--ink); }
 
 /* ============ BUILD ME ONE LIKE THIS ============ */
@@ -922,7 +943,14 @@ h3.likethis__reftitle:focus-visible {   /* beats the global [tabindex] ring belo
   .likethis__stamp { font-size: 0.6rem; letter-spacing: 0.1em; }
 }
 
-/* ============ TOUR BUTTON IN LIGHTBOX ============ */
+/* ============ TOUR BUTTONS IN LIGHTBOX ============ */
+/* Two offers, and they are not the same offer: walk the house that sold, or
+   brief one like it on your own plot. The build request is the one that leads
+   somewhere for a sold home, so it keeps the gold and the glow; the walk-
+   through sits beside it as the thing you do first. */
+.lightbox__acts { display: flex; gap: 0.6rem; margin: 1rem 0 1.6rem; flex-wrap: wrap; }
+.lightbox__acts > .btn { flex: 1 1 12rem; justify-content: center; margin: 0; }
+.lightbox__walk { font-size: 0.88rem; letter-spacing: 0.06em; }
 .lightbox__tour {
   width: 100%; justify-content: center;
   margin: 1rem 0 1.6rem;
