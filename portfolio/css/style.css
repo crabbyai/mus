@@ -312,11 +312,18 @@ body::before {
               linear-gradient(180deg, var(--ink) 0%, #0c1226 50%, var(--ink) 100%);
 }
 .showcase3d canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+/* 7vh is 56px on a laptop and the fixed nav is 88px tall, so the eyebrow was
+   sitting behind it — the phone case was fixed earlier, the desktop one wasn't. */
 .showcase3d__head {
-  position: absolute; top: 7vh; left: 0; right: 0; text-align: center; pointer-events: none;
+  position: absolute; top: calc(7vh + 2.8rem); left: 0; right: 0; text-align: center; pointer-events: none;
 }
 .showcase3d__head .section-title { margin-bottom: 0; }
-.showcase3d__captions { position: absolute; left: 4vw; bottom: 9vh; pointer-events: none; }
+/* Everything anchored to the bottom of this section has to clear the fixed
+   furniture that floats over it: the back-to-top button and the saved-search
+   toast bottom-left, the WhatsApp button bottom-right. All three are 48-58px
+   tall at 1.6rem from the edge, so 4.2rem of lift puts this strip above them.
+   The caption's own button was landing underneath the toast. */
+.showcase3d__captions { position: absolute; left: 4vw; bottom: calc(9vh + 4.2rem); pointer-events: none; }
 .showcase3d__caption {
   position: absolute; bottom: 0; left: 0; width: max-content;
   padding: 1.1rem 1.6rem; display: flex; flex-direction: column; gap: 0.15rem;
@@ -328,7 +335,7 @@ body::before {
 .showcase3d__caption span { color: var(--muted); font-size: 0.74rem; letter-spacing: 0.22em; text-transform: uppercase; }
 .showcase3d__caption em { color: var(--gold-bright); font-style: normal; font-family: var(--serif); font-size: 1rem; margin-top: 0.3rem; }
 .showcase3d__counter {
-  position: absolute; right: 4vw; bottom: 9vh;
+  position: absolute; right: 4vw; bottom: calc(9vh + 4.2rem);
   font-family: var(--serif); font-style: italic; color: var(--gold); font-size: 1.1rem; letter-spacing: 0.2em;
 }
 /* Three homes worth tens of crore each, and until now nothing to press. The
@@ -355,7 +362,7 @@ body::before {
    top-anchored control disappears off the top edge half way through the
    sequence, which is exactly when you'd want to press it. */
 .showcase3d__look {
-  position: absolute; right: 4vw; bottom: calc(9vh + 3.4rem); z-index: 2;
+  position: absolute; right: 4vw; bottom: calc(9vh + 7.6rem); z-index: 2;
   width: 44px; height: 44px; border-radius: 50%; cursor: pointer;
   display: grid; place-items: center; font-size: 1rem; line-height: 1;
   background: rgba(10,14,26,0.62); color: var(--gold-bright);
@@ -374,14 +381,28 @@ body::before {
    and the bottom-left corner to the back-to-top button, so everything anchored
    to the bottom of this section has to clear both — the caption and its button
    were landing underneath them. */
+/* A phone is 844px tall and the fixed dock takes the bottom 78 of it, so the
+   caption used to sit high enough to cover the house it was describing. It is
+   pushed down as far as the dock allows and tightened up, which hands the
+   middle of the screen back to the model — js/estate3d.js frames the house
+   into whatever is left, so every pixel saved here is a bigger house. */
 @media (max-width: 700px) {
-  /* 7vh puts the eyebrow behind the fixed nav on a phone. */
   .showcase3d__head { top: calc(7vh + 2.6rem); }
-  .showcase3d__captions { left: 5vw; right: 26vw; bottom: calc(9vh + 4.6rem); }
-  .showcase3d__caption { width: auto; max-width: 100%; }
-  .showcase3d__counter { bottom: calc(9vh + 4.6rem); }
-  .showcase3d__look { bottom: calc(9vh + 8rem); }
-  .showcase3d__hint { bottom: calc(2rem + 4.6rem); }
+  .showcase3d__captions { left: 5vw; right: 30vw; bottom: calc(9vh + 0.6rem); }
+  /* right: 0 as well as left: 0 — shrink-to-fit made the card only as wide as
+     its longest line, so aligning the button to its right edge did nothing. */
+  .showcase3d__caption { width: auto; max-width: 100%; right: 0; padding: 0.85rem 1.1rem; }
+  .showcase3d__caption strong { font-size: 1.05rem; line-height: 1.25; }
+  .showcase3d__caption span { font-size: 0.66rem; letter-spacing: 0.16em; }
+  .showcase3d__caption em { font-size: 0.9rem; margin-top: 0.2rem; }
+  /* Pushed to the right-hand end of the card: the back-to-top button is fixed
+     over the bottom-left corner on a phone and was sitting on top of it. */
+  .showcase3d__cta { margin-top: 0.6rem; font-size: 0.72rem; padding: 0 0.9rem; align-self: flex-end; }
+  .showcase3d__counter { right: 5vw; bottom: calc(9vh + 0.6rem); font-size: 0.95rem; }
+  .showcase3d__look { right: 5vw; bottom: calc(9vh + 3.4rem); }
+  /* No room for it once the caption is where it needs to be, and the counter
+     already tells you there's more to come. */
+  .showcase3d__hint { display: none; }
 }
 
 /* ============ PORTFOLIO ============ */
@@ -1101,7 +1122,11 @@ h3.likethis__reftitle:focus-visible {   /* beats the global [tabindex] ring belo
   width: 42px; height: 42px; border-radius: 50%; cursor: pointer; transition: all 0.3s;
 }
 .lightbox__close:hover { background: var(--gold); color: var(--ink); transform: rotate(90deg); }
-.lightbox__media { position: relative; }
+.lightbox__media {
+  position: relative;
+  background: radial-gradient(ellipse at 50% 72%, rgba(201,164,92,0.1), transparent 58%),
+              linear-gradient(180deg, #080d1c 0%, #121a34 100%);
+}
 .lightbox__media img { width: 100%; height: 100%; object-fit: cover; }
 .lightbox__media .card__sold { top: 1.2rem; left: 1.2rem; }
 .lightbox__3d { position: absolute; inset: 0; width: 100%; height: 100%; cursor: grab; touch-action: none; }

@@ -133,12 +133,31 @@ function box(w, h, d, color = CHARCOAL) {
   g.translate(0, h / 2, 0);
   return edged(g, color);
 }
+// A window used to be two flat planes stuck on the render, which is why the
+// elevations read as painted-on rectangles rather than openings. It is now a
+// head, a sill and two jambs standing proud of the wall with the glass set
+// back inside them, so the key light throws a real reveal shadow down one side
+// and the opening keeps its depth from every angle on the orbit.
 function windowPane(w, h) {
   const g = new THREE.Group();
-  const frame = new THREE.Mesh(new THREE.PlaneGeometry(w + 0.1, h + 0.1), mat(0x11151c, 0.7, 0.2));
+  const m = mat(0x11151c, 0.7, 0.2);
+  const t = 0.07, dep = 0.1;
+  const bar = (bw, bh, x, y) => {
+    const b = new THREE.Mesh(new THREE.BoxGeometry(bw, bh, dep), m);
+    b.position.set(x, y, dep / 2 - 0.02);
+    b.castShadow = b.receiveShadow = true;
+    g.add(b);
+  };
+  bar(w + t * 2, t, 0, (h + t) / 2);    // head
+  bar(w + t * 2, t, 0, -(h + t) / 2);   // sill
+  bar(t, h, -(w + t) / 2, 0);           // jambs
+  bar(t, h, (w + t) / 2, 0);
+  const back = new THREE.Mesh(new THREE.PlaneGeometry(w + t * 2, h + t * 2), m);
+  back.position.z = -0.012;
+  g.add(back);
   const pane = new THREE.Mesh(new THREE.PlaneGeometry(w, h), winMat);
-  pane.position.z = 0.006;
-  g.add(frame, pane);
+  pane.position.z = 0.006;   // set back inside the frame, not painted over it
+  g.add(pane);
   return g;
 }
 function windowGrid(parent, { cols, rows, w = 0.42, h = 0.5, gx = 0.3, gy = 0.42, x = 0, y = 1, z = 0, rotY = 0 }) {
@@ -290,15 +309,27 @@ function pool(w, d, x, z) {
   water.position.set(x, 0.24, z);
   return water;
 }
+/* The gold trim used to be a torus sitting ON the rim of the plinth. It stood
+   proud of the edge, so at the exact radius where the boundary wall meets the
+   plinth it passed straight through the wall and through the tree canopies —
+   which is most of what made the sequence look broken. It is now an inlay:
+   a flat ring engraved a few millimetres above the plinth surface and set
+   inside the edge, where nothing can intersect it. */
 function plinth(r) {
   const grp = new THREE.Group();
   const baseGeo = new THREE.CylinderGeometry(r, r * 1.02, 0.22, 56);
   baseGeo.translate(0, 0.11, 0);
-  grp.add(new THREE.Mesh(baseGeo, mat(PLINTH, 0.95, 0.05)));
-  const ring = new THREE.Mesh(new THREE.TorusGeometry(r, 0.022, 8, 72), mat(GOLD, 0.4, 0.8));
-  ring.rotation.x = Math.PI / 2;
-  ring.position.y = 0.22;
-  grp.add(ring);
+  const base = new THREE.Mesh(baseGeo, mat(PLINTH, 0.95, 0.05));
+  base.receiveShadow = true;
+  grp.add(base);
+  const inlay = new THREE.Mesh(
+    new THREE.RingGeometry(r * 0.958, r * 0.978, 84),
+    new THREE.MeshBasicMaterial({ color: GOLD, transparent: true, opacity: 0.55,
+      side: THREE.DoubleSide, depthWrite: false })
+  );
+  inlay.rotation.x = -Math.PI / 2;
+  inlay.position.y = 0.2215;
+  grp.add(inlay);
   return grp;
 }
 function hipRoof(w, d, tw, td, h, color = CHARCOAL_DARK) {
@@ -384,14 +415,16 @@ function buildDesigner({ grand = true, cream = false, withPool = false } = {}) {
   part(g, parB, 0.58, 0.5);
 
   // gated frontage with driveway + lawns
-  const front = frontage({ width: grand ? 9.4 : 8.2, z: 3.3 });
+  const front = frontage({ width: grand ? 9.4 : 7.6, z: 3.3 });
   front.position.y = 0.22;
   part(g, front, 0.66, 0.3);
 
   part(g, planter(-1.15, 1.75), 0.74);
   part(g, planter(1.3, 1.75), 0.76);
   // pool sits fully beside the house — volB ends at x 3.25 (grand) / 2.7
-  if (withPool) part(g, pool(2.2, 1.1, grand ? 4.5 : 3.95, 1.1), 0.8);
+  // Pulled in: its far corner used to reach past the edge of the plinth and
+  // hang in mid-air once the camera came round to that side.
+  if (withPool) part(g, pool(2, 1, grand ? 4.2 : 3.6, 1), 0.8);
   part(g, tree(grand ? -4.3 : -3.8, 1.4, 0.95), 0.84);
   part(g, cypress(grand ? 4.6 : 4, -0.6, 1), 0.88);
   return g;
@@ -410,18 +443,31 @@ function buildPalazzo() {
     // columns must reach the pediment underside (y 3.24), not float below it
     const colGeo = new THREE.CylinderGeometry(0.14, 0.16, 3.0, 12);
     colGeo.translate(0, 1.5, 0);
-    const col = edged(colGeo, CHARCOAL);
+    const col = edged(colGeo, CREAM);
     col.position.set(-1.8 + i * 1.2, 0.24, 2.2);
     part(g, col, 0.34 + i * 0.05, 0.4);
   }
+  /* The pediment used to be a triangular prism extruded through the whole
+     4.4m depth of the house, so it came out as a black tent twice the width
+     of the walls it sat on — the single ugliest thing in the sequence. A
+     palazzo has a low hipped roof over the body and a shallow pediment over
+     the portico only; that is what this is now. */
+  const roof = hipRoof(6.1, 4.3, 2.6, 1.6, 0.75);
+  roof.position.y = 3.22;
+  part(g, roof, 0.56, 0.7);
+  const entab = box(4.9, 0.3, 0.8, CREAM);
+  entab.position.set(0, 2.94, 2.2);
+  part(g, entab, 0.54, 0.4);
+  // Cream against the charcoal roof, and standing a head above the ridge —
+  // dark-on-dark at the same height just merged into the roofline.
   const shape = new THREE.Shape();
-  shape.moveTo(-3.1, 0); shape.lineTo(3.1, 0); shape.lineTo(0, 1.25); shape.closePath();
-  const pedGeo = new THREE.ExtrudeGeometry(shape, { depth: 4.4, bevelEnabled: false });
-  pedGeo.translate(0, 0, -2.2);
-  const pediment = edged(pedGeo, CHARCOAL_DARK);
-  pediment.position.y = 3.24;
+  shape.moveTo(-2.45, 0); shape.lineTo(2.45, 0); shape.lineTo(0, 1.05); shape.closePath();
+  const pedGeo = new THREE.ExtrudeGeometry(shape, { depth: 0.5, bevelEnabled: false });
+  pedGeo.translate(0, 0, -0.25);
+  const pediment = edged(pedGeo, CREAM);
+  pediment.position.set(0, 3.24, 2.3);
   part(g, pediment, 0.58, 0.7);
-  const front = frontage({ width: 9, z: 3.4 });
+  const front = frontage({ width: 8.4, z: 3.4 });
   front.position.y = 0.22;
   part(g, front, 0.68, 0.3);
   part(g, cypress(-3.7, 1.4, 1.1), 0.78);
@@ -461,7 +507,7 @@ function buildColonial({ atrium = false } = {}) {
     part(g, tree(4.4, 1.2, 1.15), 0.64);
   }
   part(g, tree(-4.3, 1, 1.3), 0.72);
-  const front = frontage({ width: 9.6, z: 3.6 });
+  const front = frontage({ width: 9, z: 3.6 });
   front.position.y = 0.22;
   part(g, front, 0.8, 0.3);
   return g;
@@ -554,7 +600,7 @@ function buildGreyTexture() {
   const par = parapet(4.9, 3.4, GRAPHITE);
   par.position.set(-0.4, 3.62, -0.2);
   part(g, par, 0.54, 0.5);
-  const front = frontage({ width: 8.8, z: 3.3 });
+  const front = frontage({ width: 8.2, z: 3.3 });
   front.position.y = 0.22;
   part(g, front, 0.64, 0.3);
   part(g, planter(1.5, 2.2), 0.74);
@@ -584,7 +630,7 @@ function buildCube5Marla() {
   const par = parapet(2.9, 3.3, CHARCOAL_DARK);
   par.position.set(-0.4, 4.32, 0);
   part(g, par, 0.56, 0.5);
-  const front = frontage({ width: 7, gateX: 0.8, z: 3.1 });
+  const front = frontage({ width: 6.2, gateX: 0.8, z: 3.1 });
   front.position.y = 0.22;
   part(g, front, 0.64, 0.3);
   part(g, planter(-1.75, 2), 0.74);
@@ -616,7 +662,7 @@ function buildCornerGlass() {
   const par = parapet(4.4, 3.2, CREAM);
   par.position.set(-0.6, 3.52, -0.3);
   part(g, par, 0.52, 0.5);
-  const front = frontage({ width: 9, z: 3.2 });
+  const front = frontage({ width: 8.6, z: 3.2 });
   front.position.y = 0.22;
   part(g, front, 0.62, 0.3);
   part(g, planter(0.9, 2.1), 0.72);
@@ -648,7 +694,7 @@ function buildBrick() {
   const par = parapet(4.5, 3.4, CREAM);
   par.position.set(-0.3, 3.32, 0);
   part(g, par, 0.5, 0.5);
-  const front = frontage({ width: 8.2, z: 3.1 });
+  const front = frontage({ width: 7.8, z: 3.1 });
   front.position.y = 0.22;
   part(g, front, 0.6, 0.3);
   part(g, planter(1.6, 2.1), 0.7);
@@ -683,9 +729,9 @@ const PROPERTY_MODELS = [
 function makeScene() {
   const scene = new THREE.Scene();
   scene.fog = new THREE.Fog(0x0a0f1e, 17, 36);
-  const amb = new THREE.AmbientLight(0x5a6a96, 1.7);
+  const amb = new THREE.AmbientLight(0x8a8ea6, 1.95);
   scene.add(amb);
-  const key = new THREE.DirectionalLight(0xffd9a0, 2.3);
+  const key = new THREE.DirectionalLight(0xffd9a0, 2.9);
   key.position.set(6, 9, 5);
   key.castShadow = true;
   key.shadow.mapSize.set(2048, 2048);
@@ -695,14 +741,20 @@ function makeScene() {
   key.shadow.camera.far = 32;
   key.shadow.bias = -0.0008;
   scene.add(key);
-  const rim = new THREE.DirectionalLight(0x4466cc, 1.05);
+  const rim = new THREE.DirectionalLight(0x5573c8, 1.15);
   rim.position.set(-7, 5, -6);
   scene.add(rim);
+  // A low bounce off the plinth. Without it the ground-floor elevation and the
+  // underside of every roof and balcony fell to pure black at dusk, which is
+  // what made the models read as flat cut-outs rather than buildings.
+  const bounce = new THREE.DirectionalLight(0x8899bb, 0.55);
+  bounce.position.set(1, -4, 6);
+  scene.add(bounce);
   // Kept so the showcase can be switched between dusk and daylight, the way
   // the city model and the design studio both can. The gold light strips and
   // window glow are modelled as emissive, so they simply stop reading as lit
   // once there's a real sun on the elevation — which is the point.
-  scene.userData.rig = { amb: amb, key: key, rim: rim };
+  scene.userData.rig = { amb: amb, key: key, rim: rim, bounce: bounce };
   return scene;
 }
 
@@ -710,9 +762,11 @@ function makeScene() {
    know what a house looks like at two in the afternoon. */
 const ESTATE_LOOKS = {
   dusk: { fog: 0x0a0f1e, near: 17, far: 36,
-          amb: [0x5a6a96, 1.7], key: [0xffd9a0, 2.3], rim: [0x4466cc, 1.05], exposure: 1.2 },
+          amb: [0x8a8ea6, 1.95], key: [0xffd9a0, 3.0], rim: [0x5573c8, 1.0],
+          bounce: [0x8899bb, 0.55], exposure: 1.25 },
   day:  { fog: 0xa8c2dc, near: 22, far: 52,
-          amb: [0xcfe0f2, 2.1], key: [0xfff4dc, 3.5], rim: [0x9fc0e8, 0.6], exposure: 1.0 }
+          amb: [0xcfe0f2, 2.6], key: [0xfff4dc, 3.6], rim: [0x9fc0e8, 0.7],
+          bounce: [0xc7d6e8, 0.5], exposure: 1.0 }
 };
 function setEstateLook(scene, renderer, name) {
   const L = ESTATE_LOOKS[name] || ESTATE_LOOKS.dusk;
@@ -724,6 +778,7 @@ function setEstateLook(scene, renderer, name) {
   r.amb.color.setHex(L.amb[0]); r.amb.intensity = L.amb[1];
   r.key.color.setHex(L.key[0]); r.key.intensity = L.key[1];
   r.rim.color.setHex(L.rim[0]); r.rim.intensity = L.rim[1];
+  if (r.bounce && L.bounce) { r.bounce.color.setHex(L.bounce[0]); r.bounce.intensity = L.bounce[1]; }
   if (renderer) renderer.toneMappingExposure = L.exposure;
 }
 function cinematic(renderer) {
@@ -733,6 +788,83 @@ function cinematic(renderer) {
   renderer.toneMappingExposure = 1.2;
 }
 const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+/* ---------- framing ----------
+   The showcase used to sit the camera at a fixed radius of 14.5 for every
+   house. The three of them are not the same size — the Palazzo's pediment is
+   a metre taller than the Manor's parapet and the Colonial's plinth is wider
+   than either — so at that one distance the tall one had its roof cut off by
+   the section title while the small one floated in the middle of the frame.
+
+   Instead: measure each house once, then solve for the distance that keeps
+   every corner of it inside the part of the viewport that isn't covered by
+   the title, the caption or the buttons. Solving beats a formula here because
+   the safe area is asymmetric (more chrome at the bottom than the top) and
+   changes with the viewport, and because a perspective camera's silhouette
+   isn't a simple function of the bounding box once you orbit it. */
+/* A bounding box is the wrong shape to frame these with. Every house stands on
+   a round plinth, so its box is square and its diagonal is 40% longer than the
+   thing actually is — fit to the box corners and the camera backs off far
+   enough to keep two empty corners on screen, leaving the house small in the
+   middle. Measure the real silhouette instead: the largest distance any vertex
+   reaches from the centre line, and the true top and bottom. That gives a
+   cylinder, which is what the composition is, and it is the same width from
+   every angle, so the framing holds all the way round the orbit. */
+function measure(house) {
+  applyAssembly(house, 1);
+  house.rotation.set(0, 0, 0);
+  house.updateMatrixWorld(true);
+  const inv = new THREE.Matrix4().copy(house.matrixWorld).invert();
+  const local = new THREE.Matrix4();
+  const v = new THREE.Vector3();
+  let radius = 0.01, lo = Infinity, hi = -Infinity;
+  house.traverse((o) => {
+    if (o.isLineSegments || !o.geometry || !o.geometry.attributes.position) return;
+    const pos = o.geometry.attributes.position;
+    local.multiplyMatrices(inv, o.matrixWorld);
+    for (let i = 0; i < pos.count; i++) {
+      v.fromBufferAttribute(pos, i).applyMatrix4(local);
+      const d = Math.hypot(v.x, v.z);
+      if (d > radius) radius = d;
+      if (v.y < lo) lo = v.y;
+      if (v.y > hi) hi = v.y;
+    }
+  });
+  // A ring top and bottom is enough to pin the silhouette from any azimuth.
+  const probes = [];
+  for (let i = 0; i < 12; i++) {
+    const a = (i / 12) * Math.PI * 2;
+    probes.push(new THREE.Vector3(Math.cos(a) * radius, lo, Math.sin(a) * radius));
+    probes.push(new THREE.Vector3(Math.cos(a) * radius, hi, Math.sin(a) * radius));
+  }
+  return { probes, radius, centre: new THREE.Vector3(0, (lo + hi) / 2, 0) };
+}
+const _p = new THREE.Vector3();
+// Place the camera on the orbit at distance d and look at the centre.
+function orbit(camera, fit, az, el, d) {
+  camera.position.set(
+    Math.sin(az) * Math.cos(el) * d,
+    fit.centre.y + Math.sin(el) * d,
+    Math.cos(az) * Math.cos(el) * d);
+  camera.lookAt(fit.centre);
+  camera.updateMatrixWorld(true);
+  camera.matrixWorldInverse.copy(camera.matrixWorld).invert();
+}
+// Smallest distance at which every corner lands inside the safe area, in NDC.
+function fitDistance(camera, fit, az, el, safe) {
+  let lo = fit.radius * 1.05, hi = fit.radius * 9;
+  for (let i = 0; i < 15; i++) {
+    const d = (lo + hi) / 2;
+    orbit(camera, fit, az, el, d);
+    let fits = true;
+    for (let c = 0; c < fit.probes.length; c++) {
+      _p.copy(fit.probes[c]).project(camera);
+      if (Math.abs(_p.x) > safe.x || _p.y > safe.top || _p.y < -safe.bottom) { fits = false; break; }
+    }
+    if (fits) hi = d; else lo = d;
+  }
+  return hi;
+}
 function applyAssembly(house, p) {
   house.traverse((o) => {
     if (o.userData.order === undefined) return;
@@ -766,15 +898,18 @@ function initShowcase() {
   cinematic(renderer);
 
   const scene = makeScene();
-  const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 60);
+  // far was 60 with the camera pinned at 14.5. Now the camera backs off as far
+  // as the framing needs, so give it room rather than clipping the plinth.
+  const camera = new THREE.PerspectiveCamera(38, 1, 0.5, 400);
   const rig = new THREE.Group();
   scene.add(rig);
 
   const SHOWCASE_TYPES = ["manor", "palazzo", "colonial"];
   const houses = SHOWCASE_TYPES.map((t) => {
     const h = ARCHETYPES[t]();
-    h.visible = false;
     rig.add(h);
+    h.userData.fit = measure(h);
+    h.visible = false;
     return h;
   });
 
@@ -809,11 +944,20 @@ function initShowcase() {
     });
   });
 
+  // How much of the frame the overlay chrome owns, in NDC. The title sits at
+  // the top, the caption and the counter along the bottom, and on a phone the
+  // caption is taller and the fixed contact dock eats another 78px — so the
+  // model is fitted into what's left rather than drawn over the lot.
+  const safe = { x: 0.92, top: 0.5, bottom: 0.6 };
   function size() {
     const w = section.clientWidth, h = section.clientHeight;
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
+    const phone = w < 700;
+    safe.x = phone ? 0.96 : 0.94;
+    safe.top = phone ? 0.52 : 0.5;
+    safe.bottom = phone ? 0.34 : 0.72;
   }
   size();
   window.addEventListener("resize", size);
@@ -829,9 +973,17 @@ function initShowcase() {
   });
   new IntersectionObserver(([e]) => { inView = e.isIntersecting; }).observe(section);
 
+  /* Scrub is tied 1:1 to the scroll position, and the smooth-scroll library
+     delivers that in wheel-sized steps — so the model used to jump a few
+     degrees per notch instead of turning. Easing a shown value toward the
+     real one turns those steps back into a continuous move, and costs a few
+     frames of lag that nobody can see. */
+  let shown = 0;
   function frame() {
     if (!inView) return;
-    const segF = Math.min(progress * 3, 2.999);
+    shown += (progress - shown) * 0.13;
+    if (Math.abs(progress - shown) < 0.0004) shown = progress;
+    const segF = Math.min(shown * 3, 2.999);
     const seg = Math.floor(segF);
     const local = segF - seg;
 
@@ -841,12 +993,22 @@ function initShowcase() {
       if (counter) counter.textContent = `0${seg + 1} / 03`;
       lastSeg = seg;
     }
-    applyAssembly(houses[seg], Math.min(0.12 + local * 1.9, 1));
-    houses[seg].rotation.y = -0.55 + local * 1.45;
+    const house = houses[seg];
+    applyAssembly(house, Math.min(0.12 + local * 1.9, 1));
 
-    const camAngle = -0.18 + local * 0.22;
-    camera.position.set(Math.sin(camAngle) * 14.5, 5 - local * 1.1, Math.cos(camAngle) * 14.5);
-    camera.lookAt(0, 1.6, 0);
+    /* The house used to spin on the spot while the camera barely moved, which
+       is a turntable, not "walk around them". The house now stands still and
+       the camera walks an 85° arc across its frontage, dropping from a raised
+       three-quarter view down towards eye level as it goes. */
+    const az = -0.55 + local * 1.5;
+    const el = 0.21 - local * 0.1;   // raised three-quarter view down to near eye level
+    const fit = house.userData.fit;
+    const d = fitDistance(camera, fit, az, el, safe);
+    orbit(camera, fit, az, el, d);
+    // Fog is set from the camera distance rather than fixed, so the haze always
+    // sits behind the house instead of washing it out when the camera backs off.
+    scene.fog.near = d - fit.radius * 1.3;
+    scene.fog.far = d + fit.radius * 4.5;
     renderer.render(scene, camera);
   }
   gsap.ticker.add(frame);
@@ -870,7 +1032,7 @@ function ensureViewer(container) {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
   cinematic(renderer);
   const scene = makeScene();
-  const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 60);
+  const camera = new THREE.PerspectiveCamera(40, 1, 0.5, 400);
   camera.position.set(0, 4.6, 12.8);
   camera.lookAt(0, 1.4, 0);
 
@@ -897,6 +1059,21 @@ function ensureViewer(container) {
       renderer.setSize(w, h, false);
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
+      viewer.framed = false;
+    }
+    /* Same fixed-distance mistake as the scroll showcase had: a camera parked
+       at 12.8 cropped the plinth off the bottom of the taller models. Frame to
+       whatever this panel is, once, leaving room for the "drag to rotate" hint
+       along the bottom edge. The house turns rather than the camera, and the
+       fit is a cylinder, so one solve holds for every angle. */
+    if (!viewer.framed && viewer.house && viewer.house.userData.fit) {
+      const fit = viewer.house.userData.fit;
+      const safe = { x: 0.94, top: 0.9, bottom: 0.82 };
+      const d = fitDistance(camera, fit, 0, 0.3, safe);
+      orbit(camera, fit, 0, 0.3, d);
+      scene.fog.near = d - fit.radius * 1.3;
+      scene.fog.far = d + fit.radius * 4.5;
+      viewer.framed = true;
     }
     if (!viewer.dragging) viewer.targetRotY += 0.0035;
     viewer.rotY += (viewer.targetRotY - viewer.rotY) * 0.08;
@@ -950,8 +1127,10 @@ function openViewerByType(type, container) {
     if (v.house) v.scene.remove(v.house);
     v.house = ARCHETYPES[type]();
     v.scene.add(v.house);
+    v.house.userData.fit = measure(v.house);
     v.type = type;
   }
+  v.framed = false;   // re-fit on open: the panel's size depends on the viewport
   v.built = 0;
   v.rotY = v.targetRotY = -0.4;
   v.open = true;

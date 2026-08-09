@@ -445,6 +445,10 @@ function openLightbox(i) {
   const hint = document.getElementById("lbDragHint");
   const has3d = window.Estate3D && window.Estate3D.openViewer(i, media);
   if (hint) hint.style.display = has3d ? "block" : "none";
+  // The illustration sits behind the canvas as the fallback. The canvas is
+  // transparent, so leaving it up put the flat artwork's own driveway and sky
+  // behind the model — two pictures of a house at once. Only one at a time.
+  lbImg.style.visibility = has3d ? "hidden" : "visible";
 
   // this house is sold — the useful offer is another one exactly like it
   const tourBtn = document.getElementById("lbTourBtn");

@@ -21,7 +21,7 @@ import {
 // module is keyed by its full URL, so two different query strings load two
 // copies of it — see the guard at the bottom of estate3d.js for what that
 // cost last time they drifted apart.
-import { ARCHETYPES, PROPERTY_MODELS } from "./estate3d.js?v=6";
+import { ARCHETYPES, PROPERTY_MODELS } from "./estate3d.js?v=14";
 
 /* ---------- module state ---------- */
 let renderer, scene, camera, composer = null, bloomPass = null, ssaoPass = null;
