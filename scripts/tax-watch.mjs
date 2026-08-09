@@ -314,10 +314,11 @@ export function report(results, meta) {
   }
   if (meta.diagnostics && meta.diagnostics.length) {
     L.push("");
-    L.push("<details><summary>Why nothing was found (" + meta.diagnostics.length + ")</summary>");
+    L.push("<details><summary>What the source actually says (" + meta.diagnostics.length + ")</summary>");
     L.push("");
     meta.diagnostics.forEach((d) => {
-      L.push("**" + d.label + "** — page has " + d.chars + " characters of text.");
+      L.push("**" + d.label + "** — page has " + d.chars + " characters of text" +
+        (d.found && d.found.length ? ", figures found: " + d.found.map((f) => f + "%").join(", ") : "") + ".");
       L.push("- keywords present: " + (d.present.length ? "`" + d.present.join("`, `") + "`" : "_none_"));
       L.push("- keywords missing: " + (d.missing.length ? "`" + d.missing.join("`, `") + "`" : "_none_"));
       if (d.snippet) L.push("- around the first hit: `" + d.snippet.replace(/`/g, "'") + "`");
@@ -444,14 +445,17 @@ export async function run({ fs, path, now = new Date() }) {
     if (typeof held !== "number") continue;
     const r = checkRule(text, rule, held, bounds[rule.source] || []);
     results.push(r);
-    // A rule that finds nothing is the interesting case, and the only way to
-    // fix it is to know what the page actually says. Report which of its
-    // keywords appeared at all, and the text around the first one.
-    if (!r.found.length) {
+    /* Any rule that didn't confirm needs the same thing: the words the page
+       actually uses around the figures. That used to be reported only when
+       nothing at all was found, which left the worst case bare — a run that
+       reported "236K · purchase: 5%, 10%" against the 3% we hold, with no way
+       to tell whether it had read the right row of a 19,000-character rate
+       card without opening the PDF by hand. Now the excerpt comes with it. */
+    if (!r.ok) {
       const present = rule.keywords.filter((k) => text.includes(k.toLowerCase()));
       const at = present.length ? text.indexOf(present[0].toLowerCase()) : -1;
       meta.diagnostics.push({
-        label: rule.label, chars: text.length,
+        label: rule.label, chars: text.length, found: r.found,
         present, missing: rule.keywords.filter((k) => !present.includes(k)),
         snippet: at >= 0 ? text.slice(Math.max(0, at - 90), at + 210) : null
       });

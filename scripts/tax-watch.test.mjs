@@ -133,6 +133,17 @@ console.log("report");
   is(md.includes("1 of 2 confirmed"), true, "counts");
   is(md.includes("Punjab BOR: HTTP 500"), true, "surfaces unreachable sources");
   is(md.includes("before 1 July 2026"), true, "surfaces staleness");
+
+  // The state a live run actually reached: figures found, but not the ones we
+  // hold. Useless without the words they were found beside.
+  const md2 = report(
+    [{ label: "236K · purchase", held: 3, found: [5, 10], ok: false, propose: null }],
+    { unreachable: [], rediscovered: [], stale: false,
+      diagnostics: [{ label: "236K · purchase", chars: 18910, found: [5, 10],
+                      present: ["236k", "purchase"], missing: [],
+                      snippet: "236k advance tax on purchase 5 10" }] });
+  is(md2.includes("figures found: 5%, 10%"), true, "an unconfirmed row carries its figures");
+  is(md2.includes("around the first hit"), true, "and the text they were found in");
 }
 
 console.log("looksLikePortal");
