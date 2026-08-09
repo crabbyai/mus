@@ -20,7 +20,7 @@
   "verified": false,
   "verifiedBy": null,
   "verifiedOn": null,
-  "checkedAt": "2026-08-08",
+  "checkedAt": "2026-08-09",
   "sources": [
     {
       "id": "fbr-wht",
@@ -36,7 +36,7 @@
         "236C"
       ],
       "hash": null,
-      "lastFetched": "2026-08-08"
+      "lastFetched": "2026-08-09"
     },
     {
       "id": "fbr-ordinance",
@@ -51,7 +51,7 @@
         "cgt"
       ],
       "hash": null,
-      "lastFetched": "2026-08-08"
+      "lastFetched": "2026-08-09"
     },
     {
       "id": "punjab-stamp",
@@ -66,7 +66,7 @@
         "lhr"
       ],
       "hash": "f0dd5154e75f1fad",
-      "lastFetched": "2026-08-08"
+      "lastFetched": "2026-08-09"
     },
     {
       "id": "ict-cvt",
@@ -80,7 +80,7 @@
         "isb"
       ],
       "hash": "b1c2b0fc734b88a5",
-      "lastFetched": "2026-08-08"
+      "lastFetched": "2026-08-09"
     }
   ],
   "statuses": [
@@ -280,13 +280,19 @@
       "federal.236K.slabs.0.filer": {
         "label": "236K · purchase",
         "ok": false,
-        "found": [],
+        "found": [
+          5,
+          10
+        ],
         "lastSeen": null
       },
       "federal.236C.slabs.0.filer": {
         "label": "236C · sale",
         "ok": false,
-        "found": [],
+        "found": [
+          10,
+          20
+        ],
         "lastSeen": null
       },
       "regions.isb.lines.1.pct": {
@@ -303,7 +309,7 @@
       }
     },
     "lastRun": {
-      "at": "2026-08-08",
+      "at": "2026-08-09",
       "confirmed": 0,
       "total": 4,
       "unreachable": 0
