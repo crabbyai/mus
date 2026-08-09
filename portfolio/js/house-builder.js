@@ -1777,6 +1777,7 @@ function disposeTree(obj) {
 function loop() {
   if (!running) return;
   raf = requestAnimationFrame(loop);
+  if (window.__tour3dActive) return;   // hidden behind the tour overlay
   if (camAnim) camAnim();
   if (state.spin && !dragging && !inside) targetYaw += 0.0022;
   yaw += (targetYaw - yaw) * 0.08;

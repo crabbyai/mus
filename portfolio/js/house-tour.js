@@ -16,18 +16,19 @@ import {
   state, PLOTS, FINISHES,
   buildHouse, buildInterior,
   mat, box, plasterTex, paverTex, grassTex, glow, window3d, woodCladTex
-} from "./house-builder.js?v=12";
+} from "./house-builder.js?v=13";
 // Must match the ?v= on the <script> tag for estate3d.js in index.html. A
 // module is keyed by its full URL, so two different query strings load two
 // copies of it — see the guard at the bottom of estate3d.js for what that
 // cost last time they drifted apart.
-import { ARCHETYPES, PROPERTY_MODELS } from "./estate3d.js?v=17";
+import { ARCHETYPES, PROPERTY_MODELS } from "./estate3d.js?v=18";
 
 /* ---------- module state ---------- */
 let renderer, scene, camera, composer = null, bloomPass = null, ssaoPass = null;
 let world = null, running = false, raf = 0;
 let exteriorGrp = null, interiorGrp = null, phase = "outside", doorZ = 0, promptEl;
 let overlay, canvas, roomEl, hintEl;
+let releasing = false;   // true only while closeTour is handing the context back
 
 const walls = [];          // AABBs for collision
 const zones = [];          // { name, x, z, w, d } for the room readout
@@ -323,7 +324,14 @@ function buildWorld(cfg) {
   const sun = new THREE.DirectionalLight(night ? 0x7e9ae0 : 0xffd9a0, night ? 0.5 : 2.6);
   sun.position.set(14, 22, 12);
   sun.castShadow = true;
-  sun.shadow.mapSize.set(4096, 4096);
+  /* 4096 everywhere was the single largest thing this page ever allocated.
+     The shadow map is VSM — two float channels, so a 4096 square map plus the
+     blur target it needs runs to hundreds of megabytes of GPU memory, on a
+     page that is already holding four other WebGL contexts. A phone does not
+     have that, and the tab dies or reloads rather than the tour failing. 1024
+     is plenty at this scale and nobody will see the difference. */
+  const shadowRes = innerWidth < 700 ? 1024 : (innerWidth < 1280 ? 2048 : 4096);
+  sun.shadow.mapSize.set(shadowRes, shadowRes);
   sun.shadow.radius = 4;
   const sc = 26;
   sun.shadow.camera.left = -sc; sun.shadow.camera.right = sc;
@@ -389,6 +397,16 @@ function ensureOverlay() {
   bindControls();
 }
 
+/* The only listener that belongs to the canvas itself. Split out because the
+   canvas is replaced when the tour hands its WebGL context back on exit —
+   everything else here is bound to the window, the document or the overlay,
+   which all outlive it. */
+function bindCanvasControls() {
+  canvas.addEventListener("click", () => {
+    if (running && !pointerLocked && !("ontouchstart" in window)) canvas.requestPointerLock();
+  });
+}
+
 function bindControls() {
   addEventListener("keydown", (e) => {
     if (!running) return;
@@ -398,10 +416,7 @@ function bindControls() {
   });
   addEventListener("keyup", (e) => { keys[e.key.toLowerCase()] = false; });
 
-  // desktop: pointer lock for mouse look
-  canvas.addEventListener("click", () => {
-    if (running && !pointerLocked && !("ontouchstart" in window)) canvas.requestPointerLock();
-  });
+  bindCanvasControls();
   document.addEventListener("pointerlockchange", () => {
     pointerLocked = document.pointerLockElement === canvas;
     if (hintEl) hintEl.style.opacity = pointerLocked ? "0.35" : "1";
@@ -541,8 +556,24 @@ function openTour(cfg, title) {
     try {
       renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance" });
     } catch (e) { return false; }
-    // Max quality: full DPR, soft shadows and filmic tone mapping.
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    /* If the driver takes the context away — which is how a page carrying this
+       many WebGL surfaces fails on a phone — bail out of the tour rather than
+       keep driving a dead context, which is what turns a hiccup into a dead or
+       reloading tab. The canvas is recreated from scratch on the next open. */
+    canvas.addEventListener("webglcontextlost", (e) => {
+      e.preventDefault();
+      // closeTour ends by dropping the context on purpose, which lands here
+      // too — don't take that as a failure and start the teardown again.
+      if (releasing) return;
+      closeTour();
+      renderer = null; composer = null; bloomPass = null; ssaoPass = null;
+    });
+    /* Soft shadows and filmic tone mapping, at as much resolution as the
+       device can carry. Not 2x on a phone: a 390-point screen at DPR 3 meant
+       a 780x1690 buffer plus a VSM shadow map plus the bloom pass's render
+       targets, on top of the four WebGL contexts this page already holds.
+       That is the budget a phone runs out of. */
+    renderer.setPixelRatio(Math.min(devicePixelRatio, innerWidth < 700 ? 1.5 : 2));
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.VSMShadowMap;   // softest, least acne
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -604,6 +635,13 @@ function openTour(cfg, title) {
   overlay.setAttribute("aria-hidden", "false");
   document.documentElement.style.overflow = "hidden";
   document.body.classList.add("wtour-open");
+  /* index.html already holds four WebGL contexts — the scroll showcase, the
+     lightbox viewer, the design stage and the city model — and this is the
+     fifth. They are all hidden behind this overlay but their render loops
+     don't know that, so a phone was driving five contexts at once, this one
+     with soft shadows and a bloom pass on top. Every other loop checks this
+     flag and parks itself. */
+  window.__tour3dActive = true;
   if (window.__lenis && window.__lenis.stop) window.__lenis.stop();
 
   running = true; last = performance.now();
@@ -622,14 +660,53 @@ function closeTour() {
   }
   document.documentElement.style.overflow = "";
   document.body.classList.remove("wtour-open");
+  // Each parked loop kept asking for frames and only skipped the work, so they
+  // all pick up again from here with nothing to restart.
+  window.__tour3dActive = false;
   if (window.__lenis && window.__lenis.start) window.__lenis.start();
   if (world) {
     scene.remove(world);
+    /* Geometry here is built fresh for this world, so it goes. Materials are
+       not: js/estate3d.js caches its materials and shares one instance across
+       the scroll showcase, the lightbox viewer and whichever model this tour
+       borrowed — freeing those on exit pulled the GPU resources out from under
+       two renderers that were still drawing. Anything shared says so. */
     world.traverse((o) => {
       if (o.geometry) o.geometry.dispose();
-      if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach((m) => m.dispose());
+      if (!o.material) return;
+      (Array.isArray(o.material) ? o.material : [o.material])
+        .forEach((m) => { if (!m.userData.shared) m.dispose(); });
     });
     world = null;
+  }
+  exteriorGrp = interiorGrp = null;
+
+  /* Hand the whole context back. This renderer used to be kept alive for the
+     next tour, which meant that once a visitor had opened one, the page went
+     on carrying a full-screen framebuffer, a shadow map and the bloom pass's
+     render targets for the rest of the session — on top of the four WebGL
+     contexts it already has. Rebuilding on the next open costs under a second
+     and is invisible next to the world build that follows it. */
+  if (renderer) {
+    releasing = true;
+    if (composer && composer.dispose) composer.dispose();
+    if (ssaoPass && ssaoPass.dispose) ssaoPass.dispose();
+    if (bloomPass && bloomPass.dispose) bloomPass.dispose();
+    renderer.dispose();
+    const ctx = renderer.getContext();
+    const lose = ctx && ctx.getExtension("WEBGL_lose_context");
+    if (lose) lose.loseContext();
+    renderer = null; composer = null; bloomPass = null; ssaoPass = null;
+    // A canvas whose context has been forced out can't be reused, so the
+    // overlay gets a fresh one and the next open builds against that.
+    if (overlay && canvas) {
+      const fresh = document.createElement("canvas");
+      fresh.id = "wtourCanvas";
+      canvas.replaceWith(fresh);
+      canvas = fresh;
+      bindCanvasControls();
+    }
+    releasing = false;
   }
 }
 

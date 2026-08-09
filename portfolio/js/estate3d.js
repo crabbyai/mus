@@ -114,13 +114,23 @@ function mat(color, rough = 0.85, metal = 0.12) {
   else if (color === 0xa3674a) { params.map = paverTex(color); params.color = 0xffffff; }
   else if (color === 0x9c4f33) { params.map = tileTex(color); params.color = 0xffffff; }
   else if (WALL_COLORS.has(color)) { params.map = stuccoTex(color); params.color = 0xffffff; }
-  return (matCache[key] = new THREE.MeshStandardMaterial(params));
+  const m = new THREE.MeshStandardMaterial(params);
+  /* Cached, so one material is shared by the scroll showcase, the lightbox
+     viewer and every model the walkable tour borrows. Anything tearing a scene
+     down has to leave these alone — js/house-tour.js used to dispose the whole
+     world on exit, which reached in here and freed the GPU resources the other
+     two were still drawing with. */
+  m.userData.shared = true;
+  return (matCache[key] = m);
 }
 const winMat = new THREE.MeshBasicMaterial({ color: STRIP_WARM });
 const glassMat = new THREE.MeshStandardMaterial({
   color: 0x9fc4e8, roughness: 0.1, metalness: 0.4, transparent: true, opacity: 0.32
 });
 const edgeMat = new THREE.LineBasicMaterial({ color: GOLD, transparent: true, opacity: 0.4 });
+// Module-level singletons, shared by every model this file makes — same rule
+// as the cache in mat(): a scene teardown must not dispose them.
+[winMat, glassMat, edgeMat].forEach((m) => { m.userData.shared = true; });
 
 function edged(geo, color = CHARCOAL, rough = 0.85, metal = 0.12) {
   const m = new THREE.Mesh(geo, mat(color, rough, metal));
@@ -1006,7 +1016,9 @@ function initShowcase() {
      frames of lag that nobody can see. */
   let shown = 0;
   function frame() {
-    if (!inView) return;
+    // Nobody can see this behind the walkable tour's overlay, and on a phone
+    // five WebGL contexts rendering at once is what tips it over.
+    if (!inView || window.__tour3dActive) return;
     shown += (progress - shown) * 0.13;
     if (Math.abs(progress - shown) < 0.0004) shown = progress;
     const segF = Math.min(shown * 3, 2.999);
@@ -1080,6 +1092,7 @@ function ensureViewer(container) {
   function loop() {
     if (!viewer.open) return;
     requestAnimationFrame(loop);
+    if (window.__tour3dActive) return;
     const w = canvas.clientWidth, h = canvas.clientHeight;
     if (canvas.width !== w * renderer.getPixelRatio()) {
       renderer.setSize(w, h, false);
