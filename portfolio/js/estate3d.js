@@ -117,10 +117,9 @@ function mat(color, rough = 0.85, metal = 0.12) {
   else if (WALL_COLORS.has(color)) { params.map = stuccoTex(color); params.color = 0xffffff; }
   const m = new THREE.MeshStandardMaterial(params);
   /* Cached, so one material is shared by the scroll showcase, the lightbox
-     viewer and every model the walkable tour borrows. Anything tearing a scene
-     down has to leave these alone — js/house-tour.js used to dispose the whole
-     world on exit, which reached in here and freed the GPU resources the other
-     two were still drawing with. */
+     viewer and the scale comparer. Anything tearing a scene down has to leave
+     these alone: disposing a whole scene's materials once reached in here and
+     freed the GPU resources the other renderers were still drawing with. */
   m.userData.shared = true;
   return (matCache[key] = m);
 }
@@ -239,9 +238,8 @@ function parapet(w, d, color = CREAM) {
 // boundary wall + black steel gate + pillar lamps + paver driveway
 function frontage({ width = 8.4, gateX = 0.9, z = 3.2 } = {}) {
   const g = new THREE.Group();
-  // Dropped in the walkable tour too — that world builds its own boundary wall
-  // at the edge of the plot, and you'd otherwise meet a second gate two metres
-  // from the front door.
+  // Dropped by anything that puts one of these models on real ground: the
+  // scene draws its own plot boundary, and you'd otherwise get two.
   g.userData.tourOmit = true;
   const wallH = 0.78;
   const mkWall = (len, x) => {
@@ -332,9 +330,8 @@ function pool(w, d, x, z) {
    inside the edge, where nothing can intersect it. */
 function plinth(r) {
   const grp = new THREE.Group();
-  // A display device, not a building. js/house-tour.js drops it when it walks
-  // you up to one of these models, or the house stands on a black dais in the
-  // middle of the lawn.
+  // A display device, not a building — anything that sets one of these models
+  // on real ground drops it, or the house stands on a black dais.
   grp.userData.tourOmit = true;
   const baseGeo = new THREE.CylinderGeometry(r, r * 1.02, 0.22, 56);
   baseGeo.translate(0, 0.11, 0);
@@ -867,9 +864,9 @@ function cinematic(renderer) {
    strips down the entrance, the warm windows, the gate's brass bars, the
    inlay round the plinth. Without a bloom pass they are flat cream rectangles
    that happen to be bright; with one they read as lit, which at dusk is the
-   whole picture. The city model and the walkable tour have had this since
-   they were built; the showcase, which is the one section of the site that
-   exists purely to be looked at, never did.
+   whole picture. The city model has had this since it was built; the
+   showcase, which is the one section of the site that exists purely to be
+   looked at, never did.
 
    Loaded on demand and only where there's headroom, so a slow device gets the
    plain render rather than a slideshow. */
@@ -1052,19 +1049,6 @@ function initShowcase() {
   // Three homes at tens of crore each, and nothing to press. Each caption now
   // opens WhatsApp naming the house on screen, so the message arrives with
   // the context already in it rather than "hi, saw your site".
-  /* "Walk around them in 3D" stopped at the front gate. The walkable interior
-     already exists for all twelve sold homes — js/house-tour.js — so the
-     caption now opens it for the house on screen. window.HouseTour lives in
-     main.js, which is a plain script, hence the global rather than an import. */
-  section.querySelectorAll("[data-showcase-walk]").forEach((b) => {
-    b.addEventListener("click", () => {
-      const i = parseInt(b.getAttribute("data-showcase-walk"), 10);
-      const name = b.closest(".showcase3d__caption");
-      const title = name && name.querySelector("strong") ? name.querySelector("strong").textContent : "";
-      if (window.HouseTour) window.HouseTour.openProperty(i, title);
-    });
-  });
-
   section.querySelectorAll("[data-showcase-cta]").forEach((b) => {
     b.addEventListener("click", () => {
       const [title, where] = (b.getAttribute("data-showcase-cta") || "").split("|");
@@ -1121,8 +1105,8 @@ function initShowcase() {
      frames of lag that nobody can see. */
   let shown = 0;
   function frame() {
-    // Nobody can see this behind the walkable tour's overlay, and on a phone
-    // five WebGL contexts rendering at once is what tips it over.
+    // Parked while a full-screen 3D overlay is up: nobody can see this behind
+    // it, and several WebGL contexts rendering at once is what tips a phone over.
     if (!inView || window.__tour3dActive) return;
     shown += (progress - shown) * 0.13;
     if (Math.abs(progress - shown) < 0.0004) shown = progress;
@@ -1292,20 +1276,20 @@ window.Estate3D = { openViewer, openViewerByType, openViewerForListing, archetyp
 
 /* Run the showcase once per page, however many times this file gets evaluated.
    A module is keyed by its full URL including the query string, so the moment
-   index.html's <script src="js/estate3d.js?v=6"> and house-tour.js's
+   index.html's <script src="js/estate3d.js?v=6"> and another file's
    import "./estate3d.js?v=5" disagreed, the browser loaded two separate copies
    of this module and ran initShowcase twice. Two pinned ScrollTriggers on the
    same section means the pin spacer reserves the scroll distance twice over,
    and the second 2800px is empty — a screen-and-a-half of nothing below the
    houses, plus a second WebGL renderer fighting for the same canvas.
 
-   The two version strings are back in step, but they are edited by hand in two
-   files and will drift again. This makes that harmless. */
+   Those version strings are edited by hand in more than one place and will
+   drift again. This makes that harmless. */
 if (!window.__estate3dShowcase) {
   window.__estate3dShowcase = true;
   initShowcase();
 }
 
-/* Shared with js/house-tour.js so a sold-home tour can show the exact same
+/* Shared so anything else on the site can show the exact same
    model the lightbox thumbnail does, rather than an approximation of it. */
 export { ARCHETYPES, PROPERTY_MODELS, skyEnv };

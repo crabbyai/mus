@@ -1,10 +1,10 @@
 /* ============================================================
    BUILD ME ONE LIKE THIS
    ------------------------------------------------------------
-   Replaces the walkable tour of the sold homes. A tour could only
-   ever show someone a house that is already gone; this turns the
-   same twelve closings into the strongest thing they can be — a
-   catalogue of things Adeel's builders have proved they can build.
+   A sold home can only ever show someone a house that is already
+   gone. This turns the same twelve closings into the strongest
+   thing they can be — a catalogue of what Adeel's builders have
+   already proved they can build.
 
    Visitor picks a sold home, the brief pre-fills from that home's
    real spec, they adjust whatever they want, and the whole thing
@@ -15,7 +15,7 @@
    "fine-tune in 3D" button hands the exact same spec across.
    ============================================================ */
 import { PLOTS, STYLES, FINISHES, KITCHENS, FEATURES, estimate, fmtPKR }
-  from "./house-builder.js?v=22";
+  from "./house-builder.js?v=23";
 
 const WA = "16134083945";
 

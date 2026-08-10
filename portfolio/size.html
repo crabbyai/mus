@@ -4,18 +4,18 @@
 <meta charset="UTF-8" />
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https:; media-src 'self' https:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; font-src 'self' data:; connect-src 'self' https:; frame-src https://www.google.com https://maps.google.com https://www.youtube.com https://www.youtube-nocookie.com; base-uri 'self'; form-action 'self' https://wa.me; object-src 'none'" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Property tools — sun study, instalment planner & calculators | Adeel Rahman, MBA</title>
-<meta name="description" content="Free tools for buying property in Islamabad and Lahore: plot orientation and sun study, society instalment planner, finance calculator, budget matcher and the city in 3D." />
+<title>How big is 1 Kanal, really? Compare plot sizes to scale — Adeel Rahman, MBA</title>
+<meta name="description" content="Stand any two homes side by side at their real size, with a car and a person for scale. See what 5 Marla, 10 Marla, 1 Kanal and 2 Kanal actually look like on the ground in Islamabad and Lahore." />
 <meta name="theme-color" content="#0a0f1e" />
-<link rel="canonical" href="https://crabbyai.github.io/mus/tools.html" />
+<link rel="canonical" href="https://crabbyai.github.io/mus/size.html" />
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
 <link rel="manifest" href="site.webmanifest" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Adeel Rahman Estates" />
-<meta property="og:title" content="Property tools — sun study, instalment planner & calculators | Adeel Rahman, MBA" />
-<meta property="og:description" content="Free tools for buying property in Islamabad and Lahore: plot orientation and sun study, society instalment planner, finance calculator, budget matcher and the city in 3D." />
-<meta property="og:url" content="https://crabbyai.github.io/mus/tools.html" />
+<meta property="og:title" content="How big is 1 Kanal, really? Compare plot sizes to scale — Adeel Rahman, MBA" />
+<meta property="og:description" content="Stand any two homes side by side at their real size, with a car and a person for scale. See what 5 Marla, 10 Marla, 1 Kanal and 2 Kanal actually look like on the ground in Islamabad and Lahore." />
+<meta property="og:url" content="https://crabbyai.github.io/mus/size.html" />
 <link rel="stylesheet" href="css/style.css?v=73" />
 </head>
 <body>
@@ -74,89 +74,65 @@
   <a href="index.html#contact">Work With Me</a>
 </div>
 <main id="toolmain">
-  <section class="toolhub" id="toolhub">
-    <div class="toolhub__head">
-      <p class="section-eyebrow" data-reveal>Work It Out First</p>
-      <h2 class="section-title" data-reveal>Tools that answer <em class="gold-italic">a real question</em></h2>
-      <p class="toolhub__lead" data-reveal>Not calculators for the sake of it. Each of these exists because
-        it&rsquo;s a question I get asked in person, over and over, and a number is a better answer than an
-        opinion.</p>
+  <section class="toolpage" id="sizepage">
+    <div class="toolpage__head">
+      <p class="section-eyebrow" data-reveal>Before You Believe A Listing</p>
+      <h2 class="section-title" data-reveal>How big is it, <em class="gold-italic">really?</em></h2>
+      <p class="toolpage__lead" data-reveal>Marla and kanal are units almost nobody can picture, and a floor
+        plan on a phone flattens everything to the same size. Stand any two of the homes I've closed on the
+        same ground, at their real size, with a car and a person beside them. The grid is one metre a square.</p>
     </div>
 
-    <div class="toolhub__grid">
-      <a class="toolcard" href="explore.html" data-reveal>
-        <span class="toolcard__ico" aria-hidden="true">◉</span>
-        <h3>Explore the city</h3>
-        <p>A real map you can pinch down to the streets, with what every sector costs painted over it and the
-          markets, landmarks and restaurants around each one.</p>
-        <span class="toolcard__go">Open the map <span aria-hidden="true">→</span></span>
-      </a>
+    <div class="sizetool" data-reveal>
+      <div class="sizetool__picks">
+        <label class="sizetool__pick">
+          <span>On the left</span>
+          <select id="sizeA" class="sizetool__select" aria-label="Home on the left"></select>
+        </label>
+        <label class="sizetool__pick">
+          <span>On the right</span>
+          <select id="sizeB" class="sizetool__select" aria-label="Home on the right"></select>
+        </label>
+      </div>
 
-      <a class="toolcard" href="size.html" data-reveal>
-        <span class="toolcard__ico" aria-hidden="true">⇹</span>
-        <h3>How big is it, really?</h3>
-        <p>Marla and kanal mean nothing until you see them. Stand any two homes I've closed on the same
-          ground at their real size, with a car and a person beside them, and read the difference off the
-          grid instead of off a listing.</p>
-        <span class="toolcard__go">Compare to scale <span aria-hidden="true">→</span></span>
-      </a>
+      <div class="sizetool__stage" id="sizeStage">
+        <canvas id="sizeCanvas" aria-label="Two homes shown side by side at true relative scale"></canvas>
+        <p class="sizetool__hint">Drag to turn · one grid square is one metre</p>
+      </div>
 
-      <a class="toolcard" href="sun-study.html" data-reveal>
-        <span class="toolcard__ico" aria-hidden="true">☀</span>
-        <h3>Which way does it face?</h3>
-        <p>Put a house on a 5 Marla to 2 Kanal plot, move the sun where it really goes over Islamabad or
-          Lahore, and watch the shadows land. Measured shade on the lawn and hours of sun on the front
-          for every orientation.</p>
-        <span class="toolcard__go">Open the sun study <span aria-hidden="true">→</span></span>
-      </a>
+      <p class="sizetool__verdict" id="sizeVerdict"></p>
 
-      <a class="toolcard" href="payment-plan.html" data-reveal>
-        <span class="toolcard__ico" aria-hidden="true">▦</span>
-        <h3>Instalment planner</h3>
-        <p>Down payment, quarterly instalments, half-yearly extras and the lump on possession, laid out
-          month by month. Find the month that hurts before you sign for it, not after.</p>
-        <span class="toolcard__go">Plan the payments <span aria-hidden="true">→</span></span>
-      </a>
+      <div class="sizetool__cards">
+        <article class="sizetool__card glass">
+          <h3 id="sizeAName">—</h3>
+          <p class="sizetool__loc" id="sizeALoc"></p>
+          <dl>
+            <div><dt>Plot</dt><dd id="sizeAPlot">—</dd></div>
+            <div><dt>Lot</dt><dd id="sizeALot">—</dd></div>
+            <div><dt>Covered</dt><dd id="sizeAArea">—</dd></div>
+            <div><dt>Rooms</dt><dd id="sizeABeds">—</dd></div>
+          </dl>
+          <p class="sizetool__price" id="sizeAPrice"></p>
+        </article>
+        <article class="sizetool__card glass">
+          <h3 id="sizeBName">—</h3>
+          <p class="sizetool__loc" id="sizeBLoc"></p>
+          <dl>
+            <div><dt>Plot</dt><dd id="sizeBPlot">—</dd></div>
+            <div><dt>Lot</dt><dd id="sizeBLot">—</dd></div>
+            <div><dt>Covered</dt><dd id="sizeBArea">—</dd></div>
+            <div><dt>Rooms</dt><dd id="sizeBBeds">—</dd></div>
+          </dl>
+          <p class="sizetool__price" id="sizeBPrice"></p>
+        </article>
+      </div>
 
-      <a class="toolcard" href="transfer-costs.html" data-reveal>
-        <span class="toolcard__ico" aria-hidden="true">⎘</span>
-        <h3>What it costs to transfer</h3>
-        <p>Advance income tax, stamp duty, capital value or town tax, the society&rsquo;s fee and the
-          commission &mdash; for a buyer or a seller, filer or not. The price is never the price.</p>
-        <span class="toolcard__go">Work out the costs <span aria-hidden="true">→</span></span>
-      </a>
-
-      <a class="toolcard" href="index.html#tools" data-reveal>
-        <span class="toolcard__ico" aria-hidden="true">₨</span>
-        <h3>Finance calculator</h3>
-        <p>Monthly instalments on a bank facility, what a given budget carries, and the total cost of the
-          borrowing over the term.</p>
-        <span class="toolcard__go">On the main page <span aria-hidden="true">→</span></span>
-      </a>
-
-      <a class="toolcard" href="index.html#budget" data-reveal>
-        <span class="toolcard__ico" aria-hidden="true">◈</span>
-        <h3>Budget matcher</h3>
-        <p>Say what you have and see every area and plot size it actually reaches &mdash; comfortably, or at
-          the very top of your range.</p>
-        <span class="toolcard__go">On the main page <span aria-hidden="true">→</span></span>
-      </a>
-
-      <a class="toolcard" href="index.html#city3d" data-reveal>
-        <span class="toolcard__ico" aria-hidden="true">◱</span>
-        <h3>The city in 3D</h3>
-        <p>Every sector of Islamabad and every district of Lahore as a block, coloured by what a marla
-          costs, with the landmarks and the restaurants around each one.</p>
-        <span class="toolcard__go">On the main page <span aria-hidden="true">→</span></span>
-      </a>
-
-      <a class="toolcard" href="index.html#valuation" data-reveal>
-        <span class="toolcard__ico" aria-hidden="true">◎</span>
-        <h3>What is mine worth?</h3>
-        <p>A free written valuation on your address, based on what has actually closed nearby rather than
-          what is being asked.</p>
-        <span class="toolcard__go">On the main page <span aria-hidden="true">→</span></span>
-      </a>
+      <div class="sizetool__foot">
+        <button class="btn btn--gold" id="sizeCta" type="button">Ask me what that difference costs</button>
+        <p class="sizetool__note">Models are the same ones on the sold-homes page, rescaled to the real
+          footprint of their plot. The lot outline is the full plot; the house sits inside it with the
+          setbacks a builder would actually leave.</p>
+      </div>
     </div>
   </section>
 
@@ -205,7 +181,7 @@
 <script type="importmap">
 { "imports": { "three": "./js/vendor/three.module.min.js" } }
 </script>
-
+<script type="module" src="js/size3d.js?v=6"></script>
 <script>
   if ("serviceWorker" in navigator) {
     addEventListener("load", function () { navigator.serviceWorker.register("sw.js"); });

@@ -1229,8 +1229,8 @@ function buildInterior(cfg) {
   const foyerZ = id * 0.34;
   rug(g, -iw * 0.2, foyerZ, 1.6, 1.1, 0x6b4f39);
   zone("Entrance Foyer", -iw * 0.2, foyerZ);
-  // The walkable tour supplies its own climbable staircase in this exact
-  // spot; drawing the decorative one too put two flights in the same room.
+  // cfg.noStair is for callers that draw their own climbable flight here —
+  // drawing the decorative one too puts two staircases in the same room.
   if (!cfg.noStair) {
     staircase(g, -iw * 0.44, foyerZ - 0.4, H, night);
     zone("Stairs", -iw * 0.44, foyerZ - 1.2);
@@ -1885,11 +1885,6 @@ function specText() {
     "My design: " + designUrl();
 }
 
-/* What the walkable tour calls the house it's showing. */
-function tourTitle() {
-  return PLOTS[state.plot].label + " " + STYLES[state.style];
-}
-
 function wireChrome() {
   const dn = document.getElementById("builderDayNight");
   if (dn) dn.addEventListener("click", () => {
@@ -1910,11 +1905,6 @@ function wireChrome() {
     a.download = "my-home-design.png";
     a.href = renderer.domElement.toDataURL("image/png");
     a.click();
-  });
-
-  const walkBtn = document.getElementById("builderWalk");
-  if (walkBtn) walkBtn.addEventListener("click", () => {
-    if (window.WalkTour) window.WalkTour.open(null, tourTitle());
   });
 
   const insideBtn = document.getElementById("builderInside");
@@ -2063,8 +2053,7 @@ window.HouseBuilder = {
   });
 })();
 
-/* Shared with js/house-tour.js so the walkable tour renders the very same
-   house the visitor configured — one spec, one set of builders. */
+/* Shared so the costing and the model can never disagree about a spec. */
 export {
   state, PLOTS, FINISHES, STYLES, KITCHENS, FEATURES,
   buildHouse, buildInterior, estimate, fmtPKR, starfield,

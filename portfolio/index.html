@@ -183,7 +183,7 @@
 <link rel="preload" href="assets/fonts/playfair-display-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="assets/fonts/manrope-latin-300-normal.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="stylesheet" href="css/fonts.css" />
-<link rel="stylesheet" href="css/style.css?v=72" />
+<link rel="stylesheet" href="css/style.css?v=73" />
 <link rel="stylesheet" href="css/enhance.css" />
 </head>
 <body>
@@ -257,6 +257,7 @@
   <a href="sun-study.html">Which Way Does It Face?</a>
   <a href="payment-plan.html">Instalment Planner</a>
   <a href="transfer-costs.html">Transfer Costs</a>
+  <a href="size.html">How Big Is It, Really?</a>
   <a href="#contact">Work With Me</a>
 </div>
 
@@ -848,7 +849,7 @@
     <div class="portfolio__grid" id="grid"><!-- cards injected by JS --></div>
   </section>
 
-  <!-- ======= BUILD ME ONE LIKE THIS (design studio + virtual tour) ======= -->
+  <!-- ======= BUILD ME ONE LIKE THIS (design studio) ======= -->
   <section class="likethis" id="likethis">
     <div class="likethis__head">
       <p class="section-eyebrow" data-reveal>Can't Find It? Build It.</p>
@@ -876,7 +877,6 @@
             <button class="builder__tool" id="builderDayNight" type="button" aria-pressed="false" title="Toggle day / night">🌙</button>
             <button class="builder__tool" id="builderSpin" type="button" aria-pressed="true" title="Toggle auto-rotate">⟳</button>
             <button class="builder__tool" id="builderInside" type="button" aria-pressed="false" title="Step inside">⌂</button>
-            <button class="builder__tool" id="builderWalk" type="button" title="Take the virtual tour">🚶</button>
             <button class="builder__tool" id="builderShare" type="button" title="Copy a link to this design">⇗</button>
             <button class="builder__tool" id="builderShot" type="button" title="Download an image">⤓</button>
           </div>
@@ -1337,7 +1337,6 @@
         <span>F-7/2, Islamabad</span>
         <em>Sold · PKR 38 Crore</em>
         <div class="showcase3d__acts">
-          <button class="showcase3d__cta showcase3d__cta--walk" type="button" data-showcase-walk="0">Step inside <span aria-hidden="true">▷</span></button>
           <button class="showcase3d__cta" type="button" data-showcase-cta="The Margalla View Manor|F-7/2, Islamabad">Find me one like this <span aria-hidden="true">→</span></button>
         </div>
       </div>
@@ -1346,7 +1345,6 @@
         <span>DHA Phase 6, Lahore</span>
         <em>Sold · PKR 13 Crore</em>
         <div class="showcase3d__acts">
-          <button class="showcase3d__cta showcase3d__cta--walk" type="button" data-showcase-walk="6">Step inside <span aria-hidden="true">▷</span></button>
           <button class="showcase3d__cta" type="button" data-showcase-cta="Phase 6 Palazzo|DHA Phase 6, Lahore">Find me one like this <span aria-hidden="true">→</span></button>
         </div>
       </div>
@@ -1355,7 +1353,6 @@
         <span>Model Town Block C, Lahore</span>
         <em>Sold · PKR 16 Crore</em>
         <div class="showcase3d__acts">
-          <button class="showcase3d__cta showcase3d__cta--walk" type="button" data-showcase-walk="9">Step inside <span aria-hidden="true">▷</span></button>
           <button class="showcase3d__cta" type="button" data-showcase-cta="Model Town Estate|Model Town Block C, Lahore">Find me one like this <span aria-hidden="true">→</span></button>
         </div>
       </div>
@@ -1817,14 +1814,9 @@
     <div class="lightbox__body">
       <p class="lightbox__loc" id="lbLoc"></p>
       <h3 id="lbTitle"></h3>
-      <div class="lightbox__acts">
-        <button class="btn btn--gold lightbox__tour" id="lbTourBtn" type="button">
-          <span class="lightbox__tour-ico">⌂</span> Build Me One Like This
-        </button>
-        <button class="btn btn--ghost lightbox__walk" id="lbWalkBtn" type="button">
-          <span aria-hidden="true">▷</span> Step Inside This One
-        </button>
-      </div>
+      <button class="btn btn--gold lightbox__tour" id="lbTourBtn" type="button">
+        <span class="lightbox__tour-ico">⌂</span> Build Me One Like This
+      </button>
       <p class="lightbox__desc" id="lbDesc"></p>
       <div class="lightbox__specs" id="lbSpecs"></div>
       <ul class="lightbox__features" id="lbFeatures"></ul>
@@ -1837,16 +1829,15 @@
 <script src="js/vendor/ScrollTrigger.min.js"></script>
 <script src="js/vendor/lenis.min.js"></script>
 <script src="js/lead-relay.js?v=2"></script>
-<script src="js/main.js?v=20"></script>
+<script src="js/main.js?v=22"></script>
 <script src="js/palette.js?v=1" defer></script>
 <script type="importmap">
 { "imports": { "three": "./js/vendor/three.module.min.js" } }
 </script>
-<script type="module" src="js/estate3d.js?v=25"></script>
-<script type="module" src="js/house-builder.js?v=22"></script>
-<script type="module" src="js/house-tour.js?v=33"></script>
+<script type="module" src="js/estate3d.js?v=26"></script>
+<script type="module" src="js/house-builder.js?v=23"></script>
 <script type="module" src="js/like-this.js?v=5"></script>
-<script type="module" src="js/city3d.js?v=33"></script>
+<script type="module" src="js/city3d.js?v=34"></script>
 <script src="js/tools.js?v=5" defer></script>
 <script src="js/enhance.js?v=5" defer></script>
 <script src="js/feed.js?v=12" defer></script>

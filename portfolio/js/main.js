@@ -459,12 +459,6 @@ function openLightbox(i) {
       if (window.LikeThis) window.LikeThis.open(i);
     };
   }
-  // …and before that, the chance to walk through the one on screen
-  const walkBtn = document.getElementById("lbWalkBtn");
-  if (walkBtn) {
-    walkBtn.innerHTML = '<span aria-hidden="true">▷</span> Step Inside This One';
-    walkBtn.onclick = () => window.HouseTour && window.HouseTour.openProperty(i, p.title);
-  }
 }
 function closeLightbox() {
   // The tool pages load this script but have no lightbox, and the Escape
@@ -630,7 +624,7 @@ const HOT_DEALS = [
   }
 ];
 // 3D archetype per deal — matched to the sold property that shares each
-// listing's SVG so the model in the lightbox and the walkable tour agree
+// listing's SVG so the card art and the lightbox model agree
 // (see estate3d.js ARCHETYPES / interior.js DEAL_TO_SOLD).
 const DEAL_MODELS = [
   "modern",      // 0 · villa-serena
@@ -669,13 +663,6 @@ function openDealLightbox(d, i) {
       closeLightbox();
       if (window.LikeThis) window.LikeThis.openFromText(d.title + " " + (d.specs || ""), d.loc || d.title);
     };
-  }
-  // A live listing has no fixed design on file, so the walk-through is built
-  // from what the listing itself says — see tourConfigFromText.
-  const walkBtn = document.getElementById("lbWalkBtn");
-  if (walkBtn) {
-    walkBtn.innerHTML = '<span aria-hidden="true">▷</span> Walk a House Like This';
-    walkBtn.onclick = () => window.HouseTour && window.HouseTour.openDeal(i, d.title);
   }
 }
 
@@ -963,23 +950,15 @@ if (sortSelect) sortSelect.addEventListener("change", applySort);
 
 
 /* ---------- SPEC FOR EACH SOLD HOME ----------
-   Two jobs from one description. It's a construction brief, so js/like-this.js
-   can pre-fill a builder request from whichever house the visitor points at —
-   "one like this, on my plot". And it's a floor plan, so js/house-tour.js can
-   build the inside of that house to walk through.
+   The twelve closings written as construction briefs, so js/like-this.js can
+   pre-fill a builder request from whichever house the visitor points at —
+   "one like this, on my plot".
 
-   The walkthrough was taken out once, on the argument that a tour of a sold
-   house can only show someone a house that is already gone. That undersold
-   it: what a buyer is actually judging is whether this agent sells the kind
-   of house they want to live in, and eleven seconds inside one answers that
-   better than any photograph. Both offers are on the table now.
-
-   `plan` picks the layout variant and `palette` the colours, so no two of the
-   twelve read alike inside — see buildInterior() in js/house-builder.js.
+   `plan` and `palette` are read by buildInterior() in js/house-builder.js for
+   the Design Studio's step-inside view.
 
    Index matches PROPERTIES in this file and PROPERTY_MODELS in estate3d.js,
-   so the model in the lightbox, the house you walk and the spec you brief
-   from are all one design. */
+   so the model in the lightbox and the spec you brief from are one design. */
 const SOLD_SPECS = [
   // 0 · The Margalla View Manor — 2 Kanal, 7 bed, grand modern manor
   { plot: "2k", storeys: 2, style: "dha", finish: "greyWhite", roof: "flat",
@@ -1043,68 +1022,17 @@ const SOLD_SPECS = [
     guestRoom: false, servantQtr: false, powderRoom: true, pool: false } }
 ];
 
-/* Handed to js/like-this.js, which is a module and can't reach these
-   script-scoped consts directly. The sold homes are the reference builds
-   the "build me one like this" section works from. */
-window.SoldHomes = { PROPERTIES, SOLD_SPECS };
-
-/* The archetype each sold home's model renders. The tour walks you up to that
-   same model, so the exterior you approach is the one you were just looking
-   at rather than a generic box with the right dimensions. Mirrors
+/* The archetype each sold home's model renders, so anything outside this file
+   can put the right house on screen for a given listing. Mirrors
    PROPERTY_MODELS in js/estate3d.js — this file is a plain script and can't
    import it. */
 const SOLD_ARCHETYPES = ["manor", "modern", "greyTexture", "cube5", "farmhouse",
   "corner", "palazzo", "colonialAtrium", "modernWhite", "colonial", "linear", "brick"];
 
-/* Available listings are live YouTube posts, so there's no fixed design to
-   walk — derive a plausible one from the listing's own title. */
-function tourConfigFromText(text) {
-  const t = (text || "").toLowerCase();
-  const plot = /2\s*kanal/.test(t) ? "2k"
-    : /kanal/.test(t) ? "1k"
-    : (() => { const m = t.match(/(\d+(?:\.\d+)?)\s*marla/); return m ? (parseFloat(m[1]) <= 6 ? "5m" : "10m") : "10m"; })();
-  const style = /spanish|mehal|villa/.test(t) ? "spanish"
-    : /kothi|colonial|heritage|palazzo|classic/.test(t) ? "colonial"
-    : /glass|corner|modern facade/.test(t) ? "glass" : "dha";
-  const finish = /brick/.test(t) ? "brick"
-    : /marble|travertine|luxury|palazzo/.test(t) ? "travertine"
-    : /white/.test(t) ? "whiteWood"
-    : /spanish|sand/.test(t) ? "sandstone" : "greyWhite";
-  return {
-    plot, style, finish,
-    storeys: /triple|3\s*storey/.test(t) ? 3 : /single/.test(t) ? 1 : 2,
-    roof: /spanish|kothi|colonial|heritage/.test(t) ? "hip" : "flat",
-    kitchen: "closed",
-    features: { lawn: true, wall: true, porch: true, balcony: true,
-                guestRoom: plot !== "5m", servantQtr: plot === "1k" || plot === "2k",
-                powderRoom: true, pool: /pool|swimming/.test(t) }
-  };
-}
-
-/* Public tour API. Each entry walks its own house — the Design Studio has its
-   own separate walk-through of whatever you're configuring there. */
-window.HouseTour = {
-  openProperty: (i, title) => {
-    if (!window.WalkTour) return false;
-    closeLightbox();
-    const p = PROPERTIES[i] || {};
-    const cfg = Object.assign({}, SOLD_SPECS[i] || SOLD_SPECS[2],
-      { archetype: SOLD_ARCHETYPES[i] || "modern" });
-    return window.WalkTour.open(cfg, title || p.title || "Virtual Tour");
-  },
-  openDeal: (i, title) => {
-    if (!window.WalkTour) return false;
-    closeLightbox();
-    const d = HOT_DEALS[i] || {};
-    const name = title || d.title || "Virtual Tour";
-    return window.WalkTour.open(tourConfigFromText(name + " " + (d.specs || "")), name);
-  },
-  // Used by the 3D showcase captions, which know the model but not the index.
-  openArchetype: (type, title) => {
-    const i = SOLD_ARCHETYPES.indexOf(type);
-    return window.HouseTour.openProperty(i < 0 ? 2 : i, title);
-  }
-};
+/* Handed to js/like-this.js, which is a module and can't reach these
+   script-scoped consts directly. The sold homes are the reference builds
+   the "build me one like this" section works from. */
+window.SoldHomes = { PROPERTIES, SOLD_SPECS, SOLD_ARCHETYPES };
 
 /* ---------- WHATSAPP LEAD FORM ---------- */
 const leadForm = document.getElementById("leadForm");
@@ -1389,7 +1317,7 @@ if (alertForm) {
 
 /* ---------- FEATURED LISTING SPOTLIGHT ----------
    Cinematic showcase that rotates through the real available listings
-   (HOT_DEALS). Reuses the deal lightbox for the 3D model and virtual tour. */
+   (HOT_DEALS). Reuses the deal lightbox for the 3D model. */
 (function () {
   const img = document.getElementById("spotImg");
   if (!img || typeof HOT_DEALS === "undefined" || !HOT_DEALS.length) return;

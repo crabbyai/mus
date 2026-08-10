@@ -1461,8 +1461,8 @@ let lastT = 0;
 function loop(now) {
   if (!running) return;
   raf = requestAnimationFrame(loop);
-  // Parked while the walkable tour holds the screen: that's a fifth WebGL
-  // context on this page and nobody can see this one behind the overlay.
+  // Parked while a full-screen 3D overlay holds the screen — nobody can see
+  // this one behind it, and the contexts add up.
   if (window.__tour3dActive) return;
   const ms = now || performance.now();
   const dt = Math.min(0.05, lastT ? (ms - lastT) / 1000 : 0.016);

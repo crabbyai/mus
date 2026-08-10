@@ -2540,79 +2540,6 @@ select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
 }
 
 /* ============================================================
-   WALKABLE TOUR — full-screen first-person overlay
-   ============================================================ */
-.wtour {
-  position: fixed; inset: 0; z-index: 950;   /* above nav (900) */
-  display: none; background: #05070f;
-}
-/* the site chrome must not float over a full-screen tour */
-body.wtour-open .nav,
-body.wtour-open .whatsapp-fab,
-body.wtour-open .fab-dock,
-body.wtour-open .back-to-top,
-body.wtour-open .cursor,
-body.wtour-open .cursor-dot { display: none !important; }
-.wtour.is-open { display: block; }
-#wtourCanvas { display: block; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
-.wtour__bar {
-  position: absolute; top: 0; left: 0; right: 0;
-  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-  padding: 0.9rem 1.2rem;
-  background: linear-gradient(180deg, rgba(5,7,15,0.85), transparent);
-  pointer-events: none;
-}
-.wtour__title { display: flex; align-items: center; gap: 0.55rem; color: var(--cream); font-size: 0.9rem; }
-.wtour__title b { font-weight: 700; }
-.wtour__title em {
-  font-style: normal; color: var(--gold-bright); font-size: 0.78rem;
-  letter-spacing: 0.16em; text-transform: uppercase;
-  border-left: 1px solid rgba(201,164,92,0.45); padding-left: 0.6rem; margin-left: 0.2rem;
-}
-.wtour__dot {
-  width: 8px; height: 8px; border-radius: 50%; background: #6fd3a0;
-  box-shadow: 0 0 0 0 rgba(111,211,160,0.6); animation: wtPulse 2s infinite;
-}
-@keyframes wtPulse { 70% { box-shadow: 0 0 0 9px rgba(111,211,160,0); } 100% { box-shadow: 0 0 0 0 rgba(111,211,160,0); } }
-@media (prefers-reduced-motion: reduce) { .wtour__dot { animation: none; } }
-.wtour__close {
-  pointer-events: auto; cursor: pointer; min-height: 44px;
-  background: rgba(10,15,30,0.7); color: var(--cream);
-  border: 1px solid rgba(243,238,227,0.28); border-radius: 99px;
-  padding: 0.5rem 1rem; font: inherit; font-size: 0.82rem;
-  backdrop-filter: blur(6px);
-}
-.wtour__close:hover { border-color: var(--gold); color: var(--gold-bright); }
-.wtour__hint {
-  position: absolute; left: 0; right: 0; bottom: 1.1rem; text-align: center;
-  color: rgba(243,238,227,0.7); font-size: 0.78rem; pointer-events: none;
-  transition: opacity 0.4s var(--ease);
-  text-shadow: 0 2px 10px rgba(0,0,0,0.8);
-}
-.wtour__hint b { color: var(--gold-bright); }
-.wtour__joy {
-  position: absolute; width: 104px; height: 104px; margin: -52px 0 0 -52px;
-  border-radius: 50%; border: 1px solid rgba(243,238,227,0.25);
-  background: rgba(10,15,30,0.3); display: none; place-items: center;
-  pointer-events: none;
-}
-.wtour__joy.is-live { display: grid; }
-.wtour__knob {
-  width: 42px; height: 42px; border-radius: 50%;
-  background: rgba(201,164,92,0.75); border: 1px solid rgba(243,238,227,0.4);
-}
-@media (hover: none) { .wtour__hint { font-size: 0.72rem; } }
-.wtour__prompt {
-  position: absolute; left: 50%; bottom: 4.2rem; transform: translate(-50%, 8px);
-  padding: 0.6rem 1.1rem; border-radius: 99px;
-  background: rgba(10,15,30,0.78); backdrop-filter: blur(6px);
-  border: 1px solid rgba(201,164,92,0.5); color: var(--gold-bright);
-  font-size: 0.82rem; pointer-events: none; opacity: 0;
-  transition: opacity 0.35s var(--ease), transform 0.35s var(--ease);
-}
-.wtour__prompt.is-on { opacity: 1; transform: translate(-50%, 0); }
-
-/* ============================================================
    HERO GOLD DUST — canvas motes over the aurora
    ============================================================ */
 .hero__dust {
@@ -3728,4 +3655,83 @@ body.wtour-open .cursor-dot { display: none !important; }
 .cx-audit b { color: var(--cream); font-weight: 600; }
 .cx-flag.is-ok {
   color: #8fd6a4; border-color: rgba(120,200,150,0.45);
+}
+
+/* ============================================================
+   HOW BIG IS IT, REALLY — two homes side by side, to scale
+   ============================================================ */
+.toolpage {
+  padding: clamp(4.5rem, 9vw, 7rem) 6vw clamp(3rem, 5vw, 4rem);
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(201,164,92,0.1), transparent 58%),
+    linear-gradient(180deg, #0c1226, #070b16);
+  border-top: 1px solid rgba(201,164,92,0.16);
+}
+.toolpage__head { text-align: center; max-width: 54rem; margin: 0 auto 2rem; }
+.toolpage__lead { color: #c9cedb; margin-top: 1rem; }
+
+.sizetool { max-width: 1120px; margin: 0 auto; }
+.sizetool__picks {
+  display: flex; flex-wrap: wrap; gap: 1rem 1.6rem; justify-content: center; margin-bottom: 1.2rem;
+}
+.sizetool__pick { display: flex; flex-direction: column; gap: 0.45rem; min-width: min(22rem, 100%); }
+.sizetool__pick > span {
+  font-size: 0.68rem; letter-spacing: 0.26em; text-transform: uppercase; color: var(--muted);
+}
+.sizetool__select {
+  min-height: 44px; padding: 0.55rem 0.9rem; border-radius: 10px;
+  background: rgba(12,18,38,0.9); color: var(--cream);
+  border: 1px solid rgba(201,164,92,0.34); font-size: 0.92rem;
+}
+.sizetool__select:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+.sizetool__stage {
+  position: relative; border-radius: 18px; overflow: hidden;
+  aspect-ratio: 16 / 9; min-height: 320px;
+  border: 1px solid rgba(201,164,92,0.2);
+  background: linear-gradient(180deg, #0b1122, #070b16);
+}
+.sizetool__stage.is-dead::after {
+  content: "This one needs 3D graphics, which this browser has turned off.";
+  position: absolute; inset: 0; display: grid; place-items: center;
+  padding: 2rem; text-align: center; color: var(--muted); font-size: 0.9rem;
+}
+#sizeCanvas { display: block; width: 100%; height: 100%; touch-action: pan-y; cursor: grab; }
+#sizeCanvas:active { cursor: grabbing; }
+.sizetool__hint {
+  position: absolute; left: 50%; bottom: 0.9rem; transform: translateX(-50%);
+  font-size: 0.66rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted);
+  background: rgba(8,12,24,0.62); padding: 0.35rem 0.85rem; border-radius: 99px;
+  pointer-events: none;
+}
+.sizetool__verdict {
+  text-align: center; margin: 1.3rem auto 0; max-width: 46rem;
+  font-family: var(--serif); font-size: 1.12rem; color: var(--gold-bright);
+}
+.sizetool__cards {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; margin-top: 1.4rem;
+}
+.sizetool__card { padding: 1.3rem 1.5rem; border-radius: 16px; }
+.sizetool__card h3 { font-family: var(--serif); font-size: 1.15rem; font-weight: 500; }
+.sizetool__loc {
+  color: var(--muted); font-size: 0.7rem; letter-spacing: 0.2em;
+  text-transform: uppercase; margin: 0.3rem 0 0.9rem;
+}
+.sizetool__card dl { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem 1.2rem; margin: 0; }
+.sizetool__card dt {
+  font-size: 0.64rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted);
+}
+.sizetool__card dd { margin: 0.15rem 0 0; font-size: 0.95rem; }
+.sizetool__price {
+  margin-top: 1rem; padding-top: 0.8rem; border-top: 1px solid rgba(201,164,92,0.18);
+  font-family: var(--serif); color: var(--gold); font-size: 1rem;
+}
+.sizetool__foot { text-align: center; margin-top: 1.8rem; }
+.sizetool__note {
+  color: var(--muted); font-size: 0.78rem; max-width: 44rem; margin: 1rem auto 0; line-height: 1.7;
+}
+@media (max-width: 760px) {
+  .sizetool__cards { grid-template-columns: 1fr; }
+  .sizetool__stage { aspect-ratio: 4 / 5; }
+  .sizetool__pick { min-width: 100%; }
 }

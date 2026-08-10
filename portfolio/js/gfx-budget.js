@@ -1,12 +1,12 @@
 /* ============================================================
    GRAPHICS BUDGET — how much this device can actually carry
    ------------------------------------------------------------
-   Three WebGL scenes share this page: the scroll showcase, the city
-   model and the walkable tour, and the design stage makes four. Each
-   used to pick its own quality from a hardcoded screen-width test,
-   which is a bad proxy twice over — it treats a 2021 phone with eight
-   cores and a fast GPU exactly like a 2016 budget handset, and it
-   treats a small laptop window as a phone.
+   Several WebGL scenes share this site: the scroll showcase, the city
+   model, the design stage and the size comparer. Each used to pick its
+   own quality from a hardcoded screen-width test, which is a bad proxy
+   twice over — it treats a 2021 phone with eight cores and a fast GPU
+   exactly like a 2016 budget handset, and it treats a small laptop
+   window as a phone.
 
    So: ask the device. Cores, reported memory, the GPU's own limits,
    and how many pixels it wants to draw. A tier comes out, and the
@@ -14,9 +14,9 @@
 
    The tiers are deliberately generous. The tab crashes that prompted
    this were not caused by a shadow map being 4096 instead of 1024 —
-   they were caused by five WebGL contexts rendering at once and none
-   of them ever being released. Those are fixed at the source. This
-   file exists so a capable device gets the graphics it paid for.
+   they were caused by several WebGL contexts rendering at once and
+   none of them being released. This file exists so a capable device
+   gets the graphics it paid for.
    ============================================================ */
 
 let cached = null;
@@ -79,9 +79,9 @@ export function budget() {
   return cached;
 }
 
-/* Lets a scene ask for less than the device could give — the showcase runs
-   inside a scrolling page beside other work, the tour has the screen to
-   itself and can spend everything. */
+/* Lets a scene ask for less than the device could give — a scene sharing a
+   scrolling page with other work takes a share, one that owns the whole
+   viewport passes 1 and spends everything. */
 export function scaled(share) {
   const b = budget();
   return {
@@ -90,10 +90,9 @@ export function scaled(share) {
     dpr: Math.max(1, b.dpr * (share < 1 ? 0.92 : 1)),
     bloom: b.bloom,
     /* Ambient occlusion only where a scene owns the whole frame. The showcase
-       draws onto a transparent canvas over a CSS gradient, and SSAO has no
-       real background to occlude against there — it lifts the blacks and
-       flattens the very contrast it is supposed to add. Indoors, where every
-       pixel is geometry, it is the biggest single gain there is. */
+       and the size comparer both draw onto a transparent canvas over a CSS
+       gradient, and SSAO has no real background to occlude against there — it
+       lifts the blacks and flattens the very contrast it is supposed to add. */
     ao: b.ao && share >= 1,
     shadows: b.shadows
   };
