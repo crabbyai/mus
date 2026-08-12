@@ -65,10 +65,28 @@
     let w = 0, h = 0, dpr = 1, motes = [], raf = 0, live = false;
     let px = 0, py = 0, tx = 0, ty = 0;
 
+    var lastW = 0, lastH = 0;
     function size() {
       const r = hero.getBoundingClientRect();
-      dpr = Math.min(devicePixelRatio || 1, 2);
-      w = Math.max(1, r.width); h = Math.max(1, r.height);
+      const cw = Math.max(1, Math.round(r.width)), ch = Math.max(1, Math.round(r.height));
+      /* Resizing a canvas reallocates its whole backing store and this one
+         rebuilds its particle array too, so doing it when nothing moved is
+         pure waste. A pinch-zoom fires resize for every frame of the gesture
+         without changing the hero's size by a pixel. */
+      if (cw === lastW && ch === lastH) return;
+      lastW = cw; lastH = ch;
+      w = cw; h = ch;
+      /* Same ceiling js/gfx-budget.js applies to the WebGL scenes, inlined
+         because this file is a plain script and cannot import it. Asked for the
+         desktop site, a phone reports a ~1300px layout viewport at a device
+         ratio of 3, which without a cap is a 12-megapixel canvas being redrawn
+         sixty times a second — and the layout width gives no hint that it is a
+         phone, so the ceiling follows the pointer instead. These are soft gold
+         specks; a lower ratio costs nothing you can see. */
+      var handheld = (navigator.maxTouchPoints || 0) >= 1 &&
+                     matchMedia("(pointer: coarse)").matches;
+      var cap = handheld ? 2.0e6 : 4.2e6;
+      dpr = Math.max(0.75, Math.min(devicePixelRatio || 1, 2, Math.sqrt(cap / (w * h))));
       dust.width = Math.round(w * dpr); dust.height = Math.round(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       // Density by area, capped so a big desktop doesn't pay for hundreds.
@@ -115,7 +133,11 @@
     function pause() { live = false; cancelAnimationFrame(raf); }
 
     size();
-    addEventListener("resize", size, { passive: true });
+    // coalesced to one frame, for the same reason
+    var sizeRaf = 0;
+    addEventListener("resize", function () {
+      if (!sizeRaf) sizeRaf = requestAnimationFrame(function () { sizeRaf = 0; size(); });
+    }, { passive: true });
     document.addEventListener("visibilitychange", () => (document.hidden ? pause() : play()));
     if ("IntersectionObserver" in window) {
       new IntersectionObserver((es) => es.forEach((e) => (e.isIntersecting ? play() : pause())))

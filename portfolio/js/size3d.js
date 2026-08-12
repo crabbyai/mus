@@ -23,8 +23,8 @@
    footprint of its plot before it goes on the ground.
    ============================================================ */
 import * as THREE from "three";
-import { ARCHETYPES, skyEnv } from "./estate3d.js?v=26";
-import { scaled } from "./gfx-budget.js?v=2";
+import { ARCHETYPES, skyEnv } from "./estate3d.js?v=27";
+import { scaled, pixelRatioFor, onResize } from "./gfx-budget.js?v=4";
 
 /* Covered footprint a house of each plot size actually occupies, in metres.
    Matches PLOTS in js/house-builder.js — kept as a copy rather than an import
@@ -185,7 +185,6 @@ function init() {
     return;
   }
   const gfx = scaled(0.5);
-  renderer.setPixelRatio(gfx.dpr);
   renderer.shadowMap.enabled = gfx.shadows;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -263,10 +262,17 @@ function init() {
        isn't there. */
     dist = Math.max(30, (gap + w) * 0.8 + d * 0.28);
   }
+  let lastW = 0, lastH = 0;
   function size() {
     const r = stage.getBoundingClientRect();
-    renderer.setSize(r.width, r.height, false);
-    camera.aspect = r.width / Math.max(1, r.height);
+    const w = Math.round(r.width), h = Math.round(r.height);
+    // A zoom gesture fires resize without resizing this element; reallocating
+    // the buffer for each of those is what exhausts the GPU process.
+    if (w === lastW && h === lastH) return;
+    lastW = w; lastH = h;
+    renderer.setPixelRatio(pixelRatioFor(w, h, 0.5));
+    renderer.setSize(w, h, false);
+    camera.aspect = w / Math.max(1, h);
     camera.updateProjectionMatrix();
   }
 
@@ -346,7 +352,7 @@ function init() {
   });
 
   size();
-  addEventListener("resize", size, { passive: true });
+  onResize(size);
   place(3, 0);
 
   let inView = true;

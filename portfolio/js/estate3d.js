@@ -5,7 +5,7 @@
    balcony railings, steel gate, paver driveway.
    ============================================================ */
 import * as THREE from "three";
-import { scaled } from "./gfx-budget.js?v=2";
+import { scaled, pixelRatioFor, onResize } from "./gfx-budget.js?v=4";
 
 const GOLD = 0xc9a45c;
 const CHARCOAL = 0x3a3f4a;
@@ -1005,7 +1005,6 @@ function initShowcase() {
     return;
   }
   const gfx = scaled(0.5);
-  renderer.setPixelRatio(gfx.dpr);
   cinematic(renderer);
 
   const scene = makeScene();
@@ -1066,8 +1065,15 @@ function initShowcase() {
   // caption is taller and the fixed contact dock eats another 78px — so the
   // model is fitted into what's left rather than drawn over the lot.
   const safe = { x: 0.92, top: 0.5, bottom: 0.6 };
+  let lastW = 0, lastH = 0;
   function size() {
     const w = section.clientWidth, h = section.clientHeight;
+    // Pinch-zoom fires resize without changing the element's CSS size. Doing
+    // the work anyway means reallocating every render target for nothing,
+    // many times a second, which is what kills the tab.
+    if (w === lastW && h === lastH) return;
+    lastW = w; lastH = h;
+    renderer.setPixelRatio(pixelRatioFor(w, h, 0.5));
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
@@ -1080,7 +1086,7 @@ function initShowcase() {
     safe.bottom = phone ? 0.34 : 0.72;
   }
   size();
-  window.addEventListener("resize", size);
+  onResize(size);
 
   let progress = 0, inView = true, lastSeg = -1;
   ScrollTrigger.create({
@@ -1156,8 +1162,6 @@ function ensureViewer(container) {
   } catch {
     return null;
   }
-  const gfx = scaled(0.5);
-  renderer.setPixelRatio(gfx.dpr);
   cinematic(renderer);
   const scene = makeScene();
   scene.environment = skyEnv(renderer);
@@ -1185,7 +1189,8 @@ function ensureViewer(container) {
     requestAnimationFrame(loop);
     if (window.__tour3dActive) return;
     const w = canvas.clientWidth, h = canvas.clientHeight;
-    if (canvas.width !== w * renderer.getPixelRatio()) {
+    if (canvas.width !== Math.round(w * renderer.getPixelRatio())) {
+      renderer.setPixelRatio(pixelRatioFor(w, h, 0.5));
       renderer.setSize(w, h, false);
       camera.aspect = w / h;
       camera.updateProjectionMatrix();

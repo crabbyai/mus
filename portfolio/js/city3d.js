@@ -20,6 +20,7 @@
    when it isn't.
    ============================================================ */
 import * as THREE from "three";
+import { pixelRatioFor, onResize } from "./gfx-budget.js?v=4";
 
 /* ============================================================
    DATA
@@ -668,7 +669,6 @@ function initScene() {
   try {
     renderer = new THREE.WebGLRenderer({ canvas: c, antialias: true, powerPreference: "high-performance" });
   } catch (e) { return false; }
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -737,15 +737,23 @@ function initScene() {
   ray = new THREE.Raycaster();
   bind(c);
   resize();
-  addEventListener("resize", resize, { passive: true });
+  onResize(resize);
   ready = true;
   return true;
 }
 
+let __lastW = 0, __lastH = 0;
+/* Sized from the element, capped by js/gfx-budget.js, and skipped entirely when
+   the element has not actually changed size. A pinch-zoom fires resize for every
+   frame of the gesture without moving this canvas an inch, and answering each
+   one by reallocating the render targets is what takes the tab down. */
 function resize() {
   if (!renderer) return;
   const c = cv(), w = c.clientWidth, h = c.clientHeight;
   if (!w || !h) return;
+  if (w === __lastW && h === __lastH) return;
+  __lastW = w; __lastH = h;
+  renderer.setPixelRatio(pixelRatioFor(w, h, 0.6));
   renderer.setSize(w, h, false);
   camera.aspect = w / h;
   camera.updateProjectionMatrix();
