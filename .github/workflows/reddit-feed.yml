@@ -1,4 +1,4 @@
-name: Refresh community feed (r/islamabad + r/lahore + r/pakistan real-estate Qs)
+name: Refresh community feed (r/islamabad + r/lahore + r/pakistan + r/rawalpindi real-estate Qs)
 
 on:
   schedule:
@@ -43,7 +43,7 @@ jobs:
           const CID = process.env.REDDIT_CLIENT_ID;
           const CSECRET = process.env.REDDIT_CLIENT_SECRET;
 
-          const SUBS = ["islamabad", "lahore", "pakistan"];
+          const SUBS = ["islamabad", "lahore", "pakistan", "rawalpindi"];
           const QUERY = 'property OR plot OR "real estate" OR house OR flat OR rent OR DHA OR Bahria OR marla OR kanal OR invest OR society OR possession OR filer';
           const UA = "web:pakistani.luxury:v1.2 (real-estate Q&A aggregator for adeelahmedrahman)";
 

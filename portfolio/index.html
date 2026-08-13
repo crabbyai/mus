@@ -183,7 +183,7 @@
 <link rel="preload" href="assets/fonts/playfair-display-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="assets/fonts/manrope-latin-300-normal.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="stylesheet" href="css/fonts.css" />
-<link rel="stylesheet" href="css/style.css?v=74" />
+<link rel="stylesheet" href="css/style.css?v=75" />
 <link rel="stylesheet" href="css/enhance.css" />
 </head>
 <body>
@@ -1552,17 +1552,39 @@
     <div class="forum__head">
       <p class="section-eyebrow" data-reveal>Real Questions · Real Answers</p>
       <h2 class="section-title" data-reveal>Ask the <em class="gold-italic">expert</em></h2>
-      <p class="forum__intro" data-reveal>Actual property questions people are asking on r/islamabad, r/lahore &amp; r/pakistan — answered by me. Updated live. Have the same question? Message me on WhatsApp and I'll answer yours directly.</p>
+      <p class="forum__intro" data-reveal>Two things here. What Pakistan's property subreddits are discussing <em>right now</em>, pulled straight from Reddit — and my own answer bank: the questions buyers actually ask me, answered properly and without a sales pitch.</p>
     </div>
-    <div class="forum__shell glass" data-reveal>
-      <div class="forum__bar">
-        <div class="forum__sorts" id="forumSorts">
+
+    <!-- LIVE RAIL — real Reddit threads only, never anything invented -->
+    <div class="rlive glass" data-reveal>
+      <div class="rlive__head">
+        <span class="rlive__brand"><span class="rlive__dot" aria-hidden="true"></span>Live from Reddit</span>
+        <div class="forum__sorts" id="forumLiveSort">
           <button class="forum__sort is-active" type="button" data-sort="new">🆕 Latest</button>
           <button class="forum__sort" type="button" data-sort="top">🔥 Most discussed</button>
         </div>
-        <span class="forum__stamp" id="forumStamp"></span>
       </div>
+      <div class="rlive__subs" id="forumSubs" role="group" aria-label="Filter by subreddit"></div>
+      <div class="rlive__list" id="forumLive" hidden></div>
+      <div class="rlive__foot">
+        <span class="forum__stamp" id="forumStamp"></span>
+        <a class="rlive__open" id="forumOpen" href="https://www.reddit.com/r/islamabad+lahore+pakistan+rawalpindi/" target="_blank" rel="noopener nofollow">Open all four subreddits ↗</a>
+      </div>
+    </div>
+
+    <!-- ANSWER BANK — Adeel's own Q&A, anonymised -->
+    <div class="forum__shell glass" data-reveal>
+      <div class="forum__bar">
+        <label class="forum__search">
+          <span aria-hidden="true">🔎</span>
+          <input id="forumSearch" type="search" placeholder="Search the answers — tax, NOC, DHA, overseas, possession…" aria-label="Search answered questions">
+        </label>
+        <span class="forum__count" id="forumCount"></span>
+      </div>
+      <div class="forum__topics" id="forumTopics" role="group" aria-label="Filter by topic"></div>
       <div class="forum__list" id="forumList"><!-- questions injected by forum.js --></div>
+      <button class="forum__more" type="button" id="forumMore" hidden>Show more</button>
+      <p class="forum__disclosure">Questions asked of me by buyers and readers, reproduced with details removed. Handles are randomly generated — these are not Reddit accounts, and nothing above is anyone's real name.</p>
       <a class="btn btn--wa forum__cta" id="forumCta" href="https://wa.me/16134083945?text=Hello%20Adeel%20-%20I%20have%20a%20property%20question%3A%20" target="_blank" rel="noopener" data-magnetic>Ask me your own question on WhatsApp <span class="btn__arrow">→</span></a>
     </div>
   </section>
@@ -1841,7 +1863,7 @@
 <script src="js/tools.js?v=5" defer></script>
 <script src="js/enhance.js?v=7" defer></script>
 <script src="js/feed.js?v=12" defer></script>
-<script src="js/forum.js?v=3" defer></script>
+<script src="js/forum.js?v=4" defer></script>
 <script src="js/social.js?v=1" defer></script>
 <script src="js/convert.js?v=3" defer></script>
 <script src="js/currency.js?v=4" defer></script>
