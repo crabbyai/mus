@@ -137,7 +137,7 @@
       "slabs": [
         {
           "upTo": 50000000,
-          "filer": 3,
+          "filer": 2.75,
           "late": 6,
           "non": 10
         },
@@ -315,16 +315,5 @@
       "unreachable": 0
     }
   },
-  "proposed": {
-    "at": "2026-08-24",
-    "note": "Found on the source but NOT applied. Review and merge to publish.",
-    "changes": [
-      {
-        "path": "federal.236C.slabs.0.filer",
-        "from": 3,
-        "to": 2.75,
-        "label": "236C · sale"
-      }
-    ]
-  }
+  "proposed": null
 }
