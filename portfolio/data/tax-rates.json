@@ -20,7 +20,7 @@
   "verified": false,
   "verifiedBy": null,
   "verifiedOn": null,
-  "checkedAt": "2026-08-17",
+  "checkedAt": "2026-08-24",
   "sources": [
     {
       "id": "fbr-wht",
@@ -36,7 +36,7 @@
         "236C"
       ],
       "hash": null,
-      "lastFetched": "2026-08-17"
+      "lastFetched": "2026-08-24"
     },
     {
       "id": "fbr-ordinance",
@@ -51,7 +51,7 @@
         "cgt"
       ],
       "hash": null,
-      "lastFetched": "2026-08-17"
+      "lastFetched": "2026-08-24"
     },
     {
       "id": "punjab-stamp",
@@ -66,7 +66,7 @@
         "lhr"
       ],
       "hash": "f0dd5154e75f1fad",
-      "lastFetched": "2026-08-17"
+      "lastFetched": "2026-08-24"
     },
     {
       "id": "ict-cvt",
@@ -80,7 +80,7 @@
         "isb"
       ],
       "hash": "b1c2b0fc734b88a5",
-      "lastFetched": "2026-08-17"
+      "lastFetched": "2026-08-24"
     }
   ],
   "statuses": [
@@ -309,14 +309,14 @@
       }
     },
     "lastRun": {
-      "at": "2026-08-17",
+      "at": "2026-08-24",
       "confirmed": 0,
       "total": 4,
       "unreachable": 0
     }
   },
   "proposed": {
-    "at": "2026-08-17",
+    "at": "2026-08-24",
     "note": "Found on the source but NOT applied. Review and merge to publish.",
     "changes": [
       {
