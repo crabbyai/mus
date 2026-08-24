@@ -288,7 +288,7 @@ function heroIntro() {
   const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
   tl.to(".hero__title .line > span", { y: 0, duration: 1.3, stagger: 0.12 })
     .fromTo(".hero__portrait", { opacity: 0, y: 60, rotate: 2 }, { opacity: 1, y: 0, rotate: 0, duration: 1.4 }, 0.3)
-    .to(".hero__eyebrow, .hero__sub, .hero__actions", { opacity: 1, y: 0, duration: 1, stagger: 0.1 }, 0.6)
+    .to(".hero__eyebrow, .hero__sub, .hsearch, .hero__actions", { opacity: 1, y: 0, duration: 1, stagger: 0.1 }, 0.6)
     .to(".hero__stat", { opacity: 1, y: 0, duration: 0.9, stagger: 0.08, onComplete: runCounters }, 0.9);
 }
 
@@ -450,6 +450,21 @@ function openLightbox(i) {
   // behind the model — two pictures of a house at once. Only one at a time.
   lbImg.style.visibility = has3d ? "hidden" : "visible";
 
+  /* A fact sheet somebody can print and take to a spouse, a father-in-law or
+     a bank. Printing from here prints this one home, not the whole site. */
+  const printBtn = document.getElementById("lbPrint");
+  if (printBtn) {
+    printBtn.onclick = () => {
+      document.documentElement.classList.add("lb-printing-ready");
+      window.print();
+    };
+  }
+  const lbWa = document.getElementById("lbWa");
+  if (lbWa) {
+    const msg = `Hello Adeel, I was reading about ${p.title} (${p.loc}, ${p.sizeLabel}, closed at ${p.price}) on your site. Could you find me something like it?`;
+    lbWa.href = `https://wa.me/16134083945?text=${encodeURIComponent(msg)}`;
+  }
+
   // this house is sold — the useful offer is another one exactly like it
   const tourBtn = document.getElementById("lbTourBtn");
   if (tourBtn) {
@@ -467,9 +482,13 @@ function closeLightbox() {
   if (!lightbox) return;
   lightbox.classList.remove("is-open");
   lightbox.setAttribute("aria-hidden", "true");
+  document.documentElement.classList.remove("lb-printing-ready");
   if (lenis) lenis.start();
   if (window.Estate3D) window.Estate3D.closeViewer();
 }
+/* The print-only classes exist for the duration of one print job. */
+window.addEventListener("afterprint", () =>
+  document.documentElement.classList.remove("lb-printing-ready", "cmp-printing-ready"));
 onId("lightboxClose", "click", closeLightbox);
 onId("lightboxBackdrop", "click", closeLightbox);
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeLightbox(); });
@@ -853,7 +872,10 @@ function applySort() {
     "price-desc": (i) => -num(PROPERTIES[i]),
     "price-asc": (i) => num(PROPERTIES[i]),
     "year-desc": (i) => -PROPERTIES[i].year,
-    "days-asc": (i) => PROPERTIES[i].soldIn || 999
+    "days-asc": (i) => PROPERTIES[i].soldIn || 999,
+    // Best value = cheapest land rate. The maths lives in compare-homes.js,
+    // which owns it; without that file the option simply isn't offered.
+    "marla-asc": (i) => (window.Marla ? window.Marla.perMarla(PROPERTIES[i]) : 0) || Infinity
   };
   const orig = cards.map((c, idx) => ({ c, i: idx }));
   // dataset order survives reordering; store original index once

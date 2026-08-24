@@ -226,3 +226,23 @@
     }
   }
 })();
+
+/* ---------- REVIEW RATING BARS ----------
+   The distribution only means something if you can see the shape of it, so
+   the bars grow when they scroll into view rather than arriving finished. */
+(function () {
+  "use strict";
+  var bars = document.querySelectorAll(".reviews__fill[data-pct]");
+  if (!bars.length) return;
+  var still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function fill(el) { el.style.width = (el.dataset.pct || 0) + "%"; }
+  if (still || !("IntersectionObserver" in window)) { bars.forEach(fill); return; }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      fill(e.target);
+      io.unobserve(e.target);
+    });
+  }, { threshold: 0.4 });
+  bars.forEach(function (b) { io.observe(b); });
+})();
