@@ -239,11 +239,22 @@
 }
 .hsearch__note-cta:hover { background: var(--gold); color: var(--ink); }
 
+/* The hero collapses to a single centred column at 1000px (style.css), where
+   it re-centres .hero__sub and .hero__actions with auto margins. This bar has
+   to follow the same breakpoint — on its own 900px one it stayed flush left
+   between 901 and 1000px while everything around it centred, which read as
+   the whole hero being off-axis on a tablet. */
+@media (max-width: 1000px) {
+  .hsearch { margin-inline: auto; }
+}
 @media (max-width: 900px) {
-  .hsearch { max-width: none; margin: 1.6rem 0 1.8rem; }
   .hsearch__bar { grid-template-columns: 1fr 1fr; }
   .hsearch__field--where { grid-column: 1 / -1; }
   .hsearch__go { grid-column: 1 / -1; justify-content: center; padding: 0.9rem; }
+}
+/* Only once the column is genuinely narrower than the bar does it fill it. */
+@media (max-width: 760px) {
+  .hsearch { max-width: none; margin: 1.6rem auto 1.8rem; }
 }
 @media (max-width: 520px) {
   .hsearch__tab { font-size: 0.75rem; letter-spacing: 0.03em; padding: 0.5rem 0.2rem; }
@@ -715,3 +726,15 @@
   margin-top: 0.15rem;
 }
 .reviews__bars { max-width: 300px; }
+
+/* The presence line is a flex row (dot + text), so the hero's text-align
+   never reached it — it stayed hard left while the sub, the search bar and
+   the buttons all centred below 1000px. Same fix the site already applies
+   to .hero__actions. */
+@media (max-width: 1000px) {
+  /* No flex-wrap: that pushes the status dot onto a line of its own above the
+     text. Left unwrapped, the text span shrinks and wraps inside itself and
+     the dot stays where it belongs, at the head of the first line. */
+  .hero__trust { justify-content: center; text-align: center; }
+  .hero__trust .online-dot { flex: none; }
+}

@@ -80,7 +80,16 @@
   var INLINE = /^(SPAN|STRONG|EM|B|I|U|SMALL|CITE|ABBR|TIME|SUP|SUB|MARK|BR|A|WBR|S|Q|VAR|SAMP|KBD)$/;
   var CONTROL = /^(SELECT|INPUT|TEXTAREA|IFRAME|VIDEO|AUDIO|CANVAS|SVG|IMG)$/;
 
+  /* Elements another script owns the innards of. Replacing one of these
+     wholesale destroys the hooks that script re-renders through — the
+     presence line's [data-presence-text] span is rewritten every minute by
+     convert.js, and if the translation pass wins the race against the first
+     paint the span is gone and the line freezes on its fallback forever.
+     Walk into them; never replace them. */
+  var OWNED = "[data-presence]";
+
   function leafKind(el) {
+    if (el.matches && el.matches(OWNED)) return "container";
     var kids = el.children;
     for (var i = 0; i < kids.length; i++) {
       var tag = kids[i].tagName;

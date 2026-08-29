@@ -784,7 +784,9 @@ html.ur .langhero__en { direction: ltr; text-align: right; }
 .langswitch--nav .langswitch__opt { padding: 0.42rem 0.8rem; }
 .langswitch--nav .langswitch__opt--ur { font-size: 0.92rem; }
 
-@media (max-width: 900px) { .langhero { max-width: none; margin: 0 0 1.6rem; } }
+/* Same breakpoint as the search bar above it, and for the same reason. */
+@media (max-width: 1000px) { .langhero { margin-inline: auto; } }
+@media (max-width: 760px)  { .langhero { max-width: none; margin: 0 auto 1.6rem; } }
 @media (max-width: 560px) {
   .langhero { flex-direction: column; align-items: stretch; text-align: center; }
   .langhero__lead { align-items: center; }
