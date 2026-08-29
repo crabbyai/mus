@@ -620,6 +620,8 @@
 "Jump to an area…": "کسی علاقے پر جائیں…",
 "Just explore": "صرف دیکھنا",
 "Just exploring": "صرف دیکھ رہا ہوں",
+"Just starting the day": "دن ابھی شروع ہوا ہے",
+"Just starting the day — I'll reply within the hour": "<strong>دن ابھی شروع ہوا ہے</strong> — ایک گھنٹے کے اندر جواب دوں گا",
 "Kabul Restaurant": "کابل ریسٹورنٹ",
 "Keep scrolling — each home builds itself ↓": "نیچے دیکھتے رہیے — ہر گھر خود کو بناتا جائے گا <span>↓</span>",
 "Kitchen": "باورچی خانہ",
@@ -743,7 +745,7 @@
 "On top of the price": "قیمت کے علاوہ",
 "One agent for the entire journey — no handoffs, no surprises.": "پورے سفر کے لیے ایک ہی ایجنٹ — نہ کسی اور کے حوالے، نہ کوئی اچانک انکشاف۔",
 "Online now": "ابھی آن لائن",
-"Online now — WhatsApp replies usually within minutes": "<span class=\"online-dot\" data-presence-dot></span> <span data-presence-text><strong>ابھی آن لائن</strong> — واٹس ایپ پر جواب عموماً چند منٹ میں</span>",
+"Online now — WhatsApp replies usually within minutes": "<strong>ابھی آن لائن</strong> — واٹس ایپ پر جواب عموماً چند منٹ میں",
 "Only this week's listings": "صرف اسی ہفتے کی لسٹنگز",
 "Open / island kitchen": "کھلا / آئی لینڈ کچن",
 "Open all four subreddits ↗": "چاروں سب ریڈٹس کھولیں ↗",
@@ -1758,6 +1760,14 @@
 [
 "^Dec (\\d{4})([A-Z][a-z]{2}) (\\d{4})$",
 "دسمبر $1 – $2 $3"
+],
+[
+"^It's (\\d{1,2}:\\d{2}(?:am|pm)) in Islamabad — message me anyway and you'll have a reply by morning$",
+"<strong>اسلام آباد میں اِس وقت $1 ہے</strong> — پھر بھی پیغام بھیجیے، صبح تک جواب مل جائے گا"
+],
+[
+"^It's (\\d{1,2}:\\d{2}(?:am|pm)) in Islamabad$",
+"اسلام آباد میں اِس وقت $1 ہے"
 ]
 ]
 }
