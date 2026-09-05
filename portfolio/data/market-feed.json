@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-05T10:30:40.056Z",
+  "updated": "2026-09-05T15:09:57.283Z",
   "channels": {
     "msj": {
       "name": "MSJ Real Estate",
@@ -19,12 +19,22 @@
   },
   "items": [
     {
+      "channel": "oreal",
+      "channelName": "OREAL Properties",
+      "videoId": "ffk-onB0CJg",
+      "title": "10 Marla House for Sale in B-17 Islamabad | Smart Double Unit | CDA sector",
+      "published": "2026-09-05T11:00:23+00:00",
+      "views": 389,
+      "url": "https://www.youtube.com/watch?v=ffk-onB0CJg",
+      "thumb": "https://i.ytimg.com/vi/ffk-onB0CJg/hqdefault.jpg"
+    },
+    {
       "channel": "msj",
       "channelName": "MSJ Real Estate",
       "videoId": "vrpFIdAz7fg",
       "title": "15.5 Marla ASTOUNDING Corner House with CRICKET GROUND for sale in Faisal Town Islamabad",
       "published": "2026-09-05T07:44:34+00:00",
-      "views": 453,
+      "views": 1804,
       "url": "https://www.youtube.com/watch?v=vrpFIdAz7fg",
       "thumb": "https://i.ytimg.com/vi/vrpFIdAz7fg/hqdefault.jpg"
     },
@@ -34,7 +44,7 @@
       "videoId": "eLWLzzPG2Nw",
       "title": "This 26 Marla House Has a UNIQUE Home Cinema! 😳 | For Sale in Bahria Town Phase 7 Islamabad",
       "published": "2026-09-04T15:35:19+00:00",
-      "views": 1801,
+      "views": 2198,
       "url": "https://www.youtube.com/watch?v=eLWLzzPG2Nw",
       "thumb": "https://i.ytimg.com/vi/eLWLzzPG2Nw/hqdefault.jpg"
     },
@@ -44,7 +54,7 @@
       "videoId": "zlXlGh2Tmnc",
       "title": "3 KANAL RESIDENTIAL PLOT FOR SALE IN OVERSEAS ENCLAVE DHA PHASE 7 LAHORE",
       "published": "2026-09-04T13:13:00+00:00",
-      "views": 29,
+      "views": 32,
       "url": "https://www.youtube.com/watch?v=zlXlGh2Tmnc",
       "thumb": "https://i.ytimg.com/vi/zlXlGh2Tmnc/hqdefault.jpg"
     },
@@ -54,7 +64,7 @@
       "videoId": "7G0q7JGILdA",
       "title": "5 MARLA RESIDENTIAL PLOT FOR SALE IN OVERSEAS ENCLAVE DHA PHASE 7 LAHORE",
       "published": "2026-09-04T13:11:59+00:00",
-      "views": 18,
+      "views": 23,
       "url": "https://www.youtube.com/watch?v=7G0q7JGILdA",
       "thumb": "https://i.ytimg.com/vi/7G0q7JGILdA/hqdefault.jpg"
     },
@@ -64,7 +74,7 @@
       "videoId": "U_eGXqzIScM",
       "title": "1.6 KANAL COMMERCIAL PLOT FOR SALE IN CCA 1 DHA PHASE 7 LAHORE",
       "published": "2026-09-04T13:11:57+00:00",
-      "views": 10,
+      "views": 15,
       "url": "https://www.youtube.com/watch?v=U_eGXqzIScM",
       "thumb": "https://i.ytimg.com/vi/U_eGXqzIScM/hqdefault.jpg"
     },
@@ -74,7 +84,7 @@
       "videoId": "KuozWOITC-Q",
       "title": "1 KANAL RESIDENTIAL PLOT FOR SALE IN OVERSEAS ENCLAVE DHA PHASE 7 LAHORE",
       "published": "2026-09-04T13:11:56+00:00",
-      "views": 7,
+      "views": 10,
       "url": "https://www.youtube.com/watch?v=KuozWOITC-Q",
       "thumb": "https://i.ytimg.com/vi/KuozWOITC-Q/hqdefault.jpg"
     },
@@ -84,7 +94,7 @@
       "videoId": "RBhBQ1txYs8",
       "title": "1.2 KANAL RESIDENTIAL PLOT FOR SALE IN OVERSEAS ENCLAVE DHA PHASE 7 LAHORE",
       "published": "2026-09-04T13:11:52+00:00",
-      "views": 9,
+      "views": 10,
       "url": "https://www.youtube.com/watch?v=RBhBQ1txYs8",
       "thumb": "https://i.ytimg.com/vi/RBhBQ1txYs8/hqdefault.jpg"
     },
@@ -94,7 +104,7 @@
       "videoId": "FPpL4b80CGw",
       "title": "2 KANAL RESIDENTIAL PLOT FOR SALE IN OVERSEAS ENCLAVE DHA PHASE 7 LAHORE",
       "published": "2026-09-04T13:11:51+00:00",
-      "views": 11,
+      "views": 12,
       "url": "https://www.youtube.com/watch?v=FPpL4b80CGw",
       "thumb": "https://i.ytimg.com/vi/FPpL4b80CGw/hqdefault.jpg"
     },
@@ -104,7 +114,7 @@
       "videoId": "g87gK0Uoxzk",
       "title": "5 MARLA RESIDENTIAL PLOT FOR SALE IN OVERSEAS ENCLAVE DHA PHASE 7 LAHORE",
       "published": "2026-09-04T13:11:49+00:00",
-      "views": 7,
+      "views": 8,
       "url": "https://www.youtube.com/watch?v=g87gK0Uoxzk",
       "thumb": "https://i.ytimg.com/vi/g87gK0Uoxzk/hqdefault.jpg"
     },
@@ -114,7 +124,7 @@
       "videoId": "MyFpQCBmZZE",
       "title": "1 KANAL RESIDENTIAL PLOT FOR SALE IN OVERSEAS ENCLAVE DHA PHASE 7 LAHORE",
       "published": "2026-09-04T13:11:46+00:00",
-      "views": 4,
+      "views": 5,
       "url": "https://www.youtube.com/watch?v=MyFpQCBmZZE",
       "thumb": "https://i.ytimg.com/vi/MyFpQCBmZZE/hqdefault.jpg"
     },
@@ -124,7 +134,7 @@
       "videoId": "HPZFWm27JHs",
       "title": "1 KANAL RESIDENTIAL PLOT FOR SALE IN OVERSEAS ENCLAVE DHA PHASE 7 LAHORE",
       "published": "2026-09-04T13:11:42+00:00",
-      "views": 2,
+      "views": 4,
       "url": "https://www.youtube.com/watch?v=HPZFWm27JHs",
       "thumb": "https://i.ytimg.com/vi/HPZFWm27JHs/hqdefault.jpg"
     },
@@ -144,7 +154,7 @@
       "videoId": "GDLC9LsulHY",
       "title": "1 KANAL RESIDENTIAL PLOT FOR SALE IN OVERSEAS ENCLAVE DHA PHASE 7 LAHORE",
       "published": "2026-09-04T13:11:01+00:00",
-      "views": 6,
+      "views": 8,
       "url": "https://www.youtube.com/watch?v=GDLC9LsulHY",
       "thumb": "https://i.ytimg.com/vi/GDLC9LsulHY/hqdefault.jpg"
     },
@@ -154,7 +164,7 @@
       "videoId": "Ifvv-4oObbI",
       "title": "1 KANAL RESIDENTIAL PLOT FOR SALE IN DHA PHASE 8 LAHORE",
       "published": "2026-09-04T13:10:43+00:00",
-      "views": 5,
+      "views": 6,
       "url": "https://www.youtube.com/watch?v=Ifvv-4oObbI",
       "thumb": "https://i.ytimg.com/vi/Ifvv-4oObbI/hqdefault.jpg"
     },
@@ -174,7 +184,7 @@
       "videoId": "pRm49UgbCG4",
       "title": "7.9 MARLA FLAT FOR SALE IN G-11/3 ISLAMABAD",
       "published": "2026-09-04T12:25:40+00:00",
-      "views": 15,
+      "views": 17,
       "url": "https://www.youtube.com/watch?v=pRm49UgbCG4",
       "thumb": "https://i.ytimg.com/vi/pRm49UgbCG4/hqdefault.jpg"
     },
@@ -184,7 +194,7 @@
       "videoId": "_qs81MOeIh0",
       "title": "2.5 MARLA HOUSE FOR SALE IN EE VITAL HOMES HOUSING SCHEME LAHORE",
       "published": "2026-09-04T12:24:37+00:00",
-      "views": 12,
+      "views": 15,
       "url": "https://www.youtube.com/watch?v=_qs81MOeIh0",
       "thumb": "https://i.ytimg.com/vi/_qs81MOeIh0/hqdefault.jpg"
     },
@@ -194,7 +204,7 @@
       "videoId": "jKGA98m3vAU",
       "title": "12 Marla House with EXTRA LAND! | Spacious House on Main Boulevard | Bahria Town Rawalpindi",
       "published": "2026-09-03T11:00:31+00:00",
-      "views": 3475,
+      "views": 3587,
       "url": "https://www.youtube.com/watch?v=jKGA98m3vAU",
       "thumb": "https://i.ytimg.com/vi/jKGA98m3vAU/hqdefault.jpg"
     },
@@ -204,7 +214,7 @@
       "videoId": "h5AJCcXCzrg",
       "title": "10 Marla Artistic House for Sale | 35×70 Single Unit + Double Height | Bahria Town #shorts",
       "published": "2026-09-03T09:35:57+00:00",
-      "views": 1097,
+      "views": 1108,
       "url": "https://www.youtube.com/watch?v=h5AJCcXCzrg",
       "thumb": "https://i.ytimg.com/vi/h5AJCcXCzrg/hqdefault.jpg"
     },
@@ -214,7 +224,7 @@
       "videoId": "KqIxsiLUip8",
       "title": "7 Marla Unique Designer Corner House for Sale in B-17 Islamabad | 30×60 | Double Unit",
       "published": "2026-09-02T13:00:37+00:00",
-      "views": 7251,
+      "views": 7319,
       "url": "https://www.youtube.com/watch?v=KqIxsiLUip8",
       "thumb": "https://i.ytimg.com/vi/KqIxsiLUip8/hqdefault.jpg"
     },
@@ -224,7 +234,7 @@
       "videoId": "WN2Bjx8SPG8",
       "title": "ONLY 5 Marla?! 😳 | Huge Corner House for sae in Bahria Town Rawalpindi",
       "published": "2026-09-02T09:00:32+00:00",
-      "views": 5840,
+      "views": 5991,
       "url": "https://www.youtube.com/watch?v=WN2Bjx8SPG8",
       "thumb": "https://i.ytimg.com/vi/WN2Bjx8SPG8/hqdefault.jpg"
     },
@@ -234,7 +244,7 @@
       "videoId": "VnNRol4f1js",
       "title": "Fully AUTOMATED 1 kanal COTTAGE HOUSE For Sale in DHA 2 Islamabad",
       "published": "2026-09-01T13:14:23+00:00",
-      "views": 5539,
+      "views": 5588,
       "url": "https://www.youtube.com/watch?v=VnNRol4f1js",
       "thumb": "https://i.ytimg.com/vi/VnNRol4f1js/hqdefault.jpg"
     },
@@ -244,7 +254,7 @@
       "videoId": "SAvWHR8vq6k",
       "title": "10 Marla House for Sale in B-17 Islamabad | 5 Bed + Swimming Pool",
       "published": "2026-09-01T11:00:16+00:00",
-      "views": 7326,
+      "views": 7672,
       "url": "https://www.youtube.com/watch?v=SAvWHR8vq6k",
       "thumb": "https://i.ytimg.com/vi/SAvWHR8vq6k/hqdefault.jpg"
     },
@@ -254,7 +264,7 @@
       "videoId": "yWfsJY_S_-8",
       "title": "10 Marla Luxury House in B-17 Islamabad 😳 | Curved Design + Pool #shorts",
       "published": "2026-08-31T17:06:10+00:00",
-      "views": 2343,
+      "views": 2352,
       "url": "https://www.youtube.com/watch?v=yWfsJY_S_-8",
       "thumb": "https://i.ytimg.com/vi/yWfsJY_S_-8/hqdefault.jpg"
     },
@@ -264,7 +274,7 @@
       "videoId": "5g5BCr3Q9sI",
       "title": "32 Marla Luxury Mansion Tour | Pool, Cinema, Gym, Sauna & Spa | Bahria Town Phase 7",
       "published": "2026-08-30T17:17:42+00:00",
-      "views": 6014,
+      "views": 6050,
       "url": "https://www.youtube.com/watch?v=5g5BCr3Q9sI",
       "thumb": "https://i.ytimg.com/vi/5g5BCr3Q9sI/hqdefault.jpg"
     },
@@ -274,7 +284,7 @@
       "videoId": "rLEoBIlTjdk",
       "title": "1 kanal TRIPLE INDEPENDENT STOREY House for sale in DHA 2 Islamabad",
       "published": "2026-08-30T12:00:06+00:00",
-      "views": 9793,
+      "views": 9892,
       "url": "https://www.youtube.com/watch?v=rLEoBIlTjdk",
       "thumb": "https://i.ytimg.com/vi/rLEoBIlTjdk/hqdefault.jpg"
     },
@@ -284,7 +294,7 @@
       "videoId": "4HdLcKKnKHY",
       "title": "10 Marla 35×70 House for Sale | 5 Bed Double Unit + Back Open | Bahria Town",
       "published": "2026-08-29T12:00:34+00:00",
-      "views": 7875,
+      "views": 7943,
       "url": "https://www.youtube.com/watch?v=4HdLcKKnKHY",
       "thumb": "https://i.ytimg.com/vi/4HdLcKKnKHY/hqdefault.jpg"
     },
@@ -294,7 +304,7 @@
       "videoId": "ktM9ZwKt1_Q",
       "title": "1.5 Kanal MASSIVE (NEO BLACKK) LA-MANSION For Sale in Bahria Islamabad",
       "published": "2026-08-29T11:34:57+00:00",
-      "views": 19104,
+      "views": 19446,
       "url": "https://www.youtube.com/watch?v=ktM9ZwKt1_Q",
       "thumb": "https://i.ytimg.com/vi/ktM9ZwKt1_Q/hqdefault.jpg"
     },
@@ -304,7 +314,7 @@
       "videoId": "5lyFrZPXYQs",
       "title": "1.5 Kanal MASSIVE LUXURY SKYLIGHT House for sale in Bahria Islamabad",
       "published": "2026-08-28T11:53:15+00:00",
-      "views": 13816,
+      "views": 13849,
       "url": "https://www.youtube.com/watch?v=5lyFrZPXYQs",
       "thumb": "https://i.ytimg.com/vi/5lyFrZPXYQs/hqdefault.jpg"
     },
@@ -314,7 +324,7 @@
       "videoId": "7widHxfGAW4",
       "title": "32 Marla House with HUGE Lawn & 25kW Solar!| for sale in Bahria Town Rawalpindi",
       "published": "2026-08-28T11:26:35+00:00",
-      "views": 10083,
+      "views": 10087,
       "url": "https://www.youtube.com/watch?v=7widHxfGAW4",
       "thumb": "https://i.ytimg.com/vi/7widHxfGAW4/hqdefault.jpg"
     },
@@ -334,7 +344,7 @@
       "videoId": "6zNsdPA895k",
       "title": "10 marla MAGICAL House For Sale in Bahria Islamabad",
       "published": "2026-08-27T14:00:03+00:00",
-      "views": 10843,
+      "views": 10855,
       "url": "https://www.youtube.com/watch?v=6zNsdPA895k",
       "thumb": "https://i.ytimg.com/vi/6zNsdPA895k/hqdefault.jpg"
     },
@@ -344,7 +354,7 @@
       "videoId": "2skuh4O49qo",
       "title": "5 Marla that looks bigger | for sale in Bahria town Rawalpindi",
       "published": "2026-08-26T16:23:10+00:00",
-      "views": 889,
+      "views": 891,
       "url": "https://www.youtube.com/watch?v=2skuh4O49qo",
       "thumb": "https://i.ytimg.com/vi/2skuh4O49qo/hqdefault.jpg"
     },
@@ -354,7 +364,7 @@
       "videoId": "xdQm9U2kjY8",
       "title": "1 Kanal Budget Friendly luxury House for sale in Bahria town Rawalpindi",
       "published": "2026-08-26T16:18:52+00:00",
-      "views": 561,
+      "views": 562,
       "url": "https://www.youtube.com/watch?v=xdQm9U2kjY8",
       "thumb": "https://i.ytimg.com/vi/xdQm9U2kjY8/hqdefault.jpg"
     },
@@ -364,19 +374,9 @@
       "videoId": "4BlksBWfNSU",
       "title": "10 Marla Luxury at an Affordable Price! 😳 | 5 Bed Double Unit | Bahria Town",
       "published": "2026-08-26T14:21:28+00:00",
-      "views": 2749,
+      "views": 2753,
       "url": "https://www.youtube.com/watch?v=4BlksBWfNSU",
       "thumb": "https://i.ytimg.com/vi/4BlksBWfNSU/hqdefault.jpg"
-    },
-    {
-      "channel": "oreal",
-      "channelName": "OREAL Properties",
-      "videoId": "d00Sr-wzL3M",
-      "title": "ONLY 5 MARLA?! This House Feels MUCH Bigger | Double Height House Tour",
-      "published": "2026-08-25T15:09:45+00:00",
-      "views": 66756,
-      "url": "https://www.youtube.com/watch?v=d00Sr-wzL3M",
-      "thumb": "https://i.ytimg.com/vi/d00Sr-wzL3M/hqdefault.jpg"
     },
     {
       "channel": "msj",
@@ -384,7 +384,7 @@
       "videoId": "BaFh5cBk1kg",
       "title": "Fully Furnished VICTORIAN STYLE MEHAL For Sale in DHA 2 Islamabad",
       "published": "2026-08-20T12:00:19+00:00",
-      "views": 15702,
+      "views": 15727,
       "url": "https://www.youtube.com/watch?v=BaFh5cBk1kg",
       "thumb": "https://i.ytimg.com/vi/BaFh5cBk1kg/hqdefault.jpg"
     },
@@ -394,7 +394,7 @@
       "videoId": "Uyk_EV49Qco",
       "title": "Fully Furnished 10 Marla Luxury House For a MIDDLE CLASS Person in Bahria Islamabad",
       "published": "2026-08-17T11:57:09+00:00",
-      "views": 10764,
+      "views": 10818,
       "url": "https://www.youtube.com/watch?v=Uyk_EV49Qco",
       "thumb": "https://i.ytimg.com/vi/Uyk_EV49Qco/hqdefault.jpg"
     },
@@ -404,7 +404,7 @@
       "videoId": "SBPPJwFskQQ",
       "title": "14+6 Marla COMPLETE BULLET PROOF House with Swimming Pool and LAWN in Bahria Islamabad",
       "published": "2026-08-15T15:39:54+00:00",
-      "views": 10547,
+      "views": 10558,
       "url": "https://www.youtube.com/watch?v=SBPPJwFskQQ",
       "thumb": "https://i.ytimg.com/vi/SBPPJwFskQQ/hqdefault.jpg"
     },
@@ -414,7 +414,7 @@
       "videoId": "BvPHJppNzik",
       "title": "24 Marla Corner Biggest House with LAWN For Sale in Fazaia Housing Islamabad",
       "published": "2026-08-12T12:00:08+00:00",
-      "views": 8970,
+      "views": 8993,
       "url": "https://www.youtube.com/watch?v=BvPHJppNzik",
       "thumb": "https://i.ytimg.com/vi/BvPHJppNzik/hqdefault.jpg"
     },
@@ -424,7 +424,7 @@
       "videoId": "mPFa_TTCmOo",
       "title": "1 Kanal TRIPLE STOREY SCANDINAVIAN MEHAL with Swimming Pool For Sale in Bahria Islamabad",
       "published": "2026-08-11T12:00:01+00:00",
-      "views": 11194,
+      "views": 11212,
       "url": "https://www.youtube.com/watch?v=mPFa_TTCmOo",
       "thumb": "https://i.ytimg.com/vi/mPFa_TTCmOo/hqdefault.jpg"
     },
@@ -434,7 +434,7 @@
       "videoId": "Yc1nDcrTW_o",
       "title": "FULLY FURNISHED 1 Kanal House with LIFTABLE DECK in LAKE CITY Lahore",
       "published": "2026-08-08T12:00:24+00:00",
-      "views": 38593,
+      "views": 38621,
       "url": "https://www.youtube.com/watch?v=Yc1nDcrTW_o",
       "thumb": "https://i.ytimg.com/vi/Yc1nDcrTW_o/hqdefault.jpg"
     },
@@ -444,7 +444,7 @@
       "videoId": "YmzfsOt_HK4",
       "title": "5 Marla (JURWA GHAR) Luxury House For sale in FMC Islamabad",
       "published": "2026-08-08T05:34:42+00:00",
-      "views": 4751,
+      "views": 4761,
       "url": "https://www.youtube.com/watch?v=YmzfsOt_HK4",
       "thumb": "https://i.ytimg.com/vi/YmzfsOt_HK4/hqdefault.jpg"
     },
@@ -454,7 +454,7 @@
       "videoId": "acOKvemPJ74",
       "title": "8 Marla Superior Architecture House with LAWN For Sale in B17 Islamabad",
       "published": "2026-08-02T12:00:17+00:00",
-      "views": 8757,
+      "views": 8759,
       "url": "https://www.youtube.com/watch?v=acOKvemPJ74",
       "thumb": "https://i.ytimg.com/vi/acOKvemPJ74/hqdefault.jpg"
     },
@@ -464,7 +464,7 @@
       "videoId": "iA0y8GpHK6c",
       "title": "Furnished 5 Marla MULTI LEVEL HOUSE For Sale in FMC Islamabad",
       "published": "2026-07-31T12:00:00+00:00",
-      "views": 11227,
+      "views": 11266,
       "url": "https://www.youtube.com/watch?v=iA0y8GpHK6c",
       "thumb": "https://i.ytimg.com/vi/iA0y8GpHK6c/hqdefault.jpg"
     }
