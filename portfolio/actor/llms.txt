@@ -1,0 +1,28 @@
+# Adeel Rahman — Actor, Karachi & Lahore, Pakistan
+
+> Adeel Ahmed Rahman is an actor available for drama serials, film, television
+> commercials, web series, theatre and voice-over in Karachi and Lahore. He
+> works in Urdu and English and holds an MBA from Carleton University, Ottawa,
+> Canada. His portfolio site also carries a live feed of the latest Pakistani
+> dramas.
+
+Site: https://crabbyai.github.io/mus/actor/
+Contact: adeelahmedrahman@gmail.com · +1 613 408 3945 (WhatsApp)
+Languages: Urdu, English
+
+## What this site offers
+
+- An actor's portfolio: who he is, what he brings to a set, and how to reach
+  him for casting.
+- A drama feed, refreshed hourly: the serials currently on air on ARY Digital,
+  HUM TV, Har Pal Geo, Green Entertainment and Express TV, plus favourites such as
+  Parizaad, Kabhi Main Kabhi Tum, Tere Bin, Ishq Murshid and Mere Humsafar,
+  with every available episode.
+
+## About the drama feed
+
+- Adeel Rahman does not appear in the listed dramas; the feed is a watchlist.
+- Episodes are embedded from each broadcaster's official YouTube channel.
+  The site hosts no video and re-uploads nothing.
+- Each drama also has its own page listing every episode:
+  https://crabbyai.github.io/mus/actor/watch/<drama>.html (see sitemap.xml).

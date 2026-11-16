@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* ============================================================
-   DRAMA FEED — builds portfolio/data/dramas.json
+   DRAMA FEED — builds portfolio/actor/data/dramas.json
 
    Every episode in the feed is an upload on the broadcaster's OWN
    YouTube channel. Nothing is taken from re-uploaders: the only pages
@@ -11,10 +11,12 @@
    What it does on each run
      1. Reads each channel's newest uploads and works out which dramas
         are on air from titles like "Rutba Episode 12 | Promo".
-     2. Adds the evergreen picks from portfolio/data/drama-picks.json.
+     2. Adds the evergreen picks from portfolio/actor/data/drama-picks.json.
      3. For every drama, searches the broadcaster's channel and keeps
         the full-length episodes (clips, promos, highlights dropped).
      4. Merges with the previous file, so one bad run never loses data.
+     5. Writes one plain HTML page per drama (portfolio/actor/watch/) and a
+        sitemap, so search engines can find "<drama> all episodes".
 
    No API key, no dependencies. Node 20+.
      node scripts/drama-feed.mjs
@@ -24,14 +26,17 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const OUT = path.join(ROOT, "portfolio/data/dramas.json");
-const PICKS = path.join(ROOT, "portfolio/data/drama-picks.json");
+const SITE = path.join(ROOT, "portfolio/actor");
+const OUT = path.join(SITE, "data/dramas.json");
+const PICKS = path.join(SITE, "data/drama-picks.json");
+const SITE_URL = "https://crabbyai.github.io/mus/actor/";
 
 const CHANNELS = [
   { key: "ary",   name: "ARY Digital",         handle: "@ARYDigitalasia",       id: "UC4JCksJF76g_MdzPVBJoC3Q" },
   { key: "hum",   name: "HUM TV",              handle: "@HUMTV",                id: "UCEeEQxm6qc_qaTE7qTV5aLQ" },
   { key: "geo",   name: "Har Pal Geo",         handle: "@HarPalGeoOfficial",    id: "UCe9JSDmyqNgA_l2BzGHq1Ug" },
-  { key: "green", name: "Green Entertainment", handle: "@GreenEntertainmentTV", id: "UCF2ltLX1dnPa6-L1paPaMzw" }
+  { key: "green", name: "Green Entertainment", handle: "@GreenEntertainmentTV", id: "UCF2ltLX1dnPa6-L1paPaMzw" },
+  { key: "express", name: "Express TV",        handle: "@expressentertainment", id: "UCU1r97baEf3JJI5fY6NtMpA" }
 ];
 
 const ON_AIR_PER_CHANNEL = 7;   // most-mentioned running dramas kept per channel
@@ -40,6 +45,7 @@ const MAX_QUERIES_NEW = 8;      // searches spent on a drama seen for the first 
 const MAX_QUERIES_KNOWN = parseInt(process.env.FEED_BUDGET, 10) || 4;
 const MIN_MINUTES = 17;         // shorter than this is a clip, not an episode
 const MAX_MINUTES = 110;
+const VIEWS_FRESH_DAYS = 14;     // view counts are refreshed only while an episode is this new
 const OFF_AIR_AFTER_DAYS = 21;  // no new episode for this long → no longer "on air"
 
 const HEADERS = {
@@ -146,6 +152,15 @@ function agoToIso(ago, now = Date.now()) {
   return new Date(now - parseInt(m[1], 10) * ms).toISOString();
 }
 
+/* "65,123,456 views" → 65000000. Two significant figures, so the file
+   doesn't change every hour over a handful of extra views. */
+function parseViews(txt) {
+  const m = (txt || "").replace(/,/g, "").match(/([\d.]+)\s*([KMB]?)\s*views/i);
+  if (!m) return undefined;
+  const n = parseFloat(m[1]) * ({ K: 1e3, M: 1e6, B: 1e9 }[m[2].toUpperCase()] || 1);
+  return n > 0 ? Number(n.toPrecision(2)) : undefined;
+}
+
 /* ---------- step 1: what is on air ---------- */
 async function discoverOnAir(ch) {
   // UULF<id> is the channel's long-form uploads list (no Shorts), newest first.
@@ -180,10 +195,16 @@ function harvest(found, dramaKey, eps) {
     const mins = minutes(v.dur);
     if (mins < MIN_MINUTES || mins > MAX_MINUTES) continue;
     if (p.n == null && !p.last && !p.secondLast) continue;
-    if ([...eps.values()].some((e) => e.id === v.id)) continue;
+    const had = [...eps.values()].find((e) => e.id === v.id);
+    if (had) {
+      const views = parseViews(v.views);
+      const fresh = !had.p || Date.now() - Date.parse(had.p) < VIEWS_FRESH_DAYS * 864e5;
+      if (views && (had.v == null || fresh)) had.v = views;
+      continue;
+    }
     const slot = (p.n != null ? String(p.n) : p.last ? "last" : "2ndlast") + (p.part ? "p" + p.part : "");
     if (eps.has(slot)) continue; // first upload found for a number wins; keeps the list stable
-    eps.set(slot, { n: p.n, id: v.id, d: v.dur, p: agoToIso(v.ago), last: p.last || undefined,
+    eps.set(slot, { n: p.n, id: v.id, d: v.dur, p: agoToIso(v.ago), v: parseViews(v.views), last: p.last || undefined,
       part: p.part, pending: p.n == null ? (p.last ? "last" : "2ndlast") : undefined });
     added++;
   }
@@ -234,6 +255,77 @@ async function collectEpisodes(ch, drama, known) {
   }
   list.sort((a, b) => a.n - b.n || (a.part || 0) - (b.part || 0));
   return list;
+}
+
+/* ---------- step 5: one crawlable page per drama ---------- */
+const esc = (t) => String(t == null ? "" : t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+function dramaPage(d, ch) {
+  const count = new Set(d.episodes.map((e) => e.n)).size;
+  const state = d.status === "on-air" ? "new episodes added as they air" : d.complete ? "complete, first episode to last" : "finished serial";
+  const title = `${d.title} — all ${count} episodes | Watch free on Adeel Rahman`;
+  const desc = `Watch ${d.title}${d.cast ? " (" + d.cast.replace(/ · /g, ", ") + ")" : ""} — ${count} full episodes from ${ch.name}'s official YouTube channel, ${state}. Free, no sign-up.`;
+  const label = (e) => (e.last ? "Last Episode " : "Episode ") + e.n + (e.part ? " · Part " + e.part : "");
+  const ld = {
+    "@context": "https://schema.org", "@type": "TVSeries", name: d.title, numberOfEpisodes: count,
+    url: `${SITE_URL}watch/${d.id}.html`, image: `https://i.ytimg.com/vi/${d.episodes[0].id}/hqdefault.jpg`,
+    productionCompany: { "@type": "Organization", name: ch.name }, inLanguage: "ur",
+    ...(d.cast ? { actor: d.cast.split(" · ").map((n) => ({ "@type": "Person", name: n })) } : {})
+  };
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>${esc(title)}</title>
+<meta name="description" content="${esc(desc)}" />
+<link rel="canonical" href="${SITE_URL}watch/${d.id}.html" />
+<meta property="og:title" content="${esc(d.title)} — all ${count} episodes" />
+<meta property="og:description" content="${esc(desc)}" />
+<meta property="og:image" content="https://i.ytimg.com/vi/${d.episodes[0].id}/hqdefault.jpg" />
+<meta name="theme-color" content="#0a0f1e" />
+<link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg" />
+<link rel="stylesheet" href="../../css/fonts.css" />
+<link rel="stylesheet" href="../css/watch.css" />
+<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, "\\u003c")}</script>
+</head>
+<body>
+<header class="w-nav"><a href="../">← Adeel Rahman · Actor</a><a href="../#dramas">All dramas</a></header>
+<main class="w-main">
+  <p class="w-eyebrow">${esc(ch.name)}${d.status === "on-air" ? " · On air now" : ""}</p>
+  <h1>${esc(d.title)} <em>— all ${count} episodes</em></h1>
+  ${d.cast ? `<p class="w-cast">${esc(d.cast)}</p>` : ""}
+  <p class="w-lead">Every episode plays from ${esc(ch.name)}'s official YouTube upload — ${esc(state)}. Pick an episode to start watching.</p>
+  <a class="w-cta" href="../#watch/${d.id}/${d.episodes[0].n}">▶ Start with Episode ${d.episodes[0].n}</a>
+  <ol class="w-eps">
+${d.episodes.map((e) => `    <li><a href="../#watch/${d.id}/${e.n}"><img src="https://i.ytimg.com/vi/${e.id}/mqdefault.jpg" alt="" loading="lazy" width="320" height="180" /><span>${esc(d.title)} ${esc(label(e))}</span>${e.d ? `<small>${esc(e.d)}</small>` : ""}</a></li>`).join("\n")}
+  </ol>
+  <p class="w-note">${esc(d.title)} belongs to ${esc(ch.name)}. Episodes are shown through YouTube's embedded player from the official channel; this site hosts no video. <a href="${esc(d.more)}" rel="noopener">${esc(ch.name)} on YouTube</a>.</p>
+</main>
+</body>
+</html>
+`;
+}
+
+function writePages(dramas, byKey) {
+  const dir = path.join(SITE, "watch");
+  fs.mkdirSync(dir, { recursive: true });
+  const keep = new Set();
+  for (const d of dramas) {
+    const file = `${d.id}.html`;
+    keep.add(file);
+    const html = dramaPage(d, byKey[d.channel]);
+    const full = path.join(dir, file);
+    let old = ""; try { old = fs.readFileSync(full, "utf8"); } catch {}
+    if (old !== html) fs.writeFileSync(full, html);
+  }
+  for (const f of fs.readdirSync(dir)) if (f.endsWith(".html") && !keep.has(f)) fs.unlinkSync(path.join(dir, f));
+  const urls = [SITE_URL, ...dramas.map((d) => `${SITE_URL}watch/${d.id}.html`)];
+  const map = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
+    urls.map((u) => `  <url><loc>${u}</loc><changefreq>daily</changefreq></url>`).join("\n") + `\n</urlset>\n`;
+  const mapFile = path.join(SITE, "sitemap.xml");
+  let oldMap = ""; try { oldMap = fs.readFileSync(mapFile, "utf8"); } catch {}
+  if (oldMap !== map) fs.writeFileSync(mapFile, map);
 }
 
 /* ---------- main ---------- */
@@ -290,7 +382,7 @@ async function main() {
 
     // Dates from "3 days ago" drift a little each run; keep the first one we saw.
     const oldById = new Map(((old && old.episodes) || []).map((e) => [e.id, e]));
-    for (const e of episodes) { const o = oldById.get(e.id); if (o && o.p) e.p = o.p; if (!e.p) e.p = null; delete e.v; }
+    for (const e of episodes) { const o = oldById.get(e.id); if (o && o.p) e.p = o.p; if (!e.p) e.p = null; }
 
     const nums = new Set(episodes.map((e) => e.n));
     const top = episodes[episodes.length - 1];
@@ -316,6 +408,7 @@ async function main() {
   if (!discovered && !fetched && prev.dramas && prev.dramas.length) { log("YouTube unreachable — keeping the previous file."); return; }
 
   dramas.sort((a, b) => (b.latest || "").localeCompare(a.latest || ""));
+  writePages(dramas, byKey);
   // Nothing new: leave the file alone, so an idle hour doesn't cost a commit and a redeploy.
   if (JSON.stringify(dramas) === JSON.stringify(prev.dramas || [])) { log("No change."); return; }
   const out = {

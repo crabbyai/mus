@@ -63,11 +63,11 @@ files you'd touch:
 - Phone number / WhatsApp: it's `+1 613 408 3945` throughout — search and
   replace across `index.html` and the `js/` files if it ever changes.
 
-## The drama feed
+## The live-listings feed (optional)
 
-The "Now Showing" section reads `data/dramas.json`. On GitHub it is rebuilt
-every hour by a GitHub Action (`.github/workflows/drama-feed.yml`), which runs
-`scripts/drama-feed.mjs` against the broadcasters' official YouTube channels.
-On a host that doesn't run that action the section keeps showing the last saved
-list — still watchable, just not updating. To keep it live, stay on GitHub Pages
-or run `node scripts/drama-feed.mjs` on a schedule and upload the new file.
+The "Live Market Watch" section reads from `data/market-feed.json`. On GitHub it
+auto-refreshes from the MSJ and OREAL YouTube channels every 6 hours via a
+GitHub Action (`.github/workflows/market-feed.yml`). On other hosts that don't
+run that action, the section simply shows the last saved listings — still fine,
+just not auto-updating. To keep auto-updates, keep the site on GitHub Pages or
+re-create that scheduled job on your new host.

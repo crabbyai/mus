@@ -1,0 +1,264 @@
+name: Refresh market feed (MSJ + OREAL + Zameen latest videos)
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"   # every 6 hours
+  workflow_dispatch:
+  push:
+    branches:
+      - claude/portfolio-website-setup-rpyerk
+    paths:
+      - ".github/workflows/market-feed.yml"
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: market-feed
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: claude/portfolio-website-setup-rpyerk
+
+      - name: Fetch YouTube RSS feeds and build JSON
+        run: |
+          node <<'EOF'
+          const fs = require("fs");
+
+          const CHANNELS = [
+            { key: "msj",    name: "MSJ Real Estate",   handle: "@msjrealestate",   id: "UCu6fG1VNb-e46v27S2kRP-w" },
+            { key: "oreal",  name: "OREAL Properties",  handle: "@orealproperties", id: "UClMReM8tvy-63BCXMP36vYg" },
+            // @zameenproperties (the listings channel). id resolved from the
+            // handle; `avoid` is @zameenpk (Zameen.com's separate podcast
+            // channel, which is *featured* on this page) so we never lock onto it.
+            { key: "zameen", name: "Zameen Properties", handle: "@zameenproperties", id: "", avoid: "UCd5zTrqwM1lSd1KyeEZcswA" }
+          ];
+
+          const unescapeXml = (s) => s
+            .replace(/&lt;/g, "<").replace(/&gt;/g, ">")
+            .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, "&");
+
+          const UA = { "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" };
+
+          // Resolve a handle to the channel's OWN id. A bare "channelId" match
+          // can grab a *featured* channel (e.g. @zameenproperties features
+          // @zameenpk), so prefer canonical/externalId/og:url which always
+          // refer to the channel being viewed, and skip any `avoid` id.
+          async function resolveChannelId(handle, avoid) {
+            const res = await fetch(`https://www.youtube.com/${handle}`, {
+              headers: { ...UA, "accept-language": "en-US,en;q=0.9", "cookie": "SOCS=CAI; CONSENT=YES+1" }
+            });
+            if (!res.ok) throw new Error(`resolve ${handle}: HTTP ${res.status}`);
+            const html = await res.text();
+            const cands = [];
+            const grab = (re) => { const m = html.match(re); if (m && !cands.includes(m[1])) cands.push(m[1]); };
+            grab(/<link rel="canonical" href="https:\/\/www\.youtube\.com\/channel\/(UC[\w-]{22})"/);
+            grab(/"externalId":"(UC[\w-]{22})"/);
+            grab(/<meta property="og:url" content="https:\/\/www\.youtube\.com\/channel\/(UC[\w-]{22})"/);
+            grab(/"channelId":"(UC[\w-]{22})"/);
+            grab(/channel_id=(UC[\w-]{22})/);
+            const id = cands.find((c) => c && c !== avoid) || cands[0];
+            if (!id) throw new Error(`resolve ${handle}: no channelId in page`);
+            if (avoid && id === avoid) throw new Error(`resolve ${handle}: only found avoided id ${avoid}`);
+            return id;
+          }
+
+          const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+          // YouTube's RSS endpoint intermittently 500s on runner IPs — retry.
+          async function fetchFeedXml(id) {
+            let lastErr;
+            for (const delay of [0, 3000, 8000, 15000]) {
+              if (delay) await sleep(delay);
+              try {
+                const res = await fetch(`https://www.youtube.com/feeds/videos.xml?channel_id=${id}`, { headers: UA });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                return await res.text();
+              } catch (e) { lastErr = e; }
+            }
+            throw lastErr;
+          }
+
+          async function fetchChannel(ch) {
+            let xml;
+            try {
+              if (!ch.id) throw new Error("no id configured");
+              xml = await fetchFeedXml(ch.id);
+            } catch (e1) {
+              console.log(`${ch.key}: ${ch.id ? `id ${ch.id} failed (${e1.message})` : "no id configured"} — resolving from ${ch.handle}`);
+              const freshId = await resolveChannelId(ch.handle, ch.avoid);
+              console.log(`${ch.key}: resolved ${ch.handle} -> ${freshId}`);
+              xml = await fetchFeedXml(freshId);
+            }
+            const entries = [];
+            const re = /<entry>([\s\S]*?)<\/entry>/g;
+            let m;
+            // Grab the full RSS window (YouTube returns the latest ~15). High
+            // volume channels like Zameen mix listings with commentary, so a
+            // small cap can miss all the actual "X Marla for Sale" tours.
+            while ((m = re.exec(xml)) && entries.length < 15) {
+              const e = m[1];
+              const pick = (tag) => {
+                const r = new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`);
+                const mm = e.match(r);
+                return mm ? unescapeXml(mm[1].trim()) : "";
+              };
+              const videoId = pick("yt:videoId");
+              if (!videoId) continue;
+              // YouTube RSS embeds view count in <media:community><media:statistics views="N"/>
+              const vm = e.match(/<media:statistics[^>]*\bviews="(\d+)"/);
+              const views = vm ? parseInt(vm[1], 10) : 0;
+              entries.push({
+                channel: ch.key,
+                channelName: ch.name,
+                videoId,
+                title: pick("title"),
+                published: pick("published"),
+                views,
+                url: `https://www.youtube.com/watch?v=${videoId}`,
+                thumb: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`
+              });
+            }
+            if (!entries.length) throw new Error(`${ch.key}: no entries parsed`);
+            return entries;
+          }
+
+          // Convert YouTube's relative "2 days ago" text to an approximate ISO
+          // timestamp so scraped videos sort alongside the RSS ones.
+          function relToIso(txt) {
+            const m = (txt || "").match(/(\d+)\s+(second|minute|hour|day|week|month|year)s?\s+ago/i);
+            const now = Date.now();
+            if (!m) return new Date(now).toISOString();
+            const mult = { second: 1e3, minute: 6e4, hour: 36e5, day: 864e5, week: 6048e5, month: 2592e6, year: 31536e6 };
+            return new Date(now - parseInt(m[1], 10) * mult[m[2].toLowerCase()]).toISOString();
+          }
+          function parseViews(txt) {
+            const m = (txt || "").replace(/,/g, "").match(/([\d.]+)\s*([KM]?)\s*views/i);
+            if (!m) return 0;
+            let v = parseFloat(m[1]);
+            if (/k/i.test(m[2])) v *= 1e3; else if (/m/i.test(m[2])) v *= 1e6;
+            return Math.round(v);
+          }
+          // Scrape the channel's /videos "Latest" tab. RSS only exposes the
+          // newest ~15 uploads; a channel mid event-burst (e.g. Zameen during a
+          // project launch) pushes its actual property tours past that window.
+          // This reads the same list a visitor sees, so those listings surface.
+          async function scrapeChannelVideos(ch) {
+            // YouTube serves datacenter IPs (CI runners) a consent interstitial
+            // whose ytInitialData has no video grid. The SOCS/CONSENT cookies
+            // and hl/gl params bypass it so the real "Latest" list comes through.
+            const res = await fetch(`https://www.youtube.com/${ch.handle}/videos?hl=en&gl=US`, {
+              headers: { ...UA, "accept-language": "en-US,en;q=0.9", "cookie": "SOCS=CAI; CONSENT=YES+1" }
+            });
+            if (!res.ok) throw new Error(`videos page HTTP ${res.status}`);
+            const html = await res.text();
+            const mData = html.match(/ytInitialData\s*=\s*({.+?});\s*<\/script>/s);
+            if (!mData) throw new Error(`no ytInitialData (html ${html.length}b)`);
+            const data = JSON.parse(mData[1]);
+            const out = [], seen = new Set();
+            const runsText = (o) => o && (o.simpleText || (o.runs && o.runs.map((r) => r.text).join(""))) || "";
+            (function walk(node) {
+              if (!node || typeof node !== "object") return;
+              const v = node.videoRenderer;
+              if (v && v.videoId && !seen.has(v.videoId)) {
+                seen.add(v.videoId);
+                const title = runsText(v.title);
+                if (title) out.push({
+                  channel: ch.key, channelName: ch.name, videoId: v.videoId, title,
+                  published: relToIso(runsText(v.publishedTimeText)),
+                  views: parseViews(runsText(v.viewCountText)),
+                  url: `https://www.youtube.com/watch?v=${v.videoId}`,
+                  thumb: `https://i.ytimg.com/vi/${v.videoId}/hqdefault.jpg`
+                });
+              }
+              for (const k in node) walk(node[k]);
+            })(data);
+            console.log(`${ch.key}: /videos page yielded ${out.length} videos (html ${html.length}b)`);
+            return out.slice(0, 30);
+          }
+
+          (async () => {
+            let prev = { channels: {}, items: [] };
+            try { prev = JSON.parse(fs.readFileSync("portfolio/data/market-feed.json", "utf8")); } catch {}
+
+            const out = { updated: new Date().toISOString(), channels: {}, items: [] };
+            let ok = 0;
+            for (const ch of CHANNELS) {
+              try {
+                const items = await fetchChannel(ch);
+                // Additive: fold in any /videos-page uploads RSS didn't return
+                // (e.g. listing tours buried past the RSS window). Never fatal —
+                // if the scrape fails we still have the RSS items.
+                try {
+                  const scraped = await scrapeChannelVideos(ch);
+                  const have = new Set(items.map((i) => i.videoId));
+                  let added = 0;
+                  for (const s of scraped) if (!have.has(s.videoId)) { items.push(s); have.add(s.videoId); added++; }
+                  console.log(`${ch.key}: +${added} from /videos page`);
+                } catch (se) {
+                  console.log(`${ch.key}: /videos scrape skipped (${se.message})`);
+                }
+                out.channels[ch.key] = { name: ch.name, handle: ch.handle, url: `https://www.youtube.com/${ch.handle}` };
+                out.items.push(...items.slice(0, 30));
+                ok++;
+                console.log(`${ch.key}: ${Math.min(items.length, 30)} videos`);
+              } catch (err) {
+                console.error(`WARN ${ch.key}: ${err.message} — keeping previous items for this channel`);
+                const kept = (prev.items || []).filter((it) => it.channel === ch.key);
+                if (kept.length) {
+                  out.channels[ch.key] = (prev.channels || {})[ch.key] ||
+                    { name: ch.name, handle: ch.handle, url: `https://www.youtube.com/${ch.handle}` };
+                  out.items.push(...kept);
+                }
+              }
+            }
+            if (!ok) {
+              console.error("All feeds failed — keeping previous JSON");
+              process.exit(0);
+            }
+            // Coverage filter: drop Karachi everywhere, and keep a Zameen video
+            // only if its title names Islamabad / Rawalpindi / Lahore / Bahria.
+            const ZAMEEN_OK = /lahore|islamabad|bahria|rawalpindi|pindi/i;
+            out.items = out.items.filter((it) => {
+              const t = it.title || "";
+              if (/karachi/i.test(t)) return false;
+              if (it.channel === "zameen" && !ZAMEEN_OK.test(t)) return false;
+              return true;
+            });
+            out.items.sort((a, b) => (a.published < b.published ? 1 : -1));
+            fs.mkdirSync("portfolio/data", { recursive: true });
+            fs.writeFileSync("portfolio/data/market-feed.json", JSON.stringify(out, null, 2) + "\n");
+            console.log(`Wrote ${out.items.length} items`);
+          })();
+          EOF
+
+      - name: Commit if changed
+        id: commit
+        run: |
+          if git diff --quiet -- portfolio/data/market-feed.json && \
+             ! git status --porcelain portfolio/data/market-feed.json | grep -q .; then
+            echo "Feed unchanged — nothing to commit"
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name "market-feed-bot"
+          git config user.email "actions@github.com"
+          git add portfolio/data/market-feed.json
+          git commit -m "chore: refresh market feed (MSJ + OREAL + Zameen latest videos)"
+          git push origin claude/portfolio-website-setup-rpyerk
+          echo "pushed=true" >> "$GITHUB_OUTPUT"
+
+      # Pushes from GITHUB_TOKEN don't trigger the pages workflow, so
+      # dispatch the deploy explicitly (workflow_dispatch is exempt).
+      - name: Trigger Pages deploy
+        if: steps.commit.outputs.pushed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --repo "$GITHUB_REPOSITORY" --ref claude/portfolio-website-setup-rpyerk

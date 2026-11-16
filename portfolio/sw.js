@@ -8,12 +8,12 @@
      • Static assets      → stale-while-revalidate. Instant paint from cache,
                             refreshed quietly in the background.
      • Feed JSON          → network-first with a short cache fallback, so
-                            the drama list is current but never blank.
+                            listings/questions are current but never blank.
      • Cross-origin       → never cached (YouTube thumbs, maps, fonts).
 
    Bump VERSION to invalidate every cache after a deploy.
    ============================================================ */
-const VERSION = "v51";
+const VERSION = "v50";
 const SHELL_CACHE = `ar-shell-${VERSION}`;
 const ASSET_CACHE = `ar-assets-${VERSION}`;
 const DATA_CACHE = `ar-data-${VERSION}`;
@@ -26,11 +26,12 @@ const PRECACHE = [
   "./index.html",
   "./offline.html",
   "./css/style.css",
-  "./js/site.js",
-  "./js/dramas.js",
-  "./css/dramas.css",
+  "./js/main.js",
   "./assets/adeel-portrait.webp"
 ];
+// The tool pages are separate documents, so a visitor who lands on one offline
+// gets the shell rather than the offline card. They're fetched lazily on first
+// visit; navigations are network-first regardless, so they stay current.
 
 self.addEventListener("install", (event) => {
   event.waitUntil(

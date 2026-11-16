@@ -1,0 +1,1155 @@
+{
+ "_readme": [
+  "Places the Explore map draws. Coordinates are real centre points, accurate",
+  "to roughly the middle of the sector — good enough to fly to and land on the",
+  "right neighbourhood, not a survey of its boundary.",
+  "",
+  "photo: optional path to an image Adeel owns. Left null everywhere because",
+  "there are no licensed exterior photographs in this repo; drop one in and the",
+  "pin turns into a photo pin automatically."
+ ],
+ "tiles": {
+  "_note": "Swap in your own MapTiler or Mapbox style for production — the CARTO basemaps below are free but fair-use, and a commercial site should not lean on them.",
+  "url": "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+  "attribution": "&copy; OpenStreetMap contributors &copy; CARTO",
+  "subdomains": "abcd",
+  "maxZoom": 20
+ },
+ "cities": {
+  "isb": {
+   "n": "Islamabad",
+   "lat": 33.66,
+   "lng": 73.03,
+   "zoom": 11
+  },
+  "lhr": {
+   "n": "Lahore",
+   "lat": 31.48,
+   "lng": 74.33,
+   "zoom": 11
+  }
+ },
+ "places": [
+  {
+   "id": "E-7",
+   "n": "E-7",
+   "city": "isb",
+   "lat": 33.7376,
+   "lng": 73.0876,
+   "p": 20,
+   "band": "32–55",
+   "tag": "Diplomatic quarter",
+   "plots": null,
+   "by": null,
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "Diplomatic Enclave",
+    "Margalla foothills",
+    "Serena Hotel"
+   ],
+   "eats": [
+    "Monal, up at Pir Sohawa",
+    "Des Pardes in Saidpur Village"
+   ],
+   "photo": null
+  },
+  {
+   "id": "E-11",
+   "n": "E-11",
+   "city": "isb",
+   "lat": 33.7009,
+   "lng": 72.9614,
+   "p": 10.75,
+   "band": "18–25",
+   "tag": "Best-connected value",
+   "plots": null,
+   "by": null,
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "E-11 Markaz",
+    "Kashmir Highway",
+    "Faisal Mosque, ten minutes"
+   ],
+   "eats": [
+    "E-11 Markaz food strip",
+    "Tehzeeb Bakers"
+   ],
+   "photo": null
+  },
+  {
+   "id": "F-6",
+   "n": "F-6",
+   "city": "isb",
+   "lat": 33.729,
+   "lng": 73.079,
+   "p": 18.5,
+   "band": "30–48",
+   "tag": "The oldest money",
+   "plots": null,
+   "by": null,
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "Kohsar Market",
+    "Super Market",
+    "Islamabad Club"
+   ],
+   "eats": [
+    "Chaaye Khana, Kohsar",
+    "Street 1 Café",
+    "Burning Brownie"
+   ],
+   "photo": null
+  },
+  {
+   "id": "F-7",
+   "n": "F-7",
+   "city": "isb",
+   "lat": 33.7226,
+   "lng": 73.056,
+   "p": 18.25,
+   "band": "28–45",
+   "tag": "The address everyone knows",
+   "plots": null,
+   "by": null,
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "Jinnah Super Market",
+    "F-7 Markaz",
+    "Margalla trail head"
+   ],
+   "eats": [
+    "Monal",
+    "Tuscany Courtyard",
+    "Kabul Restaurant",
+    "Howdy"
+   ],
+   "photo": null
+  },
+  {
+   "id": "F-8",
+   "n": "F-8",
+   "city": "isb",
+   "lat": 33.7089,
+   "lng": 73.0479,
+   "p": 15.5,
+   "band": "24–38",
+   "tag": "Central and quiet",
+   "plots": null,
+   "by": null,
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "F-8 Markaz",
+    "Ayub Market",
+    "District Courts"
+   ],
+   "eats": [
+    "F-8 Markaz strip",
+    "Tehzeeb Bakers"
+   ],
+   "photo": null
+  },
+  {
+   "id": "F-10",
+   "n": "F-10",
+   "city": "isb",
+   "lat": 33.696,
+   "lng": 72.999,
+   "p": 12.5,
+   "band": "20–30",
+   "tag": "Family sector",
+   "plots": null,
+   "by": null,
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "F-10 Markaz",
+    "Fatima Jinnah Park next door"
+   ],
+   "eats": [
+    "F-10 Markaz restaurants"
+   ],
+   "photo": null
+  },
+  {
+   "id": "F-11",
+   "n": "F-11",
+   "city": "isb",
+   "lat": 33.6844,
+   "lng": 72.9789,
+   "p": 11.5,
+   "band": "18–28",
+   "tag": "Newest of the F sectors",
+   "plots": null,
+   "by": null,
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "F-11 Markaz",
+    "Centaurus Mall, nearby"
+   ],
+   "eats": [
+    "F-11 Markaz food court"
+   ],
+   "photo": null
+  },
+  {
+   "id": "BLUE",
+   "n": "Blue Area",
+   "city": "isb",
+   "lat": 33.7156,
+   "lng": 73.068,
+   "p": 0,
+   "band": null,
+   "tag": "The commercial spine",
+   "plots": null,
+   "by": null,
+   "park": false,
+   "commercial": true,
+   "marks": [
+    "Jinnah Avenue",
+    "Centaurus Mall",
+    "Head offices and banks"
+   ],
+   "eats": [
+    "Jinnah Avenue restaurants"
+   ],
+   "photo": null
+  },
+  {
+   "id": "F-9",
+   "n": "F-9 Park",
+   "city": "isb",
+   "lat": 33.7014,
+   "lng": 73.0272,
+   "p": 0,
+   "band": null,
+   "tag": "Fatima Jinnah Park",
+   "plots": null,
+   "by": null,
+   "park": true,
+   "commercial": false,
+   "marks": [
+    "Fatima Jinnah Park — the city's green lung"
+   ],
+   "eats": [],
+   "photo": null
+  },
+  {
+   "id": "G-6",
+   "n": "G-6",
+   "city": "isb",
+   "lat": 33.7189,
+   "lng": 73.0866,
+   "p": 8,
+   "band": "12–20",
+   "tag": "Aabpara and Melody",
+   "plots": null,
+   "by": null,
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "Aabpara Market",
+    "Melody Food Park"
+   ],
+   "eats": [
+    "Melody Food Park",
+    "Savour Foods"
+   ],
+   "photo": null
+  },
+  {
+   "id": "G-9",
+   "n": "G-9",
+   "city": "isb",
+   "lat": 33.6902,
+   "lng": 73.0263,
+   "p": 7.2,
+   "band": "11–18",
+   "tag": "Karachi Company",
+   "plots": null,
+   "by": null,
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "Karachi Company market",
+    "Central location"
+   ],
+   "eats": [
+    "G-9 Markaz"
+   ],
+   "photo": null
+  },
+  {
+   "id": "G-10",
+   "n": "G-10",
+   "city": "isb",
+   "lat": 33.6795,
+   "lng": 72.9987,
+   "p": 7.8,
+   "band": "12–19",
+   "tag": "Settled and central",
+   "plots": null,
+   "by": null,
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "G-10 Markaz",
+    "Peshawar Mor Metro"
+   ],
+   "eats": [
+    "G-10 Markaz"
+   ],
+   "photo": null
+  },
+  {
+   "id": "G-11",
+   "n": "G-11",
+   "city": "isb",
+   "lat": 33.6672,
+   "lng": 72.9905,
+   "p": 8,
+   "band": "12–20",
+   "tag": "Well-planned G sector",
+   "plots": null,
+   "by": null,
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "G-11 Markaz",
+    "Metro bus corridor"
+   ],
+   "eats": [
+    "G-11 Markaz"
+   ],
+   "photo": null
+  },
+  {
+   "id": "G-13",
+   "n": "G-13",
+   "city": "isb",
+   "lat": 33.647,
+   "lng": 72.96,
+   "p": 5.2,
+   "band": "8–13",
+   "tag": "Younger families",
+   "plots": null,
+   "by": null,
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "G-13 Markaz",
+    "Kashmir Highway access"
+   ],
+   "eats": [
+    "G-13 Markaz"
+   ],
+   "photo": null
+  },
+  {
+   "id": "G-15",
+   "n": "G-15",
+   "city": "isb",
+   "lat": 33.6303,
+   "lng": 72.926,
+   "p": 3.5,
+   "band": "5–9",
+   "tag": "Entry point on the grid",
+   "plots": null,
+   "by": null,
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "Motorway access",
+    "Still filling in"
+   ],
+   "eats": [],
+   "photo": null
+  },
+  {
+   "id": "H-8",
+   "n": "H-8",
+   "city": "isb",
+   "lat": 33.6942,
+   "lng": 73.0654,
+   "p": 0,
+   "band": null,
+   "tag": "Institutional",
+   "plots": null,
+   "by": null,
+   "park": false,
+   "commercial": true,
+   "marks": [
+    "Federal offices",
+    "H-8 graveyard and colleges"
+   ],
+   "eats": [],
+   "photo": null
+  },
+  {
+   "id": "H-11",
+   "n": "H-11",
+   "city": "isb",
+   "lat": 33.6533,
+   "lng": 72.9963,
+   "p": 0,
+   "band": null,
+   "tag": "Universities",
+   "plots": null,
+   "by": null,
+   "park": false,
+   "commercial": true,
+   "marks": [
+    "NUST",
+    "Air University",
+    "Student housing demand"
+   ],
+   "eats": [],
+   "photo": null
+  },
+  {
+   "id": "I-8",
+   "n": "I-8",
+   "city": "isb",
+   "lat": 33.669,
+   "lng": 73.0722,
+   "p": 6.5,
+   "band": "10–16",
+   "tag": "Central, well priced",
+   "plots": null,
+   "by": null,
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "I-8 Markaz",
+    "Faizabad interchange"
+   ],
+   "eats": [
+    "Savour Foods",
+    "I-8 Markaz"
+   ],
+   "photo": null
+  },
+  {
+   "id": "D-12",
+   "n": "D-12",
+   "city": "isb",
+   "lat": 33.7108,
+   "lng": 72.9542,
+   "p": 6.6,
+   "band": "10–16",
+   "tag": "Against the hills",
+   "plots": null,
+   "by": null,
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "D-12 Markaz",
+    "Margalla views"
+   ],
+   "eats": [
+    "D-12 Markaz"
+   ],
+   "photo": null
+  },
+  {
+   "id": "DHA2",
+   "n": "DHA Phase 2",
+   "city": "isb",
+   "lat": 33.5352,
+   "lng": 73.1541,
+   "p": 7.25,
+   "band": "13–16",
+   "tag": "Expressway side",
+   "plots": "5 & 10 Marla · 1 & 2 Kanal",
+   "by": "Defence Housing Authority",
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "Islamabad Expressway",
+    "DHA Phase 2 commercial",
+    "Giga Mall nearby"
+   ],
+   "eats": [
+    "Giga Mall food court",
+    "DHA commercial strip"
+   ],
+   "photo": null
+  },
+  {
+   "id": "BAHRIA",
+   "n": "Bahria Town",
+   "city": "isb",
+   "lat": 33.5178,
+   "lng": 73.1005,
+   "p": 4.4,
+   "band": "7–12",
+   "tag": "Self-contained living",
+   "plots": "5, 8 & 10 Marla · 1 & 2 Kanal",
+   "by": "Bahria Town",
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "Bahria Phase 1–8",
+    "Own power and security",
+    "Safari Villas"
+   ],
+   "eats": [
+    "Bahria commercial",
+    "Cinepax food court"
+   ],
+   "photo": null
+  },
+  {
+   "id": "ENCLAVE",
+   "n": "Bahria Enclave",
+   "city": "isb",
+   "lat": 33.7053,
+   "lng": 73.156,
+   "p": 4.25,
+   "band": "7–10",
+   "tag": "Margalla views, half the price",
+   "plots": "5, 8 & 10 Marla · 1 & 2 Kanal",
+   "by": "Bahria Town",
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "Bahria Enclave",
+    "Park Enclave next door",
+    "Hill views"
+   ],
+   "eats": [
+    "Enclave commercial"
+   ],
+   "photo": null
+  },
+  {
+   "id": "GULBERG",
+   "n": "Gulberg Greens",
+   "city": "isb",
+   "lat": 33.6216,
+   "lng": 73.1246,
+   "p": 3.6,
+   "band": "5.5–9",
+   "tag": "Farmhouse plots",
+   "plots": "1, 2 & 4 Kanal farmhouse plots",
+   "by": "Intelligence Bureau Employees Society",
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "Gulberg Greens",
+    "Gulberg Residencia",
+    "Big open plots"
+   ],
+   "eats": [
+    "Gulberg commercial"
+   ],
+   "photo": null
+  },
+  {
+   "id": "B17",
+   "n": "B-17",
+   "city": "isb",
+   "lat": 33.6667,
+   "lng": 72.827,
+   "p": 3.75,
+   "band": "6–9",
+   "tag": "Most upside left",
+   "plots": "5, 8 & 10 Marla · 1 & 2 Kanal",
+   "by": "Multi Professionals Cooperative",
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "Multi Gardens B-17",
+    "M-1 motorway",
+    "New commercial"
+   ],
+   "eats": [
+    "B-17 Markaz"
+   ],
+   "photo": null
+  },
+  {
+   "id": "DHA5I",
+   "n": "DHA Phase 5",
+   "city": "isb",
+   "lat": 33.515,
+   "lng": 73.19,
+   "p": 5.8,
+   "band": "9–14",
+   "tag": "The newer DHA",
+   "plots": "5 & 10 Marla · 1 & 2 Kanal",
+   "by": "Defence Housing Authority",
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "Islamabad Expressway",
+    "Airport corridor",
+    "DHA commercial"
+   ],
+   "eats": [
+    "DHA Phase 5 commercial"
+   ],
+   "photo": null
+  },
+  {
+   "id": "NAVAL",
+   "n": "Naval Anchorage",
+   "city": "isb",
+   "lat": 33.523,
+   "lng": 73.166,
+   "p": 3.3,
+   "band": "5–8",
+   "tag": "Quiet and fully built",
+   "plots": "10 Marla · 1 Kanal",
+   "by": "Pakistan Navy",
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "Islamabad Expressway",
+    "Navy-managed",
+    "Mature trees"
+   ],
+   "eats": [
+    "Anchorage commercial"
+   ],
+   "photo": null
+  },
+  {
+   "id": "PARKVIEW",
+   "n": "Park View City",
+   "city": "isb",
+   "lat": 33.652,
+   "lng": 73.145,
+   "p": 2.9,
+   "band": "4.5–7",
+   "tag": "Against the national park",
+   "plots": "5, 8 & 10 Marla · 1 & 2 Kanal",
+   "by": "Vision Group",
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "Malot Road",
+    "Bani Gala side",
+    "Hill and lake views"
+   ],
+   "eats": [
+    "Park View commercial"
+   ],
+   "photo": null
+  },
+  {
+   "id": "TAJ",
+   "n": "Taj Residencia",
+   "city": "isb",
+   "lat": 33.556,
+   "lng": 73.123,
+   "p": 2.5,
+   "band": "4–6",
+   "tag": "Fast-building, well placed",
+   "plots": "5, 7 & 10 Marla · 1 Kanal",
+   "by": "Sardar Group",
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "Near I-14 / I-15",
+    "Kuri Road",
+    "Centaurus developer"
+   ],
+   "eats": [
+    "Taj commercial"
+   ],
+   "photo": null
+  },
+  {
+   "id": "FAISALT",
+   "n": "Faisal Town",
+   "city": "isb",
+   "lat": 33.652,
+   "lng": 72.993,
+   "p": 2.3,
+   "band": "3.5–5.5",
+   "tag": "North-west, near the hills",
+   "plots": "5, 8 & 10 Marla · 1 & 2 Kanal",
+   "by": "Zedem International",
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "Near Tarnol",
+    "M-1 access",
+    "Faisal Hills next door"
+   ],
+   "eats": [
+    "Faisal Town commercial"
+   ],
+   "photo": null
+  },
+  {
+   "id": "SMART",
+   "n": "Capital Smart City",
+   "city": "isb",
+   "lat": 33.483,
+   "lng": 72.894,
+   "p": 2.3,
+   "band": "3.5–5.5",
+   "tag": "The big M-2 project",
+   "plots": "5, 7, 10 & 12 Marla · 1 & 2 Kanal",
+   "by": "Future Development Holdings",
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "Dedicated M-2 interchange",
+    "Lahore-side of the motorway"
+   ],
+   "eats": [
+    "Smart City commercial"
+   ],
+   "photo": null
+  },
+  {
+   "id": "TOPCITY",
+   "n": "Top City-1",
+   "city": "isb",
+   "lat": 33.576,
+   "lng": 72.834,
+   "p": 2,
+   "band": "3–5",
+   "tag": "Airport-side",
+   "plots": "4, 5, 8 & 10 Marla · 1 Kanal",
+   "by": null,
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "Minutes from Islamabad Airport",
+    "M-1 / M-2 access"
+   ],
+   "eats": [
+    "Top City commercial"
+   ],
+   "photo": null
+  },
+  {
+   "id": "MUMTAZ",
+   "n": "Mumtaz City",
+   "city": "isb",
+   "lat": 33.531,
+   "lng": 72.942,
+   "p": 1.9,
+   "band": "3–4.5",
+   "tag": "Airport-side, established",
+   "plots": "5, 8 & 10 Marla · 1 Kanal",
+   "by": null,
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "Near Islamabad Airport",
+    "Srinagar Highway"
+   ],
+   "eats": [
+    "Mumtaz City commercial"
+   ],
+   "photo": null
+  },
+  {
+   "id": "NOVA",
+   "n": "Nova City",
+   "city": "isb",
+   "lat": 33.503,
+   "lng": 72.856,
+   "p": 1.6,
+   "band": "2.5–4",
+   "tag": "Rawalpindi side",
+   "plots": "3.5, 5, 8 & 10 Marla · 1 Kanal",
+   "by": null,
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "Near Rawalpindi Ring Road",
+    "Chakri interchange"
+   ],
+   "eats": [
+    "Nova commercial"
+   ],
+   "photo": null
+  },
+  {
+   "id": "BLUEW",
+   "n": "Blue World City",
+   "city": "isb",
+   "lat": 33.442,
+   "lng": 72.801,
+   "p": 1.2,
+   "band": "1.8–3",
+   "tag": "Cheapest entry on the map",
+   "plots": "5, 8 & 10 Marla · 1 Kanal",
+   "by": "Blue Group of Companies",
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "Chakri Road",
+    "Rawalpindi Ring Road",
+    "Longest horizon"
+   ],
+   "eats": [
+    "Blue World commercial"
+   ],
+   "photo": null
+  },
+  {
+   "id": "RUDN",
+   "n": "Rudn Enclave",
+   "city": "isb",
+   "lat": 33.47,
+   "lng": 73.025,
+   "p": 1.1,
+   "band": "1.6–2.8",
+   "tag": "Adyala side, early stage",
+   "plots": "5, 7 & 10 Marla · 1 Kanal",
+   "by": null,
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "Adyala Road",
+    "Rawalpindi Ring Road",
+    "Long-hold play"
+   ],
+   "eats": [
+    "Rudn commercial"
+   ],
+   "photo": null
+  },
+  {
+   "id": "GULBERG3",
+   "n": "Gulberg III",
+   "city": "lhr",
+   "lat": 31.517,
+   "lng": 74.345,
+   "p": 18.25,
+   "band": "28–45",
+   "tag": "Lahore's prestige address",
+   "plots": null,
+   "by": null,
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "MM Alam Road",
+    "Liberty Market",
+    "Main Boulevard"
+   ],
+   "eats": [
+    "Cafe Aylanto",
+    "Cosa Nostra",
+    "Butt Karahi",
+    "Freddy's Cafe"
+   ],
+   "photo": null
+  },
+  {
+   "id": "CANTT",
+   "n": "Cantt",
+   "city": "lhr",
+   "lat": 31.517,
+   "lng": 74.39,
+   "p": 11,
+   "band": "16–28",
+   "tag": "Old Lahore establishment",
+   "plots": null,
+   "by": null,
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "Fortress Stadium",
+    "Gaddafi Stadium",
+    "Lahore Gymkhana"
+   ],
+   "eats": [
+    "Cafe Zouk",
+    "Fortress food strip"
+   ],
+   "photo": null
+  },
+  {
+   "id": "MODEL",
+   "n": "Model Town",
+   "city": "lhr",
+   "lat": 31.482,
+   "lng": 74.323,
+   "p": 13.25,
+   "band": "18–35",
+   "tag": "Enormous plots, old money",
+   "plots": null,
+   "by": null,
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "Model Town Park",
+    "Model Town Link Road",
+    "Central Lahore"
+   ],
+   "eats": [
+    "Model Town Link Road restaurants"
+   ],
+   "photo": null
+  },
+  {
+   "id": "DHA5",
+   "n": "DHA Phase 5",
+   "city": "lhr",
+   "lat": 31.472,
+   "lng": 74.402,
+   "p": 14.25,
+   "band": "22–35",
+   "tag": "The most liquid market here",
+   "plots": null,
+   "by": null,
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "Y-Block Commercial",
+    "H-Block",
+    "Phase 5 park belt"
+   ],
+   "eats": [
+    "Y-Block restaurants",
+    "Broadway Pizza"
+   ],
+   "photo": null
+  },
+  {
+   "id": "DHA6",
+   "n": "DHA Phase 6",
+   "city": "lhr",
+   "lat": 31.453,
+   "lng": 74.44,
+   "p": 8.25,
+   "band": "13–20",
+   "tag": "Where the designer builds are",
+   "plots": null,
+   "by": null,
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "Sector C Commercial",
+    "New builds everywhere"
+   ],
+   "eats": [
+    "Phase 6 commercial",
+    "Kababjees"
+   ],
+   "photo": null
+  },
+  {
+   "id": "DHA8",
+   "n": "DHA Phase 7 / 8",
+   "city": "lhr",
+   "lat": 31.468,
+   "lng": 74.478,
+   "p": 6.5,
+   "band": "10–16",
+   "tag": "Newer, greener, further",
+   "plots": null,
+   "by": null,
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "Air Avenue",
+    "Phase 8 Commercial",
+    "Ring Road access"
+   ],
+   "eats": [
+    "Air Avenue restaurants"
+   ],
+   "photo": null
+  },
+  {
+   "id": "ASKARI",
+   "n": "Askari",
+   "city": "lhr",
+   "lat": 31.534,
+   "lng": 74.409,
+   "p": 6.5,
+   "band": "10–16",
+   "tag": "Secure and settled",
+   "plots": null,
+   "by": null,
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "Askari X and XI",
+    "Army-managed",
+    "Walk-to-school living"
+   ],
+   "eats": [
+    "Askari commercial"
+   ],
+   "photo": null
+  },
+  {
+   "id": "GARDEN",
+   "n": "Garden / Faisal Town",
+   "city": "lhr",
+   "lat": 31.501,
+   "lng": 74.308,
+   "p": 8,
+   "band": "12–20",
+   "tag": "Central and mature",
+   "plots": null,
+   "by": null,
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "Garden Town",
+    "Faisal Town",
+    "Kalma Chowk"
+   ],
+   "eats": [
+    "Faisal Town food street"
+   ],
+   "photo": null
+  },
+  {
+   "id": "JOHAR",
+   "n": "Johar Town",
+   "city": "lhr",
+   "lat": 31.468,
+   "lng": 74.276,
+   "p": 6,
+   "band": "9–15",
+   "tag": "Everything within reach",
+   "plots": null,
+   "by": null,
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "Emporium Mall",
+    "Expo Centre",
+    "Doctors Hospital"
+   ],
+   "eats": [
+    "Emporium food court",
+    "Johar Town commercial"
+   ],
+   "photo": null
+  },
+  {
+   "id": "WAPDA",
+   "n": "Wapda Town",
+   "city": "lhr",
+   "lat": 31.44,
+   "lng": 74.262,
+   "p": 5,
+   "band": "8–13",
+   "tag": "Solid family value",
+   "plots": null,
+   "by": null,
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "Wapda Town roundabouts",
+    "Valencia next door"
+   ],
+   "eats": [
+    "Wapda Town commercial"
+   ],
+   "photo": null
+  },
+  {
+   "id": "BAHRIA_L",
+   "n": "Bahria Town",
+   "city": "lhr",
+   "lat": 31.366,
+   "lng": 74.183,
+   "p": 6,
+   "band": "9–15",
+   "tag": "A city inside the city",
+   "plots": null,
+   "by": null,
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "Grand Jamia Mosque",
+    "Eiffel Tower replica",
+    "Takht-e-Lahore"
+   ],
+   "eats": [
+    "Bahria commercial",
+    "Cinegold food court"
+   ],
+   "photo": null
+  },
+  {
+   "id": "LAKECITY",
+   "n": "Lake City",
+   "city": "lhr",
+   "lat": 31.348,
+   "lng": 74.227,
+   "p": 5.75,
+   "band": "9–14",
+   "tag": "Best yield in Lahore",
+   "plots": null,
+   "by": null,
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "Lake City Golf & Country Club",
+    "Raiwind Road"
+   ],
+   "eats": [
+    "Lake City commercial"
+   ],
+   "photo": null
+  },
+  {
+   "id": "EME",
+   "n": "EME / Raiwind Rd",
+   "city": "lhr",
+   "lat": 31.453,
+   "lng": 74.21,
+   "p": 4.8,
+   "band": "8–12",
+   "tag": "Motorway side",
+   "plots": null,
+   "by": null,
+   "park": false,
+   "commercial": false,
+   "marks": [
+    "EME Society",
+    "Motorway access",
+    "Ring Road"
+   ],
+   "eats": [
+    "EME commercial"
+   ],
+   "photo": null
+  },
+  {
+   "id": "WALLED",
+   "n": "Walled City",
+   "city": "lhr",
+   "lat": 31.582,
+   "lng": 74.31,
+   "p": 0,
+   "band": null,
+   "tag": "Where Lahore began",
+   "plots": null,
+   "by": null,
+   "park": true,
+   "commercial": false,
+   "marks": [
+    "Badshahi Mosque",
+    "Lahore Fort",
+    "Fort Road Food Street"
+   ],
+   "eats": [
+    "Cuckoo's Den",
+    "Andaaz",
+    "Haveli Restaurant"
+   ],
+   "photo": null
+  }
+ ]
+}

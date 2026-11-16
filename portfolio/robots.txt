@@ -1,4 +1,4 @@
-# Adeel Rahman — Actor · Karachi & Lahore
+# Adeel Rahman Estates — Islamabad & Lahore
 # All crawlers welcome, including AI search and answer engines.
 
 User-agent: *
@@ -42,3 +42,4 @@ User-agent: cohere-ai
 Allow: /
 
 Sitemap: https://crabbyai.github.io/mus/sitemap.xml
+Sitemap: https://crabbyai.github.io/mus/actor/sitemap.xml
