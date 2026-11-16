@@ -111,7 +111,7 @@ jobs:
             "og:image": /property="og:image"/,
             "twitter:card": /name="twitter:card"/,
             "JSON-LD": /application\/ld\+json/,
-            "RealEstateAgent schema": /"@type":\s*"RealEstateAgent"/,
+            "Person schema": /"@type":\s*"Person"/,
             "manifest": /rel="manifest"/,
             "service worker": /serviceWorker/
           };
