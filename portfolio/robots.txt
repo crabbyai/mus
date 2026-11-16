@@ -42,3 +42,4 @@ User-agent: cohere-ai
 Allow: /
 
 Sitemap: https://crabbyai.github.io/mus/sitemap.xml
+Sitemap: https://crabbyai.github.io/mus/actor/sitemap.xml

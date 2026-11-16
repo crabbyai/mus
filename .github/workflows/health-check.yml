@@ -22,7 +22,7 @@ jobs:
       - name: Validate JavaScript syntax
         run: |
           fail=0
-          for f in $(find portfolio/js -name '*.js' -not -path '*/vendor/*'); do
+          for f in $(find portfolio/js portfolio/actor/js -name '*.js' -not -path '*/vendor/*') scripts/drama-feed.mjs; do
             if node --check "$f" 2>/dev/null; then
               echo "ok   $f"
             else
@@ -34,7 +34,7 @@ jobs:
       - name: Validate JSON data files
         run: |
           fail=0
-          for f in $(find portfolio/data -name '*.json'); do
+          for f in $(find portfolio/data portfolio/actor/data -name '*.json'); do
             if node -e "JSON.parse(require('fs').readFileSync('$f','utf8'))" 2>/dev/null; then
               echo "ok   $f"
             else

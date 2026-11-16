@@ -1,0 +1,15 @@
+{
+  "_readme": "Evergreen dramas that are always in the feed, whether or not they are on air. Add a line to add a drama. 'channel' is the broadcaster that owns it: ary, hum, geo or green. Episodes are only ever taken from that broadcaster's own YouTube channel.",
+  "picks": [
+    { "title": "Parizaad", "channel": "hum", "cast": "Ahmed Ali Akbar · Yumna Zaidi" },
+    { "title": "Kabhi Main Kabhi Tum", "channel": "ary", "cast": "Fahad Mustafa · Hania Aamir" },
+    { "title": "Tere Bin", "channel": "geo", "cast": "Yumna Zaidi · Wahaj Ali" },
+    { "title": "Ishq Murshid", "channel": "hum", "cast": "Bilal Abbas Khan · Durefishan Saleem" },
+    { "title": "Mere Humsafar", "channel": "ary", "cast": "Farhan Saeed · Hania Aamir" },
+    { "title": "Meem Se Mohabbat", "channel": "hum", "cast": "Ahad Raza Mir · Dananeer Mobeen" },
+    { "title": "Jaan Nisar", "channel": "geo", "cast": "Danish Taimoor · Hiba Bukhari" },
+    { "title": "Zindagi Gulzar Hai", "channel": "hum", "cast": "Fawad Khan · Sanam Saeed" },
+    { "title": "Suno Chanda", "channel": "hum", "cast": "Farhan Saeed · Iqra Aziz" },
+    { "title": "Khaie", "channel": "geo", "cast": "Faysal Quraishi · Durefishan Saleem" }
+  ]
+}
