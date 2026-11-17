@@ -129,7 +129,7 @@
   });
 
   /* ---------- scrollspy ---------- */
-  const spyTargets = ["watch", "dramas", "about", "onset", "casting", "faq", "contact"].map($).filter(Boolean);
+  const spyTargets = ["watch", "dramas", "about", "onset", "frames", "casting", "faq", "contact"].map($).filter(Boolean);
   if ("IntersectionObserver" in window && spyTargets.length) {
     const links = document.querySelectorAll(".nav__links a");
     const spy = new IntersectionObserver((entries) => {
