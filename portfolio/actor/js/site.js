@@ -129,7 +129,7 @@
   });
 
   /* ---------- scrollspy ---------- */
-  const spyTargets = ["watch", "dramas", "about", "onset", "casting", "faq", "contact"].map($).filter(Boolean);
+  const spyTargets = ["watch", "dramas", "about", "portraits", "onset", "casting", "faq", "contact"].map($).filter(Boolean);
   if ("IntersectionObserver" in window && spyTargets.length) {
     const links = document.querySelectorAll(".nav__links a");
     const spy = new IntersectionObserver((entries) => {
@@ -182,6 +182,57 @@
     ].filter(Boolean);
     window.open("https://wa.me/16134083945?text=" + encodeURIComponent(lines.join("\n")), "_blank", "noopener");
   });
+
+  /* ---------- photo lightbox: any photo, whole, full size ---------- */
+  const zoom = $("zoom"), zoomImg = $("zoomImg");
+  if (zoom && zoomImg) {
+    const shots = Array.from(document.querySelectorAll("[data-zoom] img, [data-zoom-group] img"));
+    let at = 0, opener = null;
+    const show = (i) => {
+      at = (i + shots.length) % shots.length;
+      zoomImg.src = shots[at].currentSrc || shots[at].src;
+      zoomImg.alt = shots[at].alt;
+    };
+    const open = (i, from) => {
+      opener = from || null;
+      show(i);
+      zoom.classList.add("is-open");
+      zoom.setAttribute("aria-hidden", "false");
+      document.documentElement.style.overflow = "hidden";
+      if (lenis) lenis.stop();
+      $("zoomClose").focus({ preventScroll: true });
+    };
+    const shut = () => {
+      zoom.classList.remove("is-open");
+      zoom.setAttribute("aria-hidden", "true");
+      document.documentElement.style.overflow = "";
+      if (lenis) lenis.start();
+      if (opener && opener.focus) opener.focus({ preventScroll: true });
+    };
+    document.addEventListener("click", (e) => {
+      const img = e.target.closest("[data-zoom], [data-zoom-group] picture");
+      if (!img || zoom.contains(e.target)) return;
+      const el = img.querySelector("img");
+      const i = shots.indexOf(el);
+      if (i >= 0) open(i, img.closest("button") || null);
+    });
+    zoom.addEventListener("click", (e) => {
+      if (e.target.closest("#zoomPrev")) show(at - 1);
+      else if (e.target.closest("#zoomNext")) show(at + 1);
+      else if (e.target !== zoomImg) shut();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (!zoom.classList.contains("is-open")) return;
+      if (e.key === "Escape") shut();
+      else if (e.key === "ArrowLeft") show(at - 1);
+      else if (e.key === "ArrowRight") show(at + 1);
+      else if (e.key === "Tab") {
+        const f = zoom.querySelectorAll("button"), first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    });
+  }
 
   const year = $("year");
   if (year) year.textContent = new Date().getFullYear();

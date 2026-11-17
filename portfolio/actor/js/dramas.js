@@ -243,7 +243,7 @@
     el("dramaShare").href = "https://wa.me/?text=" + encodeURIComponent(`${d.title} ${epLabel(e)} — watch free: ${share}`);
     el("dramaCopy").dataset.url = share;
     el("dramaCopy").textContent = "Copy link";
-    const fb = el("dramaFav"), on = isFav(d.id);
+    const fb = el("dramaFavBtn"), on = isFav(d.id);
     fb.dataset.fav = d.id; fb.classList.toggle("is-fav", on); fb.setAttribute("aria-pressed", on);
     fb.textContent = on ? "♥ In my list" : "♡ Add to my list";
 
@@ -325,7 +325,7 @@
       ev.preventDefault();
       toggleFav(fav.dataset.fav);
       if (player.classList.contains("is-open") && current) {
-        const on = isFav(current.drama.id), fb = el("dramaFav");
+        const on = isFav(current.drama.id), fb = el("dramaFavBtn");
         fb.classList.toggle("is-fav", on); fb.setAttribute("aria-pressed", on);
         fb.textContent = on ? "♥ In my list" : "♡ Add to my list";
       } else renderAll();
