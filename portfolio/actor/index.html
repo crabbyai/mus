@@ -39,6 +39,7 @@
   "name": "Adeel Ahmed Rahman",
   "alternateName": "Adeel Rahman",
   "jobTitle": "Actor",
+  "description": "Canadian-born actor and former businessman with an MBA from Carleton University, working in Pakistani drama, film and commercials from Karachi and Lahore.",
   "birthPlace": { "@type": "Country", "name": "Canada" },
   "url": "https://crabbyai.github.io/mus/actor/",
   "image": "https://crabbyai.github.io/mus/assets/adeel-portrait.jpg",
@@ -59,7 +60,7 @@
 <link rel="stylesheet" href="../css/style.css?v=75" />
 <link rel="stylesheet" href="../css/enhance.css" />
 <link rel="stylesheet" href="../css/upgrade.css?v=3" />
-<link rel="stylesheet" href="css/dramas.css?v=8" />
+<link rel="stylesheet" href="css/dramas.css?v=11" />
 </head>
 <body>
 
@@ -86,13 +87,12 @@
     <span class="nav__logo-text">ADEEL&nbsp;RAHMAN<em>, Actor</em></span>
   </a>
   <nav class="nav__links">
-    <a href="#watch" data-magnetic>Latest</a>
-    <a href="#dramas" data-magnetic>All Dramas</a>
-    <a href="#about" data-magnetic>About</a>
+    <a href="#watch" data-magnetic>Dramas</a>
+    <a href="#why" data-magnetic>Why Me</a>
     <a href="#portraits" data-magnetic>Portraits</a>
-    <a href="#onset" data-magnetic>On Set</a>
+    <a href="#match" data-magnetic>Role Match</a>
     <a href="#casting" data-magnetic>Casting</a>
-    <a href="#faq" data-magnetic>FAQ</a>
+    <a href="#kit" data-magnetic>Press Kit</a>
     <a href="#contact" class="nav__cta" data-magnetic>Cast Me</a>
   </nav>
   <button class="nav__burger" id="navBurger" aria-label="Menu"><span></span><span></span></button>
@@ -103,12 +103,16 @@
   <a href="#featured">Most Watched This Week</a>
   <a href="#dramas">All Dramas</a>
   <a href="#about">About Me</a>
+  <a href="#why">Why Producers Hire Me</a>
+  <a href="#journey">Boardroom to Set</a>
   <a href="#portraits">Portraits</a>
-  <a href="#onset">On Set</a>
-  <a href="#process">How I Work</a>
-  <a href="#casting">Casting Sheet</a>
+  <a href="#roles">Cast Me As</a>
+  <a href="#match">Role Match</a>
+  <a href="#screentest">Screen Test</a>
+  <a href="#casting">Comp Card</a>
+  <a href="#kit">Press Kit</a>
   <a href="#faq">FAQ</a>
-  <a href="#contact">Cast Me</a>
+  <a href="#contact">Book an Audition</a>
 </div>
 
 <main id="top">
@@ -122,23 +126,24 @@
     </div>
 
     <div class="hero__content">
-      <p class="hero__eyebrow" data-reveal>Official Site &nbsp;·&nbsp; Canadian-born Actor &nbsp;·&nbsp; Karachi &nbsp;·&nbsp; Lahore</p>
+      <p class="hero__eyebrow" data-reveal>Official Site &nbsp;·&nbsp; Canadian-born Actor &nbsp;·&nbsp; MBA, Carleton University</p>
       <h1 class="hero__title">
         <span class="line"><span>Adeel Rahman.</span></span>
         <span class="line"><span class="gold-italic">The face</span></span>
         <span class="line"><span>you keep watching.</span></span>
       </h1>
-      <p class="hero__sub" data-reveal>Warm, quick-witted and impossible to ignore — an actor with
-      <strong>leading-man presence</strong> and a character actor's appetite for detail. Available for
+      <p class="hero__sub" data-reveal>A <strong>Canadian businessman turned actor</strong>, with an
+      <strong>MBA from Carleton University</strong> and leading-man presence. I bring boardroom discipline to
+      every set and play professionals, power and the overseas Pakistani for real. Available for
       <strong>drama serials, film, TVCs and web series</strong> in Karachi and Lahore.</p>
 
       <div class="hero__actions" data-reveal>
         <a href="#contact" class="btn btn--gold" data-magnetic>Cast Me <span class="btn__arrow">→</span></a>
-        <a href="#watch" class="btn btn--ghost" data-magnetic>Watch Latest Dramas</a>
+        <a href="#why" class="btn btn--ghost" data-magnetic>Why Producers Hire Me</a>
       </div>
       <p class="hero__trust" data-reveal>
         <span class="online-dot"></span>
-        <span>Casting directors — message me on WhatsApp</span>
+        <span>Open to new projects · <a href="#watch" class="hero__link">or watch the latest dramas</a></span>
       </p>
     </div>
 
@@ -155,10 +160,10 @@
     </div>
 
     <div class="hero__stats">
-      <div class="hero__stat" data-reveal><strong>Canada</strong><span>Born · Karachi &amp; Lahore bound</span></div>
+      <div class="hero__stat" data-reveal><strong>Canada</strong><span>Born · businessman turned actor</span></div>
       <div class="hero__stat" data-reveal><strong>Urdu</strong><span>&amp; English on camera</span></div>
       <div class="hero__stat" data-reveal><strong>MBA</strong><span>Carleton University, Canada</span></div>
-      <div class="hero__stat" data-reveal><strong>Live</strong><span>Drama feed, refreshed hourly</span></div>
+      <div class="hero__stat" data-reveal><strong>2 cities</strong><span>Karachi &amp; Lahore</span></div>
     </div>
 
     <div class="hero__scroll-hint"><span></span>Scroll</div>
@@ -181,6 +186,7 @@
       <strong>Har Pal Geo</strong>, <strong>Green Entertainment</strong> and <strong>Express TV</strong> — added automatically
       as the channels upload them. Tap one and it plays right here, free, from the official upload. Tap ♥ to keep a serial in your list.</p>
     </div>
+    <p class="feed-fresh"><span id="feedFresh" hidden></span></p>
     <div class="feed-grid" id="feedGrid"></div>
     <p class="feed-more"><button type="button" class="btn btn--ghost" id="feedMore" hidden>Show more new episodes</button></p>
     <p class="marketwatch__note" id="feedUpdated"></p>
@@ -193,6 +199,10 @@
       <h2 class="section-title">This week's <em class="gold-italic">most watched</em></h2>
     </div>
     <div class="spotlight__stage" id="spotStage"></div>
+    <div class="chart" id="chartWrap" hidden>
+      <h3 class="chart__title">Top 10 this week <small>By views on the official channels</small></h3>
+      <ol class="chart__list" id="chartList"></ol>
+    </div>
   </section>
 
   <!-- ======= DRAMA LIBRARY ======= -->
@@ -214,6 +224,17 @@
         <button type="button" class="dchip" aria-pressed="false" data-channel="geo">Har Pal Geo</button>
         <button type="button" class="dchip" aria-pressed="false" data-channel="green">Green</button>
         <button type="button" class="dchip" aria-pressed="false" data-channel="express">Express</button>
+      </div>
+      <div class="dramas__tools">
+        <label class="dramas__sort"><span>Sort</span>
+          <select id="dramaSort">
+            <option value="latest">Newest episode</option>
+            <option value="az">A – Z</option>
+            <option value="most">Most episodes</option>
+            <option value="least">Shortest first</option>
+          </select>
+        </label>
+        <button type="button" class="dchip" id="dramaRandom">🎲 Surprise me</button>
       </div>
     </div>
 
@@ -298,6 +319,73 @@
     </div>
   </section>
 
+  <!-- ======= WHY PRODUCERS HIRE ME ======= -->
+  <section class="why" id="why">
+    <div class="why__head">
+      <p class="section-eyebrow" data-reveal>Why Producers Hire Me</p>
+      <h2 class="section-title" data-reveal>Six reasons to put me <em class="gold-italic">on your call sheet</em></h2>
+      <p class="portfolio__intro" data-reveal>Casting is a business decision. Here is the business case.</p>
+    </div>
+    <div class="why__layout">
+      <button type="button" class="why__photo" data-zoom data-reveal aria-label="View photo full size"><picture><source srcset="assets/frames/tailored.webp" type="image/webp" /><img src="assets/frames/tailored.jpg" alt="Adeel Rahman, full length, striped shirt and dark trousers" width="1100" height="1467" loading="lazy" decoding="async" /></picture></button>
+      <div class="why__grid">
+        <article class="reason" data-reveal>
+          <span class="reason__ico" aria-hidden="true">🎓</span>
+          <h3>A producer’s actor</h3>
+          <p>MBA, Carleton University. I read a call sheet like a budget: every hour on set is money, and I don’t waste yours. Retakes because of me are rare.</p>
+        </article>
+        <article class="reason" data-reveal>
+          <span class="reason__ico" aria-hidden="true">🌍</span>
+          <h3>The overseas audience, on screen</h3>
+          <p>Families in Canada, the UK and the Gulf watch Pakistani dramas every night. Canadian-born, I play the son who comes home from abroad as the real thing, not a borrowed accent.</p>
+        </article>
+        <article class="reason" data-reveal>
+          <span class="reason__ico" aria-hidden="true">💼</span>
+          <h3>Power roles, from experience</h3>
+          <p>CEO, tycoon, lawyer, landlord, rishta with a business card. I’ve sat at those tables, so the authority on screen isn’t acted from a guess.</p>
+        </article>
+        <article class="reason" data-reveal>
+          <span class="reason__ico" aria-hidden="true">🗣️</span>
+          <h3>Truly bilingual</h3>
+          <p>Urdu and English, switching mid-scene without a stumble. Ready for English-language web series, OTT and international co-productions.</p>
+        </article>
+        <article class="reason" data-reveal>
+          <span class="reason__ico" aria-hidden="true">🤝</span>
+          <h3>Brand-safe for sponsors</h3>
+          <p>Dramas live on sponsorship. Articulate, presentable and comfortable fronting brand integrations, launches and press when the channel needs a face.</p>
+        </article>
+        <article class="reason" data-reveal>
+          <span class="reason__ico" aria-hidden="true">⏱️</span>
+          <h3>Zero drama off screen</h3>
+          <p>Punctual, prepared, off-book. Contracts read before signing, paperwork back on time, and the same energy at hour fourteen as at call time.</p>
+        </article>
+      </div>
+    </div>
+    <div class="why__stats" data-reveal>
+      <div><strong>MBA</strong><span>Carleton University, Ottawa</span></div>
+      <div><strong>2</strong><span>Languages on camera</span></div>
+      <div><strong>2</strong><span>Cities — Karachi &amp; Lahore</span></div>
+      <div><strong>1</strong><span>WhatsApp message to book</span></div>
+    </div>
+  </section>
+
+  <!-- ======= BOARDROOM TO SET ======= -->
+  <section class="journey" id="journey">
+    <div class="journey__layout">
+      <div class="journey__body">
+        <p class="section-eyebrow" data-reveal>Boardroom to Set</p>
+        <h2 class="section-title" data-reveal>A businessman <em class="gold-italic">turned actor</em></h2>
+        <ol class="journey__list">
+          <li class="journey__step" data-reveal><span class="journey__n">01</span><div><h3>Born in Canada</h3><p>Two cultures in one face — Pakistani roots, Canadian upbringing. It’s why I can play both the man who never left and the one who just landed.</p></div></li>
+          <li class="journey__step" data-reveal><span class="journey__n">02</span><div><h3>MBA, Carleton University</h3><p>Business school in Ottawa: negotiation, strategy and reading a room. It turns out that is half of acting.</p></div></li>
+          <li class="journey__step" data-reveal><span class="journey__n">03</span><div><h3>Years in business</h3><p>Deals, clients and high-stakes meetings. I learned to listen harder than I speak, and to hold my nerve when the room goes quiet.</p></div></li>
+          <li class="journey__step" data-reveal><span class="journey__n">04</span><div><h3>Karachi &amp; Lahore, on camera</h3><p>Now I bring all of it to the screen — with a businessman’s reliability and an actor’s hunger.</p></div></li>
+        </ol>
+      </div>
+      <button type="button" class="journey__photo" data-zoom data-reveal aria-label="View photo full size"><picture><source srcset="assets/frames/lights-1.webp" type="image/webp" /><img src="assets/frames/lights-1.jpg" alt="Adeel Rahman in a navy blazer under amber pendant lights" width="1100" height="1467" loading="lazy" decoding="async" /></picture></button>
+    </div>
+  </section>
+
   <!-- ======= PORTRAITS ======= -->
   <section class="portraits" id="portraits">
     <div class="portraits__head">
@@ -355,6 +443,65 @@
     </div>
   </section>
 
+  <!-- ======= CHARACTERS ======= -->
+  <section class="roles" id="roles">
+    <div class="roles__head">
+      <p class="section-eyebrow" data-reveal>Cast Me As</p>
+      <h2 class="section-title" data-reveal>Four men I can be <em class="gold-italic">by Friday</em></h2>
+      <p class="portfolio__intro" data-reveal>The parts this face walks straight into — and enjoys walking back out of.</p>
+    </div>
+    <div class="roles__grid">
+      <article class="role" data-reveal>
+        <button type="button" class="role__photo" data-zoom aria-label="View The Enforcer photo full size"><picture><source srcset="assets/frames/lobby-1.webp" type="image/webp" /><img src="assets/frames/lobby-1.jpg" alt="Adeel Rahman in aviator sunglasses, unsmiling" width="1100" height="1467" loading="lazy" decoding="async" /></picture></button>
+        <p class="role__genre">Crime · Thriller</p>
+        <h3>The Enforcer</h3>
+        <p>Says little, and doesn't need to. The man who gets sent in when the talking is over.</p>
+      </article>
+      <article class="role" data-reveal>
+        <button type="button" class="role__photo" data-zoom aria-label="View The Charmer photo full size"><picture><source srcset="assets/frames/lights-2.webp" type="image/webp" /><img src="assets/frames/lights-2.jpg" alt="Adeel Rahman in a navy blazer beneath gold chandeliers" width="1100" height="1467" loading="lazy" decoding="async" /></picture></button>
+        <p class="role__genre">Romance · Family drama</p>
+        <h3>The Charmer</h3>
+        <p>Easy manner, expensive taste, and a proposal the family really shouldn't accept.</p>
+      </article>
+      <article class="role" data-reveal>
+        <button type="button" class="role__photo" data-zoom aria-label="View The Tycoon photo full size"><picture><source srcset="assets/frames/lobby-2.webp" type="image/webp" /><img src="assets/frames/lobby-2.jpg" alt="Adeel Rahman in aviators beside amber pendant lights" width="1100" height="1467" loading="lazy" decoding="async" /></picture></button>
+        <p class="role__genre">Business · Political drama</p>
+        <h3>The Tycoon</h3>
+        <p>Built it from nothing and brings it up at every dinner. Generous until you cross him.</p>
+      </article>
+      <article class="role" data-reveal>
+        <button type="button" class="role__photo" data-zoom aria-label="View The Elder Brother photo full size"><picture><source srcset="assets/frames/tailored.webp" type="image/webp" /><img src="assets/frames/tailored.jpg" alt="Adeel Rahman, full length, striped shirt and dark trousers" width="1100" height="1467" loading="lazy" decoding="async" /></picture></button>
+        <p class="role__genre">Family serial · Social drama</p>
+        <h3>The Elder Brother</h3>
+        <p>Paid for three weddings and never mentions it. Carries the family, and the guilt.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- ======= ROLE MATCH ======= -->
+  <section class="match" id="match">
+    <div class="match__head">
+      <p class="section-eyebrow" data-reveal>Role Match</p>
+      <h2 class="section-title" data-reveal>What are you <em class="gold-italic">casting?</em></h2>
+      <p class="portfolio__intro" data-reveal>Pick the part. See the look, why it fits, and send it to me in one tap.</p>
+    </div>
+    <div class="match__chips" id="matchChips" role="group" aria-label="Choose a role" data-reveal></div>
+    <div class="match__card" data-reveal>
+      <button type="button" class="match__photo" data-zoom aria-label="View photo full size"><picture><source srcset="assets/frames/lobby-2.webp" type="image/webp" /><img src="assets/frames/lobby-2.jpg" alt="Adeel Rahman" width="1100" height="1467" decoding="async" /></picture></button>
+      <div class="match__body" aria-live="polite">
+        <p class="match__label">Role fit</p>
+        <h3 class="match__title" id="matchTitle"></h3>
+        <p class="match__why" id="matchWhy"></p>
+        <dl class="match__facts">
+          <div><dt>The look</dt><dd id="matchLook"></dd></div>
+          <div><dt>Genres</dt><dd id="matchGenre"></dd></div>
+          <div><dt>Language</dt><dd>Urdu · English · both</dd></div>
+        </dl>
+        <a class="btn btn--wa" id="matchSend" href="https://wa.me/16134083945" target="_blank" rel="noopener">Send this role to Adeel <span class="btn__arrow">→</span></a>
+      </div>
+    </div>
+  </section>
+
   <!-- ======= PROCESS ======= -->
   <section class="process" id="process">
     <div class="process__head">
@@ -385,11 +532,49 @@
     </div>
   </section>
 
+  <!-- ======= SCREEN TEST ======= -->
+  <section class="test" id="screentest">
+    <div class="test__head">
+      <p class="section-eyebrow" data-reveal>Screen Test</p>
+      <h2 class="section-title" data-reveal>Three frames. <em class="gold-italic">No dialogue.</em></h2>
+      <p class="portfolio__intro" data-reveal>A close-up lives or dies in the eyes. No lighting, no retouching, no script — just holding the look until the lens blinks first.</p>
+    </div>
+    <div class="test__strip" tabindex="0" role="group" aria-label="Screen test frames">
+      <figure class="test__frame" data-reveal><button type="button" data-zoom aria-label="View Frame 01 full size"><picture><source srcset="assets/frames/take-1.webp" type="image/webp" /><img src="assets/frames/take-1.jpg" alt="Adeel Rahman, mirror portrait, eyes to camera" width="1100" height="1467" loading="lazy" decoding="async" /></picture></button><figcaption>Frame 01</figcaption></figure>
+      <figure class="test__frame" data-reveal><button type="button" data-zoom aria-label="View Frame 02 full size"><picture><source srcset="assets/frames/take-2.webp" type="image/webp" /><img src="assets/frames/take-2.jpg" alt="Adeel Rahman, mirror portrait, closer, eyes to camera" width="1100" height="1467" loading="lazy" decoding="async" /></picture></button><figcaption>Frame 02</figcaption></figure>
+      <figure class="test__frame" data-reveal><button type="button" data-zoom aria-label="View Frame 03 full size"><picture><source srcset="assets/frames/take-3.webp" type="image/webp" /><img src="assets/frames/take-3.jpg" alt="Adeel Rahman, mirror portrait, head lowered, eyes to camera" width="1100" height="1467" loading="lazy" decoding="async" /></picture></button><figcaption>Frame 03</figcaption></figure>
+    </div>
+  </section>
+
   <!-- ======= CASTING SHEET ======= -->
   <section class="casting" id="casting">
     <div class="casting__head">
       <p class="section-eyebrow" data-reveal>Casting Sheet</p>
       <h2 class="section-title" data-reveal>The <em class="gold-italic">essentials</em></h2>
+    </div>
+    <div class="comp" data-reveal>
+      <button type="button" class="comp__main" data-zoom aria-label="View main comp card photo full size"><picture><source srcset="assets/frames/lobby-3.webp" type="image/webp" /><img src="assets/frames/lobby-3.jpg" alt="Adeel Rahman in aviators and a navy blazer" width="1100" height="1467" loading="lazy" decoding="async" /></picture></button>
+      <div class="comp__side">
+        <p class="comp__label">Comp Card</p>
+        <h3 class="comp__name">Adeel Rahman</h3>
+        <dl class="comp__facts">
+          <div><dt>Born</dt><dd>Canada</dd></div>
+          <div><dt>Available in</dt><dd>Karachi · Lahore</dd></div>
+          <div><dt>Languages</dt><dd>Urdu · English</dd></div>
+          <div><dt>Hair</dt><dd>Black</dd></div>
+          <div><dt>Eyes</dt><dd>Brown</dd></div>
+          <div><dt>Beard</dt><dd>Full — will trim or shave for the part</dd></div>
+          <div><dt>Height &amp; sizes</dt><dd>On request</dd></div>
+        </dl>
+        <div class="comp__thumbs" data-zoom-group>
+          <picture><source srcset="assets/frames/mirror.webp" type="image/webp" /><img src="assets/frames/mirror.jpg" alt="Adeel Rahman adjusting his shirt, sunglasses in hand" width="1100" height="1467" loading="lazy" decoding="async" /></picture>
+          <picture><source srcset="assets/frames/take-2.webp" type="image/webp" /><img src="assets/frames/take-2.jpg" alt="Adeel Rahman, mirror portrait, eyes to camera" width="1100" height="1467" loading="lazy" decoding="async" /></picture>
+          <picture><source srcset="assets/frames/lights-1.webp" type="image/webp" /><img src="assets/frames/lights-1.jpg" alt="Adeel Rahman in a navy blazer under amber pendant lights" width="1100" height="1467" loading="lazy" decoding="async" /></picture>
+        </div>
+        <p class="comp__contact">WhatsApp +1 613 408 3945 · adeelahmedrahman@gmail.com · crabbyai.github.io/mus/actor</p>
+        <div class="comp__actions"><a class="btn btn--gold" href="https://wa.me/16134083945?text=Hello%20Adeel%20-%20please%20send%20your%20comp%20card%20and%20current%20measurements." target="_blank" rel="noopener">Request full comp card <span class="btn__arrow">→</span></a>
+        <button type="button" class="btn btn--ghost js-print-comp">Print / save as PDF</button></div>
+      </div>
     </div>
     <div class="insights__cards">
       <div class="insight-card glass" data-reveal><strong>Karachi · Lahore</strong><span>Available to shoot in</span></div>
@@ -401,15 +586,90 @@
 
   <!-- ======= QUOTE ======= -->
   <section class="quote-band">
-    <div class="takes" data-zoom-group data-reveal>
-      <picture><source srcset="assets/frames/take-1.webp" type="image/webp" /><img src="assets/frames/take-1.jpg" alt="Adeel Rahman, mirror portrait, take one" width="1100" height="1467" loading="lazy" decoding="async" /></picture>
-      <picture><source srcset="assets/frames/take-2.webp" type="image/webp" /><img src="assets/frames/take-2.jpg" alt="Adeel Rahman, mirror portrait, take two" width="1100" height="1467" loading="lazy" decoding="async" /></picture>
-      <picture><source srcset="assets/frames/take-3.webp" type="image/webp" /><img src="assets/frames/take-3.jpg" alt="Adeel Rahman, mirror portrait, take three" width="1100" height="1467" loading="lazy" decoding="async" /></picture>
+    <div class="quote-band__portrait" data-reveal>
+      <picture>
+        <source srcset="../assets/adeel-avatar.webp?v=1" type="image/webp" />
+        <img src="../assets/adeel-avatar.jpg?v=1" alt="Adeel Ahmed Rahman" width="320" height="320" loading="lazy" decoding="async" />
+      </picture>
     </div>
     <blockquote data-reveal>
       “Give me one honest scene,<br /><em class="gold-italic">and I'll give it everything I have.</em>”
     </blockquote>
     <cite data-reveal>— Adeel Rahman</cite>
+  </section>
+
+  <!-- ======= PRESS & PRODUCER KIT ======= -->
+  <section class="kit" id="kit">
+    <div class="kit__head">
+      <p class="section-eyebrow" data-reveal>Press &amp; Producer Kit</p>
+      <h2 class="section-title" data-reveal>Everything you need <em class="gold-italic">for the pitch meeting</em></h2>
+      <p class="portfolio__intro" data-reveal>Approved photos, ready-to-paste bios in English and Urdu, the comp card and my contact card.</p>
+    </div>
+
+    <div class="kit__bios" data-reveal>
+      <article class="bio">
+        <header><h3>Short bio</h3><button type="button" class="bio__copy" data-copy="bioShort">Copy</button></header>
+        <p id="bioShort">Adeel Rahman is a Canadian-born actor working in Karachi and Lahore. A businessman before he was an actor, he holds an MBA from Carleton University in Ottawa and works on camera in Urdu and English.</p>
+      </article>
+      <article class="bio">
+        <header><h3>Full bio</h3><button type="button" class="bio__copy" data-copy="bioLong">Copy</button></header>
+        <p id="bioLong">Adeel Rahman is a Canadian-born actor working in Pakistani drama, film and commercials from Karachi and Lahore. Before acting he built a career in business, earning an MBA from Carleton University in Ottawa — training he credits for his preparation, his reliability on set and the authority he brings to professional and power roles. Equally at home in Urdu and English, he is known for playing the overseas Pakistani returning home with an authenticity that cannot be borrowed, and for a presence that is calm, watchable and easy to direct. He is available for drama serials, film, television commercials and web series.</p>
+      </article>
+      <article class="bio bio--ur">
+        <header><h3>اردو تعارف</h3><button type="button" class="bio__copy" data-copy="bioUrdu">Copy</button></header>
+        <p id="bioUrdu" lang="ur" dir="rtl">عدیل رحمان کینیڈا میں پیدا ہونے والے اداکار ہیں جو کراچی اور لاہور میں کام کرتے ہیں۔ اداکاری سے پہلے وہ ایک کاروباری شخصیت تھے اور کارلٹن یونیورسٹی، اوٹاوا سے ایم بی اے کی ڈگری رکھتے ہیں۔ وہ اردو اور انگریزی دونوں زبانوں میں کیمرے کے سامنے کام کرتے ہیں۔</p>
+      </article>
+    </div>
+
+    <h3 class="kit__sub" data-reveal>Approved photos <small>Free to use for casting, press and promotion</small></h3>
+    <div class="kit__grid">
+        <figure class="kit__shot">
+          <button type="button" data-zoom aria-label="View Lobby, aviators full size"><picture><source srcset="assets/frames/lobby-3.webp" type="image/webp" /><img src="assets/frames/lobby-3.jpg" alt="Adeel Rahman — lobby, aviators" width="1100" height="1467" loading="lazy" decoding="async" /></picture></button>
+          <figcaption><span>Lobby, aviators</span><a href="assets/frames/lobby-3.jpg" download="adeel-rahman-lobby-3.jpg" aria-label="Download Lobby, aviators photo">↓ Download</a></figcaption>
+        </figure>
+        <figure class="kit__shot">
+          <button type="button" data-zoom aria-label="View Aviators, close full size"><picture><source srcset="assets/frames/lobby-1.webp" type="image/webp" /><img src="assets/frames/lobby-1.jpg" alt="Adeel Rahman — aviators, close" width="1100" height="1467" loading="lazy" decoding="async" /></picture></button>
+          <figcaption><span>Aviators, close</span><a href="assets/frames/lobby-1.jpg" download="adeel-rahman-lobby-1.jpg" aria-label="Download Aviators, close photo">↓ Download</a></figcaption>
+        </figure>
+        <figure class="kit__shot">
+          <button type="button" data-zoom aria-label="View Chandeliers full size"><picture><source srcset="assets/frames/lights-2.webp" type="image/webp" /><img src="assets/frames/lights-2.jpg" alt="Adeel Rahman — chandeliers" width="1100" height="1467" loading="lazy" decoding="async" /></picture></button>
+          <figcaption><span>Chandeliers</span><a href="assets/frames/lights-2.jpg" download="adeel-rahman-lights-2.jpg" aria-label="Download Chandeliers photo">↓ Download</a></figcaption>
+        </figure>
+        <figure class="kit__shot">
+          <button type="button" data-zoom aria-label="View Amber lights full size"><picture><source srcset="assets/frames/lobby-2.webp" type="image/webp" /><img src="assets/frames/lobby-2.jpg" alt="Adeel Rahman — amber lights" width="1100" height="1467" loading="lazy" decoding="async" /></picture></button>
+          <figcaption><span>Amber lights</span><a href="assets/frames/lobby-2.jpg" download="adeel-rahman-lobby-2.jpg" aria-label="Download Amber lights photo">↓ Download</a></figcaption>
+        </figure>
+        <figure class="kit__shot">
+          <button type="button" data-zoom aria-label="View Full length full size"><picture><source srcset="assets/frames/tailored.webp" type="image/webp" /><img src="assets/frames/tailored.jpg" alt="Adeel Rahman — full length" width="1100" height="1467" loading="lazy" decoding="async" /></picture></button>
+          <figcaption><span>Full length</span><a href="assets/frames/tailored.jpg" download="adeel-rahman-tailored.jpg" aria-label="Download Full length photo">↓ Download</a></figcaption>
+        </figure>
+        <figure class="kit__shot">
+          <button type="button" data-zoom aria-label="View Hotel room full size"><picture><source srcset="assets/frames/mirror.webp" type="image/webp" /><img src="assets/frames/mirror.jpg" alt="Adeel Rahman — hotel room" width="1100" height="1467" loading="lazy" decoding="async" /></picture></button>
+          <figcaption><span>Hotel room</span><a href="assets/frames/mirror.jpg" download="adeel-rahman-mirror.jpg" aria-label="Download Hotel room photo">↓ Download</a></figcaption>
+        </figure>
+        <figure class="kit__shot">
+          <button type="button" data-zoom aria-label="View Evening full size"><picture><source srcset="assets/frames/lights-1.webp" type="image/webp" /><img src="assets/frames/lights-1.jpg" alt="Adeel Rahman — evening" width="1100" height="1467" loading="lazy" decoding="async" /></picture></button>
+          <figcaption><span>Evening</span><a href="assets/frames/lights-1.jpg" download="adeel-rahman-lights-1.jpg" aria-label="Download Evening photo">↓ Download</a></figcaption>
+        </figure>
+        <figure class="kit__shot">
+          <button type="button" data-zoom aria-label="View Mirror take 1 full size"><picture><source srcset="assets/frames/take-1.webp" type="image/webp" /><img src="assets/frames/take-1.jpg" alt="Adeel Rahman — mirror take 1" width="1100" height="1467" loading="lazy" decoding="async" /></picture></button>
+          <figcaption><span>Mirror take 1</span><a href="assets/frames/take-1.jpg" download="adeel-rahman-take-1.jpg" aria-label="Download Mirror take 1 photo">↓ Download</a></figcaption>
+        </figure>
+        <figure class="kit__shot">
+          <button type="button" data-zoom aria-label="View Mirror take 2 full size"><picture><source srcset="assets/frames/take-2.webp" type="image/webp" /><img src="assets/frames/take-2.jpg" alt="Adeel Rahman — mirror take 2" width="1100" height="1467" loading="lazy" decoding="async" /></picture></button>
+          <figcaption><span>Mirror take 2</span><a href="assets/frames/take-2.jpg" download="adeel-rahman-take-2.jpg" aria-label="Download Mirror take 2 photo">↓ Download</a></figcaption>
+        </figure>
+        <figure class="kit__shot">
+          <button type="button" data-zoom aria-label="View Mirror take 3 full size"><picture><source srcset="assets/frames/take-3.webp" type="image/webp" /><img src="assets/frames/take-3.jpg" alt="Adeel Rahman — mirror take 3" width="1100" height="1467" loading="lazy" decoding="async" /></picture></button>
+          <figcaption><span>Mirror take 3</span><a href="assets/frames/take-3.jpg" download="adeel-rahman-take-3.jpg" aria-label="Download Mirror take 3 photo">↓ Download</a></figcaption>
+        </figure>
+    </div>
+
+    <div class="kit__actions" data-reveal>
+      <button type="button" class="btn btn--gold js-print-comp">Comp card (PDF) <span class="btn__arrow">→</span></button>
+      <a class="btn btn--ghost" href="assets/adeel-rahman.vcf" download="Adeel Rahman.vcf">Save contact card</a>
+      <a class="btn btn--wa" href="https://wa.me/16134083945?text=Hello%20Adeel%20-%20I%27d%20like%20to%20request%20an%20interview%20or%20press%20feature." target="_blank" rel="noopener">Press &amp; interviews</a>
+    </div>
   </section>
 
   <!-- ======= FAQ ======= -->
@@ -427,6 +687,18 @@
       <details class="faq__item" data-reveal>
         <summary>Where are you from?</summary>
         <div class="faq__answer"><p>I was born in Canada and I work in both Urdu and English. That mix is the point: I can play the man who never left Lahore and the one who just flew in from Toronto, and the camera believes both.</p></div>
+      </details>
+      <details class="faq__item" data-reveal>
+        <summary>Why cast a businessman with an MBA?</summary>
+        <div class="faq__answer"><p>Because the business of a shoot is time and money, and I understand both. I arrive prepared, I don't cost you retakes, and I play professionals, power and money from experience rather than imitation. My <strong>MBA from Carleton University</strong> isn't a line on a wall; it's how I approach every call sheet.</p></div>
+      </details>
+      <details class="faq__item" data-reveal>
+        <summary>What are your rates?</summary>
+        <div class="faq__answer"><p>Quoted per project once I've read the script and schedule — per day or per episode, agreed in writing before the shoot. No surprises later.</p></div>
+      </details>
+      <details class="faq__item" data-reveal>
+        <summary>Can you do outdoor schedules and long shoot days?</summary>
+        <div class="faq__answer"><p>Yes. I'm available in Karachi and Lahore and can travel for outdoor schedules. Long days are part of the job; I keep the same energy on the last take as the first.</p></div>
       </details>
       <details class="faq__item" data-reveal>
         <summary>Can I see headshots, a showreel or a self-tape?</summary>
@@ -454,6 +726,7 @@
     </div>
     <div class="contact__card glass" data-reveal>
       <p class="section-eyebrow">Bookings &amp; Press</p>
+      <p class="contact__status"><span class="online-dot"></span> Open to new projects</p>
       <h2 class="section-title">The next role<br /><em class="gold-italic">could be this one.</em></h2>
       <p>Casting a serial, a film or a commercial in Karachi or Lahore? Tell me about the part.</p>
       <ul class="contact__trust">
@@ -464,20 +737,26 @@
       <div class="contact__actions">
         <a class="btn btn--gold" href="mailto:adeelahmedrahman@gmail.com?subject=Casting%20enquiry" data-magnetic>adeelahmedrahman@gmail.com</a>
         <a class="btn btn--ghost" href="tel:+16134083945" data-magnetic>+1 613 408 3945</a>
+        <a class="btn btn--ghost" href="assets/adeel-rahman.vcf" download="Adeel Rahman.vcf" data-magnetic>Save contact</a>
       </div>
       <form class="lead" id="leadForm">
-        <p class="lead__title">Or send the brief — it opens in WhatsApp, ready to send:</p>
+        <p class="lead__title">Book an audition or send the brief — it opens in WhatsApp, ready to send:</p>
         <div class="lead__grid">
           <input name="name" placeholder="Your name / production house" aria-label="Your name or production house" required />
           <select name="project" aria-label="Type of project">
-            <option>Drama serial</option><option>Film</option><option>TVC / commercial</option><option>Web series</option><option>Theatre</option><option>Voice-over</option><option>Other</option>
+            <option>Drama serial</option><option>Film</option><option>TVC / commercial</option><option>Web series</option><option>Theatre</option><option>Voice-over</option><option>Brand / press appearance</option><option>Other</option>
           </select>
-          <select name="city" aria-label="Shoot city">
-            <option>Karachi</option><option>Lahore</option><option>Islamabad</option><option>Elsewhere</option>
+          <select name="role" aria-label="Role">
+            <option value="">Role — choose one</option><option>Lead</option><option>Parallel lead</option><option>Villain / antagonist</option><option>Supporting</option><option>Guest / cameo</option>
           </select>
-          <input name="details" placeholder="Role &amp; shoot dates" aria-label="Role and shoot dates" />
+          <select name="format" aria-label="Audition format">
+            <option>Audition in Karachi</option><option>Audition in Lahore</option><option>Self-tape</option><option>Video call</option><option>Straight offer — no audition</option>
+          </select>
+          <label class="lead__date"><span>Audition or shoot date</span><input name="date" type="date" /></label>
+          <input name="sides" type="url" placeholder="Link to script / sides (optional)" aria-label="Link to script or sides" />
+          <input name="details" class="lead__wide" placeholder="Character, shoot dates, anything else" aria-label="Character and shoot details" />
         </div>
-        <button type="submit" class="btn btn--wa">Send Brief on WhatsApp</button>
+        <button type="submit" class="btn btn--wa">Book on WhatsApp</button>
       </form>
     </div>
   </section>
@@ -487,8 +766,8 @@
     <div class="closing__inner">
       <div class="closing__media" data-zoom data-reveal>
         <picture>
-          <source srcset="assets/frames/lights-1.webp" type="image/webp" />
-          <img src="assets/frames/lights-1.jpg" alt="Adeel Rahman in a navy blazer under amber pendant lights" width="1100" height="1467" loading="lazy" decoding="async" />
+          <source srcset="assets/frames/lobby-2.webp" type="image/webp" />
+          <img src="assets/frames/lobby-2.jpg" alt="Adeel Rahman in aviators beside amber pendant lights" width="1100" height="1467" loading="lazy" decoding="async" />
         </picture>
       </div>
       <div class="closing__copy" data-reveal>
@@ -515,6 +794,7 @@
       </a>
       <a href="mailto:adeelahmedrahman@gmail.com" aria-label="Email">✉ Email</a>
     </div>
+    <p><button type="button" class="btn btn--ghost footer__install" id="installBtn" hidden>Install as an app</button></p>
     <p class="footer__fine">Drama titles, episodes and artwork belong to their broadcasters and are shown through YouTube's embedded player from the official channels. This site hosts no video.</p>
   </footer>
 
@@ -540,9 +820,11 @@
       <button type="button" class="dplayer__btn" id="dramaFavBtn" aria-pressed="false">♡ Add to my list</button>
       <a class="dplayer__btn dplayer__btn--wa" id="dramaShare" href="https://wa.me/" target="_blank" rel="noopener">Share on WhatsApp</a>
       <button type="button" class="dplayer__btn" id="dramaCopy">Copy link</button>
+      <button type="button" class="dplayer__btn" id="dramaNative" hidden>Share…</button>
       <a class="dplayer__btn dplayer__btn--yt" id="dramaYT" href="https://www.youtube.com/" target="_blank" rel="noopener">Open on YouTube ↗</a>
     </div>
     <p class="dplayer__eps-title" id="dramaEpsTitle"></p>
+    <p class="dplayer__keys">Tip: ← and → move between episodes, Esc closes.</p>
     <div class="dplayer__eps" id="dramaEps"></div>
     <p class="dplayer__gap" id="dramaGap" hidden></p>
   </div>
@@ -577,8 +859,8 @@
 <script src="../js/vendor/gsap.min.js"></script>
 <script src="../js/vendor/ScrollTrigger.min.js"></script>
 <script src="../js/vendor/lenis.min.js"></script>
-<script src="js/site.js?v=5"></script>
-<script src="js/dramas.js?v=3" defer></script>
+<script src="js/site.js?v=8"></script>
+<script src="js/dramas.js?v=4" defer></script>
 <script>
   if ("serviceWorker" in navigator) {
     addEventListener("load", function () {

@@ -18,7 +18,7 @@
   const FEED = "data/dramas.json";
   const RECHECK_MS = 10 * 60 * 1000;
   const NEW_HOURS = 48;
-  const SEEN_KEY = "ar-drama-seen", FAV_KEY = "ar-drama-favs", AUTO_KEY = "ar-drama-autonext";
+  const SEEN_KEY = "ar-drama-seen", FAV_KEY = "ar-drama-favs", AUTO_KEY = "ar-drama-autonext", VISIT_KEY = "ar-drama-lastvisit";
   const YT_ORIGIN = "https://www.youtube-nocookie.com";
   const WATCH_STEP = 8;
 
@@ -28,7 +28,8 @@
   const stamp = el("dramaStamp"), search = el("dramaSearch"), chips = el("dramaChips"), empty = el("dramaEmpty");
   const player = el("dramaPlayer"), frame = el("dramaFrame");
 
-  let feed = null, channel = "all", query = "", watchShown = WATCH_STEP;
+  let feed = null, channel = "all", query = "", sort = "latest", watchShown = WATCH_STEP;
+  let lastVisit = 0;    // when this browser last saw the feed; 0 on a first visit
   let current = null;   // { drama, index } while the player is open
   let lastFocus = null, spotIdx = 0, spotTop = [];
 
@@ -102,7 +103,7 @@
       ${favBtn(d, "feedcard__fav")}
       <a class="feedcard__media" href="${link(d, e)}" data-drama="${esc(d.id)}" data-index="${x.i}" aria-label="Watch ${esc(d.title)} ${esc(epLabel(e))}">
         <img src="${thumb(e.id)}" alt="" loading="lazy" decoding="async" width="320" height="180" />
-        ${isNew(e.p) ? '<span class="feedcard__new">New</span>' : ""}
+        ${lastVisit && Date.parse(e.p) > lastVisit ? '<span class="feedcard__new">New for you</span>' : (isNew(e.p) ? '<span class="feedcard__new">New</span>' : "")}
         <span class="feedcard__play">▶</span>
       </a>
       <div class="feedcard__body">
@@ -124,6 +125,17 @@
     feedMore.hidden = items.length <= watchShown;
     const total = feed.dramas.reduce((s, d) => s + d.episodes.length, 0);
     feedUpdated.textContent = `Feed updated ${ago(feed.updated)} · ${feed.dramas.length} dramas · ${total} episodes · re-checked every hour`;
+
+    // "3 new since your last visit" for returning visitors.
+    let fresh = 0;
+    if (lastVisit) feed.dramas.forEach((d) => d.episodes.forEach((e) => { if (e.p && Date.parse(e.p) > lastVisit) fresh++; }));
+    const pill = el("feedFresh");
+    pill.hidden = !fresh;
+    pill.textContent = fresh + (fresh === 1 ? " new episode" : " new episodes") + " since your last visit";
+
+    // The moving strip under the hero carries tonight's titles instead of a fixed line.
+    const strip = items.slice(0, 10).map((x) => `${x.d.title} · ${epLabel(x.e)}`).join("  ✦  ");
+    document.querySelectorAll(".marquee__track span").forEach((sp) => { sp.textContent = "Just in  ✦  " + strip + "  ✦  "; });
   }
 
   /* ---------- 2. This week's most watched ---------- */
@@ -136,7 +148,16 @@
     week.sort((a, b) => (byViews ? (b.e.v || 0) - (a.e.v || 0) : (a.e.p < b.e.p ? 1 : -1)));
     // One entry per drama, so the top five are five different serials.
     const used = {};
-    spotTop = week.filter((x) => (used[x.d.id] ? false : (used[x.d.id] = true))).slice(0, 5);
+    const ranked = week.filter((x) => (used[x.d.id] ? false : (used[x.d.id] = true)));
+    spotTop = ranked.slice(0, 5);
+    const chart = el("chartList"), chartWrap = el("chartWrap");
+    const top10 = byViews ? ranked.filter((x) => x.e.v > 0).slice(0, 10) : [];
+    chartWrap.hidden = top10.length < 5;
+    chart.innerHTML = top10.map((x, i) => `<li><a class="chart__row" href="${link(x.d, x.e)}" data-drama="${esc(x.d.id)}" data-index="${x.i}">
+        <span class="chart__rank">${i + 1}</span>
+        <img src="${thumb(x.e.id)}" alt="" loading="lazy" decoding="async" width="160" height="90" />
+        <span class="chart__t"><strong>${esc(x.d.title)}</strong><small>${esc(epLabel(x.e))} · ${esc(chName(x.d))}</small></span>
+        <span class="chart__v">${esc(views(x.e.v))}</span></a></li>`).join("");
     if (!spotTop.length) { spotSec.hidden = true; return; }
     spotSec.hidden = false;
     if (spotIdx >= spotTop.length) spotIdx = 0;
@@ -178,6 +199,9 @@
       href = "watch/" + d.id + ".html";
     }
     const cover = resumeN && idx ? d.episodes[parseInt(idx.match(/\d+/)[0], 10)] : first;
+    const mine = seen()[d.id];
+    const watched = mine ? d.episodes.filter((e) => mine.eps.indexOf(e.n) >= 0).length : 0;
+    const pct = Math.round((watched / d.episodes.length) * 100);
     return `<article class="dcard">
       ${favBtn(d, "dcard__fav")}
       <a class="dcard__link" href="${esc(href)}" data-drama="${esc(d.id)}"${idx}>
@@ -185,7 +209,8 @@
           ${d.status === "on-air" ? '<span class="dcard__tag">On air</span>' : (d.complete ? '<span class="dcard__tag dcard__tag--gold">Complete</span>' : "")}</span>
         <span class="dcard__body"><span class="dcard__title">${esc(d.title)}</span>
           <span class="dcard__ep">${esc(line)}</span>
-          <span class="dcard__meta">${esc(chName(d))}${d.cast ? " · " + esc(d.cast) : ""}</span></span>
+          <span class="dcard__meta">${esc(chName(d))}${d.cast ? " · " + esc(d.cast) : ""}</span>
+          ${watched ? `<span class="dcard__bar" role="img" aria-label="${watched} of ${d.episodes.length} episodes watched"><i style="width:${pct}%"></i></span><span class="dcard__meta">${watched} of ${d.episodes.length} watched</span>` : ""}</span>
       </a></article>`;
   }
   function block(name, list, html) {
@@ -202,8 +227,17 @@
     const s = seen(), f = favs();
     const cont = list.filter((d) => s[d.id] && s[d.id].last).sort((a, b) => (s[b.id].t || 0) - (s[a.id].t || 0)).slice(0, 8);
     const mine = f.map((id) => list.find((d) => d.id === id)).filter(Boolean);
+    const order = {
+      latest: null, // on air: newest episode first (the feed's own order); finished: pinned favourites, then A–Z
+      az: (a, b) => a.title.localeCompare(b.title),
+      most: (a, b) => b.episodes.length - a.episodes.length,
+      least: (a, b) => a.episodes.length - b.episodes.length
+    }[sort];
     const onAir = list.filter((d) => d.status === "on-air");
     const lib = list.filter((d) => d.status !== "on-air").sort((a, b) => (b.pick - a.pick) || a.title.localeCompare(b.title));
+    if (order) { onAir.sort(order); lib.sort(order); }
+    el("dramaRandom").disabled = !list.length;
+    hub._visible = list;
 
     block("Continue", q ? [] : cont, cont.map((d) => dramaCard(d, s[d.id].last)).join(""));
     block("Fav", q ? [] : mine, mine.map((d) => dramaCard(d)).join(""));
@@ -344,7 +378,7 @@
       open(a.dataset.drama, a.dataset.index != null ? parseInt(a.dataset.index, 10) : null);
       return;
     }
-    const chip = ev.target.closest(".dchip");
+    const chip = ev.target.closest(".dchip[data-channel]");
     if (chip) {
       channel = chip.dataset.channel;
       chips.querySelectorAll(".dchip").forEach((c) => {
@@ -356,6 +390,21 @@
   });
   feedMore.addEventListener("click", () => { watchShown += WATCH_STEP; renderWatch(); });
   search.addEventListener("input", () => { query = search.value; renderHub(); });
+  el("dramaSort").addEventListener("change", (ev) => { sort = ev.target.value; renderHub(); });
+  el("dramaRandom").addEventListener("click", () => {
+    const pool = hub._visible || [];
+    if (pool.length) open(pool[Math.floor(Math.random() * pool.length)].id, null);
+  });
+  // Phones and some desktops have their own share sheet; offer it where it exists.
+  const nativeShare = el("dramaNative");
+  if (navigator.share) {
+    nativeShare.hidden = false;
+    nativeShare.addEventListener("click", () => {
+      if (!current) return;
+      const e = current.drama.episodes[current.index];
+      navigator.share({ title: `${current.drama.title} ${epLabel(e)}`, url: el("dramaCopy").dataset.url }).catch(() => { /* dismissed */ });
+    });
+  }
   player.addEventListener("click", (ev) => {
     if (ev.target === player || ev.target.closest("#dramaClose")) { close(); return; }
     if (!current) return;
@@ -376,6 +425,12 @@
   document.addEventListener("keydown", (ev) => {
     if (!player.classList.contains("is-open")) return;
     if (ev.key === "Escape") { close(); return; }
+    // ← and → step through episodes (not while typing or with a modifier held).
+    if (current && !ev.metaKey && !ev.ctrlKey && !ev.altKey && (ev.key === "ArrowLeft" || ev.key === "ArrowRight")) {
+      const to = current.index + (ev.key === "ArrowRight" ? 1 : -1);
+      if (to >= 0 && to < current.drama.episodes.length) { ev.preventDefault(); open(current.drama.id, to); }
+      return;
+    }
     if (ev.key === "Tab") { // keep focus inside the dialog
       const f = player.querySelectorAll("button:not(:disabled), a[href], input, iframe");
       if (!f.length) return;
@@ -401,6 +456,7 @@
       const next = await res.json();
       if (!next || !Array.isArray(next.dramas)) throw new Error("bad feed");
       feed = next;
+      if (first) { lastVisit = +read(VISIT_KEY, 0) || 0; write(VISIT_KEY, Date.now()); }
       // Never re-render under someone mid-episode; the page catches up when they close the player.
       if (!player.classList.contains("is-open")) renderAll();
       if (first) openFromHash();

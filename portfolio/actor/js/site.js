@@ -129,7 +129,7 @@
   });
 
   /* ---------- scrollspy ---------- */
-  const spyTargets = ["watch", "dramas", "about", "portraits", "onset", "casting", "faq", "contact"].map($).filter(Boolean);
+  const spyTargets = ["watch", "dramas", "about", "why", "journey", "portraits", "onset", "roles", "match", "screentest", "casting", "kit", "faq", "contact"].map($).filter(Boolean);
   if ("IntersectionObserver" in window && spyTargets.length) {
     const links = document.querySelectorAll(".nav__links a");
     const spy = new IntersectionObserver((entries) => {
@@ -173,11 +173,16 @@
   if (form) form.addEventListener("submit", (e) => {
     e.preventDefault();
     const f = new FormData(form);
+    const date = f.get("date");
+    const nice = date ? new Date(date + "T12:00:00").toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" }) : "";
     const lines = [
       "Hello Adeel, I found your actor portfolio.",
       "Name: " + (f.get("name") || ""),
       "Project: " + (f.get("project") || ""),
-      "City: " + (f.get("city") || ""),
+      f.get("role") ? "Role: " + f.get("role") : "",
+      "Format: " + (f.get("format") || ""),
+      nice ? "Date: " + nice : "",
+      f.get("sides") ? "Script / sides: " + f.get("sides") : "",
       f.get("details") ? "Details: " + f.get("details") : ""
     ].filter(Boolean);
     window.open("https://wa.me/16134083945?text=" + encodeURIComponent(lines.join("\n")), "_blank", "noopener");
@@ -233,6 +238,85 @@
       }
     });
   }
+
+  /* ---------- comp card: print / save as PDF ---------- */
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".js-print-comp")) return;
+    document.documentElement.classList.add("print-comp");
+    window.print();
+  });
+  window.addEventListener("afterprint", () => document.documentElement.classList.remove("print-comp"));
+
+  /* ---------- press kit: copy a bio ---------- */
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-copy]");
+    if (!b) return;
+    const text = ($(b.dataset.copy) || {}).textContent || "";
+    const done = () => { b.textContent = "Copied ✓"; setTimeout(() => { b.textContent = "Copy"; }, 2000); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text.trim()).then(done, () => selectText($(b.dataset.copy)));
+    else selectText($(b.dataset.copy));
+  });
+  function selectText(el) {
+    if (!el) return;
+    const r = document.createRange(); r.selectNodeContents(el);
+    const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+  }
+
+  /* ---------- role match ---------- */
+  const ROLES = [
+    { id: "ceo", label: "CEO / Tycoon", photo: "lobby-2", genre: "Business drama · Family saga · Thriller",
+      why: "Boardroom roles are where I actually worked. The MBA isn’t a prop: I know how these men talk, negotiate and threaten politely.",
+      look: "Navy blazer, open collar or tie, beard groomed." },
+    { id: "nri", label: "Son returning from abroad", photo: "mirror", genre: "Family drama · Romance · Social drama",
+      why: "The character back from Canada is a staple of Pakistani drama, usually played with a borrowed accent. I’m the real thing: Canadian-born and at home in both worlds.",
+      look: "Smart-casual, watch on, sunglasses in hand." },
+    { id: "villain", label: "Villain / Enforcer", photo: "lobby-1", genre: "Crime · Thriller · Revenge drama",
+      why: "Stillness and a steady stare do more than shouting. I can hold a silence until it becomes a threat.",
+      look: "Aviators, dark blazer, full beard." },
+    { id: "rishta", label: "The rich rishta / rival", photo: "lights-2", genre: "Romance · Family drama",
+      why: "The polished suitor the family is dazzled by: charm on the surface, ambition underneath. A love triangle needs a rival worth fearing.",
+      look: "Blazer, striped shirt, easy smile that doesn’t reach the eyes." },
+    { id: "brother", label: "Elder brother / father figure", photo: "tailored", genre: "Family serial · Social drama",
+      why: "Steady, protective and quietly carrying the family. Presence that holds a scene without needing the spotlight.",
+      look: "Pressed shirt and trousers, nothing flashy." },
+    { id: "pro", label: "Lawyer / doctor / officer", photo: "lobby-3", genre: "Legal · Medical · Crime procedural",
+      why: "Authority reads instantly on this face, and professional dialogue in English or Urdu comes naturally to someone who spent years in meetings.",
+      look: "Formal; beard trimmed for uniform roles if the part needs it." }
+  ];
+  const chipsBox = $("matchChips");
+  if (chipsBox) {
+    chipsBox.innerHTML = ROLES.map((r, i) => `<button type="button" class="dchip${i === 0 ? " is-active" : ""}" aria-pressed="${i === 0}" data-role="${r.id}">${r.label}</button>`).join("");
+    const photo = document.querySelector(".match__photo img"), source = document.querySelector(".match__photo source");
+    const pick = (id) => {
+      const r = ROLES.find((x) => x.id === id) || ROLES[0];
+      chipsBox.querySelectorAll("[data-role]").forEach((c) => { const on = c.dataset.role === r.id; c.classList.toggle("is-active", on); c.setAttribute("aria-pressed", on); });
+      $("matchTitle").textContent = r.label;
+      $("matchWhy").textContent = r.why;
+      $("matchLook").textContent = r.look;
+      $("matchGenre").textContent = r.genre;
+      source.srcset = `assets/frames/${r.photo}.webp`;
+      photo.src = `assets/frames/${r.photo}.jpg`;
+      photo.alt = `Adeel Rahman — the look for ${r.label.toLowerCase()}`;
+      $("matchSend").href = "https://wa.me/16134083945?text=" + encodeURIComponent(`Hello Adeel, I'm casting a "${r.label}" role and found you on your site. Can we talk?`);
+    };
+    chipsBox.addEventListener("click", (e) => { const c = e.target.closest("[data-role]"); if (c) pick(c.dataset.role); });
+    pick(ROLES[0].id);
+  }
+
+  /* ---------- install as an app (only where the browser offers it) ---------- */
+  const installBtn = $("installBtn");
+  let installEvent = null;
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    installEvent = e;
+    if (installBtn) installBtn.hidden = false;
+  });
+  if (installBtn) installBtn.addEventListener("click", () => {
+    if (!installEvent) return;
+    installEvent.prompt();
+    installEvent = null;
+    installBtn.hidden = true;
+  });
 
   const year = $("year");
   if (year) year.textContent = new Date().getFullYear();
