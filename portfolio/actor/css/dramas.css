@@ -207,14 +207,11 @@
 .weave--head { margin-bottom: 3rem; }
 .weave__media { position: relative; }
 .weave__media img {
-  display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 30%;
+  /* Every photo is shown whole, at its own 3:4 shape. Nothing is cropped. */
+  display: block; width: 100%; height: auto;
   border-radius: 18px; border: 1px solid rgba(201, 164, 92, 0.3); box-shadow: 0 40px 80px -45px rgba(0, 0, 0, 0.9);
 }
-.weave__media--tall img { aspect-ratio: 9 / 16; }
-.weave__media--top img { object-position: 50% 0%; }
-.weave__media--bottom img { object-position: 50% 100%; }
-/* The closing photo has its subject at the bottom of the frame, under the lights. */
-.closing__media img { object-position: 50% 100%; }
+
 .weave--top .weave__media { position: sticky; top: 6rem; }
 .weave__media--duo { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 .weave__media--duo picture:last-child { transform: translateY(2.2rem); }
@@ -227,9 +224,9 @@
 .statement { position: relative; z-index: 1; padding: clamp(4rem, 8vw, 7rem) clamp(1.1rem, 5vw, 5rem); }
 .statement__lead { color: #c9cedb; font-size: 1.05rem; max-width: 34rem; margin-top: 1.2rem; }
 
-.takes { display: flex; justify-content: center; gap: clamp(0.5rem, 1.5vw, 1rem); margin: 0 auto 2.4rem; max-width: 620px; }
+.takes { display: flex; justify-content: center; gap: clamp(0.5rem, 1.5vw, 1rem); margin: 0 auto 2.4rem; max-width: 760px; }
 .takes picture { flex: 1 1 0; min-width: 0; }
-.takes img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 10px; border: 1px solid rgba(201, 164, 92, 0.35); }
+.takes img { display: block; width: 100%; height: auto; border-radius: 10px; border: 1px solid rgba(201, 164, 92, 0.35); }
 .takes picture:nth-child(2) { transform: translateY(-0.9rem); }
 
 @media (max-width: 860px) {
@@ -237,7 +234,6 @@
   .weave--flip .weave__media { order: 0; }
   .weave__media { max-width: 420px; margin: 0 auto; width: 100%; }
   .weave--top .weave__media { position: relative; top: 0; }
-  .weave__media--tall img { aspect-ratio: 3 / 4; }
   .weave__media--duo { margin-bottom: 2.6rem; }
   .weave .services__head, .weave .process__head, .weave .casting__head, .weave .faq__head { text-align: center; }
   .statement .weave__body { text-align: center; } .statement__lead { margin-left: auto; margin-right: auto; }
