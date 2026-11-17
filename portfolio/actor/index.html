@@ -59,7 +59,7 @@
 <link rel="stylesheet" href="../css/style.css?v=75" />
 <link rel="stylesheet" href="../css/enhance.css" />
 <link rel="stylesheet" href="../css/upgrade.css?v=3" />
-<link rel="stylesheet" href="css/dramas.css?v=7" />
+<link rel="stylesheet" href="css/dramas.css?v=8" />
 </head>
 <body>
 
@@ -89,6 +89,7 @@
     <a href="#watch" data-magnetic>Latest</a>
     <a href="#dramas" data-magnetic>All Dramas</a>
     <a href="#about" data-magnetic>About</a>
+    <a href="#portraits" data-magnetic>Portraits</a>
     <a href="#onset" data-magnetic>On Set</a>
     <a href="#casting" data-magnetic>Casting</a>
     <a href="#faq" data-magnetic>FAQ</a>
@@ -102,6 +103,7 @@
   <a href="#featured">Most Watched This Week</a>
   <a href="#dramas">All Dramas</a>
   <a href="#about">About Me</a>
+  <a href="#portraits">Portraits</a>
   <a href="#onset">On Set</a>
   <a href="#process">How I Work</a>
   <a href="#casting">Casting Sheet</a>
@@ -250,7 +252,7 @@
   <!-- ======= STATEMENT ======= -->
   <section class="statement">
     <div class="weave">
-      <div class="weave__media" data-reveal><picture><source srcset="assets/frames/mirror.webp" type="image/webp" /><img src="assets/frames/mirror.jpg" alt="Adeel Rahman adjusting his shirt, sunglasses in hand" width="1100" height="1467" loading="lazy" decoding="async" /></picture></div>
+      <div class="weave__media" data-zoom data-reveal><picture><source srcset="assets/frames/mirror.webp" type="image/webp" /><img src="assets/frames/mirror.jpg" alt="Adeel Rahman adjusting his shirt, sunglasses in hand" width="1100" height="1467" loading="lazy" decoding="async" /></picture></div>
       <div class="weave__body">
         <p class="section-eyebrow" data-reveal>Adeel Rahman</p>
         <h2 class="section-title" data-reveal>Born in Canada. <em class="gold-italic">Made for the Pakistani screen.</em></h2>
@@ -296,15 +298,28 @@
     </div>
   </section>
 
+  <!-- ======= PORTRAITS ======= -->
+  <section class="portraits" id="portraits">
+    <div class="portraits__head">
+      <p class="section-eyebrow" data-reveal>Portraits</p>
+      <h2 class="section-title" data-reveal>Off the clock, <em class="gold-italic">still in frame</em></h2>
+      <p class="portfolio__intro" data-reveal>Unretouched. Tap any photo to see it full size.</p>
+    </div>
+    <div class="portraits__grid">
+      <button type="button" class="shot shot--lead" data-zoom data-reveal aria-label="View photo 1 full size"><picture><source srcset="assets/frames/lobby-3.webp" type="image/webp" /><img src="assets/frames/lobby-3.jpg" alt="Adeel Rahman in aviators and a navy blazer, hotel lobby" width="1100" height="1467" loading="lazy" decoding="async" /></picture><span class="shot__n">01</span></button>
+      <button type="button" class="shot" data-zoom data-reveal aria-label="View photo 2 full size"><picture><source srcset="assets/frames/lobby-1.webp" type="image/webp" /><img src="assets/frames/lobby-1.jpg" alt="Adeel Rahman in aviator sunglasses, hotel lobby" width="1100" height="1467" loading="lazy" decoding="async" /></picture><span class="shot__n">02</span></button>
+      <button type="button" class="shot" data-zoom data-reveal aria-label="View photo 3 full size"><picture><source srcset="assets/frames/lights-2.webp" type="image/webp" /><img src="assets/frames/lights-2.jpg" alt="Adeel Rahman beneath gold wire chandeliers" width="1100" height="1467" loading="lazy" decoding="async" /></picture><span class="shot__n">03</span></button>
+      <button type="button" class="shot" data-zoom data-reveal aria-label="View photo 4 full size"><picture><source srcset="assets/frames/lobby-2.webp" type="image/webp" /><img src="assets/frames/lobby-2.jpg" alt="Adeel Rahman in aviators beside amber pendant lights" width="1100" height="1467" loading="lazy" decoding="async" /></picture><span class="shot__n">04</span></button>
+      <button type="button" class="shot" data-zoom data-reveal aria-label="View photo 5 full size"><picture><source srcset="assets/frames/tailored.webp" type="image/webp" /><img src="assets/frames/tailored.jpg" alt="Adeel Rahman, full length, striped shirt and dark trousers" width="1100" height="1467" loading="lazy" decoding="async" /></picture><span class="shot__n">05</span></button>
+    </div>
+  </section>
+
   <!-- ======= WHAT I BRING ======= -->
   <section class="services" id="onset">
-    <div class="weave weave--flip weave--head">
-      <div class="weave__media weave__media--duo" data-reveal><picture><source srcset="assets/frames/lobby-3.webp" type="image/webp" /><img src="assets/frames/lobby-3.jpg" alt="Adeel Rahman in aviators and a navy blazer" width="1100" height="1467" loading="lazy" decoding="async" /></picture><picture><source srcset="assets/frames/lobby-2.webp" type="image/webp" /><img src="assets/frames/lobby-2.jpg" alt="Adeel Rahman in aviators, open-collar striped shirt" width="1100" height="1467" loading="lazy" decoding="async" /></picture></div>
-      <div class="weave__body services__head">
-        <p class="section-eyebrow" data-reveal>What I Bring to a Set</p>
-        <h2 class="section-title" data-reveal>Personality first, <em class="gold-italic">ego last</em></h2>
-        <p class="portfolio__intro" data-reveal>Six things a director gets from me on day one.</p>
-      </div>
+    <div class="services__head">
+      <p class="section-eyebrow" data-reveal>What I Bring to a Set</p>
+      <h2 class="section-title" data-reveal>Personality first, <em class="gold-italic">ego last</em></h2>
+      <p class="portfolio__intro" data-reveal>Six things a director gets from me on day one.</p>
     </div>
     <div class="services__grid">
       <article class="service" data-reveal>
@@ -342,9 +357,6 @@
 
   <!-- ======= PROCESS ======= -->
   <section class="process" id="process">
-    <div class="weave">
-      <div class="weave__media weave__media--tall weave__media--top" data-reveal><picture><source srcset="assets/frames/tailored.webp" type="image/webp" /><img src="assets/frames/tailored.jpg" alt="Adeel Rahman, full length, striped shirt and dark trousers" width="1100" height="1467" loading="lazy" decoding="async" /></picture></div>
-      <div class="weave__body">
     <div class="process__head">
       <p class="section-eyebrow" data-reveal>How I Work</p>
       <h2 class="section-title" data-reveal>From casting call <em class="gold-italic">to wrap</em></h2>
@@ -371,15 +383,10 @@
         <p>Early, off-book and ready to play. The last take gets the same energy as the first.</p>
       </div>
     </div>
-      </div>
-    </div>
   </section>
 
   <!-- ======= CASTING SHEET ======= -->
   <section class="casting" id="casting">
-    <div class="weave weave--flip">
-      <div class="weave__media" data-reveal><picture><source srcset="assets/frames/lobby-1.webp" type="image/webp" /><img src="assets/frames/lobby-1.jpg" alt="Adeel Rahman in aviator sunglasses" width="1100" height="1467" loading="lazy" decoding="async" /></picture></div>
-      <div class="weave__body">
     <div class="casting__head">
       <p class="section-eyebrow" data-reveal>Casting Sheet</p>
       <h2 class="section-title" data-reveal>The <em class="gold-italic">essentials</em></h2>
@@ -390,13 +397,11 @@
       <div class="insight-card glass" data-reveal><strong>Drama · Film · TVC</strong><span>Also web series &amp; theatre</span></div>
       <div class="insight-card glass" data-reveal><strong>On request</strong><span>Headshots, showreel &amp; self-tapes</span></div>
     </div>
-      </div>
-    </div>
   </section>
 
   <!-- ======= QUOTE ======= -->
   <section class="quote-band">
-    <div class="takes" data-reveal>
+    <div class="takes" data-zoom-group data-reveal>
       <picture><source srcset="assets/frames/take-1.webp" type="image/webp" /><img src="assets/frames/take-1.jpg" alt="Adeel Rahman, mirror portrait, take one" width="1100" height="1467" loading="lazy" decoding="async" /></picture>
       <picture><source srcset="assets/frames/take-2.webp" type="image/webp" /><img src="assets/frames/take-2.jpg" alt="Adeel Rahman, mirror portrait, take two" width="1100" height="1467" loading="lazy" decoding="async" /></picture>
       <picture><source srcset="assets/frames/take-3.webp" type="image/webp" /><img src="assets/frames/take-3.jpg" alt="Adeel Rahman, mirror portrait, take three" width="1100" height="1467" loading="lazy" decoding="async" /></picture>
@@ -409,9 +414,6 @@
 
   <!-- ======= FAQ ======= -->
   <section class="faq" id="faq">
-    <div class="weave weave--top">
-      <div class="weave__media weave__media--tall weave__media--bottom" data-reveal><picture><source srcset="assets/frames/lights-2.webp" type="image/webp" /><img src="assets/frames/lights-2.jpg" alt="Adeel Rahman beneath gold wire chandeliers" width="1100" height="1467" loading="lazy" decoding="async" /></picture></div>
-      <div class="weave__body">
     <div class="faq__head">
       <p class="section-eyebrow" data-reveal>Good to Know</p>
       <h2 class="section-title" data-reveal>Questions people <em class="gold-italic">always ask</em></h2>
@@ -442,8 +444,6 @@
         <summary>Are you in these dramas? Is it legal to watch them here?</summary>
         <div class="faq__answer"><p>I'm not in them — they're the work I watch and learn from. Nothing is copied or re-uploaded: each episode is YouTube's own player showing the channel's own video, so the broadcaster keeps the views and the advertising. If a channel removes an episode, it disappears here too.</p></div>
       </details>
-    </div>
-      </div>
     </div>
   </section>
 
@@ -485,7 +485,7 @@
   <!-- ======= CLOSING ======= -->
   <section class="closing" id="closing">
     <div class="closing__inner">
-      <div class="closing__media" data-reveal>
+      <div class="closing__media" data-zoom data-reveal>
         <picture>
           <source srcset="assets/frames/lights-1.webp" type="image/webp" />
           <img src="assets/frames/lights-1.jpg" alt="Adeel Rahman in a navy blazer under amber pendant lights" width="1100" height="1467" loading="lazy" decoding="async" />
@@ -548,6 +548,14 @@
   </div>
 </div>
 
+<!-- ======= PHOTO LIGHTBOX ======= -->
+<div class="zoom" id="zoom" role="dialog" aria-modal="true" aria-label="Photo, full size" aria-hidden="true">
+  <button type="button" class="zoom__close" id="zoomClose" aria-label="Close photo">×</button>
+  <button type="button" class="zoom__nav zoom__nav--prev" id="zoomPrev" aria-label="Previous photo">←</button>
+  <img id="zoomImg" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" />
+  <button type="button" class="zoom__nav zoom__nav--next" id="zoomNext" aria-label="Next photo">→</button>
+</div>
+
 <!-- ======= STICKY MOBILE ACTION BAR ======= -->
 <nav class="mobile-bar" aria-label="Quick links">
   <a class="mobile-bar__btn" href="#watch"><span class="mobile-bar__ico">▶</span>Dramas</a>
@@ -569,7 +577,7 @@
 <script src="../js/vendor/gsap.min.js"></script>
 <script src="../js/vendor/ScrollTrigger.min.js"></script>
 <script src="../js/vendor/lenis.min.js"></script>
-<script src="js/site.js?v=4"></script>
+<script src="js/site.js?v=5"></script>
 <script src="js/dramas.js?v=3" defer></script>
 <script>
   if ("serviceWorker" in navigator) {
