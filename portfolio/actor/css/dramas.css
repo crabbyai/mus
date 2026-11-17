@@ -201,7 +201,7 @@
 
 /* ---------- photos: every one shown whole at its own 3:4 shape, never cropped ---------- */
 .weave { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: clamp(1.6rem, 5vw, 5rem); align-items: center; max-width: 1180px; margin: 0 auto; }
-.weave__media img, .shot img, .takes img {
+.weave__media img, .shot img, .role__photo img, .test__frame img, .comp__main img, .comp__thumbs img {
   display: block; width: 100%; height: auto;
   border-radius: 16px; border: 1px solid rgba(201, 164, 92, 0.3); box-shadow: 0 40px 80px -45px rgba(0, 0, 0, 0.9);
 }
@@ -221,10 +221,6 @@
 .shot:focus-visible { outline: 2px solid var(--gold-bright); outline-offset: 3px; }
 .shot__n { position: absolute; left: 0.9rem; bottom: 0.7rem; font-family: var(--serif); font-style: italic; font-size: 1rem; color: var(--gold-bright); text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8); }
 
-.takes { display: flex; justify-content: center; gap: clamp(0.5rem, 1.5vw, 1.1rem); margin: 0 auto 2.6rem; max-width: 760px; }
-.takes picture { flex: 1 1 0; min-width: 0; }
-.takes picture:nth-child(2) { transform: translateY(-0.9rem); }
-
 .zoom { position: fixed; inset: 0; z-index: 3500; display: none; align-items: center; justify-content: center; gap: 0.6rem; padding: clamp(0.6rem, 3vw, 2rem); background: rgba(4, 6, 12, 0.95); backdrop-filter: blur(10px); }
 .zoom.is-open { display: flex; }
 .zoom img { max-width: min(100%, 1100px); max-height: 100%; width: auto; height: auto; object-fit: contain; border-radius: 10px; min-width: 0; }
@@ -243,3 +239,45 @@
   .zoom__nav { position: absolute; bottom: 1rem; z-index: 2; } .zoom__nav--prev { left: 1rem; } .zoom__nav--next { right: 1rem; }
 }
 @media (prefers-reduced-motion: reduce) { .shot img { transition: none; } }
+
+/* ---------- characters, screen test, comp card (photos whole, never cropped) ---------- */
+.roles, .test { position: relative; z-index: 1; padding: clamp(4.5rem, 9vw, 8rem) clamp(1.1rem, 5vw, 5rem); }
+.roles__head, .test__head { text-align: center; max-width: 50rem; margin: 0 auto 3rem; }
+.roles__grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(1rem, 2.2vw, 1.8rem); max-width: 1240px; margin: 0 auto; }
+.role__photo, .test__frame button, .comp__main { display: block; width: 100%; padding: 0; border: 0; background: none; cursor: zoom-in; border-radius: 16px; }
+.role__photo:focus-visible, .test__frame button:focus-visible, .comp__main:focus-visible { outline: 2px solid var(--gold-bright); outline-offset: 3px; }
+.role__genre { margin-top: 1.1rem; font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); }
+.role h3 { font-family: var(--serif); font-weight: 500; font-size: clamp(1.25rem, 2vw, 1.55rem); margin: 0.35rem 0 0.5rem; }
+.role p:last-child { color: #c9cedb; font-size: 0.92rem; line-height: 1.65; }
+
+.test__strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(0.8rem, 2vw, 1.6rem); max-width: 1100px; margin: 0 auto; }
+.test__frame { margin: 0; }
+.test__frame:nth-child(2) { transform: translateY(-1.4rem); }
+.test__frame figcaption { margin-top: 0.8rem; text-align: center; font-size: 0.68rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--muted); }
+
+.comp {
+  display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: clamp(1.4rem, 3.5vw, 3.2rem); align-items: center;
+  max-width: 1100px; margin: 0 auto 2.4rem; padding: clamp(1rem, 2.5vw, 2rem); border-radius: 24px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015)); border: 1px solid rgba(201, 164, 92, 0.28);
+}
+.comp__label { font-size: 0.68rem; letter-spacing: 0.26em; text-transform: uppercase; color: var(--gold); }
+.comp__name { font-family: var(--serif); font-weight: 500; font-size: clamp(1.8rem, 3.6vw, 2.8rem); line-height: 1.1; margin: 0.3rem 0 1.2rem; }
+.comp__facts { margin: 0 0 1.4rem; }
+.comp__facts div { display: flex; justify-content: space-between; gap: 1.2rem; padding: 0.6rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.09); }
+.comp__facts dt { font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); white-space: nowrap; padding-top: 0.15rem; }
+.comp__facts dd { margin: 0; text-align: right; color: var(--cream); font-size: 0.95rem; }
+.comp__thumbs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.7rem; margin-bottom: 1.5rem; }
+.comp__thumbs img { border-radius: 10px; }
+.casting .insights__cards { max-width: 1100px; }
+
+@media (max-width: 860px) {
+  .roles__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .comp { grid-template-columns: 1fr; }
+  .comp__main { max-width: 420px; margin: 0 auto; }
+}
+@media (max-width: 640px) {
+  /* three whole frames side by side would be thumbnails on a phone: swipe through them instead */
+  .test__strip { grid-auto-flow: column; grid-template-columns: none; grid-auto-columns: 72%; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 0.6rem; }
+  .test__frame { scroll-snap-align: center; }
+  .test__frame:nth-child(2) { transform: none; }
+}
