@@ -59,7 +59,7 @@
 <link rel="stylesheet" href="../css/style.css?v=75" />
 <link rel="stylesheet" href="../css/enhance.css" />
 <link rel="stylesheet" href="../css/upgrade.css?v=3" />
-<link rel="stylesheet" href="css/dramas.css?v=9" />
+<link rel="stylesheet" href="css/dramas.css?v=10" />
 </head>
 <body>
 
@@ -183,6 +183,7 @@
       <strong>Har Pal Geo</strong>, <strong>Green Entertainment</strong> and <strong>Express TV</strong> — added automatically
       as the channels upload them. Tap one and it plays right here, free, from the official upload. Tap ♥ to keep a serial in your list.</p>
     </div>
+    <p class="feed-fresh"><span id="feedFresh" hidden></span></p>
     <div class="feed-grid" id="feedGrid"></div>
     <p class="feed-more"><button type="button" class="btn btn--ghost" id="feedMore" hidden>Show more new episodes</button></p>
     <p class="marketwatch__note" id="feedUpdated"></p>
@@ -195,6 +196,10 @@
       <h2 class="section-title">This week's <em class="gold-italic">most watched</em></h2>
     </div>
     <div class="spotlight__stage" id="spotStage"></div>
+    <div class="chart" id="chartWrap" hidden>
+      <h3 class="chart__title">Top 10 this week <small>By views on the official channels</small></h3>
+      <ol class="chart__list" id="chartList"></ol>
+    </div>
   </section>
 
   <!-- ======= DRAMA LIBRARY ======= -->
@@ -216,6 +221,17 @@
         <button type="button" class="dchip" aria-pressed="false" data-channel="geo">Har Pal Geo</button>
         <button type="button" class="dchip" aria-pressed="false" data-channel="green">Green</button>
         <button type="button" class="dchip" aria-pressed="false" data-channel="express">Express</button>
+      </div>
+      <div class="dramas__tools">
+        <label class="dramas__sort"><span>Sort</span>
+          <select id="dramaSort">
+            <option value="latest">Newest episode</option>
+            <option value="az">A – Z</option>
+            <option value="most">Most episodes</option>
+            <option value="least">Shortest first</option>
+          </select>
+        </label>
+        <button type="button" class="dchip" id="dramaRandom">🎲 Surprise me</button>
       </div>
     </div>
 
@@ -461,7 +477,9 @@
           <picture><source srcset="assets/frames/take-2.webp" type="image/webp" /><img src="assets/frames/take-2.jpg" alt="Adeel Rahman, mirror portrait, eyes to camera" width="1100" height="1467" loading="lazy" decoding="async" /></picture>
           <picture><source srcset="assets/frames/lights-1.webp" type="image/webp" /><img src="assets/frames/lights-1.jpg" alt="Adeel Rahman in a navy blazer under amber pendant lights" width="1100" height="1467" loading="lazy" decoding="async" /></picture>
         </div>
-        <a class="btn btn--gold" href="https://wa.me/16134083945?text=Hello%20Adeel%20-%20please%20send%20your%20comp%20card%20and%20current%20measurements." target="_blank" rel="noopener">Request full comp card <span class="btn__arrow">→</span></a>
+        <p class="comp__contact">WhatsApp +1 613 408 3945 · adeelahmedrahman@gmail.com · crabbyai.github.io/mus/actor</p>
+        <div class="comp__actions"><a class="btn btn--gold" href="https://wa.me/16134083945?text=Hello%20Adeel%20-%20please%20send%20your%20comp%20card%20and%20current%20measurements." target="_blank" rel="noopener">Request full comp card <span class="btn__arrow">→</span></a>
+        <button type="button" class="btn btn--ghost" id="compPrint">Print / save as PDF</button></div>
       </div>
     </div>
     <div class="insights__cards">
@@ -538,6 +556,7 @@
       <div class="contact__actions">
         <a class="btn btn--gold" href="mailto:adeelahmedrahman@gmail.com?subject=Casting%20enquiry" data-magnetic>adeelahmedrahman@gmail.com</a>
         <a class="btn btn--ghost" href="tel:+16134083945" data-magnetic>+1 613 408 3945</a>
+        <a class="btn btn--ghost" href="assets/adeel-rahman.vcf" download="Adeel Rahman.vcf" data-magnetic>Save contact</a>
       </div>
       <form class="lead" id="leadForm">
         <p class="lead__title">Or send the brief — it opens in WhatsApp, ready to send:</p>
@@ -589,6 +608,7 @@
       </a>
       <a href="mailto:adeelahmedrahman@gmail.com" aria-label="Email">✉ Email</a>
     </div>
+    <p><button type="button" class="btn btn--ghost footer__install" id="installBtn" hidden>Install as an app</button></p>
     <p class="footer__fine">Drama titles, episodes and artwork belong to their broadcasters and are shown through YouTube's embedded player from the official channels. This site hosts no video.</p>
   </footer>
 
@@ -614,9 +634,11 @@
       <button type="button" class="dplayer__btn" id="dramaFavBtn" aria-pressed="false">♡ Add to my list</button>
       <a class="dplayer__btn dplayer__btn--wa" id="dramaShare" href="https://wa.me/" target="_blank" rel="noopener">Share on WhatsApp</a>
       <button type="button" class="dplayer__btn" id="dramaCopy">Copy link</button>
+      <button type="button" class="dplayer__btn" id="dramaNative" hidden>Share…</button>
       <a class="dplayer__btn dplayer__btn--yt" id="dramaYT" href="https://www.youtube.com/" target="_blank" rel="noopener">Open on YouTube ↗</a>
     </div>
     <p class="dplayer__eps-title" id="dramaEpsTitle"></p>
+    <p class="dplayer__keys">Tip: ← and → move between episodes, Esc closes.</p>
     <div class="dplayer__eps" id="dramaEps"></div>
     <p class="dplayer__gap" id="dramaGap" hidden></p>
   </div>
@@ -651,8 +673,8 @@
 <script src="../js/vendor/gsap.min.js"></script>
 <script src="../js/vendor/ScrollTrigger.min.js"></script>
 <script src="../js/vendor/lenis.min.js"></script>
-<script src="js/site.js?v=6"></script>
-<script src="js/dramas.js?v=3" defer></script>
+<script src="js/site.js?v=7"></script>
+<script src="js/dramas.js?v=4" defer></script>
 <script>
   if ("serviceWorker" in navigator) {
     addEventListener("load", function () {

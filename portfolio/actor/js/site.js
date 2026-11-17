@@ -234,6 +234,31 @@
     });
   }
 
+  /* ---------- comp card: print / save as PDF ---------- */
+  const compPrint = $("compPrint");
+  if (compPrint) {
+    compPrint.addEventListener("click", () => {
+      document.documentElement.classList.add("print-comp");
+      window.print();
+    });
+    window.addEventListener("afterprint", () => document.documentElement.classList.remove("print-comp"));
+  }
+
+  /* ---------- install as an app (only where the browser offers it) ---------- */
+  const installBtn = $("installBtn");
+  let installEvent = null;
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    installEvent = e;
+    if (installBtn) installBtn.hidden = false;
+  });
+  if (installBtn) installBtn.addEventListener("click", () => {
+    if (!installEvent) return;
+    installEvent.prompt();
+    installEvent = null;
+    installBtn.hidden = true;
+  });
+
   const year = $("year");
   if (year) year.textContent = new Date().getFullYear();
 })();
