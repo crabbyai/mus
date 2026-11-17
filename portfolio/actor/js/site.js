@@ -129,7 +129,7 @@
   });
 
   /* ---------- scrollspy ---------- */
-  const spyTargets = ["watch", "dramas", "about", "why", "journey", "portraits", "onset", "roles", "match", "screentest", "casting", "kit", "faq", "contact"].map($).filter(Boolean);
+  const spyTargets = ["watch", "dramas", "about", "why", "journey", "overseas", "onset", "roles", "match", "brands", "screentest", "promise", "casting", "kit", "faq", "contact"].map($).filter(Boolean);
   if ("IntersectionObserver" in window && spyTargets.length) {
     const links = document.querySelectorAll(".nav__links a");
     const spy = new IntersectionObserver((entries) => {
@@ -276,7 +276,7 @@
     { id: "rishta", label: "The rich rishta / rival", photo: "lights-2", genre: "Romance · Family drama",
       why: "The polished suitor the family is dazzled by: charm on the surface, ambition underneath. A love triangle needs a rival worth fearing.",
       look: "Blazer, striped shirt, easy smile that doesn’t reach the eyes." },
-    { id: "brother", label: "Elder brother / father figure", photo: "tailored", genre: "Family serial · Social drama",
+    { id: "brother", label: "Elder brother / father figure", photo: "take-3", genre: "Family serial · Social drama",
       why: "Steady, protective and quietly carrying the family. Presence that holds a scene without needing the spotlight.",
       look: "Pressed shirt and trousers, nothing flashy." },
     { id: "pro", label: "Lawyer / doctor / officer", photo: "lobby-3", genre: "Legal · Medical · Crime procedural",
@@ -286,7 +286,6 @@
   const chipsBox = $("matchChips");
   if (chipsBox) {
     chipsBox.innerHTML = ROLES.map((r, i) => `<button type="button" class="dchip${i === 0 ? " is-active" : ""}" aria-pressed="${i === 0}" data-role="${r.id}">${r.label}</button>`).join("");
-    const photo = document.querySelector(".match__photo img"), source = document.querySelector(".match__photo source");
     const pick = (id) => {
       const r = ROLES.find((x) => x.id === id) || ROLES[0];
       chipsBox.querySelectorAll("[data-role]").forEach((c) => { const on = c.dataset.role === r.id; c.classList.toggle("is-active", on); c.setAttribute("aria-pressed", on); });
@@ -294,9 +293,6 @@
       $("matchWhy").textContent = r.why;
       $("matchLook").textContent = r.look;
       $("matchGenre").textContent = r.genre;
-      source.srcset = `assets/frames/${r.photo}.webp`;
-      photo.src = `assets/frames/${r.photo}.jpg`;
-      photo.alt = `Adeel Rahman — the look for ${r.label.toLowerCase()}`;
       $("matchSend").href = "https://wa.me/16134083945?text=" + encodeURIComponent(`Hello Adeel, I'm casting a "${r.label}" role and found you on your site. Can we talk?`);
     };
     chipsBox.addEventListener("click", (e) => { const c = e.target.closest("[data-role]"); if (c) pick(c.dataset.role); });
