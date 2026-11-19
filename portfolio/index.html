@@ -437,6 +437,42 @@ html[dir=rtl] .tier .badge{transform:translateX(50%)}
 .faq2 details[open] summary::after{content:"–"}
 .faq2 details p{margin-top:.5rem;color:var(--muted);font-size:.93rem}
 
+/* ---- night sky: stars, crescent, ornaments ---- */
+.sky{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.sky i{position:absolute;top:0;left:0;width:1px;height:1px;border-radius:50%;background:transparent}
+.sky i:nth-child(1){box-shadow:895px 1523px 0 0px rgba(243,238,227,0.35),1562px 1225px 0 0px rgba(243,238,227,0.35),1756px 1670px 0 0px rgba(243,238,227,0.7),512px 1117px 0 0px rgba(243,238,227,0.5),199px 1392px 0 0px rgba(243,238,227,0.5),40px 1749px 0 0px rgba(243,238,227,0.35),430px 1561px 0 0px rgba(243,238,227,0.35),700px 609px 0 0px rgba(243,238,227,0.35),912px 1603px 0 0px rgba(243,238,227,0.7),939px 1004px 0 0px rgba(243,238,227,0.5),1476px 90px 0 0px rgba(243,238,227,0.7),333px 1254px 0 0px rgba(243,238,227,0.35),514px 426px 0 0px rgba(243,238,227,0.7),1689px 1506px 0 0px rgba(243,238,227,0.7),997px 776px 0 0px rgba(243,238,227,0.7),383px 1378px 0 0px rgba(243,238,227,0.35),1075px 1404px 0 0px rgba(243,238,227,0.7),565px 1726px 0 0px rgba(243,238,227,0.35),275px 1768px 0 0px rgba(243,238,227,0.35),443px 1891px 0 0px rgba(243,238,227,0.7),1262px 797px 0 0px rgba(243,238,227,0.5),1731px 926px 0 0px rgba(243,238,227,0.35),1936px 766px 0 0px rgba(243,238,227,0.35),1002px 816px 0 0px rgba(243,238,227,0.5),938px 820px 0 0px rgba(243,238,227,0.5),699px 1746px 0 0px rgba(243,238,227,0.5),30px 437px 0 0px rgba(243,238,227,0.35),1911px 192px 0 0px rgba(243,238,227,0.5),1624px 305px 0 0px rgba(243,238,227,0.7),1566px 1135px 0 0px rgba(243,238,227,0.5),1832px 778px 0 0px rgba(243,238,227,0.35),1903px 1662px 0 0px rgba(243,238,227,0.35),1850px 1440px 0 0px rgba(243,238,227,0.5),1664px 286px 0 0px rgba(243,238,227,0.7),288px 912px 0 0px rgba(243,238,227,0.5),1407px 1261px 0 0px rgba(243,238,227,0.35),1651px 1862px 0 0px rgba(243,238,227,0.35),787px 167px 0 0px rgba(243,238,227,0.5),955px 85px 0 0px rgba(243,238,227,0.5),182px 751px 0 0px rgba(243,238,227,0.35),762px 74px 0 0px rgba(243,238,227,0.35),283px 1744px 0 0px rgba(243,238,227,0.5),625px 1395px 0 0px rgba(243,238,227,0.5),1026px 1372px 0 0px rgba(243,238,227,0.35),1886px 461px 0 0px rgba(243,238,227,0.35),1615px 430px 0 0px rgba(243,238,227,0.35),1196px 1915px 0 0px rgba(243,238,227,0.7),199px 1416px 0 0px rgba(243,238,227,0.7),990px 1702px 0 0px rgba(243,238,227,0.5),71px 1808px 0 0px rgba(243,238,227,0.35),127px 1357px 0 0px rgba(243,238,227,0.35),571px 243px 0 0px rgba(243,238,227,0.7),1808px 899px 0 0px rgba(243,238,227,0.7),248px 657px 0 0px rgba(243,238,227,0.35),125px 1603px 0 0px rgba(243,238,227,0.35),1921px 592px 0 0px rgba(243,238,227,0.35),328px 743px 0 0px rgba(243,238,227,0.7),1422px 147px 0 0px rgba(243,238,227,0.5),1896px 974px 0 0px rgba(243,238,227,0.7),1094px 215px 0 0px rgba(243,238,227,0.5),1798px 1980px 0 0px rgba(243,238,227,0.5),743px 1230px 0 0px rgba(243,238,227,0.7),1289px 1157px 0 0px rgba(243,238,227,0.7),227px 1156px 0 0px rgba(243,238,227,0.5),186px 1988px 0 0px rgba(243,238,227,0.5),941px 1136px 0 0px rgba(243,238,227,0.7),896px 592px 0 0px rgba(243,238,227,0.7),1257px 582px 0 0px rgba(243,238,227,0.5),288px 326px 0 0px rgba(243,238,227,0.7),211px 1830px 0 0px rgba(243,238,227,0.7);animation:twinkle 6s ease-in-out infinite}
+.sky i:nth-child(2){box-shadow:505px 115px 0 0.6px rgba(243,238,227,0.5),1123px 875px 0 0.6px rgba(243,238,227,0.7),700px 1605px 0 0.6px rgba(243,238,227,0.35),1605px 225px 0 0.6px rgba(243,238,227,0.7),65px 785px 0 0.6px rgba(243,238,227,0.7),1057px 1321px 0 0.6px rgba(243,238,227,0.5),913px 1281px 0 0.6px rgba(243,238,227,0.7),1984px 459px 0 0.6px rgba(243,238,227,0.35),941px 252px 0 0.6px rgba(243,238,227,0.7),1226px 727px 0 0.6px rgba(243,238,227,0.5),1480px 635px 0 0.6px rgba(243,238,227,0.5),1px 1037px 0 0.6px rgba(243,238,227,0.5),1515px 625px 0 0.6px rgba(243,238,227,0.5),366px 1996px 0 0.6px rgba(243,238,227,0.7),1265px 237px 0 0.6px rgba(243,238,227,0.5),935px 1737px 0 0.6px rgba(243,238,227,0.35),218px 621px 0 0.6px rgba(243,238,227,0.5),821px 1699px 0 0.6px rgba(243,238,227,0.5),1444px 1025px 0 0.6px rgba(243,238,227,0.7),960px 1536px 0 0.6px rgba(243,238,227,0.7),1617px 11px 0 0.6px rgba(243,238,227,0.35),369px 1912px 0 0.6px rgba(243,238,227,0.35),326px 1879px 0 0.6px rgba(243,238,227,0.35),1642px 1991px 0 0.6px rgba(243,238,227,0.7),515px 1066px 0 0.6px rgba(243,238,227,0.7),584px 862px 0 0.6px rgba(243,238,227,0.7),536px 894px 0 0.6px rgba(243,238,227,0.7),1243px 1676px 0 0.6px rgba(243,238,227,0.5),1963px 1965px 0 0.6px rgba(243,238,227,0.7),16px 1612px 0 0.6px rgba(243,238,227,0.5),1201px 647px 0 0.6px rgba(243,238,227,0.5),584px 1573px 0 0.6px rgba(243,238,227,0.7),1894px 1844px 0 0.6px rgba(243,238,227,0.5),456px 471px 0 0.6px rgba(243,238,227,0.35),987px 1637px 0 0.6px rgba(243,238,227,0.7),1049px 549px 0 0.6px rgba(243,238,227,0.35),400px 443px 0 0.6px rgba(243,238,227,0.35),314px 1827px 0 0.6px rgba(243,238,227,0.7),4px 1591px 0 0.6px rgba(243,238,227,0.35),1163px 1622px 0 0.6px rgba(243,238,227,0.35);animation:twinkle 9s ease-in-out infinite 1.5s}
+.sky i:nth-child(3){box-shadow:800px 149px 0 1px rgba(243,238,227,0.5),1647px 1464px 0 1px rgba(243,238,227,0.7),1769px 282px 0 1px rgba(243,238,227,0.5),1899px 1231px 0 1px rgba(243,238,227,0.7),894px 1841px 0 1px rgba(243,238,227,0.35),1109px 1073px 0 1px rgba(243,238,227,0.5),442px 1861px 0 1px rgba(243,238,227,0.5),1050px 472px 0 1px rgba(243,238,227,0.35),819px 1324px 0 1px rgba(243,238,227,0.35),1237px 1624px 0 1px rgba(243,238,227,0.7),1092px 1749px 0 1px rgba(243,238,227,0.35),983px 1081px 0 1px rgba(243,238,227,0.35),1572px 153px 0 1px rgba(243,238,227,0.35),192px 322px 0 1px rgba(243,238,227,0.35),198px 1851px 0 1px rgba(243,238,227,0.35),670px 1428px 0 1px rgba(243,238,227,0.5),840px 1030px 0 1px rgba(243,238,227,0.35),1673px 1043px 0 1px rgba(243,238,227,0.35);animation:twinkle 12s ease-in-out infinite 3s}
+@keyframes twinkle{0%,100%{opacity:.35}50%{opacity:1}}
+.sky .moon{position:absolute;top:84px;inset-inline-end:3vw;width:clamp(70px,9vw,120px);height:clamp(70px,9vw,120px);opacity:.85;filter:drop-shadow(0 0 30px rgba(232,200,126,.35))}
+@media(max-width:899px){.sky .moon{top:110px;width:54px;height:54px;opacity:.55}}
+.ico{width:1em;height:1em;vertical-align:-.12em;display:inline-block}
+.brand .ico{width:1.15em;height:1.15em;margin-inline-end:.35rem}
+.avatar{position:relative}
+.avatar .badge-moon{position:absolute;top:-4px;inset-inline-end:-6px;width:38px;height:38px;border-radius:50%;background:var(--ink);border:1px solid var(--gold);display:grid;place-items:center;padding:6px}
+.orn{display:flex;flex-direction:column;align-items:center;gap:.25rem;margin:2.6rem 0 .4rem;text-align:center}
+.orn__row{display:flex;align-items:center;gap:.7rem;width:100%;color:var(--gold)}
+.orn__row::before,.orn__row::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(201,164,92,.6),transparent)}
+.orn__row svg{width:30px;height:30px}
+.orn__row .s{width:11px;height:11px;color:var(--gold-bright);opacity:.8}
+.orn__ar{font-family:"Noto Naskh Arabic",serif;color:var(--gold-bright);font-size:1.15rem;line-height:1.8}
+.orn__tr{font-size:.68rem;letter-spacing:var(--track);text-transform:uppercase;color:var(--muted)}
+.hero-orn{display:flex;align-items:center;gap:.6rem;margin-bottom:.9rem;color:var(--gold-bright)}
+.hero-orn svg{width:26px;height:26px;flex:none}
+.hero-orn span{font-family:"Noto Naskh Arabic",serif;font-size:1.05rem}
+.signs{margin-top:1rem;padding:1.6rem 1.3rem;border-radius:24px;border:1px solid var(--line);text-align:center;overflow:hidden;position:relative;
+  background:radial-gradient(ellipse at 50% 0%,rgba(60,90,180,.35),transparent 60%),linear-gradient(180deg,#0b1430,var(--ink))}
+.signs h3{margin-top:0}
+.phases{display:flex;justify-content:center;gap:clamp(.4rem,2vw,1rem);margin:1.2rem 0}
+.phases svg{width:clamp(34px,9vw,52px);height:clamp(34px,9vw,52px)}
+.dawah{margin-top:1rem;padding:1.6rem 1.3rem;border-radius:24px;text-align:center;border:1px solid var(--gold);
+  background:radial-gradient(circle at 50% 0%,rgba(232,200,126,.18),transparent 60%),linear-gradient(180deg,var(--ink-3),var(--ink))}
+.dawah>svg{width:54px;height:54px;margin:0 auto .4rem;display:block}
+.dawah h3{margin:.2rem 0 .8rem}
+.dawah .lh{display:block;font-family:"Noto Naskh Arabic",serif;color:var(--gold-bright);font-size:1.5rem;line-height:1.9;margin-top:1rem}
+.dawah .ins{display:block;font-family:"Noto Naskh Arabic",serif;color:var(--cream);font-size:1.2rem;margin-top:.3rem}
+@media(prefers-reduced-motion:reduce){.sky i{animation:none}}
+
 /* ---- floating WhatsApp ---- */
 .fab-wa{position:fixed;z-index:25;inset-inline-end:16px;bottom:calc(84px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:.5rem;padding:.75rem 1rem .75rem .8rem;border-radius:999px;background:#1fa855;color:#fff;font:700 .95rem system-ui,sans-serif;box-shadow:0 14px 34px -10px rgba(0,0,0,.7);transition:transform .2s var(--ease)}
 .fab-wa:hover{transform:scale(1.04)}
@@ -492,9 +528,19 @@ html[dir=rtl] .tier .badge{transform:translateX(50%)}
   </div>
 </div>
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="gGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f3dc9f"/><stop offset=".55" stop-color="#c9a45c"/><stop offset="1" stop-color="#8a6a2e"/></linearGradient>
+    <mask id="mCres"><rect width="64" height="64" fill="#fff"/><circle cx="40" cy="26" r="22" fill="#000"/></mask>
+  </defs>
+  <symbol id="crescent" viewBox="0 0 64 64"><circle cx="30" cy="32" r="24" fill="url(#gGold)" mask="url(#mCres)"/><path fill="url(#gGold)" d="M50 10l2.4 6.4 6.8.3-5.3 4.2 1.8 6.6-5.7-3.8-5.7 3.8 1.8-6.6-5.3-4.2 6.8-.3z"/></symbol>
+  <symbol id="star8" viewBox="0 0 24 24"><path fill="currentColor" d="M12 1l2.6 6.3L21 4.6l-2.7 6.4L24 12l-5.7 1 2.7 6.4-6.4-2.7L12 23l-2.6-6.3L3 19.4 5.7 13 0 12l5.7-1L3 4.6l6.4 2.7z"/></symbol>
+</svg>
+<div class="sky" aria-hidden="true"><i></i><i></i><i></i><svg class="moon" viewBox="0 0 64 64"><use href="#crescent"/></svg></div>
+
 <header class="topbar">
   <div class="topbar__in">
-    <a class="brand" href="./"><b>Adeel Ahmed Rahman</b> · 622</a>
+    <a class="brand" href="./"><svg class="ico" aria-hidden="true"><use href="#crescent"/></svg><b>Adeel Ahmed Rahman</b> · 622</a>
     <nav class="sites" aria-label="My sites">
       <a href="./" aria-current="page" data-i18n="nav.coach">Coach</a>
       <a href="realtor/" data-i18n="nav.realtor">Realtor</a>
@@ -516,7 +562,7 @@ html[dir=rtl] .tier .badge{transform:translateX(50%)}
 
   <!-- ===== PROFILE ===== -->
   <aside class="profile reveal">
-    <div class="avatar"><picture><source srcset="coach/assets/lobby-3.webp" type="image/webp"><img src="coach/assets/lobby-3.jpg" alt="Adeel Ahmed Rahman"></picture></div>
+    <div class="avatar"><span class="badge-moon" aria-hidden="true"><svg viewBox="0 0 64 64" width="100%" height="100%"><use href="#crescent"/></svg></span><picture><source srcset="coach/assets/lobby-3.webp" type="image/webp"><img src="coach/assets/lobby-3.jpg" alt="Adeel Ahmed Rahman"></picture></div>
     <h1>Adeel Ahmed Rahman</h1>
     <p class="role up" data-i18n="role">Dhikr &amp; Dua Coach for Muslims</p>
     <p class="mantra" data-i18n="mantra">“You deserve what you desire. Ask Allah for it, with certainty.”</p>
@@ -550,6 +596,7 @@ html[dir=rtl] .tier .badge{transform:translateX(50%)}
     <div class="hero">
       <picture><source srcset="coach/assets/lobby-2.webp" type="image/webp"><img src="coach/assets/lobby-2.jpg" alt="Adeel Ahmed Rahman" fetchpriority="high"></picture>
       <div class="hero__cap">
+        <div class="hero-orn"><svg aria-hidden="true"><use href="#crescent"/></svg><span lang="ar">لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِٱللَّهِ</span></div>
         <span class="tag up" data-i18n="hero.tag">622 · Start Now · Adeel Ahmed Rahman</span>
         <h2 data-i18n="hero.h">You deserve<br>what you <em>desire.</em></h2>
         <div class="hero-ctas">
@@ -622,6 +669,7 @@ html[dir=rtl] .tier .badge{transform:translateX(50%)}
         <li data-i18n="get.8"><b>Direct access to Adeel Ahmed Rahman</b> on WhatsApp between sessions.</li>
       </ul>
 
+      <div class="orn reveal" aria-hidden="true"><div class="orn__row"><svg class="s"><use href="#star8"/></svg><svg><use href="#crescent"/></svg><svg class="s"><use href="#star8"/></svg></div><span class="orn__ar" lang="ar">لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِٱللَّهِ</span><span class="orn__tr" data-i18n="div.t">No power, no strength, except with Allah</span></div>
       <!-- life purpose -->
       <section class="purpose reveal" id="purpose">
         <span class="k up" data-i18n="pur.k">My life purpose · Adeel Ahmed Rahman</span>
@@ -690,6 +738,7 @@ html[dir=rtl] .tier .badge{transform:translateX(50%)}
       </div>
       <div class="ayah reveal"><span class="ar" lang="ar">أَلَا بِذِكْرِ ٱللَّهِ تَطْمَئِنُّ ٱلْقُلُوبُ</span><span class="tr" data-i18n="dhikr.ayah">“Verily, in the remembrance of Allah do hearts find rest.”</span><span class="ref up" data-i18n="dhikr.ref">Qur'an 13:28</span></div>
 
+      <div class="orn reveal" aria-hidden="true"><div class="orn__row"><svg class="s"><use href="#star8"/></svg><svg><use href="#crescent"/></svg><svg class="s"><use href="#star8"/></svg></div><span class="orn__ar" lang="ar">لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِٱللَّهِ</span><span class="orn__tr" data-i18n="div.t">No power, no strength, except with Allah</span></div>
       <!-- awareness -->
       <section class="aware reveal" id="awareness">
         <span class="k up" style="font-size:.7rem;color:var(--gold)" data-i18n="aw.k">Awareness · Consciousness</span>
@@ -786,6 +835,7 @@ html[dir=rtl] .tier .badge{transform:translateX(50%)}
       </div>
 
       <!-- offers -->
+      <div class="orn reveal" aria-hidden="true"><div class="orn__row"><svg class="s"><use href="#star8"/></svg><svg><use href="#crescent"/></svg><svg class="s"><use href="#star8"/></svg></div><span class="orn__ar" lang="ar">لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِٱللَّهِ</span><span class="orn__tr" data-i18n="div.t">No power, no strength, except with Allah</span></div>
       <!-- find your path -->
       <section class="quiz reveal" id="path">
         <h3 data-i18n="path.h">Find your path <em>in 60 seconds</em></h3>
@@ -897,6 +947,24 @@ html[dir=rtl] .tier .badge{transform:translateX(50%)}
         <details><summary data-i18n="faq.6q">Does this replace therapy or medical care?</summary><p data-i18n="faq.6a">No. Coaching works alongside your doctor or therapist, never instead of them. In crisis, call or text 988 or your local emergency number.</p></details>
       </div>
 
+      <!-- signs in the sky + dawah -->
+      <div class="orn reveal" aria-hidden="true"><div class="orn__row"><svg class="s"><use href="#star8"/></svg><svg><use href="#crescent"/></svg><svg class="s"><use href="#star8"/></svg></div><span class="orn__ar" lang="ar">لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِٱللَّهِ</span><span class="orn__tr" data-i18n="div.t">No power, no strength, except with Allah</span></div>
+      <section class="signs reveal" id="signs">
+        <h3 data-i18n="signs.h">The real signs are <em>Allah's signs</em></h3>
+        <p data-i18n="signs.p">The moon and the stars are not omens and not powers. They are ayat, signs pointing to the One who created them. When you look up, let it remind you: everything moves by His command.</p>
+        <div class="phases"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="rgba(243,238,227,.06)" stroke="rgba(201,164,92,.35)"/><path d="M20 2 A18 18 0 0 1 20 38 A13.68 18 0 0 0 20 2Z" fill="url(#gGold)"/></svg><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="rgba(243,238,227,.06)" stroke="rgba(201,164,92,.35)"/><path d="M20 2 A18 18 0 0 1 20 38 A0.00 18 0 0 1 20 2Z" fill="url(#gGold)"/></svg><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="rgba(243,238,227,.06)" stroke="rgba(201,164,92,.35)"/><path d="M20 2 A18 18 0 0 1 20 38 A10.80 18 0 0 1 20 2Z" fill="url(#gGold)"/></svg><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="url(#gGold)"/></svg><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="rgba(243,238,227,.06)" stroke="rgba(201,164,92,.35)"/><path d="M20 2 A18 18 0 0 0 20 38 A10.80 18 0 0 0 20 2Z" fill="url(#gGold)"/></svg><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="rgba(243,238,227,.06)" stroke="rgba(201,164,92,.35)"/><path d="M20 2 A18 18 0 0 0 20 38 A0.00 18 0 0 0 20 2Z" fill="url(#gGold)"/></svg><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="rgba(243,238,227,.06)" stroke="rgba(201,164,92,.35)"/><path d="M20 2 A18 18 0 0 0 20 38 A13.68 18 0 0 1 20 2Z" fill="url(#gGold)"/></svg></div>
+        <div class="ayah"><span class="ar" lang="ar">وَٱلْقَمَرَ قَدَّرْنَٰهُ مَنَازِلَ حَتَّىٰ عَادَ كَٱلْعُرْجُونِ ٱلْقَدِيمِ</span><span class="tr" data-i18n="signs.ayah">“And the moon We have measured in phases, until it returns like an old, curved palm stalk.”</span><span class="ref up">Qur'an 36:39</span></div>
+        <div class="ayah"><span class="ar" lang="ar">إِنَّ فِى خَلْقِ ٱلسَّمَٰوَٰتِ وَٱلْأَرْضِ وَٱخْتِلَٰفِ ٱلَّيْلِ وَٱلنَّهَارِ لَءَايَٰتٍ لِّأُو۟لِى ٱلْأَلْبَٰبِ</span><span class="tr" data-i18n="signs.ayah2">“Indeed, in the creation of the heavens and the earth and the alternation of night and day are signs for people of understanding.”</span><span class="ref up">Qur'an 3:190</span></div>
+      </section>
+
+      <section class="dawah reveal" id="dawah">
+        <svg aria-hidden="true"><use href="#crescent"/></svg>
+        <h3 data-i18n="dawah.h">This is <em>dawah</em>, nothing more</h3>
+        <p data-i18n="dawah.p">Adeel Ahmed Rahman isn't a guru and has no power of his own. He is simply doing dawah: helping people pray more powerfully, with dhikr and dua. There is no power except Allah, and through Him all things. Sunni Islam, the Qur'an and the Sunnah, is the way to Jannat al-Firdaus.</p>
+        <span class="lh" lang="ar">لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِٱللَّهِ</span>
+        <span class="ins" lang="ar">إِنْ شَاءَ ٱللَّٰهُ</span>
+      </section>
+
       <div class="creed reveal">
         <p class="ar" lang="ar">أَشْهَدُ أَنْ لَا إِلَٰهَ إِلَّا ٱللَّهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا رَسُولُ ٱللَّهِ</p>
         <p data-i18n="creed"><b>Adeel Ahmed Rahman</b> is a Sunni Muslim, nothing more and nothing less. I created this system, but there is nothing new in its foundation: just dhikr, dua and trust in Allah, built entirely on the Qur'an and Sunnah, the way the Prophet ﷺ taught.</p>
@@ -918,6 +986,8 @@ html[dir=rtl] .tier .badge{transform:translateX(50%)}
 </main>
 
 <footer>
+  <p style="margin-bottom:.3rem"><svg class="ico" style="width:42px;height:42px" aria-hidden="true"><use href="#crescent"/></svg></p>
+  <p class="ar" lang="ar" style="margin-bottom:.1rem">لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِٱللَّهِ</p>
   <p class="ar" lang="ar" style="margin-bottom:.4rem">حَسْبُنَا ٱللَّهُ وَنِعْمَ ٱلْوَكِيلُ</p>
   <p class="big" data-i18n="foot.big">You deserve what you desire.</p>
   <p class="tl up" data-i18n="foot.tl">622 · Every new beginning starts with a Hijra</p>
@@ -935,7 +1005,7 @@ html[dir=rtl] .tier .badge{transform:translateX(50%)}
   <a class="cta js-want" href="https://wa.me/16134083945" target="_blank" rel="noopener"><span data-i18n="cta">I want this so badly</span></a>
 </div></div>
 
-<script src="coach/i18n.js?v=8"></script>
+<script src="coach/i18n.js?v=9"></script>
 <script src="coach/home.js?v=7"></script>
 <script>
 (function(){

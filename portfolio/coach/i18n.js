@@ -1516,6 +1516,60 @@
   T.zh["of.salah.d"] = '免费、一对一、循序渐进：小净、每个动作、每段诵读的阿拉伯语及其含义，直到你能自信地完成五番拜。适合新穆斯林、归信者以及从未好好学过的人。'; T.zh["salah.btn"] = '免费教我礼拜';
   T.ko["of.salah.d"] = '무료로, 일대일로 한 걸음씩: 우두, 모든 자세, 각 낭송의 아랍어와 그 의미까지, 다섯 번의 예배를 자신 있게 드릴 수 있을 때까지. 새로 무슬림이 된 분과 제대로 배울 기회가 없었던 모든 분께.'; T.ko["salah.btn"] = '무료로 예배를 가르쳐 주세요';
 
+
+  /* ============ Added: night sky, signs, dawah ============ */
+  T.ar['div.t'] = 'لا حول ولا قوة إلا بالله';
+  T.ar['signs.h'] = 'العلامات الحقيقية هي <em>آيات الله</em>';
+  T.ar['signs.p'] = 'القمر والنجوم ليست طوالع ولا قوى. إنها آيات تدلّ على من خلقها. حين تنظر إلى السماء، فلتذكّرك: كل شيء يجري بأمره.';
+  T.ar['signs.ayah'] = '«والقمر قدّرناه منازل حتى عاد كالعرجون القديم»';
+  T.ar['signs.ayah2'] = '«إن في خلق السماوات والأرض واختلاف الليل والنهار لآيات لأولي الألباب»';
+  T.ar['dawah.h'] = 'هذه <em>دعوة</em>، لا أكثر';
+  T.ar['dawah.p'] = 'عديل أحمد رحمان ليس معلّمًا روحانيًا ولا يملك قوة من نفسه. إنه يقوم بالدعوة فقط: يساعد الناس على أن يصلّوا ويدعوا بقوة أكبر، بالذكر والدعاء. لا حول ولا قوة إلا بالله، وبه كل شيء. الإسلام السنّي، القرآن والسنة، هو الطريق إلى جنة الفردوس.';
+  T.ur['div.t'] = 'اللہ کے سوا نہ کوئی طاقت ہے نہ قوت';
+  T.ur['signs.h'] = 'اصل نشانیاں <em>اللہ کی نشانیاں</em> ہیں';
+  T.ur['signs.p'] = 'چاند اور ستارے نہ شگون ہیں نہ طاقتیں۔ یہ آیات ہیں، جو اپنے خالق کی طرف اشارہ کرتی ہیں۔ جب آپ آسمان کی طرف دیکھیں تو یاد رکھیں: ہر چیز اُسی کے حکم سے چلتی ہے۔';
+  T.ur['signs.ayah'] = '”اور چاند کی ہم نے منزلیں مقرر کیں، یہاں تک کہ وہ کھجور کی پرانی ٹہنی کی طرح ہو جاتا ہے۔“';
+  T.ur['signs.ayah2'] = '”بے شک آسمانوں اور زمین کی پیدائش اور رات اور دن کے بدلنے میں عقل والوں کے لیے نشانیاں ہیں۔“';
+  T.ur['dawah.h'] = 'یہ <em>دعوت</em> ہے، اس سے زیادہ کچھ نہیں';
+  T.ur['dawah.p'] = 'عدیل احمد رحمان کوئی گرو نہیں اور ان کے پاس اپنی کوئی طاقت نہیں۔ وہ بس دعوت کا کام کر رہے ہیں: لوگوں کو ذکر اور دعا کے ساتھ زیادہ پُراثر طریقے سے عبادت کرنے میں مدد دینا۔ اللہ کے سوا کوئی طاقت نہیں، اور سب کچھ اُسی کے ذریعے ہے۔ سنی اسلام، قرآن و سنت، جنت الفردوس کا راستہ ہے۔';
+  T.fr['div.t'] = 'Nulle puissance, nulle force, sinon par Allah';
+  T.fr['signs.h'] = "Les vrais signes sont <em>les signes d'Allah</em>";
+  T.fr['signs.p'] = 'La lune et les étoiles ne sont ni des présages ni des puissances. Ce sont des ayat, des signes qui désignent Celui qui les a créées. Quand vous levez les yeux, souvenez-vous : tout se meut par Son ordre.';
+  T.fr['signs.ayah'] = "« Et la lune, Nous lui avons fixé des phases, jusqu'à ce qu'elle devienne comme une vieille palme recourbée. »";
+  T.fr['signs.ayah2'] = "« Dans la création des cieux et de la terre et dans l'alternance de la nuit et du jour, il y a certes des signes pour les doués d'intelligence. »";
+  T.fr['dawah.h'] = "C'est de la <em>dawah</em>, rien de plus";
+  T.fr['dawah.p'] = "Adeel Ahmed Rahman n'est pas un gourou et n'a aucun pouvoir propre. Il fait simplement de la dawah : il aide les gens à prier plus intensément, par le dhikr et la dua. Nulle puissance sinon Allah, et par Lui toute chose. L'islam sunnite, le Coran et la Sunna, est le chemin vers Jannat al-Firdaws.";
+  T.es['div.t'] = 'No hay poder ni fuerza sino en Allah';
+  T.es['signs.h'] = 'Las verdaderas señales son <em>las señales de Allah</em>';
+  T.es['signs.p'] = 'La luna y las estrellas no son presagios ni poderes. Son ayat, señales que apuntan a Quien las creó. Cuando mires al cielo, que te recuerde: todo se mueve por Su orden.';
+  T.es['signs.ayah'] = '«Y a la luna le hemos fijado fases, hasta que vuelve a ser como una vieja rama de palmera curvada.»';
+  T.es['signs.ayah2'] = '«En la creación de los cielos y la tierra y en la sucesión de la noche y el día hay signos para los dotados de entendimiento.»';
+  T.es['dawah.h'] = 'Esto es <em>dawa</em>, nada más';
+  T.es['dawah.p'] = 'Adeel Ahmed Rahman no es un gurú ni tiene poder propio. Simplemente hace dawa: ayuda a la gente a rezar con más fuerza, con dhikr y dua. No hay poder sino Allah, y por Él todas las cosas. El islam sunní, el Corán y la Sunna, es el camino a Jannat al-Firdaws.';
+  T.ja['div.t'] = 'アッラーによらずして力も権能もない';
+  T.ja['signs.h'] = '真のしるしは<em>アッラーのしるし</em>';
+  T.ja['signs.p'] = '月や星は前兆でも力でもありません。それを創られた御方を指し示すアーヤ（しるし）です。空を見上げるたびに思い出してください。すべてはかれの御命令によって動いていると。';
+  T.ja['signs.ayah'] = '「また月には、われは宿を定めた。それが古いナツメヤシの枝のように（細く）なって戻るまで。」';
+  T.ja['signs.ayah2'] = '「本当に天と地の創造、昼と夜の交替の中には、思慮ある者への印がある。」';
+  T.ja['dawah.h'] = 'これは<em>ダアワ</em>にほかなりません';
+  T.ja['dawah.p'] = 'Adeel Ahmed Rahmanはグルではなく、自らの力も持ちません。ただダアワ（イスラームへの呼びかけ）を行い、ズィクルとドゥアーでより力強く祈れるよう人々を助けているだけです。アッラーのほかに力はなく、すべてはかれを通してあります。スンナ派イスラーム、クルアーンとスンナこそがジャンナトゥル・フィルダウスへの道です。';
+  T.zh['div.t'] = '无能为力，唯凭安拉';
+  T.zh['signs.h'] = '真正的迹象是<em>安拉的迹象</em>';
+  T.zh['signs.p'] = '月亮和星星既不是预兆，也不是力量。它们是阿亚特，是指向其造物主的迹象。当你仰望天空时，让它提醒你：万物皆依祂的命令运行。';
+  T.zh['signs.ayah'] = '“月亮，我为它定了宿度，直到它变得像枯老的椰枣枝。”';
+  T.zh['signs.ayah2'] = '“在天地的创造中，在昼夜的轮替中，对于有理智的人确有许多迹象。”';
+  T.zh['dawah.h'] = '这只是<em>宣教</em>';
+  T.zh['dawah.p'] = 'Adeel Ahmed Rahman 不是大师，也没有自己的力量。他只是在做宣教：通过记主和祈祷，帮助人们更有力地礼拜和祈求。除安拉外别无力量，万物皆凭祂。逊尼派伊斯兰——古兰经和圣行——是通往菲尔道斯乐园的道路。';
+  T.ko['div.t'] = '알라 외에는 어떤 힘도 능력도 없다';
+  T.ko['signs.h'] = '진정한 징표는 <em>알라의 징표</em>입니다';
+  T.ko['signs.p'] = '달과 별은 징조도, 힘도 아닙니다. 그것을 창조하신 분을 가리키는 아야트(징표)입니다. 하늘을 올려다볼 때마다 기억하세요. 모든 것은 그분의 명령으로 움직입니다.';
+  T.ko['signs.ayah'] = '“달에게도 우리는 머물 곳을 정하였으니, 마침내 그것은 오래된 대추야자 가지처럼 되돌아온다.”';
+  T.ko['signs.ayah2'] = '“실로 하늘과 땅의 창조와 밤과 낮의 교차 속에는 이해하는 자들을 위한 징표가 있다.”';
+  T.ko['dawah.h'] = '이것은 <em>다와</em>일 뿐입니다';
+  T.ko['dawah.p'] = 'Adeel Ahmed Rahman은 구루가 아니며 스스로의 힘도 없습니다. 그저 다와를 할 뿐입니다. 디크르와 두아로 사람들이 더 힘 있게 기도하도록 돕는 것입니다. 알라 외에는 어떤 힘도 없으며, 모든 것은 그분을 통해 있습니다. 수니 이슬람, 꾸란과 순나가 잔나트 알피르다우스로 가는 길입니다.';
+  var RIB_LH = { en: "No power except Allah", ar: "لا حول ولا قوة إلا بالله", ur: "لا حول ولا قوۃ الا باللہ", fr: "Nulle puissance sinon par Allah", es: "No hay poder sino en Allah", ja: "アッラーのほかに力なし", zh: "无能为力，唯凭安拉", ko: "알라 외에는 힘이 없다" };
+  Object.keys(RIB_LH).forEach(function (l) { RIBBON[l].unshift(RIB_LH[l]); });
+
   /* ---------------- engine ---------------- */
   var root = document.documentElement;
   var nodes = [].slice.call(document.querySelectorAll("[data-i18n]"));
