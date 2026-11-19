@@ -114,8 +114,12 @@
       else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
     }
   });
-  // Shown on a visitor's first visit, and any time with ?welcome
   var force = /[?&]welcome\b/.test(location.search);
-  if (force || !store("coach-welcomed")) setTimeout(open, 350);
+  // Opens 11 seconds after the page loads (straight away with ?welcome), unless another pop-up is up
+  if (force || !store("coach-welcomed")) setTimeout(function () {
+    var other = document.getElementById("know");
+    if (other && !other.hidden) return;
+    open();
+  }, force ? 350 : 11000);
   window.coachOpenWelcome = open;
 })();
