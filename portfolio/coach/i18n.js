@@ -1831,6 +1831,16 @@
   T.zh["chat.t"] = '与阿迪尔实时聊天'; T.zh["chat.s"] = '现在就问任何问题';
   T.ko["chat.t"] = '아딜과 실시간 채팅'; T.ko["chat.s"] = '지금 무엇이든 물어보세요';
 
+
+  /* Allah sees all */
+  T.ar["eye.h"] = 'الله يرى <em>كل شيء</em>'; T.ar["eye.p"] = 'العين الوحيدة التي ترى كل شيء هي عين الله. البصير يرى سعيك ودموعك ودعاءك الخفي. لا شيء تسأله إياه يغيب عنه.'; T.ar["eye.ayah"] = '«يعلم خائنة الأعين وما تخفي الصدور»';
+  T.ur["eye.h"] = 'اللہ سب کچھ <em>دیکھتا ہے</em>'; T.ur["eye.p"] = 'سب کچھ دیکھنے والی واحد نگاہ اللہ کی ہے۔ البصیر، سب کچھ دیکھنے والا، آپ کی کوشش، آپ کے آنسو اور آپ کی چھپی دعائیں دیکھتا ہے۔ جو کچھ آپ اس سے مانگتے ہیں، کچھ بھی اس سے اوجھل نہیں۔'; T.ur["eye.ayah"] = '”وہ آنکھوں کی خیانت اور جو کچھ سینے چھپاتے ہیں سب جانتا ہے۔“';
+  T.fr["eye.h"] = 'Allah voit <em>tout</em>'; T.fr["eye.p"] = "Le seul regard qui voit tout est celui d'Allah. Al-Basir, Celui qui voit tout, voit vos efforts, vos larmes et vos duas cachées. Rien de ce que vous Lui demandez n'échappe à Son regard."; T.fr["eye.ayah"] = '« Il connaît la trahison des yeux et ce que cachent les poitrines. »';
+  T.es["eye.h"] = 'Allah lo ve <em>todo</em>'; T.es["eye.p"] = 'El único ojo que lo ve todo es el de Allah. Al-Basir, el que todo lo ve, ve tu esfuerzo, tus lágrimas y tus duas ocultas. Nada de lo que le pides pasa desapercibido.'; T.es["eye.ayah"] = '«Él conoce la mirada furtiva de los ojos y lo que ocultan los corazones.»';
+  T.ja["eye.h"] = 'アッラーは<em>すべてを</em>見ておられる'; T.ja["eye.p"] = 'すべてを見る唯一の目はアッラーのものです。アル＝バスィール、すべてを見る御方は、あなたの努力も涙も、隠れたドゥアーも見ておられます。かれに願うことで見過ごされるものは何ひとつありません。'; T.ja["eye.ayah"] = '「かれは目の盗み見も、胸に隠すことも知っておられる。」';
+  T.zh["eye.h"] = '安拉<em>洞察一切</em>'; T.zh["eye.p"] = '唯一能看见一切的，是安拉。全观的主（巴希尔）看见你的努力、你的眼泪和你隐秘的祈祷。你向祂祈求的，没有一样被忽视。'; T.zh["eye.ayah"] = '“祂知道眼睛的偷视和胸中所隐藏的。”';
+  T.ko["eye.h"] = '알라께서는 <em>모든 것을</em> 보신다'; T.ko["eye.p"] = '모든 것을 보는 유일한 눈은 알라의 것입니다. 모든 것을 보시는 분(알바시르)께서 당신의 노력과 눈물, 숨겨진 두아를 보십니다. 그분께 구하는 것 중 보이지 않는 것은 하나도 없습니다.'; T.ko["eye.ayah"] = '“그분께서는 눈의 은밀한 시선과 가슴이 숨기는 것을 아신다.”';
+
   /* ---------------- engine ---------------- */
   var root = document.documentElement;
   var nodes = [].slice.call(document.querySelectorAll("[data-i18n]"));

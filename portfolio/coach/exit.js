@@ -69,6 +69,7 @@
     var other = document.querySelector(".welcome:not([hidden])");   // never on top of another pop-up
     if (other) return;
     store("coach-exit-shown", "1");
+    if (window.coachEyePulse) window.coachEyePulse(true);
     back = document.activeElement; fill(); box.hidden = false; document.body.style.overflow = "hidden";
     box.querySelector(".xit__sun").focus();
   }
