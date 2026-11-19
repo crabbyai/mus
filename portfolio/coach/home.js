@@ -20,6 +20,14 @@
     a.href = wa("Assalamu alaikum Adeel Ahmed Rahman! I want this so badly: " + item + " (" + price + "). Please tell me how to start.");
   });
 
+
+  /* ---- PayPal receipts → WhatsApp ---- */
+  [].forEach.call(document.querySelectorAll(".js-receipt"), function (a) {
+    var item = a.getAttribute("data-item"), amt = a.getAttribute("data-amt");
+    a.href = wa("Assalamu alaikum Adeel Ahmed Rahman! I've paid on PayPal (paypal.me/adeelrahman)" +
+      (item ? " for: " + item + (amt ? " ($" + Number(amt).toLocaleString("en-US", { minimumFractionDigits: amt.indexOf(".") >= 0 ? 2 : 0 }) + ")" : "") : "") +
+      ". My receipt screenshot is attached.\nName: ");
+  });
   /* ---- prayer request ---- */
   var pray = document.getElementById("prayForm");
   if (pray) pray.addEventListener("submit", function (e) {

@@ -1091,6 +1091,48 @@
   RIBBON.en.push("Consciousness creates · bi-idhnillah");
 
 
+
+  /* ============ Added: PayPal payments and WhatsApp receipts ============ */
+  var MORE3 = {
+    ar: { "pay.btn": "باي بال", "rc.btn": "أرسل الإيصال", "ph.h": "طريقة الدفع",
+      "ph.1": "اضغط <strong>باي بال</strong> على العرض الذي تريده. سيفتح paypal.me/adeelrahman والمبلغ جاهز.",
+      "ph.2": "ادفع، ثم التقط صورة شاشة لإيصال باي بال.",
+      "ph.3": "اضغط <strong>أرسل الإيصال</strong> وأرفق الصورة في واتساب. سيؤكد عديل أحمد رحمان ويحجز لك.",
+      "ph.pk": "🇵🇰 في باكستان؟ باي بال لا يعمل هناك بعد، فراسل عديل على واتساب وسيرسل لك طريقة دفع أخرى." },
+    ur: { "pay.btn": "پے پال", "rc.btn": "رسید بھیجیں", "ph.h": "ادائیگی کیسے کریں",
+      "ph.1": "جو آفر چاہیے اس پر <strong>پے پال</strong> دبائیں۔ paypal.me/adeelrahman رقم کے ساتھ کھل جائے گا۔",
+      "ph.2": "ادائیگی کریں، پھر پے پال رسید کا اسکرین شاٹ لیں۔",
+      "ph.3": "<strong>رسید بھیجیں</strong> دبائیں اور واٹس ایپ میں اسکرین شاٹ لگا دیں۔ عدیل احمد رحمان تصدیق کر کے آپ کا وقت طے کریں گے۔",
+      "ph.pk": "🇵🇰 پاکستان میں ہیں؟ پے پال وہاں ابھی کام نہیں کرتا، اس لیے عدیل کو واٹس ایپ کریں، وہ ادائیگی کا دوسرا طریقہ بتائیں گے۔" },
+    fr: { "pay.btn": "PayPal", "rc.btn": "Envoyer le reçu", "ph.h": "Comment payer",
+      "ph.1": "Touchez <strong>PayPal</strong> sur l'offre choisie. paypal.me/adeelrahman s'ouvre avec le montant déjà indiqué.",
+      "ph.2": "Payez, puis faites une capture d'écran de votre reçu PayPal.",
+      "ph.3": "Touchez <strong>Envoyer le reçu</strong> et joignez la capture dans WhatsApp. Adeel Ahmed Rahman confirmera et vous inscrira.",
+      "ph.pk": "🇵🇰 Au Pakistan ? PayPal n'y fonctionne pas encore : écrivez à Adeel sur WhatsApp pour un autre moyen de paiement." },
+    es: { "pay.btn": "PayPal", "rc.btn": "Enviar recibo", "ph.h": "Cómo pagar",
+      "ph.1": "Pulsa <strong>PayPal</strong> en la oferta que quieras. Se abre paypal.me/adeelrahman con el importe ya puesto.",
+      "ph.2": "Paga y haz una captura de pantalla de tu recibo de PayPal.",
+      "ph.3": "Pulsa <strong>Enviar recibo</strong> y adjunta la captura en WhatsApp. Adeel Ahmed Rahman lo confirmará y te dará tu cita.",
+      "ph.pk": "🇵🇰 ¿En Pakistán? PayPal todavía no funciona allí: escribe a Adeel por WhatsApp y te dará otra forma de pago." },
+    ja: { "pay.btn": "PayPal", "rc.btn": "領収書を送る", "ph.h": "お支払い方法",
+      "ph.1": "希望するプランの<strong>PayPal</strong>をタップ。金額入りでpaypal.me/adeelrahmanが開きます。",
+      "ph.2": "支払い後、PayPalの領収書のスクリーンショットを撮ってください。",
+      "ph.3": "<strong>領収書を送る</strong>をタップし、WhatsAppでスクリーンショットを添付。Adeel Ahmed Rahmanが確認して予約を確定します。",
+      "ph.pk": "🇵🇰 パキスタンの方へ：PayPalはまだ利用できないため、WhatsAppでアディールに連絡してください。別の支払い方法をご案内します。" },
+    zh: { "pay.btn": "PayPal", "rc.btn": "发送收据", "ph.h": "如何付款",
+      "ph.1": "在你想要的方案上点击 <strong>PayPal</strong>，会打开已填好金额的 paypal.me/adeelrahman。",
+      "ph.2": "付款后，截图保存 PayPal 收据。",
+      "ph.3": "点击<strong>发送收据</strong>，在 WhatsApp 中附上截图。Adeel Ahmed Rahman 确认后会为你安排。",
+      "ph.pk": "🇵🇰 在巴基斯坦？PayPal 目前在当地无法使用，请通过 WhatsApp 联系阿迪尔，他会提供其他付款方式。" },
+    ko: { "pay.btn": "PayPal", "rc.btn": "영수증 보내기", "ph.h": "결제 방법",
+      "ph.1": "원하는 상품에서 <strong>PayPal</strong>을 누르세요. 금액이 입력된 paypal.me/adeelrahman이 열립니다.",
+      "ph.2": "결제 후 PayPal 영수증을 스크린샷으로 저장하세요.",
+      "ph.3": "<strong>영수증 보내기</strong>를 누르고 WhatsApp에 스크린샷을 첨부하세요. Adeel Ahmed Rahman이 확인 후 예약해 드립니다.",
+      "ph.pk": "🇵🇰 파키스탄에 계신가요? PayPal은 아직 그곳에서 사용할 수 없으니 WhatsApp으로 아딜에게 연락하시면 다른 결제 방법을 알려드립니다." }
+  };
+  Object.keys(MORE3).forEach(function (l) { Object.keys(MORE3[l]).forEach(function (k) { T[l][k] = MORE3[l][k]; }); });
+
+
   /* ---------------- engine ---------------- */
   var root = document.documentElement;
   var nodes = [].slice.call(document.querySelectorAll("[data-i18n]"));

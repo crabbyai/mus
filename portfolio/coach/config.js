@@ -7,6 +7,7 @@ window.COACH = {
   tiktok: "https://www.tiktok.com/@humiliator",
   snapchat: "https://www.snapchat.com/add/androgenic",
   email: "adeel.rahman@uwaterloo.ca",
+  paypal: "https://paypal.me/adeelrahman",   // receipts go to WhatsApp
 
   // Paste your Skool group link here once it exists, e.g. "https://www.skool.com/your-group".
   // Course and forum buttons then go to Skool; until then they open WhatsApp.
