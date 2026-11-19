@@ -1,0 +1,7 @@
+[
+  { "location": "/", "tdm-reservation": 1, "tdm-policy": "https://crabbyai.github.io/mus/ai.txt" },
+  { "location": "/course.html", "tdm-reservation": 1, "tdm-policy": "https://crabbyai.github.io/mus/ai.txt" },
+  { "location": "/forum.html", "tdm-reservation": 1, "tdm-policy": "https://crabbyai.github.io/mus/ai.txt" },
+  { "location": "/library.html", "tdm-reservation": 1, "tdm-policy": "https://crabbyai.github.io/mus/ai.txt" },
+  { "location": "/coach/*", "tdm-reservation": 1, "tdm-policy": "https://crabbyai.github.io/mus/ai.txt" }
+]
