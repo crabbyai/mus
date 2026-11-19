@@ -207,3 +207,197 @@ window.LIBRARY = [
   { k: "h", t: "dawah", s: "Bukhari", r: "Convey even one verse", e: "Convey from me, even if it is one verse." },
   { k: "h", t: "dawah", s: "Muslim", r: "Guiding to good", e: "Whoever guides someone to goodness will have a reward like the one who does it." }
 ];
+
+/* ============================================================
+   More verses and hadith. Each theme stays in relevance order: the
+   entries above come first, these follow within the same theme.
+   ============================================================ */
+window.LIBRARY_THEMES.splice(12, 0, ["ramadan", "Ramadan & Laylat al-Qadr"]);
+window.LIBRARY.push(
+  /* DUA: more Qur'anic duas */
+  { k: "q", t: "dua", r: "2:127", a: "رَبَّنَا تَقَبَّلْ مِنَّآ ۖ إِنَّكَ أَنتَ ٱلسَّمِيعُ ٱلْعَلِيمُ", e: "Ibrahim and Ismail, raising the House: Our Lord, accept this from us. Indeed, You are the All-Hearing, the All-Knowing." },
+  { k: "q", t: "dua", r: "2:250", a: "رَبَّنَآ أَفْرِغْ عَلَيْنَا صَبْرًا وَثَبِّتْ أَقْدَامَنَا", e: "Our Lord, pour patience upon us, make our feet firm, and give us victory." },
+  { k: "q", t: "dua", r: "2:286", e: "Our Lord, do not hold us accountable if we forget or err. Our Lord, do not place on us a burden like the one You placed on those before us… Pardon us, forgive us and have mercy on us." },
+  { k: "q", t: "dua", r: "3:38", a: "رَبِّ هَبْ لِى مِن لَّدُنكَ ذُرِّيَّةً طَيِّبَةً ۖ إِنَّكَ سَمِيعُ ٱلدُّعَآءِ", e: "Zakariyya: My Lord, grant me from Yourself good offspring. Indeed, You hear every supplication." },
+  { k: "q", t: "dua", r: "3:147", e: "Our Lord, forgive us our sins and our excesses, make our feet firm, and give us victory." },
+  { k: "q", t: "dua", r: "3:193-194", e: "Our Lord, forgive our sins, remove our misdeeds, and take us in death with the righteous. Our Lord, give us what You promised us through Your messengers." },
+  { k: "q", t: "dua", r: "7:126", e: "Our Lord, pour patience upon us and let us die as Muslims." },
+  { k: "q", t: "dua", r: "10:85-86", e: "In Allah we put our trust. Our Lord, do not make us a trial for the wrongdoing people, and save us by Your mercy." },
+  { k: "q", t: "dua", r: "12:101", e: "Yusuf: You are my Protector in this world and the Hereafter. Take my soul as a Muslim and join me with the righteous." },
+  { k: "q", t: "dua", r: "14:41", a: "رَبَّنَا ٱغْفِرْ لِى وَلِوَٰلِدَىَّ وَلِلْمُؤْمِنِينَ يَوْمَ يَقُومُ ٱلْحِسَابُ", e: "Our Lord, forgive me, my parents and the believers on the Day the account is established." },
+  { k: "q", t: "dua", r: "17:80", e: "My Lord, cause me to enter a sound entrance and to exit a sound exit, and grant me from Yourself a supporting authority." },
+  { k: "q", t: "dua", r: "18:10", a: "رَبَّنَآ ءَاتِنَا مِن لَّدُنكَ رَحْمَةً وَهَيِّئْ لَنَا مِنْ أَمْرِنَا رَشَدًا", e: "The youths of the cave: Our Lord, grant us mercy from Yourself and prepare for us right guidance in our affair." },
+  { k: "q", t: "dua", r: "23:29", e: "My Lord, let me land at a blessed landing place, and You are the best to accommodate." },
+  { k: "q", t: "dua", r: "23:118", e: "My Lord, forgive and have mercy, and You are the best of the merciful." },
+  { k: "q", t: "dua", r: "26:83-85", e: "Ibrahim: My Lord, grant me wisdom and join me with the righteous… and make me among the inheritors of the Garden of Pleasure." },
+  { k: "q", t: "dua", r: "27:19", e: "Sulayman: My Lord, inspire me to be grateful for Your favour upon me and my parents, and to do righteousness that pleases You." },
+  { k: "q", t: "dua", r: "28:16", e: "Musa: My Lord, I have wronged myself, so forgive me. And He forgave him; He is the Forgiving, the Merciful." },
+  { k: "q", t: "dua", r: "46:15", e: "My Lord, enable me to be grateful for Your favour… and make my offspring righteous for me. I have repented to You, and I am among the Muslims." },
+  { k: "q", t: "dua", r: "59:10", e: "Our Lord, forgive us and our brothers who preceded us in faith, and put no resentment in our hearts toward those who believe." },
+  { k: "q", t: "dua", r: "66:11", a: "رَبِّ ٱبْنِ لِى عِندَكَ بَيْتًا فِى ٱلْجَنَّةِ", e: "The wife of Pharaoh: My Lord, build for me near You a house in Paradise." },
+  { k: "q", t: "dua", r: "71:28", e: "Nuh: My Lord, forgive me, my parents, whoever enters my house a believer, and the believing men and women." },
+  { k: "h", t: "dua", s: "Tirmidhi, Ibn Majah", r: "Three duas not rejected", e: "Three supplications are not rejected: the dua of a father, the dua of the fasting person, and the dua of the traveller." },
+  { k: "h", t: "dua", s: "Tirmidhi", r: "Make dua in times of ease", e: "Whoever would like Allah to answer him in times of hardship, let him make much dua in times of ease." },
+  { k: "h", t: "dua", s: "Bukhari, Muslim", r: "The Prophet's most frequent dua", e: "The dua the Prophet ﷺ made most often was: Our Lord, give us good in this world and good in the Hereafter, and protect us from the punishment of the Fire." },
+  { k: "h", t: "dua", s: "Bukhari, Muslim", r: "The dua of distress", e: "In distress he would say: There is no god but Allah, the Mighty, the Forbearing. There is no god but Allah, Lord of the Mighty Throne. There is no god but Allah, Lord of the heavens, Lord of the earth and Lord of the Noble Throne." },
+  { k: "h", t: "dua", s: "Tirmidhi", r: "Turner of hearts", e: "He often said: O Turner of hearts, make my heart firm upon Your religion." },
+  { k: "h", t: "dua", s: "Tirmidhi", r: "Ask Allah for well-being", e: "Ask Allah for pardon and well-being, for after certainty no one has been given anything better than well-being." },
+
+  /* DHIKR */
+  { k: "q", t: "dhikr", r: "7:205", e: "And remember your Lord within yourself, humbly and with fear, without loudness, in the mornings and evenings, and do not be among the heedless." },
+  { k: "q", t: "dhikr", r: "63:9", e: "O you who believe, do not let your wealth and your children divert you from the remembrance of Allah." },
+  { k: "q", t: "dhikr", r: "18:23-24", e: "And never say of anything: I will do that tomorrow, except with “If Allah wills.” And remember your Lord when you forget." },
+  { k: "q", t: "dhikr", r: "76:25-26", e: "And remember the name of your Lord morning and evening, and prostrate to Him during the night and glorify Him through the long night." },
+  { k: "h", t: "dhikr", s: "Bukhari, Muslim", r: "La ilaha illallah ×100", e: "Whoever says a hundred times a day: There is no god but Allah alone, without partner; His is the dominion and His is the praise, and He has power over all things, it is like freeing ten slaves, a hundred good deeds are written for him, a hundred bad deeds are erased, and it is a protection from Shaytan that day until evening." },
+  { k: "h", t: "dhikr", s: "Tirmidhi", r: "A tongue moist with dhikr", e: "Keep your tongue moist with the remembrance of Allah." },
+  { k: "h", t: "dhikr", s: "Muslim", r: "Angels surround the gatherings", e: "No people sit remembering Allah except that the angels surround them, mercy covers them, tranquillity descends upon them, and Allah mentions them to those with Him." },
+  { k: "h", t: "dhikr", s: "Muslim", r: "The most beloved words", e: "The most beloved words to Allah are four: SubhanAllah, Alhamdulillah, La ilaha illallah and Allahu Akbar." },
+  { k: "h", t: "dhikr", s: "Muslim", r: "Salawat", e: "Whoever sends blessings upon me once, Allah sends blessings upon him ten times." },
+  { k: "h", t: "dhikr", s: "Muslim", r: "The dhikr of Juwayriyah", e: "I said after leaving you four phrases three times which, if weighed against all you have said today, would outweigh it: Glory be to Allah and praise Him, by the number of His creation, by His pleasure, by the weight of His Throne and the ink of His words." },
+
+  /* TAWHID */
+  { k: "q", t: "tawhid", r: "1:1-7", a: "ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَٰلَمِينَ ۝ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ ۝ مَٰلِكِ يَوْمِ ٱلدِّينِ ۝ إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ", e: "Al-Fatihah: All praise is for Allah, Lord of the worlds, the Most Merciful, the Especially Merciful, Master of the Day of Judgement. You alone we worship and You alone we ask for help. Guide us to the straight path." },
+  { k: "q", t: "tawhid", r: "35:2", e: "Whatever mercy Allah opens to people, none can withhold it; and whatever He withholds, none can release it after Him." },
+  { k: "q", t: "tawhid", r: "6:17", e: "And if Allah touches you with harm, none can remove it but Him; and if He touches you with good, He has power over all things." },
+  { k: "q", t: "tawhid", r: "10:107", e: "If Allah touches you with harm, none can remove it but Him; and if He intends good for you, none can repel His bounty." },
+  { k: "q", t: "tawhid", r: "3:26", a: "قُلِ ٱللَّهُمَّ مَٰلِكَ ٱلْمُلْكِ تُؤْتِى ٱلْمُلْكَ مَن تَشَآءُ وَتَنزِعُ ٱلْمُلْكَ مِمَّن تَشَآءُ", e: "Say: O Allah, Owner of sovereignty, You give sovereignty to whom You will and take it from whom You will; You honour whom You will and humble whom You will. In Your hand is all good." },
+  { k: "q", t: "tawhid", r: "2:163", e: "And your god is one God. There is no god but Him, the Most Merciful, the Especially Merciful." },
+  { k: "q", t: "tawhid", r: "59:22-24", e: "He is Allah, other than whom there is no god, Knower of the unseen and the witnessed… the King, the Pure, the Perfection… the Creator, the Inventor, the Fashioner. To Him belong the best names." },
+  { k: "q", t: "tawhid", r: "39:38", e: "Say: Have you considered what you call upon besides Allah? If Allah intended harm for me, could they remove His harm? Say: Allah is sufficient for me; upon Him rely those who rely." },
+
+  /* TAWAKKUL */
+  { k: "q", t: "tawakkul", r: "39:36", a: "أَلَيْسَ ٱللَّهُ بِكَافٍ عَبْدَهُۥ", e: "Is not Allah sufficient for His servant?" },
+  { k: "q", t: "tawakkul", r: "8:2", e: "The believers are only those who, when Allah is mentioned, their hearts tremble, and when His verses are recited their faith increases, and upon their Lord they rely." },
+  { k: "q", t: "tawakkul", r: "25:58", e: "And rely upon the Ever-Living who does not die, and glorify Him with praise." },
+  { k: "q", t: "tawakkul", r: "33:3", e: "And rely upon Allah, and sufficient is Allah as Disposer of affairs." },
+  { k: "q", t: "tawakkul", r: "64:13", e: "Allah, there is no god but Him. And upon Allah let the believers rely." },
+  { k: "h", t: "tawakkul", s: "Bukhari, Muslim", r: "The seventy thousand", e: "Seventy thousand of my nation will enter Paradise without reckoning: those who do not seek ruqyah, do not believe in bad omens, do not cauterise, and put their trust in their Lord." },
+
+  /* SABR */
+  { k: "q", t: "sabr", r: "3:139", e: "So do not weaken and do not grieve, and you will be superior if you are believers." },
+  { k: "q", t: "sabr", r: "3:200", e: "O you who believe, be patient, outlast in patience, stand firm and be mindful of Allah, so that you may succeed." },
+  { k: "q", t: "sabr", r: "29:2-3", e: "Do people think they will be left to say “We believe” and will not be tested? We certainly tested those before them." },
+  { k: "q", t: "sabr", r: "70:5", a: "فَٱصْبِرْ صَبْرًا جَمِيلًا", e: "So be patient with a beautiful patience." },
+  { k: "q", t: "sabr", r: "103:1-3", a: "وَٱلْعَصْرِ ۝ إِنَّ ٱلْإِنسَٰنَ لَفِى خُسْرٍ ۝ إِلَّا ٱلَّذِينَ ءَامَنُوا۟ وَعَمِلُوا۟ ٱلصَّٰلِحَٰتِ وَتَوَاصَوْا۟ بِٱلْحَقِّ وَتَوَاصَوْا۟ بِٱلصَّبْرِ", e: "By time, indeed mankind is in loss, except those who believe, do righteous deeds, and urge one another to truth and to patience." },
+  { k: "q", t: "sabr", r: "31:17", e: "Be patient over what befalls you. Indeed, that is of the matters requiring resolve." },
+  { k: "h", t: "sabr", s: "Muslim", r: "The dua of Umm Salamah", e: "When a calamity strikes, say: We belong to Allah and to Him we return. O Allah, reward me in my calamity and replace it for me with something better. Allah will replace it with something better." },
+  { k: "h", t: "sabr", s: "Bukhari", r: "When Allah wants good", e: "When Allah wants good for someone, He afflicts him with trials." },
+  { k: "h", t: "sabr", s: "Musnad Ahmad", r: "Relief with affliction", e: "Know that victory comes with patience, relief comes with affliction, and with hardship comes ease." },
+
+  /* FORGIVENESS */
+  { k: "q", t: "tawbah", r: "3:135", e: "Those who, when they commit an immorality or wrong themselves, remember Allah and seek forgiveness, and who forgives sins except Allah?" },
+  { k: "q", t: "tawbah", r: "4:110", e: "Whoever does wrong or wrongs himself and then seeks forgiveness of Allah will find Allah Forgiving and Merciful." },
+  { k: "q", t: "tawbah", r: "20:82", e: "And indeed, I am the Perpetual Forgiver of whoever repents, believes, does righteousness and then continues in guidance." },
+  { k: "q", t: "tawbah", r: "42:25", e: "And it is He who accepts repentance from His servants and pardons misdeeds." },
+  { k: "q", t: "tawbah", r: "66:8", e: "O you who believe, repent to Allah with sincere repentance." },
+  { k: "h", t: "tawbah", s: "Bukhari, Muslim", r: "More pleased than the traveller", e: "Allah is more pleased with the repentance of His servant than one of you who lost his camel, with his food and drink, in a desert, and then found it." },
+  { k: "h", t: "tawbah", s: "Bukhari, Muslim", r: "My mercy prevails", e: "When Allah decreed the creation, He wrote in a Book with Him above the Throne: My mercy prevails over My wrath." },
+  { k: "h", t: "tawbah", s: "Tirmidhi", r: "Sins filling the earth", e: "Allah says: O son of Adam, if you came to Me with sins nearly filling the earth and then met Me without associating anything with Me, I would come to you with forgiveness nearly filling it." },
+  { k: "h", t: "tawbah", s: "Tirmidhi", r: "Follow a bad deed with a good one", e: "Fear Allah wherever you are, follow a bad deed with a good deed and it will erase it, and treat people with good character." },
+
+  /* GRATITUDE */
+  { k: "q", t: "shukr", r: "31:12", e: "Be grateful to Allah. Whoever is grateful is grateful for the benefit of himself." },
+  { k: "q", t: "shukr", r: "2:172", e: "O you who believe, eat from the good things We have provided you and be grateful to Allah, if it is Him you worship." },
+  { k: "q", t: "shukr", r: "34:13", e: "Work, O family of Dawud, in gratitude. And few of My servants are grateful." },
+  { k: "h", t: "shukr", s: "Muslim", r: "Look at those below you", e: "Look at those below you and do not look at those above you; that is more fitting so that you do not belittle Allah's favour upon you." },
+  { k: "h", t: "shukr", s: "Tirmidhi, Ibn Majah", r: "As if the world were yours", e: "Whoever wakes up safe in his home, healthy in body, with food for his day, it is as if the whole world has been given to him." },
+
+  /* RIZQ */
+  { k: "q", t: "rizq", r: "2:268", e: "Shaytan threatens you with poverty and orders you to immorality, while Allah promises you forgiveness from Him and bounty." },
+  { k: "q", t: "rizq", r: "3:37", e: "Zakariyya asked Maryam: Where is this provision from? She said: It is from Allah. Indeed, Allah provides for whom He wills without account." },
+  { k: "q", t: "rizq", r: "67:15", e: "It is He who made the earth tame for you, so walk among its slopes and eat of His provision, and to Him is the resurrection." },
+  { k: "q", t: "rizq", r: "65:7", e: "Allah does not burden a soul beyond what He has given it. Allah will bring about ease after hardship." },
+  { k: "h", t: "rizq", s: "Bukhari", r: "The work of your own hands", e: "No one has ever eaten better food than what he eats from the work of his own hands." },
+  { k: "h", t: "rizq", s: "Muslim", r: "Allah is good", e: "Allah is good and accepts only what is good." },
+  { k: "h", t: "rizq", s: "Bukhari, Muslim", r: "Honest trade is blessed", e: "The buyer and seller have the option until they part. If they are truthful and clear, their transaction is blessed; if they conceal and lie, its blessing is erased." },
+
+  /* MARRIAGE & FAMILY */
+  { k: "q", t: "marriage", r: "24:32", e: "And marry the unmarried among you and the righteous. If they are poor, Allah will enrich them from His bounty." },
+  { k: "q", t: "marriage", r: "4:1", e: "O mankind, be mindful of your Lord who created you from one soul and created from it its mate… and be mindful of the ties of the womb." },
+  { k: "q", t: "marriage", r: "31:14", e: "And We have enjoined upon man care for his parents. His mother carried him, weakness upon weakness… Be grateful to Me and to your parents." },
+  { k: "h", t: "marriage", s: "Bukhari, Muslim", r: "Your mother, your mother, your mother", e: "A man asked: Who most deserves my good companionship? He said: Your mother. Then who? Your mother. Then who? Your mother. Then who? Your father." },
+  { k: "h", t: "marriage", s: "Muslim", r: "The best enjoyment", e: "This world is an enjoyment, and the best enjoyment of this world is a righteous spouse." },
+  { k: "h", t: "marriage", s: "Tirmidhi", r: "Best in character", e: "The most complete of the believers in faith are those best in character, and the best of you are the best to their wives." },
+
+  /* HEALING */
+  { k: "q", t: "healing", r: "48:4", e: "It is He who sent down tranquillity into the hearts of the believers, that they would increase in faith." },
+  { k: "q", t: "healing", r: "39:23", e: "Allah has sent down the best statement… the skins and hearts of those who fear their Lord soften at the remembrance of Allah." },
+  { k: "h", t: "healing", s: "Bukhari, Muslim", r: "Black seed", e: "In the black seed there is healing for every disease except death." },
+  { k: "h", t: "healing", s: "Muslim", r: "Visiting the sick", e: "Allah will say: O son of Adam, I was sick and you did not visit Me… Did you not know that had you visited him, you would have found Me with him?" },
+
+  /* PROTECTION */
+  { k: "q", t: "protection", r: "23:97-98", a: "رَّبِّ أَعُوذُ بِكَ مِنْ هَمَزَٰتِ ٱلشَّيَٰطِينِ ۝ وَأَعُوذُ بِكَ رَبِّ أَن يَحْضُرُونِ", e: "My Lord, I seek refuge in You from the incitements of the devils, and I seek refuge in You, my Lord, lest they be present with me." },
+  { k: "q", t: "protection", r: "16:99-100", e: "Indeed, he has no authority over those who believe and rely upon their Lord." },
+  { k: "q", t: "protection", r: "41:36", e: "And if an evil suggestion comes to you from Shaytan, seek refuge in Allah. He is the All-Hearing, the All-Knowing." },
+  { k: "h", t: "protection", s: "Abu Dawud, Tirmidhi", r: "Leaving home", e: "Whoever says when leaving home: In the name of Allah, I put my trust in Allah, there is no might and no power except with Allah, it is said to him: You are guided, sufficed and protected, and Shaytan turns away from him." },
+  { k: "h", t: "protection", s: "Muslim", r: "The perfect words", e: "Whoever stops at a place and says: I seek refuge in the perfect words of Allah from the evil of what He created, nothing will harm him until he leaves that place." },
+  { k: "h", t: "protection", s: "Bukhari, Muslim", r: "The last two verses of al-Baqarah", e: "Whoever recites the last two verses of Surah al-Baqarah at night, they will suffice him." },
+
+  /* SALAH */
+  { k: "q", t: "salah", r: "2:238", e: "Guard strictly the prayers, especially the middle prayer, and stand before Allah devoutly." },
+  { k: "q", t: "salah", r: "4:103", e: "Indeed, prayer has been decreed upon the believers at fixed times." },
+  { k: "q", t: "salah", r: "11:114", e: "And establish prayer at the two ends of the day and in some hours of the night. Indeed, good deeds remove bad deeds." },
+  { k: "q", t: "salah", r: "17:79", e: "And from part of the night, pray with it as extra worship for you; perhaps your Lord will raise you to a praised station." },
+  { k: "h", t: "salah", s: "Bukhari, Muslim", r: "The most beloved deed", e: "He was asked which deed is most beloved to Allah. He said: Prayer at its proper time." },
+  { k: "h", t: "salah", s: "Muslim", r: "The night prayer", e: "The best prayer after the obligatory prayers is the night prayer." },
+  { k: "h", t: "salah", s: "Muslim", r: "A house in Paradise", e: "Whoever prays twelve voluntary rak'ahs in a day and night, a house will be built for him in Paradise." },
+  { k: "h", t: "salah", s: "Muslim", r: "Under Allah's protection", e: "Whoever prays Fajr is under the protection of Allah." },
+  { k: "h", t: "salah", s: "Abu Dawud", r: "Give us rest with it", e: "O Bilal, call the iqamah for prayer and give us rest with it." },
+
+  /* RAMADAN & LAYLAT AL-QADR */
+  { k: "q", t: "ramadan", r: "97:1-5", a: "إِنَّآ أَنزَلْنَٰهُ فِى لَيْلَةِ ٱلْقَدْرِ ۝ وَمَآ أَدْرَىٰكَ مَا لَيْلَةُ ٱلْقَدْرِ ۝ لَيْلَةُ ٱلْقَدْرِ خَيْرٌ مِّنْ أَلْفِ شَهْرٍ", e: "Indeed, We sent it down on the Night of Decree. And what will make you know what the Night of Decree is? The Night of Decree is better than a thousand months… Peace it is until the emergence of dawn." },
+  { k: "q", t: "ramadan", r: "2:183", e: "O you who believe, fasting has been decreed upon you as it was decreed upon those before you, so that you may become mindful of Allah." },
+  { k: "q", t: "ramadan", r: "2:185", e: "The month of Ramadan, in which the Qur'an was revealed as guidance for mankind… Allah intends ease for you and does not intend hardship for you." },
+  { k: "h", t: "ramadan", s: "Tirmidhi", r: "The dua of Laylat al-Qadr", e: "Aishah asked what to say on Laylat al-Qadr. He said: Say: O Allah, You are Pardoning and love to pardon, so pardon me." },
+  { k: "h", t: "ramadan", s: "Bukhari, Muslim", r: "Fasting with faith", e: "Whoever fasts Ramadan out of faith and seeking reward, his previous sins are forgiven." },
+  { k: "h", t: "ramadan", s: "Bukhari, Muslim", r: "Standing on Laylat al-Qadr", e: "Whoever stands in prayer on Laylat al-Qadr out of faith and seeking reward, his previous sins are forgiven." },
+  { k: "h", t: "ramadan", s: "Bukhari", r: "Seek it in the odd nights", e: "Seek Laylat al-Qadr in the odd nights of the last ten nights of Ramadan." },
+
+  /* INTENTION & EGO */
+  { k: "q", t: "intention", r: "49:13", e: "Indeed, the most noble of you in the sight of Allah is the most righteous of you." },
+  { k: "q", t: "intention", r: "28:83", e: "That home of the Hereafter We assign to those who do not desire exaltedness upon the earth or corruption. And the best outcome is for the righteous." },
+  { k: "q", t: "intention", r: "17:37", e: "And do not walk upon the earth exultantly. You will never tear the earth apart, and you will never reach the mountains in height." },
+  { k: "h", t: "intention", s: "Muslim", r: "Allah looks at your hearts", e: "Allah does not look at your appearance or your wealth, but He looks at your hearts and your deeds." },
+  { k: "h", t: "intention", s: "Bukhari, Muslim", r: "Love for your brother", e: "None of you truly believes until he loves for his brother what he loves for himself." },
+  { k: "h", t: "intention", s: "Bukhari, Muslim", r: "The strong one", e: "The strong one is not the one who overpowers others; the strong one is the one who controls himself when angry." },
+  { k: "h", t: "intention", s: "Bukhari", r: "Do not get angry", e: "A man said: Advise me. He said: Do not get angry. He repeated it several times, and he said: Do not get angry." },
+
+  /* HIJRA */
+  { k: "q", t: "hijra", r: "2:218", e: "Those who believed and emigrated and strove in the cause of Allah: they hope for the mercy of Allah. And Allah is Forgiving and Merciful." },
+  { k: "q", t: "hijra", r: "16:41", e: "Those who emigrated for Allah after being wronged, We will surely settle them in this world in a good place, and the reward of the Hereafter is greater." },
+  { k: "h", t: "hijra", s: "Bukhari", r: "The true emigrant", e: "The Muslim is the one from whose tongue and hand the Muslims are safe, and the emigrant is the one who leaves what Allah has forbidden." },
+
+  /* SIGNS */
+  { k: "q", t: "signs", r: "2:164", e: "In the creation of the heavens and the earth, the alternation of night and day, the ships that sail the sea, the rain Allah sends down… are signs for a people who reason." },
+  { k: "q", t: "signs", r: "30:22", e: "And among His signs is the creation of the heavens and the earth and the diversity of your languages and your colours. Indeed, in that are signs for those of knowledge." },
+  { k: "q", t: "signs", r: "71:16", e: "And He made the moon therein a light and made the sun a lamp." },
+  { k: "q", t: "signs", r: "51:20-21", e: "And on the earth are signs for the certain in faith, and in yourselves. Then will you not see?" },
+  { k: "h", t: "signs", s: "Bukhari, Muslim", r: "Not omens", e: "The sun and the moon are two of the signs of Allah. They do not eclipse for anyone's death or life. When you see that, make dua to Allah, say takbir, pray and give charity." },
+
+  /* QADR */
+  { k: "q", t: "qadr", r: "6:59", e: "With Him are the keys of the unseen; none knows them except Him… Not a leaf falls but that He knows it." },
+  { k: "q", t: "qadr", r: "25:2", e: "He created every thing and determined it with precise determination." },
+  { k: "h", t: "qadr", s: "Tirmidhi", r: "The pens have been lifted", e: "Know that if the nation gathered to harm you, they could only harm you with what Allah had written against you. The pens have been lifted and the pages have dried." },
+  { k: "h", t: "qadr", s: "Muslim", r: "Faith in the decree", e: "Faith is to believe in Allah, His angels, His books, His messengers, the Last Day, and to believe in the decree, its good and its bad." },
+
+  /* JANNAH */
+  { k: "q", t: "jannah", r: "3:185", e: "Every soul will taste death… so whoever is drawn away from the Fire and admitted to Paradise has truly succeeded." },
+  { k: "q", t: "jannah", r: "9:72", e: "Allah has promised the believing men and women gardens beneath which rivers flow… and the pleasure of Allah is greater. That is the great success." },
+  { k: "q", t: "jannah", r: "13:23-24", e: "Gardens of perpetual residence… the angels will enter upon them from every gate: Peace be upon you for what you patiently endured. Excellent is the final home." },
+  { k: "q", t: "jannah", r: "10:9-10", e: "Their call therein will be: Glory be to You, O Allah. Their greeting therein: Peace. And the last of their call: Praise be to Allah, Lord of the worlds." },
+  { k: "q", t: "jannah", r: "55:46", e: "But for the one who feared standing before his Lord are two gardens." },
+  { k: "q", t: "jannah", r: "56:10-12", e: "And the forerunners, the forerunners: those are the ones brought near, in the Gardens of Pleasure." },
+  { k: "h", t: "jannah", s: "Muslim", r: "Surrounded by hardship", e: "Paradise is surrounded by hardships, and the Fire is surrounded by desires." },
+  { k: "h", t: "jannah", s: "Bukhari", r: "Better than the world", e: "A space in Paradise the size of a whip is better than the world and everything in it." },
+  { k: "h", t: "jannah", s: "Abu Dawud", r: "Last words", e: "Whoever's last words are La ilaha illallah will enter Paradise." },
+
+  /* DAWAH */
+  { k: "q", t: "dawah", r: "3:104", e: "And let there be from you a nation inviting to good, enjoining what is right and forbidding what is wrong. Those are the successful." },
+  { k: "q", t: "dawah", r: "12:108", e: "Say: This is my way. I invite to Allah with insight, I and those who follow me." },
+  { k: "q", t: "dawah", r: "33:21", e: "There has certainly been for you in the Messenger of Allah an excellent example." },
+  { k: "q", t: "dawah", r: "21:107", e: "And We have not sent you except as a mercy to the worlds." },
+  { k: "h", t: "dawah", s: "Muslim", r: "Religion is sincerity", e: "The religion is sincerity: to Allah, His Book, His Messenger, the leaders of the Muslims and their common folk." },
+  { k: "h", t: "dawah", s: "Bukhari, Muslim", r: "Make it easy", e: "Make things easy and do not make them difficult. Give glad tidings and do not drive people away." },
+  { k: "h", t: "dawah", s: "Bukhari, Muslim", r: "Better than red camels", e: "By Allah, that Allah guides one person through you is better for you than red camels." },
+  { k: "h", t: "dawah", s: "Tirmidhi", r: "A smile is charity", e: "Your smile in the face of your brother is charity." }
+);
