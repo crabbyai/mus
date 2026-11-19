@@ -1,3 +1,18 @@
+# Adeel Ahmed Rahman — sites
+
+| URL | What | Source |
+|---|---|---|
+| `/` | **Consciousness coach** (home) — dhikr & dua, 622, eight languages | `index.html`, `coach/` |
+| `/realtor/` | Luxury real estate | `realtor/index.html` (+ the tool pages, `css/`, `js/`, `data/` at the root) |
+| `/actor/` | Acting portfolio and drama watch | `actor/` |
+
+To make a different site the home page, swap which page sits at `index.html`.
+`realtor/index.html` carries `<base href="../">`, so it can live in a sub-folder
+without moving its assets. The coach page's translations live in `coach/i18n.js`;
+English is read from the page itself.
+
+---
+
 # Adeel Ahmed Rahman — Luxury Real Estate Portfolio
 
 A highly interactive, single-page portfolio showcasing luxury homes sold across
