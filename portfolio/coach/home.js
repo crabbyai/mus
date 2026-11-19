@@ -29,6 +29,11 @@
       ". My receipt screenshot is attached.\nName: ");
   });
 
+  /* ---- free salah lessons ---- */
+  [].forEach.call(document.querySelectorAll(".js-salah"), function (a) {
+    a.href = wa("Assalamu alaikum Adeel Ahmed Rahman! I'd like your free salah lessons. Please teach me how to pray.");
+  });
+
   /* ---- free 7-day plan ---- */
   [].forEach.call(document.querySelectorAll(".js-gift"), function (a) {
     a.href = wa("Assalamu alaikum Adeel Ahmed Rahman! Please send me the free 7-Day Dua Plan.");
@@ -55,7 +60,7 @@
   var quiz = document.getElementById("path");
   if (quiz) {
     var ans = {}, res = document.getElementById("qres");
-    var AMT = { circle: "11.11", istikhara: "88.88", clarity: "111.11", protect: "222.22", rizq: "444.44", hijra: "555.55", biz: "999.99", king: "1111", couples: "777.77", salah: "888" };
+    var AMT = { circle: "11.11", istikhara: "88.88", clarity: "111.11", protect: "222.22", rizq: "444.44", hijra: "555.55", biz: "999.99", king: "1111", couples: "777.77" };
     function pick(a) {
       var need = a.s, want = a.w;
       if (want === "salah") return need === "life" ? "king" : "salah";
@@ -74,7 +79,10 @@
       document.getElementById("qPrice").textContent = price;
       document.getElementById("qDesc").innerHTML = txt('.offers [data-i18n="of.' + k + '.d"]');
       document.getElementById("qWant").href = wa("Assalamu alaikum Adeel Ahmed Rahman! I took the Find-your-path quiz and I want this so badly: " + name + " (" + price + ").");
-      document.getElementById("qPay").href = "https://paypal.me/adeelrahman/" + AMT[k] + "USD";
+      var free = !AMT[k], bar = document.getElementById("qPay").parentNode;
+      bar.hidden = free;
+      if (free) document.getElementById("qWant").href = wa("Assalamu alaikum Adeel Ahmed Rahman! I took the Find-your-path quiz and I'd like your free salah lessons.");
+      else document.getElementById("qPay").href = "https://paypal.me/adeelrahman/" + AMT[k] + "USD";
       document.getElementById("qRc").href = wa("Assalamu alaikum Adeel Ahmed Rahman! I've paid on PayPal for: " + name + " (" + price + "). My receipt screenshot is attached.\nName: ");
       res.hidden = false;
       res.scrollIntoView({ behavior: "smooth", block: "nearest" });
