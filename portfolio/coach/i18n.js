@@ -1894,6 +1894,9 @@
   T.ko['zod.p'] = '전갈자리는 세계에서 가장 흔한 별자리 중 하나로, 결코 희귀한 에너지가 아닙니다. 그리고 무슬림으로서 우리는 별이 당신을 결정하는 것이 아니라 알라께서 결정하신다는 것을 압니다. “해와 달은 알라의 징표 중 두 가지이다”(부카리, 무슬림). 힘이 아닙니다.';
   Object.keys(RIBBON).forEach(function (l) { RIBBON[l].splice(1, 0, "🥭 Chaunsa 👁️✨"); });
 
+  /* numbers in the banner */
+  Object.keys(RIBBON).forEach(function (l) { RIBBON[l].push("13 · 15 · 34 · 622", "1111 · 2222 · 88888888"); });
+
   /* ---------------- engine ---------------- */
   var root = document.documentElement;
   var nodes = [].slice.call(document.querySelectorAll("[data-i18n]"));
