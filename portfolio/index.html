@@ -250,12 +250,112 @@ footer nav{display:flex;justify-content:center;gap:1.2rem;margin-top:1rem}
 .dock__in .t b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:"Playfair Display",serif;font-weight:500;font-size:.95rem;color:var(--cream)}
 .dock .cta{width:auto;padding:.8rem 1.1rem;font-size:.88rem;white-space:nowrap}
 
+/* ---- welcome pop-up ---- */
+.welcome{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:16px;background:rgba(5,8,18,.78);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);overflow-y:auto}
+.welcome[hidden]{display:none}
+.welcome__card{position:relative;width:min(560px,100%);margin:auto;padding:1.6rem 1.3rem 1.3rem;border-radius:24px;border:1px solid var(--gold);text-align:center;
+  background:radial-gradient(circle at 50% 0%,rgba(232,200,126,.2),transparent 55%),linear-gradient(180deg,var(--ink-3),var(--ink));box-shadow:0 40px 120px -30px rgba(0,0,0,.9);animation:pop .5s var(--ease)}
+@keyframes pop{from{opacity:0;transform:translateY(16px) scale(.97)}}
+.welcome__x{position:absolute;top:.6rem;inset-inline-end:.6rem;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--cream);font-size:1.3rem;cursor:pointer}
+.welcome__k{font-size:.66rem;color:var(--gold)}
+.welcome h2{font-family:var(--serif);font-weight:500;font-size:clamp(1.5rem,5vw,2rem);line-height:1.3;margin:.4rem 0 .2rem}
+.welcome__sub{font-family:"Noto Naskh Arabic",serif;color:var(--muted);font-size:.95rem}
+.welcome__langs{display:grid;grid-template-columns:repeat(2,1fr);gap:.5rem;margin:1rem 0 1.2rem}
+@media(min-width:480px){.welcome__langs{grid-template-columns:repeat(4,1fr)}}
+.welcome__langs button{padding:.8rem .4rem;border-radius:14px;border:1px solid var(--line);background:rgba(10,15,30,.5);color:var(--cream);font:500 1.05rem system-ui,sans-serif;cursor:pointer;transition:border-color .2s,background .2s}
+.welcome__langs button small{display:block;font-size:.66rem;letter-spacing:.14em;color:var(--muted);margin-top:.15rem}
+.welcome__langs button:hover,.welcome__langs button[aria-pressed=true]{border-color:var(--gold-bright);background:rgba(201,164,92,.16)}
+.welcome__help{padding:1.1rem;border-radius:18px;border:1px solid var(--line);background:rgba(10,15,30,.45)}
+.welcome__help h3{margin:0 0 .4rem;font-size:1.2rem}
+.welcome__help p{font-size:.9rem;margin-bottom:.9rem}
+.welcome__help .ar{font-size:1.25rem;display:block;margin-bottom:.3rem}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.6rem}
+.welcome__go{margin-top:1rem;background:none;border:0;color:var(--muted);font:500 .9rem var(--sans);text-decoration:underline;cursor:pointer}
+
+/* ---- secondary buttons ---- */
+.btn2{display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.85rem 1rem;border-radius:999px;border:1px solid var(--gold);color:var(--cream);font:600 .92rem/1.3 var(--sans);text-align:center;transition:background .25s,transform .25s var(--ease)}
+.btn2:hover{background:rgba(201,164,92,.12);transform:translateY(-1px)}
+.btn2 svg{width:18px;height:18px;fill:currentColor;flex:none}
+.btn2.wa{background:#1fa855;border-color:#1fa855;color:#fff}
+.btn2.wa:hover{background:#25c062}
+.btn2.tt{border-color:rgba(255,255,255,.35)}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:1rem}
+
+/* ---- Pakistan WhatsApp ---- */
+.pk{margin-top:2.6rem;padding:1.6rem 1.3rem;border-radius:22px;border:1px solid rgba(31,168,85,.6);background:radial-gradient(circle at 90% 0%,rgba(31,168,85,.22),transparent 55%),linear-gradient(180deg,#0d1a1a,var(--ink))}
+.pk h3{margin:.2rem 0 .6rem}
+.pk__btns{display:grid;gap:.6rem;margin:1rem 0}
+.wa-big{display:flex;align-items:center;justify-content:center;gap:.6rem;padding:1.05rem 1rem;border-radius:16px;background:#1fa855;color:#fff;font:700 1.08rem/1.3 system-ui,sans-serif;box-shadow:0 12px 30px -12px rgba(31,168,85,.8);transition:transform .2s var(--ease),background .2s}
+.wa-big:hover{background:#25c062;transform:translateY(-1px)}
+.wa-big svg{width:24px;height:24px;fill:#fff;flex:none}
+.wa-big.urdu{font-family:"Noto Nastaliq Urdu","Noto Naskh Arabic",serif;font-size:1.15rem;font-weight:500;line-height:2}
+.wa-big.alt{background:transparent;border:1px solid rgba(31,168,85,.8);box-shadow:none}
+.pk__facts{display:grid;gap:.5rem;grid-template-columns:1fr}
+@media(min-width:600px){.pk__facts{grid-template-columns:repeat(3,1fr)}}
+.pk__facts div{padding:.8rem;border-radius:14px;border:1px solid var(--line);background:rgba(10,15,30,.45)}
+.pk__facts b{display:block;font-weight:600;font-size:.82rem;color:var(--gold-bright)}
+.pk__facts span{font-size:.88rem}
+
+/* ---- prayer ---- */
+.pray{margin-top:2.6rem;padding:1.6rem 1.3rem;border-radius:22px;border:1px solid var(--line);background:rgba(10,15,30,.4)}
+.pray h3{margin-top:0}
+.pray form{margin-top:1rem}
+
+/* ---- ego / king ---- */
+.ego,.king{margin-top:2.6rem;padding:1.6rem 1.3rem;border-radius:22px;border:1px solid var(--line);background:linear-gradient(160deg,var(--ink-3),var(--ink))}
+.ego h3,.king h3{margin-top:0}
+.ego p+p,.king p+p{margin-top:.8rem}
+.king{text-align:center;border-color:var(--gold)}
+.king h4{font-family:var(--serif);font-weight:500;font-size:1.3rem;color:var(--gold-bright);margin:1.4rem 0 .5rem}
+
+/* ---- offers ---- */
+.offers{display:grid;gap:.8rem;grid-template-columns:1fr;margin-top:1rem}
+@media(min-width:640px){.offers{grid-template-columns:1fr 1fr}}
+.of{display:flex;flex-direction:column;gap:.4rem;padding:1.2rem;border-radius:18px;border:1px solid var(--line);background:rgba(10,15,30,.45)}
+.of__top{display:flex;justify-content:space-between;align-items:baseline;gap:.8rem}
+.of b{font-family:var(--serif);font-weight:500;font-size:1.15rem;line-height:1.3}
+.of .pr{flex:none;font:500 1.25rem "Playfair Display",serif;color:var(--gold-bright);white-space:nowrap}
+.of p{font-size:.88rem;color:var(--muted);flex:1}
+.of a{margin-top:.5rem}
+.of--star{grid-column:1/-1;border-color:var(--gold);background:radial-gradient(circle at 85% 0%,rgba(232,200,126,.2),transparent 55%),linear-gradient(160deg,var(--ink-3),var(--ink))}
+.of--star .pr{font-size:1.8rem}
+.of--free .pr{color:#58d68d}
+
+/* ---- floating WhatsApp ---- */
+.fab-wa{position:fixed;z-index:25;inset-inline-end:16px;bottom:calc(84px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:.5rem;padding:.75rem 1rem .75rem .8rem;border-radius:999px;background:#1fa855;color:#fff;font:700 .95rem system-ui,sans-serif;box-shadow:0 14px 34px -10px rgba(0,0,0,.7);transition:transform .2s var(--ease)}
+.fab-wa:hover{transform:scale(1.04)}
+.fab-wa svg{width:26px;height:26px;fill:#fff}
+.fab-wa span{font-family:"Noto Nastaliq Urdu","Noto Naskh Arabic",system-ui,sans-serif;font-weight:500}
+@media(max-width:420px){.fab-wa span.lat{display:none}}
+
 .reveal{opacity:0;transform:translateY(18px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
 .reveal.in{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
 </style>
 </head>
 <body>
+
+<!-- ===== WELCOME POP-UP: language + quick help ===== -->
+<div class="welcome" id="welcome" role="dialog" aria-modal="true" aria-labelledby="wTitle" hidden>
+  <div class="welcome__card">
+    <button type="button" class="welcome__x" id="wClose" aria-label="Close">×</button>
+    <p class="welcome__k up">Adeel Ahmed Rahman · 622</p>
+    <h2 id="wTitle" data-i18n="w.h">Choose your language</h2>
+    <p class="welcome__sub">اپنی زبان منتخب کریں · اختر لغتك · Choisissez · Elige · 言語 · 语言 · 언어</p>
+    <div class="welcome__langs" id="wLangs"></div>
+    <div class="welcome__help">
+      <span class="ar" lang="ar">لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِٱللَّهِ</span>
+      <h3 data-i18n="w.help.h">Want help reaching what you desire?</h3>
+      <p data-i18n="w.help.p">All power belongs to Allah alone. Adeel Ahmed Rahman doesn't make anything happen. Together, we simply pray to Allah, with dhikr and dua, to help you reach what you desire.</p>
+      <a class="cta js-want" href="https://wa.me/16134083945" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.35 10.55 20C5.4 15.36 2 12.27 2 8.5A5.5 5.5 0 0 1 7.5 3c1.74 0 3.41.81 4.5 2.09A6 6 0 0 1 16.5 3 5.5 5.5 0 0 1 22 8.5c0 3.77-3.4 6.86-8.55 11.54L12 21.35Z"/></svg><span data-i18n="cta">I want this so badly</span></a>
+      <div class="row2">
+        <a class="btn2 wa js-wa" data-wa="roman" href="https://wa.me/16134083945" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2s.2-1.1.1-1.2-.2-.2-.5-.3Z"/></svg><span>WhatsApp</span></a>
+        <a class="btn2 tt" href="https://www.tiktok.com/@humiliator" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.6 5.8A4.3 4.3 0 0 1 15.5 3h-3.1v12.4a2.6 2.6 0 1 1-2.6-2.6c.3 0 .5 0 .8.1V9.7a5.7 5.7 0 1 0 4.9 5.7V9.1a7.3 7.3 0 0 0 4.3 1.4V7.4a4.3 4.3 0 0 1-3.2-1.6Z"/></svg><span>@humiliator</span></a>
+      </div>
+    </div>
+    <button type="button" class="welcome__go" id="wGo" data-i18n="w.go">Continue to the site</button>
+  </div>
+</div>
 
 <header class="topbar">
   <div class="topbar__in">
@@ -300,6 +400,9 @@ footer nav{display:flex;justify-content:center;gap:1.2rem;margin-top:1rem}
       <a class="link" href="#n622"><picture><source srcset="assets/adeel-portrait.webp" type="image/webp"><img src="assets/adeel-portrait.jpg" alt=""></picture><div><b data-i18n="l4.t">Why 622?</b><small data-i18n="l4.s">The Hijra, my birthday, your new beginning</small></div></a>
       <a class="link" href="#protect"><picture><source srcset="coach/assets/lobby-1.webp" type="image/webp"><img src="coach/assets/lobby-1.jpg" alt=""></picture><div><b data-i18n="l5.t">Protection</b><small data-i18n="l5.s">Energy vampires, evil eye &amp; Shaytan</small></div></a>
       <a class="link" href="#numbers"><picture><source srcset="coach/assets/take-1.webp" type="image/webp"><img src="coach/assets/take-1.jpg" alt=""></picture><div><b data-i18n="l6.t">Angel numbers, the Muslim way</b><small data-i18n="l6.s">Every number is a reminder of Allah</small></div></a>
+      <a class="link" href="course.html"><picture><source srcset="coach/assets/lights-1.webp" type="image/webp"><img src="coach/assets/lights-1.jpg" alt=""></picture><div><b data-i18n="l8.t">Free course &amp; King's Table</b><small data-i18n="l8.s">Start free · Lifetime $1,111</small></div></a>
+      <a class="link" href="forum.html"><picture><source srcset="coach/assets/lobby-2.webp" type="image/webp"><img src="coach/assets/lobby-2.jpg" alt=""></picture><div><b data-i18n="l9.t">Community forum</b><small data-i18n="l9.s">Ask any question, any time</small></div></a>
+      <a class="link" href="#pray"><picture><source srcset="coach/assets/take-3.webp" type="image/webp"><img src="coach/assets/take-3.jpg" alt=""></picture><div><b data-i18n="l10.t">Request a prayer</b><small data-i18n="l10.s">Free, always · WhatsApp @PakistaniMangos</small></div></a>
       <a class="link" href="https://wa.me/16134083945?text=Assalamu%20alaikum%20Adeel%20Ahmed%20Rahman%2C%20I%27d%20like%20a%20free%20clarity%20chat." target="_blank" rel="noopener"><picture><source srcset="coach/assets/mirror.webp" type="image/webp"><img src="coach/assets/mirror.jpg" alt=""></picture><div><b data-i18n="l7.t">Free clarity chat on WhatsApp</b><small dir="ltr">+1 613 408 3945</small></div></a>
     </div>
   </aside>
@@ -326,6 +429,28 @@ footer nav{display:flex;justify-content:center;gap:1.2rem;margin-top:1rem}
         <span data-i18n="cta">I want this so badly</span>
       </a>
       <p class="cta-note" data-i18n="cta.note">Opens WhatsApp with Adeel Ahmed Rahman · +1 613 408 3945</p>
+      <div class="duo">
+        <a class="btn2" href="#pray">🤲 <span data-i18n="pray.btn">Request a prayer</span></a>
+        <a class="btn2 tt" href="https://www.tiktok.com/@humiliator" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.6 5.8A4.3 4.3 0 0 1 15.5 3h-3.1v12.4a2.6 2.6 0 1 1-2.6-2.6c.3 0 .5 0 .8.1V9.7a5.7 5.7 0 1 0 4.9 5.7V9.1a7.3 7.3 0 0 0 4.3 1.4V7.4a4.3 4.3 0 0 1-3.2-1.6Z"/></svg><span data-i18n="tt.btn">Follow on TikTok</span></a>
+      </div>
+
+      <!-- Pakistan: WhatsApp made easy -->
+      <section class="pk reveal" id="pakistan">
+        <span class="k up" style="font-size:.7rem;color:#58d68d" data-i18n="pk.k">🇵🇰 For Pakistan · پاکستان کے لیے</span>
+        <h3 data-i18n="pk.h">Pakistan se hain? <em>Seedha WhatsApp karein.</em></h3>
+        <p data-i18n="pk.p">No forms, no email, no international call charges. Tap a button and send a message or a voice note, in Urdu, Punjabi or English. Adeel Ahmed Rahman replies himself.</p>
+        <div class="pk__btns">
+          <a class="wa-big urdu js-wa" data-wa="ur" href="https://wa.me/16134083945" target="_blank" rel="noopener" lang="ur" dir="rtl"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2s.2-1.1.1-1.2-.2-.2-.5-.3Z"/></svg>اردو میں واٹس ایپ کریں</a>
+          <a class="wa-big js-wa" data-wa="roman" href="https://wa.me/16134083945" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2s.2-1.1.1-1.2-.2-.2-.5-.3Z"/></svg>WhatsApp karein (Roman Urdu)</a>
+          <a class="wa-big alt js-wa" data-wa="voice" href="https://wa.me/16134083945" target="_blank" rel="noopener">🎙️ <span data-i18n="pk.voice">Voice note bhejein: no typing needed</span></a>
+        </div>
+        <div class="pk__facts">
+          <div><b>WhatsApp</b><span dir="ltr">+1 613 408 3945 · @PakistaniMangos</span></div>
+          <div><b data-i18n="pk.call">Calling from Pakistan?</b><span dir="ltr">00 1 613 408 3945</span></div>
+          <div><b data-i18n="pk.time">Time right now</b><span id="pkTime" dir="ltr">—</span></div>
+        </div>
+        <p class="fine" data-i18n="pk.fine">WhatsApp uses your internet data, not international call credit, on Jazz, Zong, Telenor or Ufone. Adeel is in Canada, so if he's asleep he'll reply when he wakes, in sha Allah.</p>
+      </section>
 
       <h3 class="reveal" data-i18n="get.h">What you'll <em>walk away with</em></h3>
       <ul class="ticks reveal">
@@ -414,6 +539,24 @@ footer nav{display:flex;justify-content:center;gap:1.2rem;margin-top:1rem}
         <li data-i18n="dua.4"><b>Change within.</b> “Allah does not change the condition of a people until they change what is in themselves.” (13:11)</li>
       </ul>
 
+      <!-- ego -->
+      <section class="ego reveal" id="ego">
+        <h3 data-i18n="ego.h">Your ego is the wall between you <em>and your power.</em></h3>
+        <p data-i18n="ego.1">You cannot be truly powerful, truly <strong>expansive</strong>, while your ego is in the way. Ego says “I did this”, “I know better”, “what will people say?” Real expansion starts when you bow, and admit that every good thing comes from Allah.</p>
+        <p class="bigline" data-i18n="ego.2">Don't let other people's opinions decide this for you. When you're ready to let go of the ego, message Adeel Ahmed Rahman on WhatsApp, +1 613 408 3945.</p>
+        <div class="duo"><a class="btn2 wa js-wa" data-wa="roman" href="https://wa.me/16134083945" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2s.2-1.1.1-1.2-.2-.2-.5-.3Z"/></svg><span data-i18n="ego.btn">Message Adeel</span></a><a class="btn2" href="#offers"><span data-i18n="ego.btn2">See the options</span></a></div>
+      </section>
+
+      <!-- not God / King's Table -->
+      <section class="king reveal" id="king">
+        <p class="ar" lang="ar">قُلْ هُوَ ٱللَّهُ أَحَدٌ</p>
+        <h3 data-i18n="king.h">You are not God. <em>Only Allah is God.</em></h3>
+        <p data-i18n="king.1">New-age teachers say “you are the universe”, “you are God”, “you create your own reality”. That isn't Islam. You are a servant of Allah, and that is your honour. You ask; He gives.</p>
+        <h4 data-i18n="king.t">The King's Table is Jannah.</h4>
+        <p data-i18n="king.2">The highest seat there is, the King's Table, is Jannah. It won't be reached by listening to new-age spiritual gurus. It's reached by Allah's mercy, through the Qur'an and the Sunnah of the Prophet ﷺ, and that is all a Sunni Muslim like Adeel Ahmed Rahman will ever teach you.</p>
+        <p class="fine" data-i18n="king.ref">“Say: He is Allah, the One.” Qur'an 112:1</p>
+      </section>
+
       <blockquote class="quote reveal"><span data-i18n="quote">You don't get what you chase. You get what you ask Allah for with a present heart. So ask Him boldly, because you deserve what you desire.</span><small>— Adeel Ahmed Rahman</small></blockquote>
 
       <h3 id="how" class="reveal" data-i18n="how.h">How it <em>works</em></h3>
@@ -428,6 +571,35 @@ footer nav{display:flex;justify-content:center;gap:1.2rem;margin-top:1rem}
         <picture><source srcset="assets/adeel-closing.webp" type="image/webp"><img src="assets/adeel-closing.jpg" alt="Adeel Ahmed Rahman" loading="lazy"></picture>
         <picture><source srcset="coach/assets/take-3.webp" type="image/webp"><img src="coach/assets/take-3.jpg" alt="Adeel Ahmed Rahman" loading="lazy"></picture>
       </div>
+
+      <!-- offers -->
+      <h3 id="offers" class="reveal" data-i18n="of.h">Ways to work <em>with Adeel</em></h3>
+      <p class="lead reveal" data-i18n="of.lead">Every price ends in an angel number, as a reminder to make dhikr. All power belongs to Allah; every session is simply us asking Him together.</p>
+      <div class="offers reveal">
+        <div class="of of--star"><div class="of__top"><b data-i18n="of.king.t">The King's Table · Lifetime membership</b><span class="pr">$1,111</span></div><p data-i18n="of.king.d">The advanced course, every future lesson, the private circle and lifetime access, paid once. Enter your email and WhatsApp and Adeel will message you personally.</p><a class="cta" href="course.html#kings-table"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.35 10.55 20C5.4 15.36 2 12.27 2 8.5A5.5 5.5 0 0 1 7.5 3c1.74 0 3.41.81 4.5 2.09A6 6 0 0 1 16.5 3 5.5 5.5 0 0 1 22 8.5c0 3.77-3.4 6.86-8.55 11.54L12 21.35Z"/></svg><span data-i18n="cta">I want this so badly</span></a></div>
+        <div class="of of--free"><div class="of__top"><b data-i18n="of.free.t">Free course &amp; community forum</b><span class="pr" data-i18n="free">Free</span></div><p data-i18n="of.free.d">“Start Now”, the foundations course, plus the forum where you can ask any question. Doctors, lawyers, therapists, mothers and first responders all welcome.</p><a class="btn2" href="course.html"><span data-i18n="of.free.btn">Start free</span></a></div>
+        <div class="of of--free"><div class="of__top"><b data-i18n="of.pray.t">Prayer request</b><span class="pr" data-i18n="free">Free</span></div><p data-i18n="of.pray.d">Tell Adeel what to make dua for. Always free. Prayer is never for sale.</p><a class="btn2" href="#pray"><span data-i18n="pray.btn">Request a prayer</span></a></div>
+        <div class="of "><div class="of__top"><b data-i18n="of.guide.t">Daily Dhikr &amp; Dua Guide</b><span class="pr">$22.22</span></div><p data-i18n="of.guide.d">A printable morning-and-evening adhkar guide with Adeel's audio, so you never miss your protection.</p><a class="btn2 js-offer" data-item="Daily Dhikr & Dua Guide" data-price="$22.22" href="https://wa.me/16134083945" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.35 10.55 20C5.4 15.36 2 12.27 2 8.5A5.5 5.5 0 0 1 7.5 3c1.74 0 3.41.81 4.5 2.09A6 6 0 0 1 16.5 3 5.5 5.5 0 0 1 22 8.5c0 3.77-3.4 6.86-8.55 11.54L12 21.35Z"/></svg><span data-i18n="cta">I want this so badly</span></a></div>
+        <div class="of "><div class="of__top"><b data-i18n="of.clarity.t">1:1 Clarity Session</b><span class="pr">$111.11</span></div><p data-i18n="of.clarity.d">45 minutes on WhatsApp video. Find what you truly desire and the exact dua for it.</p><a class="btn2 js-offer" data-item="1:1 Clarity Session" data-price="$111.11" href="https://wa.me/16134083945" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.35 10.55 20C5.4 15.36 2 12.27 2 8.5A5.5 5.5 0 0 1 7.5 3c1.74 0 3.41.81 4.5 2.09A6 6 0 0 1 16.5 3 5.5 5.5 0 0 1 22 8.5c0 3.77-3.4 6.86-8.55 11.54L12 21.35Z"/></svg><span data-i18n="cta">I want this so badly</span></a></div>
+        <div class="of "><div class="of__top"><b data-i18n="of.protect.t">Protection Program · 3 weeks</b><span class="pr">$222.22</span></div><p data-i18n="of.protect.d">Evil eye, energy vampires and Shaytan’s whispers: daily adhkar, boundaries and check-ins.</p><a class="btn2 js-offer" data-item="Protection Program" data-price="$222.22" href="https://wa.me/16134083945" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.35 10.55 20C5.4 15.36 2 12.27 2 8.5A5.5 5.5 0 0 1 7.5 3c1.74 0 3.41.81 4.5 2.09A6 6 0 0 1 16.5 3 5.5 5.5 0 0 1 22 8.5c0 3.77-3.4 6.86-8.55 11.54L12 21.35Z"/></svg><span data-i18n="cta">I want this so badly</span></a></div>
+        <div class="of "><div class="of__top"><b data-i18n="of.monthly.t">Monthly Coaching</b><span class="pr">$333.33<small style="font-size:.6em">/mo</small></span></div><p data-i18n="of.monthly.d">Four 1:1 sessions a month plus WhatsApp access between them.</p><a class="btn2 js-offer" data-item="Monthly Coaching" data-price="$333.33<small style="font-size:.6em">/mo</small>" href="https://wa.me/16134083945" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.35 10.55 20C5.4 15.36 2 12.27 2 8.5A5.5 5.5 0 0 1 7.5 3c1.74 0 3.41.81 4.5 2.09A6 6 0 0 1 16.5 3 5.5 5.5 0 0 1 22 8.5c0 3.77-3.4 6.86-8.55 11.54L12 21.35Z"/></svg><span data-i18n="cta">I want this so badly</span></a></div>
+        <div class="of "><div class="of__top"><b data-i18n="of.rizq.t">Marriage &amp; Rizq Dua Program · 6 weeks</b><span class="pr">$444.44</span></div><p data-i18n="of.rizq.d">For the spouse and the provision you’re asking Allah for: istikhara, dua and the inner work.</p><a class="btn2 js-offer" data-item="Marriage & Rizq Dua Program" data-price="$444.44" href="https://wa.me/16134083945" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.35 10.55 20C5.4 15.36 2 12.27 2 8.5A5.5 5.5 0 0 1 7.5 3c1.74 0 3.41.81 4.5 2.09A6 6 0 0 1 16.5 3 5.5 5.5 0 0 1 22 8.5c0 3.77-3.4 6.86-8.55 11.54L12 21.35Z"/></svg><span data-i18n="cta">I want this so badly</span></a></div>
+        <div class="of "><div class="of__top"><b data-i18n="of.hijra.t">2-Day Hijra Intensive</b><span class="pr">$555.55</span></div><p data-i18n="of.hijra.d">Two deep days with Adeel, the format Aida did. Leave the old self behind.</p><a class="btn2 js-offer" data-item="2-Day Hijra Intensive" data-price="$555.55" href="https://wa.me/16134083945" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.35 10.55 20C5.4 15.36 2 12.27 2 8.5A5.5 5.5 0 0 1 7.5 3c1.74 0 3.41.81 4.5 2.09A6 6 0 0 1 16.5 3 5.5 5.5 0 0 1 22 8.5c0 3.77-3.4 6.86-8.55 11.54L12 21.35Z"/></svg><span data-i18n="cta">I want this so badly</span></a></div>
+      </div>
+      <p class="fine reveal" data-i18n="of.fine">Prices in US dollars. Paying from Pakistan? Ask on WhatsApp. Results vary and every outcome is from Allah.</p>
+
+      <!-- prayer request -->
+      <section class="pray reveal" id="pray">
+        <h3 data-i18n="pray.h">Request a <em>prayer</em></h3>
+        <p data-i18n="pray.p">Tell me what you'd like me to make dua for. It's free, always. Your request goes privately to my WhatsApp, <strong>@PakistaniMangos</strong> (+1 613 408 3945).</p>
+        <form id="prayForm" novalidate>
+          <label class="field"><span class="up" data-i18n="pray.name">Your name (optional)</span><input name="n" autocomplete="given-name"></label>
+          <label class="field"><span class="up" data-i18n="pray.what">What should I pray for?</span><textarea name="d" required data-i18n-ph="pray.ph" placeholder="Shifa for my mother, a righteous spouse, rizq, peace in my home…"></textarea></label>
+          <button class="cta" type="submit">🤲 <span data-i18n="pray.send">Send my prayer request</span></button>
+        </form>
+        <div class="duo"><a class="btn2 tt" href="https://www.tiktok.com/@humiliator" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.6 5.8A4.3 4.3 0 0 1 15.5 3h-3.1v12.4a2.6 2.6 0 1 1-2.6-2.6c.3 0 .5 0 .8.1V9.7a5.7 5.7 0 1 0 4.9 5.7V9.1a7.3 7.3 0 0 0 4.3 1.4V7.4a4.3 4.3 0 0 1-3.2-1.6Z"/></svg><span data-i18n="tt.follow">Follow @humiliator on TikTok</span></a><a class="btn2 wa js-wa" data-wa="roman" href="https://wa.me/16134083945" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2s.2-1.1.1-1.2-.2-.2-.5-.3Z"/></svg><span>@PakistaniMangos</span></a></div>
+        <p class="fine" data-i18n="pray.fine">Daily dhikr reminders and dua on TikTok. All answers come from Allah alone.</p>
+      </section>
 
       <h3 class="reveal" data-i18n="for.h">This is <em>for you</em> if…</h3>
       <ul class="ticks reveal">
@@ -464,10 +636,12 @@ footer nav{display:flex;justify-content:center;gap:1.2rem;margin-top:1rem}
   <p class="big" data-i18n="foot.big">You deserve what you desire.</p>
   <p class="tl up" data-i18n="foot.tl">622 · Every new beginning starts with a Hijra</p>
   <p><b style="color:var(--cream)">Adeel Ahmed Rahman</b> · <span data-i18n="foot.role">Dhikr &amp; Dua Coach for Muslims · Sunni Muslim</span></p>
-  <p>WhatsApp <a href="https://wa.me/16134083945" target="_blank" rel="noopener" dir="ltr">+1 613 408 3945</a></p>
-  <nav><a href="realtor/" data-i18n="nav.realtor">Realtor</a><a href="actor/" data-i18n="nav.actor">Actor</a></nav>
+  <p>WhatsApp <a href="https://wa.me/16134083945" target="_blank" rel="noopener" dir="ltr">+1 613 408 3945</a> · @PakistaniMangos · TikTok <a href="https://www.tiktok.com/@humiliator" target="_blank" rel="noopener">@humiliator</a></p>
+  <nav><a href="course.html" data-i18n="nav.course">Course</a><a href="forum.html" data-i18n="nav.forum">Forum</a><a href="https://www.tiktok.com/@humiliator" target="_blank" rel="noopener">TikTok</a><a href="realtor/" data-i18n="nav.realtor">Realtor</a><a href="actor/" data-i18n="nav.actor">Actor</a></nav>
   <p style="margin-top:1rem">© <span id="yr">2026</span> Adeel Ahmed Rahman</p>
 </footer>
+
+<a class="fab-wa js-wa" data-wa="roman" href="https://wa.me/16134083945" target="_blank" rel="noopener" aria-label="WhatsApp Adeel Ahmed Rahman"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2s.2-1.1.1-1.2-.2-.2-.5-.3Z"/></svg><span lang="ur">واٹس ایپ</span><span class="lat">WhatsApp</span></a>
 
 <div class="dock" id="dock"><div class="dock__in">
   <picture><source srcset="coach/assets/lobby-3.webp" type="image/webp"><img src="coach/assets/lobby-3.jpg" alt=""></picture>
@@ -475,7 +649,8 @@ footer nav{display:flex;justify-content:center;gap:1.2rem;margin-top:1rem}
   <a class="cta js-want" href="https://wa.me/16134083945" target="_blank" rel="noopener"><span data-i18n="cta">I want this so badly</span></a>
 </div></div>
 
-<script src="coach/i18n.js?v=1"></script>
+<script src="coach/i18n.js?v=2"></script>
+<script src="coach/home.js?v=1"></script>
 <script>
 (function(){
   var WA="16134083945";
