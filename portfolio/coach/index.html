@@ -115,6 +115,18 @@ h3 em{font-size:1em}
 
 .quote{margin:2.4rem 0 0;padding:1.6rem 1.4rem;border-left:2px solid var(--gold);background:rgba(201,164,92,.06);border-radius:0 16px 16px 0;
   font-family:var(--serif);font-style:italic;font-size:1.3rem;line-height:1.45}
+/* before / after story */
+.story-h{margin-top:2.6rem}
+.vs{display:grid;gap:.9rem;grid-template-columns:1fr}
+@media(min-width:600px){.vs{grid-template-columns:1fr 1fr}}
+.card{padding:1.3rem 1.2rem;border-radius:18px;border:1px solid var(--line);background:rgba(10,15,30,.4)}
+.card .who{font-family:var(--serif);font-size:1.35rem;line-height:1.2}
+.card .when{display:inline-block;margin:.35rem 0 .8rem;font-size:.68rem;letter-spacing:.26em;text-transform:uppercase;color:var(--muted)}
+.card p{font-size:.95rem}
+.card--before{opacity:.82}
+.card--after{border-color:var(--gold);background:linear-gradient(160deg,rgba(201,164,92,.16),rgba(10,15,30,.4));box-shadow:0 18px 40px -22px rgba(201,164,92,.6)}
+.card--after .when{color:var(--gold-bright)}
+.fine{margin-top:.8rem;font-size:.74rem;color:var(--muted);text-align:center}
 .quote small{display:block;margin-top:.7rem;font-family:var(--sans);font-style:normal;font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold)}
 
 .steps{counter-reset:s;display:grid;gap:.9rem}
@@ -214,6 +226,21 @@ footer a{color:var(--cream);border-bottom:1px solid var(--line)}
         <li><b>Calm, certain energy</b>, which replaces chasing, waiting and doubting.</li>
         <li><b>Direct access to Adeel Ahmed Rahman</b> on WhatsApp between sessions.</li>
       </ul>
+
+      <h3 class="story-h reveal">You'll make more progress in <em>2 days</em> than others make in <em>30 years.</em></h3>
+      <div class="vs reveal">
+        <div class="card card--before">
+          <div class="who">Aisha</div>
+          <span class="when">30 years of therapy</span>
+          <p>Three decades of talking about the problem. Still stuck. Still helpless. Still waiting for the marriage she wanted.</p>
+        </div>
+        <div class="card card--after">
+          <div class="who">Aida</div>
+          <span class="when">2 days with Adeel Ahmed Rahman</span>
+          <p>Two days changing who she believed she was. Today she lives her dream life in <strong>Ireland, as a doctor</strong>. She manifested it.</p>
+        </div>
+      </div>
+      <p class="fine reveal">Aida's story is her own, and results vary. Coaching works alongside therapy and medical care, not instead of it.</p>
 
       <blockquote class="quote reveal">You don't attract what you want. You attract who you are. So become the one who deserves it, because you already do.<small>— Adeel Ahmed Rahman</small></blockquote>
 
