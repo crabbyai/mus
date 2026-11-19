@@ -55,9 +55,10 @@
   var quiz = document.getElementById("path");
   if (quiz) {
     var ans = {}, res = document.getElementById("qres");
-    var AMT = { circle: "11.11", istikhara: "88.88", clarity: "111.11", protect: "222.22", rizq: "444.44", hijra: "555.55", biz: "999.99", king: "1111", couples: "777.77" };
+    var AMT = { circle: "11.11", istikhara: "88.88", clarity: "111.11", protect: "222.22", rizq: "444.44", hijra: "555.55", biz: "999.99", king: "1111", couples: "777.77", salah: "888" };
     function pick(a) {
       var need = a.s, want = a.w;
+      if (want === "salah") return need === "life" ? "king" : "salah";
       if (need === "life") return "king";
       if (want === "decide") return need === "program" ? "clarity" : "istikhara";
       if (need === "start") return "circle";

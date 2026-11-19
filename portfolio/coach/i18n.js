@@ -1497,6 +1497,16 @@
   Object.keys(MORE5).forEach(function (l) { Object.keys(MORE5[l]).forEach(function (k) { T[l][k] = MORE5[l][k]; }); });
 
 
+
+  /* ============ Added: Learn Salah ============ */
+  T.ar["of.salah.t"] = 'تعلّم الصلاة مع عديل'; T.ar["of.salah.d"] = 'خطوة بخطوة، وجهًا لوجه: الوضوء، وكل وضعية، وعربية كل قراءة ومعناها، حتى تصلي الصلوات الخمس بثقة. للمسلمين الجدد ولكل من لم يتعلّمها كما ينبغي. لا تستطيع الدفع؟ راسل عديل: لا ينبغي أن يُحرم أحد من الصلاة.'; T.ar["path.o.salah"] = 'تعلّم الصلاة';
+  T.ur["of.salah.t"] = 'عدیل کے ساتھ نماز سیکھیں'; T.ur["of.salah.d"] = 'قدم بہ قدم، ون آن ون: وضو، ہر رکن، ہر تلاوت کی عربی اور اس کا مطلب، یہاں تک کہ آپ پانچوں نمازیں اعتماد سے پڑھ سکیں۔ نئے مسلمانوں اور ہر اُس شخص کے لیے جس نے کبھی صحیح طرح نہیں سیکھا۔ ادائیگی کی استطاعت نہیں؟ عدیل کو میسج کریں: کسی کو نماز سے محروم نہیں رہنا چاہیے۔'; T.ur["path.o.salah"] = 'نماز سیکھنا';
+  T.fr["of.salah.t"] = 'Apprendre la salat avec Adeel'; T.fr["of.salah.d"] = "Pas à pas, en tête-à-tête : les ablutions, chaque position, l'arabe de chaque récitation et son sens, jusqu'à prier les cinq prières avec assurance. Pour les nouveaux musulmans, les convertis et tous ceux qui n'ont jamais bien appris. Pas les moyens ? Écrivez à Adeel : personne ne devrait être privé de la salat."; T.fr["path.o.salah"] = 'Apprendre à prier';
+  T.es["of.salah.t"] = 'Aprende el salat con Adeel'; T.es["of.salah.d"] = 'Paso a paso, en persona: el wudu, cada posición, el árabe de cada recitación y su significado, hasta que reces las cinco oraciones con confianza. Para nuevos musulmanes, revertidos y quien nunca aprendió bien. ¿No puedes pagarlo? Escribe a Adeel: nadie debería quedarse sin rezar.'; T.es["path.o.salah"] = 'Aprender a rezar';
+  T.ja["of.salah.t"] = 'アディールと礼拝（サラー）を学ぶ'; T.ja["of.salah.d"] = '一対一で一歩ずつ：ウドゥー、すべての動作、各朗誦のアラビア語とその意味。5回の礼拝を自信をもって行えるようになるまで。新しくムスリムになった方、正しく学ぶ機会がなかった方へ。費用が難しい方はアディールに連絡を。誰も礼拝から遠ざけられるべきではありません。'; T.ja["path.o.salah"] = '礼拝を学びたい';
+  T.zh["of.salah.t"] = '跟阿迪尔学礼拜'; T.zh["of.salah.d"] = '一对一，循序渐进：小净、每个动作、每段诵读的阿拉伯语及其含义，直到你能自信地完成五番拜。适合新穆斯林、归信者以及从未好好学过的人。负担不起？请联系阿迪尔：任何人都不应因此错过礼拜。'; T.zh["path.o.salah"] = '学习礼拜';
+  T.ko["of.salah.t"] = '아딜과 함께 살라(예배) 배우기'; T.ko["of.salah.d"] = '일대일로 한 걸음씩: 우두, 모든 자세, 각 낭송의 아랍어와 그 의미까지, 다섯 번의 예배를 자신 있게 드릴 수 있을 때까지. 새로 무슬림이 된 분과 제대로 배울 기회가 없었던 모든 분께. 비용이 부담되나요? 아딜에게 연락하세요. 누구도 예배에서 멀어져서는 안 됩니다.'; T.ko["path.o.salah"] = '예배 배우기';
+
   /* ---------------- engine ---------------- */
   var root = document.documentElement;
   var nodes = [].slice.call(document.querySelectorAll("[data-i18n]"));
