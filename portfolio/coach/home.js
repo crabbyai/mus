@@ -115,6 +115,13 @@
     document.querySelector("#hday .tbody").innerHTML = "<p><strong>" + esc(h.r) + ".</strong> " + esc(h.e) +
       '</p><a href="https://sunnah.com/search?q=' + encodeURIComponent(h.e.replace(/[“”"…]/g, "").split(/\s+/).slice(0, 8).join(" ")) + '" target="_blank" rel="noopener">' + esc(h.s) + " ↗</a>";
   }
+
+  /* ---- free mango gift ---- */
+  [].forEach.call(document.querySelectorAll(".js-mango"), function (a) {
+    var m = "Assalamu alaikum Adeel Ahmed Rahman! I want it badly now: the free Chaunsa Multani mango gift 🥭. Please send it to:\nName: \nAddress: \nCountry: ";
+    if (a.getAttribute("data-ch") === "wa") a.href = wa(m);
+    else a.href = "mailto:siradeelahmedrahman@yahoo.ca?subject=" + encodeURIComponent("I want it badly now: free Chaunsa mango gift 🥭") + "&body=" + encodeURIComponent(m);
+  });
   /* ---- prayer request ---- */
   var pray = document.getElementById("prayForm");
   if (pray) pray.addEventListener("submit", function (e) {

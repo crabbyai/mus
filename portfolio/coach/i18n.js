@@ -1841,6 +1841,59 @@
   T.zh["eye.h"] = '安拉<em>洞察一切</em>'; T.zh["eye.p"] = '唯一能看见一切的，是安拉。全观的主（巴希尔）看见你的努力、你的眼泪和你隐秘的祈祷。你向祂祈求的，没有一样被忽视。'; T.zh["eye.ayah"] = '“祂知道眼睛的偷视和胸中所隐藏的。”';
   T.ko["eye.h"] = '알라께서는 <em>모든 것을</em> 보신다'; T.ko["eye.p"] = '모든 것을 보는 유일한 눈은 알라의 것입니다. 모든 것을 보시는 분(알바시르)께서 당신의 노력과 눈물, 숨겨진 두아를 보십니다. 그분께 구하는 것 중 보이지 않는 것은 하나도 없습니다.'; T.ko["eye.ayah"] = '“그분께서는 눈의 은밀한 시선과 가슴이 숨기는 것을 아신다.”';
 
+
+  /* free mango gift + Scorpio */
+  T.ar['mango.k'] = 'هدية مجانية لك';
+  T.ar['mango.h'] = 'أطيب مانجو في العالم: <em>شونسا من ملتان</em>';
+  T.ar['mango.p'] = 'هدية مني، يسعدني أن أرسل إليك مانجو شونسا الملتاني، أحلى مانجو على الأرض، إلى عنوانك. فقط راسلني وأخبرني أين أرسلها.';
+  T.ar['mango.btn'] = 'أريدها بشدّة الآن!';
+  T.ar['mango.fine'] = 'واتساب \u200e+1 613 408 3945 · siradeelahmedrahman@yahoo.ca · سناب شات \u200e@androgenic · تيك توك \u200e@humiliator. تُشحن الشونسا الطازجة في موسم المانجو (نحو يونيو إلى أغسطس) وفقط حيث يُسمح بإرسال الفاكهة قانونًا؛ وسيؤكد عديل معك.';
+  T.ar['zod.h'] = 'تذكير عن برج العقرب';
+  T.ar['zod.p'] = 'العقرب من أكثر الأبراج شيوعًا في العالم، فهو ليس طاقة نادرة أبدًا. ونحن المسلمين نعلم أن النجوم لا تحدد من أنت، بل الله. «الشمس والقمر آيتان من آيات الله» (البخاري ومسلم)، لا قوى.';
+  T.ur['mango.k'] = 'آپ کے لیے ایک مفت تحفہ';
+  T.ur['mango.h'] = 'دنیا کا سب سے مزیدار آم: <em>ملتان کا چونسا</em>';
+  T.ur['mango.p'] = 'میری طرف سے تحفے کے طور پر، مجھے خوشی ہوگی کہ آپ کے پتے پر چونسا ملتانی آم بھیجوں، زمین کا سب سے میٹھا آم۔ بس مجھے میسج کریں اور بتائیں کہاں بھیجوں۔';
+  T.ur['mango.btn'] = 'مجھے یہ ابھی شدت سے چاہیے!';
+  T.ur['mango.fine'] = 'واٹس ایپ \u200e+1 613 408 3945 · siradeelahmedrahman@yahoo.ca · اسنیپ چیٹ \u200e@androgenic · ٹک ٹاک \u200e@humiliator۔ تازہ چونسا آم کے موسم (تقریباً جون سے اگست) میں اور صرف وہاں بھیجا جاتا ہے جہاں پھل بھیجنا قانوناً جائز ہو؛ عدیل آپ سے تصدیق کریں گے۔';
+  T.ur['zod.h'] = 'برجِ عقرب کے بارے میں یاد دہانی';
+  T.ur['zod.p'] = 'عقرب دنیا کے عام ترین بُرجوں میں سے ہے، اس لیے یہ کوئی نایاب توانائی بالکل نہیں۔ اور بطور مسلمان ہم جانتے ہیں کہ ستارے طے نہیں کرتے کہ آپ کون ہیں، اللہ کرتا ہے۔ ”سورج اور چاند اللہ کی نشانیوں میں سے دو نشانیاں ہیں“ (بخاری، مسلم)، طاقتیں نہیں۔';
+  T.fr['mango.k'] = 'Un cadeau gratuit pour vous';
+  T.fr['mango.h'] = 'La mangue la plus délicieuse au monde : <em>la Chaunsa de Multan</em>';
+  T.fr['mango.p'] = "En cadeau, j'aimerais vous envoyer des mangues Chaunsa de Multan, les plus sucrées de la terre, à votre adresse. Écrivez-moi simplement et dites-moi où les envoyer.";
+  T.fr['mango.btn'] = 'Je la veux maintenant !';
+  T.fr['mango.fine'] = "WhatsApp +1 613 408 3945 · siradeelahmedrahman@yahoo.ca · Snapchat @androgenic · TikTok @humiliator. La Chaunsa fraîche s'expédie en saison (environ de juin à août) et seulement là où l'envoi de fruits est autorisé ; Adeel vous le confirmera.";
+  T.fr['zod.h'] = 'Un rappel sur le Scorpion';
+  T.fr['zod.p'] = "Le Scorpion est l'un des signes de naissance les plus courants au monde : ce n'est donc pas du tout une énergie rare. Et en tant que musulmans, nous savons que les astres ne décident pas de qui vous êtes : c'est Allah. « Le soleil et la lune sont deux signes d'Allah » (Bukhari, Muslim), pas des puissances.";
+  T.es['mango.k'] = 'Un regalo gratis para ti';
+  T.es['mango.h'] = 'El mango más sabroso del mundo: <em>el Chaunsa de Multán</em>';
+  T.es['mango.p'] = 'Como regalo, me encantaría enviarte mangos Chaunsa de Multán, los más dulces del mundo, a tu dirección. Solo escríbeme y dime adónde enviarlos.';
+  T.es['mango.btn'] = '¡Lo quiero ya!';
+  T.es['mango.fine'] = 'WhatsApp +1 613 408 3945 · siradeelahmedrahman@yahoo.ca · Snapchat @androgenic · TikTok @humiliator. El Chaunsa fresco se envía en temporada (aprox. de junio a agosto) y solo donde se permite enviar fruta; Adeel te lo confirmará.';
+  T.es['zod.h'] = 'Un recordatorio sobre Escorpio';
+  T.es['zod.p'] = 'Escorpio es uno de los signos de nacimiento más comunes del mundo, así que no es una energía rara en absoluto. Y como musulmanes sabemos que las estrellas no deciden quién eres: lo decide Allah. «El sol y la luna son dos de los signos de Allah» (Bujari, Muslim), no poderes.';
+  T.ja['mango.k'] = 'あなたへの無料ギフト';
+  T.ja['mango.h'] = '世界一おいしいマンゴー：<em>ムルターン産チャウンサ</em>';
+  T.ja['mango.p'] = '私からの贈り物として、地球でいちばん甘いマンゴー、チャウンサ・ムルターニーをあなたのご住所にお送りしたいと思います。送り先をメッセージで教えてください。';
+  T.ja['mango.btn'] = '今すぐどうしても欲しい！';
+  T.ja['mango.fine'] = 'WhatsApp +1 613 408 3945 · siradeelahmedrahman@yahoo.ca · Snapchat @androgenic · TikTok @humiliator。生のチャウンサはマンゴーの季節（6〜8月頃）に、果物の発送が法的に認められている地域にのみお送りします。アディールから確認のご連絡をします。';
+  T.ja['zod.h'] = 'さそり座についてのひとこと';
+  T.ja['zod.p'] = 'さそり座は世界で最も多い星座のひとつで、珍しいエネルギーなどではまったくありません。そしてムスリムとして、私たちは星があなたを決めるのではなく、アッラーが決めると知っています。「太陽と月はアッラーのしるしの二つである」（ブハーリー、ムスリム）。力ではありません。';
+  T.zh['mango.k'] = '送你的免费礼物';
+  T.zh['mango.h'] = '世界上最好吃的芒果：<em>木尔坦的乔萨芒果</em>';
+  T.zh['mango.p'] = '作为我的礼物，我很乐意把世界上最甜的木尔坦乔萨芒果寄到你的地址。只需给我发消息，告诉我寄到哪里。';
+  T.zh['mango.btn'] = '我现在就非常想要！';
+  T.zh['mango.fine'] = 'WhatsApp +1 613 408 3945 · siradeelahmedrahman@yahoo.ca · Snapchat @androgenic · TikTok @humiliator。新鲜乔萨芒果在芒果季（约六月至八月）发货，且仅寄往法律允许寄送水果的地区；阿迪尔会与你确认。';
+  T.zh['zod.h'] = '关于天蝎座的提醒';
+  T.zh['zod.p'] = '天蝎座是世界上最常见的星座之一，所以它根本不是什么稀有的能量。作为穆斯林，我们知道决定你是谁的不是星星，而是安拉。“太阳和月亮是安拉的两个迹象”（布哈里、穆斯林），而不是力量。';
+  T.ko['mango.k'] = '당신을 위한 무료 선물';
+  T.ko['mango.h'] = '세상에서 가장 맛있는 망고: <em>물탄의 차운사</em>';
+  T.ko['mango.p'] = '제 선물로, 세상에서 가장 달콤한 차운사 물타니 망고를 당신의 주소로 보내 드리고 싶습니다. 메시지로 보낼 곳만 알려 주세요.';
+  T.ko['mango.btn'] = '지금 정말 갖고 싶어요!';
+  T.ko['mango.fine'] = 'WhatsApp +1 613 408 3945 · siradeelahmedrahman@yahoo.ca · Snapchat @androgenic · TikTok @humiliator. 신선한 차운사는 망고 철(약 6~8월)에, 과일 배송이 법적으로 허용된 곳에만 보내 드립니다. 아딜이 확인해 드립니다.';
+  T.ko['zod.h'] = '전갈자리에 관한 한마디';
+  T.ko['zod.p'] = '전갈자리는 세계에서 가장 흔한 별자리 중 하나로, 결코 희귀한 에너지가 아닙니다. 그리고 무슬림으로서 우리는 별이 당신을 결정하는 것이 아니라 알라께서 결정하신다는 것을 압니다. “해와 달은 알라의 징표 중 두 가지이다”(부카리, 무슬림). 힘이 아닙니다.';
+  Object.keys(RIBBON).forEach(function (l) { RIBBON[l].splice(1, 0, "🥭 Chaunsa 👁️✨"); });
+
   /* ---------------- engine ---------------- */
   var root = document.documentElement;
   var nodes = [].slice.call(document.querySelectorAll("[data-i18n]"));
