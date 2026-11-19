@@ -1005,6 +1005,92 @@
   Object.keys(RIB_MORE).forEach(function (l) { RIBBON[l] = RIBBON[l].concat(RIB_MORE[l]); });
 
 
+
+  /* ============ Added: awareness, private teachings, story lines ============ */
+  var MORE2 = {
+    ar: {
+      "know.h": "تريد أن تعرف. جيد.", "know.p": "بعض التعاليم لا تُشارك إلا وجهًا لوجه. اختر كيف تتواصل مع عديل أحمد رحمان، وسيشاركها معك شخصيًا.", "know.btn": "أريد أن أعرف بشدّة",
+      "story.4": "أنا <strong>تجسيدٌ لما أعلّمه</strong>. هذه التعاليم لم أتعلّمها في قاعة درس، بل خرجت من ليلةٍ مظلمة جدًا للروح. وأشعر أنني <strong>مُقادٌ بتوفيق إلهي</strong> لمساعدتك.",
+      "aw.k": "الوعي · الإدراك", "aw.h": "التجلّي يدور كله حول <em>الوعي.</em>",
+      "aw.1": "وعيك نُحت من صدماتك، ودراماك، وذكرياتك، وبرمجتك، وتكييفك. وما يُنحت عبر سنوات حياتك يصبح <strong>نظام تشغيلك</strong>.",
+      "aw.c1": "الصدمات", "aw.c2": "الدراما", "aw.c3": "الذكريات", "aw.c4": "البرمجة", "aw.c5": "التكييف",
+      "aw.2": "نظام التشغيل هذا يحدّد إن كنت ستصبح ثريًا جدًا أو وحيدًا، وإن كنت ستعمل لحلمك أو لحلم غيرك. الوعي المنحوت ينحت الإدراك.",
+      "aw.3": "الوعي يخلق، بإذن الله. تذكّر ذلك. وسيساعدك عديل أحمد رحمان على تحريك وعيك.",
+      "aw.btn": "تعلّم كل الأسرار",
+      "vault.k": "خاص · عديل أحمد رحمان", "vault.h": "سرّ <em>الاتساع</em>", "vault.p": "هذا التعليم خاص. يشاركه عديل أحمد رحمان وجهًا لوجه."
+    },
+    ur: {
+      "know.h": "آپ جاننا چاہتے ہیں۔ اچھی بات ہے۔", "know.p": "کچھ تعلیمات صرف آمنے سامنے بتائی جاتی ہیں۔ عدیل احمد رحمان سے رابطے کا طریقہ چنیں، وہ خود آپ کو بتائیں گے۔", "know.btn": "مجھے یہ جاننا شدت سے ہے",
+      "story.4": "میں <strong>اپنی تعلیم کا جیتا جاگتا نمونہ</strong> ہوں۔ یہ تعلیمات کسی کلاس روم میں نہیں سیکھیں، یہ روح کی ایک بہت تاریک رات سے نکلی ہیں۔ اور مجھے لگتا ہے کہ مجھے آپ کی مدد کے لیے <strong>غیبی رہنمائی</strong> ملی ہے۔",
+      "aw.k": "آگاہی · شعور", "aw.h": "مینی فیسٹیشن سراسر <em>آگاہی</em> کا نام ہے۔",
+      "aw.1": "آپ کا شعور آپ کے صدمات، آپ کے ڈراموں، آپ کی یادوں، آپ کے پروگرامز اور آپ کی تربیت سے تراشا گیا ہے۔ زندگی بھر جو کچھ تراشا جاتا ہے وہی آپ کا <strong>آپریٹنگ سسٹم</strong> بن جاتا ہے۔",
+      "aw.c1": "صدمات", "aw.c2": "ڈرامے", "aw.c3": "یادیں", "aw.c4": "پروگرامز", "aw.c5": "تربیت",
+      "aw.2": "یہی آپریٹنگ سسٹم طے کرتا ہے کہ آپ بے حد امیر ہوں گے یا تنہا، آپ اپنے خواب کے لیے کام کریں گے یا کسی اور کے خواب کے لیے۔ تراشا ہوا شعور آگاہی کو تراشتا ہے۔",
+      "aw.3": "شعور تخلیق کرتا ہے، اللہ کے حکم سے۔ یہ یاد رکھیں۔ عدیل احمد رحمان آپ کی آگاہی کو آگے بڑھانے میں مدد کریں گے۔",
+      "aw.btn": "سارے راز سیکھیں",
+      "vault.k": "نجی · عدیل احمد رحمان", "vault.h": "<em>وسعت</em> کا راز", "vault.p": "یہ تعلیم نجی رکھی گئی ہے۔ عدیل احمد رحمان اسے آمنے سامنے بتاتے ہیں۔"
+    },
+    fr: {
+      "know.h": "Vous voulez savoir. Très bien.", "know.p": "Certains enseignements ne se partagent qu'en tête-à-tête. Choisissez comment joindre Adeel Ahmed Rahman, et il vous le partagera personnellement.", "know.btn": "Je veux tellement savoir",
+      "story.4": "Je suis <strong>l'incarnation de ce que j'enseigne</strong>. Ces enseignements ne viennent pas d'une salle de classe : ils sont nés d'une très sombre nuit de l'âme. Et je me sens profondément <strong>guidé par le divin</strong> pour vous aider.",
+      "aw.k": "Conscience · Éveil", "aw.h": "La manifestation, c'est avant tout <em>la conscience.</em>",
+      "aw.1": "Votre conscience a été sculptée par vos traumatismes, vos drames, vos souvenirs, vos programmes et votre conditionnement. Ce qui se sculpte au fil de votre vie devient votre <strong>système d'exploitation</strong>.",
+      "aw.c1": "Traumatismes", "aw.c2": "Drames", "aw.c3": "Souvenirs", "aw.c4": "Programmes", "aw.c5": "Conditionnement",
+      "aw.2": "Ce système d'exploitation décide si vous serez immensément riche ou seul, si vous travaillerez pour votre rêve ou pour celui d'un autre. Une conscience sculptée sculpte la perception.",
+      "aw.3": "La conscience crée, bi-idhnillah, par la permission d'Allah. Souvenez-vous-en. Adeel Ahmed Rahman vous aidera à déplacer votre conscience.",
+      "aw.btn": "Apprendre tous les secrets",
+      "vault.k": "Privé · Adeel Ahmed Rahman", "vault.h": "Le secret de <em>l'expansion</em>", "vault.p": "Cet enseignement reste privé. Adeel Ahmed Rahman le partage en tête-à-tête."
+    },
+    es: {
+      "know.h": "Quieres saber. Bien.", "know.p": "Algunas enseñanzas solo se comparten en persona. Elige cómo contactar a Adeel Ahmed Rahman y él te lo compartirá personalmente.", "know.btn": "Quiero saberlo con todas mis fuerzas",
+      "story.4": "Soy <strong>la encarnación de lo que enseño</strong>. Estas enseñanzas no salieron de un aula: nacieron de una noche oscura del alma muy profunda. Y me siento muy <strong>guiado por lo divino</strong> para ayudarte.",
+      "aw.k": "Conciencia · Percepción", "aw.h": "La manifestación se trata de <em>conciencia.</em>",
+      "aw.1": "Tu conciencia fue esculpida por tus traumas, tus dramas, tus recuerdos, tus programas y tu condicionamiento. Lo que se esculpe a lo largo de tu vida se convierte en tu <strong>sistema operativo</strong>.",
+      "aw.c1": "Traumas", "aw.c2": "Dramas", "aw.c3": "Recuerdos", "aw.c4": "Programas", "aw.c5": "Condicionamiento",
+      "aw.2": "Ese sistema operativo decide si serás inmensamente rico o vivirás solo, si trabajarás por tu sueño o por el de otro. La conciencia esculpida esculpe la percepción.",
+      "aw.3": "La conciencia crea, bi-idhnillah, con el permiso de Allah. Recuérdalo. Adeel Ahmed Rahman te ayudará a mover tu conciencia.",
+      "aw.btn": "Aprende todos los secretos",
+      "vault.k": "Privado · Adeel Ahmed Rahman", "vault.h": "El secreto de la <em>expansión</em>", "vault.p": "Esta enseñanza se mantiene en privado. Adeel Ahmed Rahman la comparte en persona."
+    },
+    ja: {
+      "know.h": "知りたいのですね。いいことです。", "know.p": "一対一でしか伝えない教えがあります。Adeel Ahmed Rahmanへの連絡方法を選んでください。本人が直接お伝えします。", "know.btn": "どうしても知りたい",
+      "story.4": "私は<strong>自分が教えることを体現しています</strong>。この教えは教室で学んだものではなく、とても深い魂の闇夜から生まれました。そして私は、あなたを助けるよう<strong>神に導かれている</strong>と強く感じています。",
+      "aw.k": "気づき · 意識", "aw.h": "引き寄せのすべては<em>気づき</em>にあります。",
+      "aw.1": "あなたの意識は、トラウマ、ドラマ、記憶、プログラム、条件付けによって彫刻されてきました。人生を通じて彫られたものが、あなたの<strong>オペレーティングシステム</strong>になります。",
+      "aw.c1": "トラウマ", "aw.c2": "ドラマ", "aw.c3": "記憶", "aw.c4": "プログラム", "aw.c5": "条件付け",
+      "aw.2": "そのオペレーティングシステムが、あなたが莫大な富を得るか孤独になるか、自分の夢のために働くか他人の夢のために働くかを決めます。彫刻された意識が、気づきを彫刻するのです。",
+      "aw.3": "意識は創造する、ビイズニッラー、アッラーのお許しによって。それを忘れないでください。Adeel Ahmed Rahmanがあなたの気づきを動かす手助けをします。",
+      "aw.btn": "すべての秘密を学ぶ",
+      "vault.k": "非公開 · Adeel Ahmed Rahman", "vault.h": "<em>拡大</em>の秘密", "vault.p": "この教えは非公開です。Adeel Ahmed Rahmanが一対一でお伝えします。"
+    },
+    zh: {
+      "know.h": "你想知道。很好。", "know.p": "有些教导只在一对一时分享。选择联系 Adeel Ahmed Rahman 的方式，他会亲自告诉你。", "know.btn": "我非常想知道",
+      "story.4": "我是<strong>我所教导之事的化身</strong>。这些教导不是在教室里学来的，而是从一个极其黑暗的灵魂暗夜中诞生的。我深深感到自己<strong>受到神圣的引领</strong>来帮助你。",
+      "aw.k": "觉知 · 意识", "aw.h": "显化的核心就是<em>觉知。</em>",
+      "aw.1": "你的意识是由你的创伤、你的戏剧、你的记忆、你的程序和你的条件反射雕刻而成的。一生中被雕刻出来的东西，就成了你的<strong>操作系统</strong>。",
+      "aw.c1": "创伤", "aw.c2": "戏剧", "aw.c3": "记忆", "aw.c4": "程序", "aw.c5": "条件反射",
+      "aw.2": "这个操作系统决定你会极其富有还是孤独，决定你为自己的梦想工作还是为别人的梦想工作。被雕刻的意识雕刻着觉知。",
+      "aw.3": "意识在创造——凭安拉的许可。记住这一点。Adeel Ahmed Rahman 会帮助你移动你的觉知。",
+      "aw.btn": "学习所有秘密",
+      "vault.k": "私密 · Adeel Ahmed Rahman", "vault.h": "<em>扩展</em>的秘密", "vault.p": "这一教导保持私密。Adeel Ahmed Rahman 只在一对一时分享。"
+    },
+    ko: {
+      "know.h": "알고 싶으시군요. 좋습니다.", "know.p": "어떤 가르침은 일대일로만 나눕니다. Adeel Ahmed Rahman에게 연락할 방법을 고르시면 직접 알려드립니다.", "know.btn": "정말 간절히 알고 싶어요",
+      "story.4": "저는 <strong>제가 가르치는 것의 체현</strong>입니다. 이 가르침은 교실에서 배운 것이 아니라, 아주 깊은 영혼의 어두운 밤에서 나왔습니다. 그리고 저는 당신을 돕도록 <strong>신성하게 이끌림을 받고 있다</strong>고 깊이 느낍니다.",
+      "aw.k": "자각 · 의식", "aw.h": "끌어당김의 핵심은 <em>자각</em>입니다.",
+      "aw.1": "당신의 의식은 트라우마, 드라마, 기억, 프로그램, 조건화에 의해 조각되었습니다. 평생에 걸쳐 조각된 것이 당신의 <strong>운영 체제</strong>가 됩니다.",
+      "aw.c1": "트라우마", "aw.c2": "드라마", "aw.c3": "기억", "aw.c4": "프로그램", "aw.c5": "조건화",
+      "aw.2": "그 운영 체제가 당신이 엄청난 부자가 될지 외로워질지, 자신의 꿈을 위해 일할지 다른 사람의 꿈을 위해 일할지를 결정합니다. 조각된 의식이 자각을 조각합니다.",
+      "aw.3": "의식은 창조합니다, 비이드닐라, 알라의 허락으로. 이것을 기억하세요. Adeel Ahmed Rahman이 당신의 자각을 움직이도록 도울 것입니다.",
+      "aw.btn": "모든 비밀 배우기",
+      "vault.k": "비공개 · Adeel Ahmed Rahman", "vault.h": "<em>확장</em>의 비밀", "vault.p": "이 가르침은 비공개입니다. Adeel Ahmed Rahman이 일대일로 나눕니다."
+    }
+  };
+  Object.keys(MORE2).forEach(function (l) { Object.keys(MORE2[l]).forEach(function (k) { T[l][k] = MORE2[l][k]; }); });
+  Object.keys(RIBBON).forEach(function (l) { RIBBON[l] = RIBBON[l].concat(["Snapchat @androgenic"]); });
+  RIBBON.en.push("Consciousness creates · bi-idhnillah");
+
+
   /* ---------------- engine ---------------- */
   var root = document.documentElement;
   var nodes = [].slice.call(document.querySelectorAll("[data-i18n]"));

@@ -42,6 +42,27 @@
   }
   tick(); setInterval(tick, 30000);
 
+
+  /* ---- "I want to know badly": private teachings → choose WhatsApp, email or Snapchat ---- */
+  var know = document.getElementById("know");
+  if (know) {
+    var kWa = document.getElementById("kWa"), kMail = document.getElementById("kMail"), kBack = null;
+    function kOpen(topic) {
+      kBack = document.activeElement;
+      var line = "Assalamu alaikum Adeel Ahmed Rahman! I want to know badly: " + topic + ".";
+      kWa.href = wa(line);
+      kMail.href = "mailto:adeel.rahman@uwaterloo.ca?subject=" + encodeURIComponent("I want to know badly: " + topic) + "&body=" + encodeURIComponent(line + "\n\n");
+      know.hidden = false; document.body.style.overflow = "hidden"; kWa.focus();
+    }
+    function kClose() { know.hidden = true; document.body.style.overflow = ""; if (kBack && kBack.focus) kBack.focus(); }
+    [].forEach.call(document.querySelectorAll(".js-know"), function (b) {
+      b.addEventListener("click", function (e) { e.preventDefault(); kOpen(b.getAttribute("data-topic") || "the private teachings"); });
+    });
+    know.querySelector("[data-close]").addEventListener("click", kClose);
+    know.addEventListener("click", function (e) { if (e.target === know) kClose(); });
+    document.addEventListener("keydown", function (e) { if (!know.hidden && e.key === "Escape") kClose(); });
+  }
+
   /* ---- welcome pop-up ---- */
   var box = document.getElementById("welcome");
   if (!box) return;

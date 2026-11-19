@@ -321,6 +321,27 @@ footer nav{display:flex;justify-content:center;gap:1.2rem;margin-top:1rem}
 .of--star .pr{font-size:1.8rem}
 .of--free .pr{color:#58d68d}
 
+/* ---- private / blurred teachings ---- */
+.vault{position:relative;margin-top:2.6rem;padding:1.6rem 1.3rem;border-radius:22px;border:1px solid var(--gold);overflow:hidden;background:linear-gradient(160deg,var(--ink-3),var(--ink))}
+.vault .k{font-size:.7rem;color:var(--gold)}
+.vault h3{margin:.4rem 0 1rem}
+.vault__body{filter:blur(7px);-webkit-user-select:none;user-select:none;pointer-events:none;opacity:.75}
+.vault__body p+p{margin-top:.8rem}
+.vault__lock{position:absolute;left:0;right:0;bottom:0;top:5.2rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.6rem;padding:1.2rem;text-align:center;background:linear-gradient(180deg,rgba(10,15,30,0),rgba(10,15,30,.85) 45%)}
+.vault__lock>svg{width:34px;height:34px;fill:var(--gold-bright)}
+.vault__lock p{max-width:34ch;font-size:.92rem}
+.vault__lock .cta{width:auto;padding:.95rem 1.6rem}
+.vault--mini{margin-top:1.2rem;padding:1rem;min-height:150px}
+.vault--mini .vault__lock{top:0}
+.aware{margin-top:2.6rem;padding:1.6rem 1.3rem;border-radius:22px;border:1px solid var(--line);background:radial-gradient(circle at 15% 0%,rgba(60,90,180,.25),transparent 55%),linear-gradient(160deg,var(--ink-3),var(--ink))}
+.aware h3{margin-top:0}
+.aware p+p{margin-top:.8rem}
+.chips{display:flex;flex-wrap:wrap;gap:.4rem;margin:1rem 0}
+.chips span{padding:.3rem .8rem;border-radius:999px;border:1px solid var(--line);font-size:.82rem;background:rgba(10,15,30,.5)}
+.know-opts{display:grid;gap:.6rem;margin-top:1rem}
+.btn2.snap{background:#fffc00;border-color:#fffc00;color:#111}
+.btn2.mail{border-color:var(--gold)}
+
 /* ---- floating WhatsApp ---- */
 .fab-wa{position:fixed;z-index:25;inset-inline-end:16px;bottom:calc(84px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:.5rem;padding:.75rem 1rem .75rem .8rem;border-radius:999px;background:#1fa855;color:#fff;font:700 .95rem system-ui,sans-serif;box-shadow:0 14px 34px -10px rgba(0,0,0,.7);transition:transform .2s var(--ease)}
 .fab-wa:hover{transform:scale(1.04)}
@@ -334,6 +355,22 @@ footer nav{display:flex;justify-content:center;gap:1.2rem;margin-top:1rem}
 </style>
 </head>
 <body>
+
+<!-- ===== "I want to know badly" contact chooser ===== -->
+<div class="welcome" id="know" role="dialog" aria-modal="true" aria-labelledby="kTitle" hidden>
+  <div class="welcome__card">
+    <button type="button" class="welcome__x" data-close aria-label="Close">×</button>
+    <p class="welcome__k up">Adeel Ahmed Rahman · Private</p>
+    <h2 id="kTitle" data-i18n="know.h">You want to know. Good.</h2>
+    <p data-i18n="know.p">Some teachings are only shared one-to-one. Choose how to reach Adeel Ahmed Rahman, and he'll share it with you personally.</p>
+    <div class="know-opts">
+      <a class="btn2 wa" id="kWa" href="https://wa.me/16134083945" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2s.2-1.1.1-1.2-.2-.2-.5-.3Z"/></svg><span>WhatsApp +1 613 408 3945</span></a>
+      <a class="btn2 mail" id="kMail" href="mailto:adeel.rahman@uwaterloo.ca"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5-8-5V6l8 5 8-5v2Z"/></svg><span>adeel.rahman@uwaterloo.ca</span></a>
+      <a class="btn2 snap" href="https://www.snapchat.com/add/androgenic" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2c2.9 0 5 2.2 5 5.2v2.2c.5.2 1.1 0 1.6-.2.7-.2 1.3.6.7 1.1-.6.5-1.6.8-2.2 1.1.6 1.7 2 3.2 3.9 3.8.5.2.5.8 0 1-.8.4-1.7.5-2.2.7-.2.4-.1 1-.6 1.1-.7.1-1.6-.2-2.6.2-1 .4-1.7 1.6-3.6 1.6s-2.6-1.2-3.6-1.6c-1-.4-1.9-.1-2.6-.2-.5-.1-.4-.7-.6-1.1-.5-.2-1.4-.3-2.2-.7-.5-.2-.5-.8 0-1 1.9-.6 3.3-2.1 3.9-3.8-.6-.3-1.6-.6-2.2-1.1-.6-.5 0-1.3.7-1.1.5.2 1.1.4 1.6.2V7.4c0-3 2.1-5.2 5-5.2Z"/></svg><span>Snapchat @androgenic</span></a>
+      <a class="btn2 tt" href="https://www.tiktok.com/@humiliator" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.6 5.8A4.3 4.3 0 0 1 15.5 3h-3.1v12.4a2.6 2.6 0 1 1-2.6-2.6c.3 0 .5 0 .8.1V9.7a5.7 5.7 0 1 0 4.9 5.7V9.1a7.3 7.3 0 0 0 4.3 1.4V7.4a4.3 4.3 0 0 1-3.2-1.6Z"/></svg><span>TikTok @humiliator</span></a>
+    </div>
+  </div>
+</div>
 
 <!-- ===== WELCOME POP-UP: language + quick help ===== -->
 <div class="welcome" id="welcome" role="dialog" aria-modal="true" aria-labelledby="wTitle" hidden>
@@ -351,6 +388,8 @@ footer nav{display:flex;justify-content:center;gap:1.2rem;margin-top:1rem}
       <div class="row2">
         <a class="btn2 wa js-wa" data-wa="roman" href="https://wa.me/16134083945" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2s.2-1.1.1-1.2-.2-.2-.5-.3Z"/></svg><span>WhatsApp</span></a>
         <a class="btn2 tt" href="https://www.tiktok.com/@humiliator" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.6 5.8A4.3 4.3 0 0 1 15.5 3h-3.1v12.4a2.6 2.6 0 1 1-2.6-2.6c.3 0 .5 0 .8.1V9.7a5.7 5.7 0 1 0 4.9 5.7V9.1a7.3 7.3 0 0 0 4.3 1.4V7.4a4.3 4.3 0 0 1-3.2-1.6Z"/></svg><span>@humiliator</span></a>
+        <a class="btn2 snap" href="https://www.snapchat.com/add/androgenic" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2c2.9 0 5 2.2 5 5.2v2.2c.5.2 1.1 0 1.6-.2.7-.2 1.3.6.7 1.1-.6.5-1.6.8-2.2 1.1.6 1.7 2 3.2 3.9 3.8.5.2.5.8 0 1-.8.4-1.7.5-2.2.7-.2.4-.1 1-.6 1.1-.7.1-1.6-.2-2.6.2-1 .4-1.7 1.6-3.6 1.6s-2.6-1.2-3.6-1.6c-1-.4-1.9-.1-2.6-.2-.5-.1-.4-.7-.6-1.1-.5-.2-1.4-.3-2.2-.7-.5-.2-.5-.8 0-1 1.9-.6 3.3-2.1 3.9-3.8-.6-.3-1.6-.6-2.2-1.1-.6-.5 0-1.3.7-1.1.5.2 1.1.4 1.6.2V7.4c0-3 2.1-5.2 5-5.2Z"/></svg><span>@androgenic</span></a>
+        <a class="btn2 mail" href="mailto:adeel.rahman@uwaterloo.ca"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5-8-5V6l8 5 8-5v2Z"/></svg><span>Email</span></a>
       </div>
     </div>
     <button type="button" class="welcome__go" id="wGo" data-i18n="w.go">Continue to the site</button>
@@ -390,6 +429,9 @@ footer nav{display:flex;justify-content:center;gap:1.2rem;margin-top:1rem}
     <div class="socials">
       <a href="https://wa.me/16134083945" target="_blank" rel="noopener" aria-label="WhatsApp Adeel Ahmed Rahman"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2s.2-1.1.1-1.2-.2-.2-.5-.3Z"/></svg></a>
       <a href="tel:+16134083945" aria-label="Call Adeel Ahmed Rahman"><svg viewBox="0 0 24 24"><path d="M6.6 10.8a15 15 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1l-2.3 2.2Z"/></svg></a>
+      <a href="mailto:adeel.rahman@uwaterloo.ca" aria-label="Email Adeel Ahmed Rahman"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5-8-5V6l8 5 8-5v2Z"/></svg></a>
+      <a href="https://www.snapchat.com/add/androgenic" target="_blank" rel="noopener" aria-label="Snapchat @androgenic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2c2.9 0 5 2.2 5 5.2v2.2c.5.2 1.1 0 1.6-.2.7-.2 1.3.6.7 1.1-.6.5-1.6.8-2.2 1.1.6 1.7 2 3.2 3.9 3.8.5.2.5.8 0 1-.8.4-1.7.5-2.2.7-.2.4-.1 1-.6 1.1-.7.1-1.6-.2-2.6.2-1 .4-1.7 1.6-3.6 1.6s-2.6-1.2-3.6-1.6c-1-.4-1.9-.1-2.6-.2-.5-.1-.4-.7-.6-1.1-.5-.2-1.4-.3-2.2-.7-.5-.2-.5-.8 0-1 1.9-.6 3.3-2.1 3.9-3.8-.6-.3-1.6-.6-2.2-1.1-.6-.5 0-1.3.7-1.1.5.2 1.1.4 1.6.2V7.4c0-3 2.1-5.2 5-5.2Z"/></svg></a>
+      <a href="https://www.tiktok.com/@humiliator" target="_blank" rel="noopener" aria-label="TikTok @humiliator"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.6 5.8A4.3 4.3 0 0 1 15.5 3h-3.1v12.4a2.6 2.6 0 1 1-2.6-2.6c.3 0 .5 0 .8.1V9.7a5.7 5.7 0 1 0 4.9 5.7V9.1a7.3 7.3 0 0 0 4.3 1.4V7.4a4.3 4.3 0 0 1-3.2-1.6Z"/></svg></a>
       <a href="sms:+16134083945" aria-label="Text Adeel Ahmed Rahman"><svg viewBox="0 0 24 24"><path d="M20 2H4a2 2 0 0 0-2 2v18l4-4h14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2ZM7 9h10v2H7V9Zm6 5H7v-2h6v2Zm4-6H7V6h10v2Z"/></svg></a>
     </div>
 
@@ -487,6 +529,7 @@ footer nav{display:flex;justify-content:center;gap:1.2rem;margin-top:1rem}
           <h3 data-i18n="story.h">I didn't learn this from a book. <em>I built it to survive.</em></h3>
           <p data-i18n="story.1">I created this system. I know what I know because I've been through immense trauma, the kind that takes everything from you. I didn't build this method to become a coach. I built it to <strong>save my own life</strong>.</p>
           <p data-i18n="story.2">When nothing else worked, I went back to Allah: focused dhikr, dua from the depths of my heart, and protecting myself from everything draining me. Piece by piece, it brought me back.</p>
+          <p data-i18n="story.4">I'm an <strong>embodiment of what I teach</strong>. These teachings were not learned in a classroom: they came out of a very dark night of the soul. And I feel very <strong>divinely led</strong> to help you.</p>
           <p class="bigline" data-i18n="story.3">Now I want to save yours: from energy vampires, from the evil eye, and from Shaytan.</p>
         </div>
       </section>
@@ -531,6 +574,18 @@ footer nav{display:flex;justify-content:center;gap:1.2rem;margin-top:1rem}
       </div>
       <div class="ayah reveal"><span class="ar" lang="ar">أَلَا بِذِكْرِ ٱللَّهِ تَطْمَئِنُّ ٱلْقُلُوبُ</span><span class="tr" data-i18n="dhikr.ayah">“Verily, in the remembrance of Allah do hearts find rest.”</span><span class="ref up" data-i18n="dhikr.ref">Qur'an 13:28</span></div>
 
+      <!-- awareness -->
+      <section class="aware reveal" id="awareness">
+        <span class="k up" style="font-size:.7rem;color:var(--gold)" data-i18n="aw.k">Awareness · Consciousness</span>
+        <h3 data-i18n="aw.h">Manifestation is all about <em>awareness.</em></h3>
+        <p data-i18n="aw.1">Your consciousness was sculpted by your traumas, your dramas, your memories, your programs and your conditioning. Whatever gets sculpted over the course of your life becomes your <strong>operating system</strong>.</p>
+        <div class="chips" aria-hidden="true"><span data-i18n="aw.c1">Traumas</span><span data-i18n="aw.c2">Dramas</span><span data-i18n="aw.c3">Memories</span><span data-i18n="aw.c4">Programs</span><span data-i18n="aw.c5">Conditioning</span></div>
+        <p data-i18n="aw.2">That operating system decides whether you'll be wildly wealthy or lonely, whether you work for your own dream or for someone else's. Sculpted consciousness sculpts awareness.</p>
+        <p class="bigline" data-i18n="aw.3">Consciousness creates, bi-idhnillah, by Allah's permission. Remember that. Adeel Ahmed Rahman will help you move your awareness.</p>
+        <div class="duo"><a class="btn2 wa js-know" data-topic="the secrets of awareness" href="https://wa.me/16134083945" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2s.2-1.1.1-1.2-.2-.2-.5-.3Z"/></svg><span data-i18n="aw.btn">Learn all the secrets</span></a><a class="btn2 snap" href="https://www.snapchat.com/add/androgenic" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2c2.9 0 5 2.2 5 5.2v2.2c.5.2 1.1 0 1.6-.2.7-.2 1.3.6.7 1.1-.6.5-1.6.8-2.2 1.1.6 1.7 2 3.2 3.9 3.8.5.2.5.8 0 1-.8.4-1.7.5-2.2.7-.2.4-.1 1-.6 1.1-.7.1-1.6-.2-2.6.2-1 .4-1.7 1.6-3.6 1.6s-2.6-1.2-3.6-1.6c-1-.4-1.9-.1-2.6-.2-.5-.1-.4-.7-.6-1.1-.5-.2-1.4-.3-2.2-.7-.5-.2-.5-.8 0-1 1.9-.6 3.3-2.1 3.9-3.8-.6-.3-1.6-.6-2.2-1.1-.6-.5 0-1.3.7-1.1.5.2 1.1.4 1.6.2V7.4c0-3 2.1-5.2 5-5.2Z"/></svg><span>@androgenic</span></a></div>
+        <p class="fine">WhatsApp +1 613 408 3945 · adeel.rahman@uwaterloo.ca · Snapchat @androgenic</p>
+      </section>
+
       <h3 class="reveal" data-i18n="dua.h">Manifestation <em>is just dua</em></h3>
       <ul class="ticks reveal">
         <li><span data-i18n="dua.1a"><b>Ask.</b> Allah says</span> <span class="ar-in" lang="ar">ٱدْعُونِىٓ أَسْتَجِبْ لَكُمْ</span> <span data-i18n="dua.1b">“Call upon Me; I will respond to you.” (40:60)</span></li>
@@ -543,8 +598,17 @@ footer nav{display:flex;justify-content:center;gap:1.2rem;margin-top:1rem}
       <section class="ego reveal" id="ego">
         <h3 data-i18n="ego.h">Your ego is the wall between you <em>and your power.</em></h3>
         <p data-i18n="ego.1">You cannot be truly powerful, truly <strong>expansive</strong>, while your ego is in the way. Ego says “I did this”, “I know better”, “what will people say?” Real expansion starts when you bow, and admit that every good thing comes from Allah.</p>
+        <div class="vault vault--mini" aria-label="Private teaching"><div class="vault__body" aria-hidden="true"><p>Pansal vozar orsti or zarmorpha pananex. Zarqisti. Senor stielan vopan. Thovopha qithoex pha tutuka mi lummino zarkapha or. Nothomi phatholum. Nopan. Tuzar el lum sen sen. El phasti elvatu tu phalum ka elrentu thotumor.</p></div><div class="vault__lock"><button type="button" class="cta js-know" data-topic="expansion and the ego"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 9V7A5 5 0 0 0 7 7v2a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2ZM9 7a3 3 0 0 1 6 0v2H9V7Zm4 9.7V18h-2v-1.3a2 2 0 1 1 2 0Z"/></svg><span data-i18n="know.btn">I want to know badly</span></button></div></div>
         <p class="bigline" data-i18n="ego.2">Don't let other people's opinions decide this for you. When you're ready to let go of the ego, message Adeel Ahmed Rahman on WhatsApp, +1 613 408 3945.</p>
         <div class="duo"><a class="btn2 wa js-wa" data-wa="roman" href="https://wa.me/16134083945" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2s.2-1.1.1-1.2-.2-.2-.5-.3Z"/></svg><span data-i18n="ego.btn">Message Adeel</span></a><a class="btn2" href="#offers"><span data-i18n="ego.btn2">See the options</span></a></div>
+      </section>
+
+      <!-- PRIVATE: expansion (real teaching is never on the page; the blurred text is filler) -->
+      <section class="vault reveal" id="expansion">
+        <span class="k up" data-i18n="vault.k">Private · Adeel Ahmed Rahman</span>
+        <h3 data-i18n="vault.h">The secret of <em>expansion</em></h3>
+        <div class="vault__body" aria-hidden="true"><p>Renzar sti sen salno ren vovo. Pan renmorex dexex ri panlum mithozar vavo salanpan morortho sensal tho. Tu panmika renex phakatho noriva exmor vo orri ri tho risal zaranri sen mor thoriri phaan ananqi anka an novasen. Panpha. El exzar zardex dexel midex renpha rensti zarsti.</p><p>Stika mithopha ordexex or zarsaltu orsaldex exlum exva. Vazar thopan sti anqi sen pananmi morlumren ka qianno ri elnopha vo vopan stipha rithotho lumphari tumi kapha pharenri senvosti senthotu mor ren salzar sensen qielka va mikava tutho salsti.</p><p>An salno mipha vamorvo or dex mi. An kalum dexri no exexqi dex vaor zar anqiva sen qimormi qino tho. An phaexqi. Rensenka elpan nosalno ri qi sti lum rika ex vava tumiel phavaren. Stiri qi kalum phava tho vasti ex elpan an voqiex rizar rensti ren. Tumor mor tho ellum. Tudexren.</p></div>
+        <div class="vault__lock"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 9V7A5 5 0 0 0 7 7v2a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2ZM9 7a3 3 0 0 1 6 0v2H9V7Zm4 9.7V18h-2v-1.3a2 2 0 1 1 2 0Z"/></svg><p data-i18n="vault.p">This teaching is kept private. Adeel Ahmed Rahman shares it one-to-one.</p><button type="button" class="cta js-know" data-topic="the secret of expansion"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 9V7A5 5 0 0 0 7 7v2a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2ZM9 7a3 3 0 0 1 6 0v2H9V7Zm4 9.7V18h-2v-1.3a2 2 0 1 1 2 0Z"/></svg><span data-i18n="know.btn">I want to know badly</span></button></div>
       </section>
 
       <!-- not God / King's Table -->
@@ -636,7 +700,7 @@ footer nav{display:flex;justify-content:center;gap:1.2rem;margin-top:1rem}
   <p class="big" data-i18n="foot.big">You deserve what you desire.</p>
   <p class="tl up" data-i18n="foot.tl">622 · Every new beginning starts with a Hijra</p>
   <p><b style="color:var(--cream)">Adeel Ahmed Rahman</b> · <span data-i18n="foot.role">Dhikr &amp; Dua Coach for Muslims · Sunni Muslim</span></p>
-  <p>WhatsApp <a href="https://wa.me/16134083945" target="_blank" rel="noopener" dir="ltr">+1 613 408 3945</a> · @PakistaniMangos · TikTok <a href="https://www.tiktok.com/@humiliator" target="_blank" rel="noopener">@humiliator</a></p>
+  <p>WhatsApp <a href="https://wa.me/16134083945" target="_blank" rel="noopener" dir="ltr">+1 613 408 3945</a> · @PakistaniMangos · TikTok <a href="https://www.tiktok.com/@humiliator" target="_blank" rel="noopener">@humiliator</a><br>Snapchat <a href="https://www.snapchat.com/add/androgenic" target="_blank" rel="noopener">@androgenic</a> · <a href="mailto:adeel.rahman@uwaterloo.ca">adeel.rahman@uwaterloo.ca</a></p>
   <nav><a href="course.html" data-i18n="nav.course">Course</a><a href="forum.html" data-i18n="nav.forum">Forum</a><a href="https://www.tiktok.com/@humiliator" target="_blank" rel="noopener">TikTok</a><a href="realtor/" data-i18n="nav.realtor">Realtor</a><a href="actor/" data-i18n="nav.actor">Actor</a></nav>
   <p style="margin-top:1rem">© <span id="yr">2026</span> Adeel Ahmed Rahman</p>
 </footer>
@@ -649,8 +713,8 @@ footer nav{display:flex;justify-content:center;gap:1.2rem;margin-top:1rem}
   <a class="cta js-want" href="https://wa.me/16134083945" target="_blank" rel="noopener"><span data-i18n="cta">I want this so badly</span></a>
 </div></div>
 
-<script src="coach/i18n.js?v=2"></script>
-<script src="coach/home.js?v=1"></script>
+<script src="coach/i18n.js?v=3"></script>
+<script src="coach/home.js?v=2"></script>
 <script>
 (function(){
   var WA="16134083945";

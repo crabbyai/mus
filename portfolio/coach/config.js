@@ -5,6 +5,8 @@ window.COACH = {
   whatsapp: "16134083945",            // +1 613 408 3945 (WhatsApp @PakistaniMangos)
   whatsappName: "@PakistaniMangos",
   tiktok: "https://www.tiktok.com/@humiliator",
+  snapchat: "https://www.snapchat.com/add/androgenic",
+  email: "adeel.rahman@uwaterloo.ca",
 
   // Paste your Skool group link here once it exists, e.g. "https://www.skool.com/your-group".
   // Course and forum buttons then go to Skool; until then they open WhatsApp.
