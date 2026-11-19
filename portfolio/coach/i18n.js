@@ -1897,6 +1897,45 @@
   /* numbers in the banner */
   Object.keys(RIBBON).forEach(function (l) { RIBBON[l].push("13 · 15 · 34 · 622", "1111 · 2222 · 88888888"); });
 
+
+  /* Scorpion Street */
+  T.ar['st.h'] = 'شارع العقارب <em>🦂</em>';
+  T.ar['st.p'] = 'طريق مليء بالعقارب، وسلطعون عملاق ينتظر في النهاية. اضغط على الزعيم الأخير لتهزمه.';
+  T.ar['st.boss'] = 'الزعيم الأخير · السرطان ♋';
+  T.ar['st.hint'] = 'اضغط على السلطعون 🦀';
+  T.ar['st.win'] = 'هُزم الزعيم الأخير. مهما كبر الزعيم، لا حول ولا قوة إلا بالله.';
+  T.ur['st.h'] = 'اسکارپین اسٹریٹ <em>🦂</em>';
+  T.ur['st.p'] = 'بچھوؤں سے بھری ایک سڑک، اور آخر میں ایک دیو ہیکل کیکڑا منتظر۔ آخری باس کو ہرانے کے لیے اس پر ٹیپ کریں۔';
+  T.ur['st.boss'] = 'آخری باس · سرطان ♋';
+  T.ur['st.hint'] = 'کیکڑے پر ٹیپ کریں 🦀';
+  T.ur['st.win'] = 'آخری باس ہار گیا۔ باس جتنا بھی بڑا ہو، اللہ کے سوا کوئی طاقت نہیں۔';
+  T.fr['st.h'] = 'Rue des Scorpions <em>🦂</em>';
+  T.fr['st.p'] = 'Une route pleine de scorpions, et un crabe géant qui attend au bout. Touchez le boss final pour le vaincre.';
+  T.fr['st.boss'] = 'Boss final · Cancer ♋';
+  T.fr['st.hint'] = 'Touchez le crabe 🦀';
+  T.fr['st.win'] = 'Boss final vaincu. Aussi grand soit le boss, nulle puissance sinon par Allah.';
+  T.es['st.h'] = 'Calle de los Escorpiones <em>🦂</em>';
+  T.es['st.p'] = 'Una carretera llena de escorpiones y un cangrejo gigante esperando al final. Toca al jefe final para derrotarlo.';
+  T.es['st.boss'] = 'Jefe final · Cáncer ♋';
+  T.es['st.hint'] = 'Toca el cangrejo 🦀';
+  T.es['st.win'] = 'Jefe final derrotado. Por grande que sea el jefe, no hay poder sino en Allah.';
+  T.ja['st.h'] = 'スコーピオン・ストリート <em>🦂</em>';
+  T.ja['st.p'] = 'サソリだらけの道の先で、巨大なカニが待ち構えています。ラスボスをタップして倒しましょう。';
+  T.ja['st.boss'] = 'ラスボス · かに座 ♋';
+  T.ja['st.hint'] = 'カニをタップ 🦀';
+  T.ja['st.win'] = 'ラスボスを倒しました。どんなに大きなボスでも、アッラーによらずして力はありません。';
+  T.zh['st.h'] = '蝎子街 <em>🦂</em>';
+  T.zh['st.p'] = '一条爬满蝎子的路，尽头有一只巨蟹在等着。点击最终boss把它打倒。';
+  T.zh['st.boss'] = '最终boss · 巨蟹座 ♋';
+  T.zh['st.hint'] = '点击螃蟹 🦀';
+  T.zh['st.win'] = '最终boss已被击败。无论boss多大，无能为力，唯凭安拉。';
+  T.ko['st.h'] = '스콜피온 스트리트 <em>🦂</em>';
+  T.ko['st.p'] = '전갈로 가득한 길 끝에서 거대한 게가 기다리고 있습니다. 최종 보스를 탭해서 쓰러뜨리세요.';
+  T.ko['st.boss'] = '최종 보스 · 게자리 ♋';
+  T.ko['st.hint'] = '게를 탭하세요 🦀';
+  T.ko['st.win'] = '최종 보스를 물리쳤습니다. 보스가 아무리 커도, 알라 외에는 어떤 힘도 없습니다.';
+  Object.keys(RIBBON).forEach(function (l) { RIBBON[l].push("🦂 Scorpion Street 🦀"); });
+
   /* ---------------- engine ---------------- */
   var root = document.documentElement;
   var nodes = [].slice.call(document.querySelectorAll("[data-i18n]"));

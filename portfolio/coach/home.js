@@ -122,6 +122,20 @@
     if (a.getAttribute("data-ch") === "wa") a.href = wa(m);
     else a.href = "mailto:siradeelahmedrahman@yahoo.ca?subject=" + encodeURIComponent("I want it badly now: free Chaunsa mango gift 🥭") + "&body=" + encodeURIComponent(m);
   });
+
+  /* ---- Scorpion Street: road width and the final boss ---- */
+  var road = document.getElementById("road");
+  if (road) {
+    var setW = function () { road.style.setProperty("--w", road.clientWidth + "px"); [].forEach.call(road.querySelectorAll(".scorp"), function (sc) { sc.style.setProperty("--w", road.clientWidth + "px"); }); };
+    setW(); window.addEventListener("resize", setW);
+    var hp = 100, boss = document.getElementById("boss"), bar = document.getElementById("bossHp"), win = document.getElementById("bossWin");
+    boss.addEventListener("click", function () {
+      if (hp <= 0) { hp = 100; boss.classList.remove("down"); win.hidden = true; bar.style.width = "100%"; return; }   // tap again to replay
+      hp = Math.max(0, hp - 13 - Math.floor(Math.random() * 10));
+      bar.style.width = hp + "%";
+      if (hp === 0) { boss.classList.add("down"); win.hidden = false; }
+    });
+  }
   /* ---- prayer request ---- */
   var pray = document.getElementById("prayForm");
   if (pray) pray.addEventListener("submit", function (e) {
