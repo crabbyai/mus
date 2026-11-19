@@ -175,6 +175,21 @@ footer a{color:var(--cream);border-bottom:1px solid var(--line)}
 .badge622{display:inline-flex;align-items:center;gap:.4rem;margin-top:.9rem;padding:.3rem .8rem;border-radius:999px;border:1px solid var(--line);font-size:.72rem;letter-spacing:.2em;color:var(--gold-bright)}
 .ar-in{font-family:"Noto Naskh Arabic",serif;color:var(--gold-bright);font-size:1.1rem;unicode-bidi:isolate}
 
+/* story + protection */
+.mystory{margin-top:2.6rem;display:grid;gap:1.2rem;grid-template-columns:1fr;align-items:start}
+@media(min-width:700px){.mystory{grid-template-columns:200px 1fr}}
+.mystory img{width:100%;aspect-ratio:3/4;object-fit:cover;object-position:50% 25%;border-radius:18px;border:1px solid var(--gold);max-width:260px}
+.mystory .k{font-size:.7rem;letter-spacing:.32em;text-transform:uppercase;color:var(--gold)}
+.mystory h3{margin:.4rem 0 .8rem}
+.mystory p+p{margin-top:.8rem}
+.mystory .big{font-family:var(--serif);font-style:italic;font-size:1.3rem;line-height:1.4;color:var(--gold-bright)}
+.shield{display:grid;gap:.7rem;grid-template-columns:1fr;margin-top:1rem}
+@media(min-width:600px){.shield{grid-template-columns:1fr 1fr 1fr}}
+.sh{padding:1.1rem;border-radius:16px;border:1px solid var(--line);background:rgba(10,15,30,.4)}
+.sh b{display:block;font-family:var(--serif);font-weight:500;font-size:1.2rem;color:var(--cream)}
+.sh .ar-in{color:var(--gold-bright);display:block;margin:.3rem 0;font-size:1.05rem;line-height:1.8}
+.sh span{font-size:.86rem;color:var(--muted)}
+
 /* sticky mobile bar */
 .dock{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:.7rem 16px calc(.7rem + env(safe-area-inset-bottom));
   background:rgba(10,15,30,.88);backdrop-filter:blur(14px);border-top:1px solid var(--line);
@@ -194,9 +209,9 @@ footer a{color:var(--cream);border-bottom:1px solid var(--line)}
 <body>
 
 <div class="ribbon" aria-hidden="true"><div class="ribbon__track">
-  <span>You deserve what you desire</span><span>622 · The Hijra</span><span>Adeel Ahmed Rahman</span><span>Dhikr · Dua · Tawakkul</span><span>You deserve what you desire</span><span>Angel number 622</span>
-  <span>You deserve what you desire</span><span>622 · The Hijra</span><span>Adeel Ahmed Rahman</span><span>Dhikr · Dua · Tawakkul</span><span>You deserve what you desire</span><span>Angel number 622</span>
-  <span>You deserve what you desire</span><span>622 · The Hijra</span><span>Adeel Ahmed Rahman</span><span>Dhikr · Dua · Tawakkul</span><span>You deserve what you desire</span><span>Angel number 622</span>
+  <span>You deserve what you desire</span><span>622 · The Hijra</span><span>Adeel Ahmed Rahman</span><span>Dhikr · Dua · Tawakkul</span><span>You deserve what you desire</span><span>Angel number 622</span><span>Protection from evil eye &amp; Shaytan</span>
+  <span>You deserve what you desire</span><span>622 · The Hijra</span><span>Adeel Ahmed Rahman</span><span>Dhikr · Dua · Tawakkul</span><span>You deserve what you desire</span><span>Angel number 622</span><span>Protection from evil eye &amp; Shaytan</span>
+  <span>You deserve what you desire</span><span>622 · The Hijra</span><span>Adeel Ahmed Rahman</span><span>Dhikr · Dua · Tawakkul</span><span>You deserve what you desire</span><span>Angel number 622</span><span>Protection from evil eye &amp; Shaytan</span>
 </div></div>
 
 <main class="wrap">
@@ -219,6 +234,8 @@ footer a{color:var(--cream);border-bottom:1px solid var(--line)}
       <a class="link" href="#start"><picture><source srcset="assets/lights-2.webp" type="image/webp"><img src="assets/lights-2.jpg" alt=""></picture><div><b>Start Now — 1:1 with Adeel</b><small>Focused dhikr &amp; dua · You deserve what you desire</small></div></a>
       <a class="link" href="https://wa.me/16134083945?text=Assalamu%20alaikum%20Adeel%20Ahmed%20Rahman%2C%20I%27d%20like%20a%20free%20clarity%20chat." target="_blank" rel="noopener"><picture><source srcset="assets/mirror.webp" type="image/webp"><img src="assets/mirror.jpg" alt=""></picture><div><b>Free clarity chat on WhatsApp</b><small>+1 613 408 3945</small></div></a>
       <a class="link" href="#n622"><picture><source srcset="../assets/adeel-portrait.webp" type="image/webp"><img src="../assets/adeel-portrait.jpg" alt=""></picture><div><b>Why 622?</b><small>The Hijra, and your new beginning</small></div></a>
+      <a class="link" href="#story"><picture><source srcset="assets/take-2.webp" type="image/webp"><img src="assets/take-2.jpg" alt=""></picture><div><b>My story</b><small>I built this to save my life</small></div></a>
+      <a class="link" href="#protect"><picture><source srcset="assets/lobby-1.webp" type="image/webp"><img src="assets/lobby-1.jpg" alt=""></picture><div><b>Protection</b><small>Energy vampires, evil eye &amp; Shaytan</small></div></a>
       <a class="link" href="#numbers"><picture><source srcset="assets/take-1.webp" type="image/webp"><img src="assets/take-1.jpg" alt=""></picture><div><b>Angel numbers, the Muslim way</b><small>Every number is a reminder of Allah</small></div></a>
     </div>
   </aside>
@@ -236,7 +253,7 @@ footer a{color:var(--cream);border-bottom:1px solid var(--line)}
     <div class="body">
       <p class="ar bismillah reveal" lang="ar">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</p>
       <p class="lead reveal">You already know what you want. The life, the love, the money, the peace. What stands between you and it is not luck or timing. It's the story you keep telling yourself about who you are.</p>
-      <p class="lead reveal">I'm <strong>Adeel Ahmed Rahman</strong>, a Sunni Muslim, nothing more and nothing less. I primarily help Muslims connect with Allah through <strong>focused dhikr</strong> and <strong>manifestation techniques that are simply dua</strong>: asking the One who gives, with a present heart and full certainty. Together we rewrite that story at the root, so you stop chasing and start <em>trusting</em>. Because you deserve what you desire.</p>
+      <p class="lead reveal">I'm <strong>Adeel Ahmed Rahman</strong>, a Sunni Muslim, nothing more and nothing less. I created this system after surviving immense trauma. I primarily help Muslims connect with Allah through <strong>focused dhikr</strong> and <strong>manifestation techniques that are simply dua</strong>: asking the One who gives, with a present heart and full certainty. Together we rewrite that story at the root, so you stop chasing and start <em>trusting</em>. Because you deserve what you desire.</p>
 
       <div class="price reveal"><b>Start Now</b><span>1:1 dhikr &amp; dua coaching with Adeel Ahmed Rahman · on WhatsApp</span></div>
 
@@ -253,9 +270,30 @@ footer a{color:var(--cream);border-bottom:1px solid var(--line)}
         <li><b>Dua the way the Prophet ﷺ taught it</b>: praise Allah first, send salawat, ask with certainty, and never say “I asked and wasn't answered”.</li>
         <li><b>The old beliefs found and dissolved</b>: the “not enough”, the “not yet”, the “not for me”.</li>
         <li><b>A new self-image you live from daily</b>, so you act like the person who already has it.</li>
+        <li><b>Protection from energy vampires, the evil eye and Shaytan</b>, with the adhkar the Prophet ﷺ used every morning and evening.</li>
         <li><b>Tawakkul</b>: calm, certain trust in Allah, which replaces chasing, waiting and doubting.</li>
         <li><b>Direct access to Adeel Ahmed Rahman</b> on WhatsApp between sessions.</li>
       </ul>
+
+      <section class="mystory reveal" id="story">
+        <picture><source srcset="assets/mirror.webp" type="image/webp"><img src="assets/mirror.jpg" alt="Adeel Ahmed Rahman" loading="lazy"></picture>
+        <div>
+          <span class="k">My story · Adeel Ahmed Rahman</span>
+          <h3>I didn't learn this from a book. <em>I built it to survive.</em></h3>
+          <p>I created this system. I know what I know because I've been through immense trauma, the kind that takes everything from you. I didn't build this method to become a coach. I built it to <strong>save my own life</strong>.</p>
+          <p>When nothing else worked, I went back to Allah: focused dhikr, dua from the depths of my heart, and protecting myself from everything draining me. Piece by piece, it brought me back.</p>
+          <p class="big">Now I want to save yours: from energy vampires, from the evil eye, and from Shaytan.</p>
+        </div>
+      </section>
+
+      <h3 id="protect" class="reveal">Protection from <em>what's draining you</em></h3>
+      <p class="lead reveal">Some of what's holding you back isn't you at all. I'll teach you to recognise it and shield yourself the way the Prophet ﷺ did.</p>
+      <div class="shield reveal">
+        <div class="sh"><b>Energy vampires</b><span class="ar-in" lang="ar">حَسْبِيَ ٱللَّهُ</span><span>The people who leave you empty. Learn boundaries, and lean on Allah instead of their approval.</span></div>
+        <div class="sh"><b>The evil eye</b><span class="ar-in" lang="ar">قُلْ أَعُوذُ بِرَبِّ ٱلْفَلَقِ</span><span>“The evil eye is real.” (Sahih Muslim). Al-Falaq, An-Nas and Ayat al-Kursi, morning and evening. Say <em>ma sha Allah</em> for what you admire.</span></div>
+        <div class="sh"><b>Shaytan, aka Satan</b><span class="ar-in" lang="ar">أَعُوذُ بِٱللَّهِ مِنَ ٱلشَّيْطَٰنِ ٱلرَّجِيمِ</span><span>The whisper of “not enough” and “never you”. Seek refuge, keep your dhikr and stay with your salah.</span></div>
+      </div>
+      <p class="fine reveal">If you're in crisis or thinking of ending your life, please call or text 988 (Canada &amp; US), or your local emergency number, right now. Then message me.</p>
 
       <h3 class="story-h reveal">You'll make more progress in <em>2 days</em> than others make in <em>30 years.</em></h3>
       <div class="vs reveal">
@@ -323,12 +361,13 @@ footer a{color:var(--cream);border-bottom:1px solid var(--line)}
         <li>You're tired of wanting more and settling for less.</li>
         <li>You've tried manifestation books and vision boards, and you want the Qur'an-and-Sunnah version: dua.</li>
         <li>622 keeps showing up, and you know it's time for your own Hijra.</li>
+        <li>You feel drained by people, by the evil eye, by whispers you can't shake.</li>
         <li>Somewhere inside, you already know: <strong>you deserve what you desire.</strong></li>
       </ul>
 
       <div class="creed reveal">
         <p class="ar" lang="ar">أَشْهَدُ أَنْ لَا إِلَٰهَ إِلَّا ٱللَّهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا رَسُولُ ٱللَّهِ</p>
-        <p><b style="color:var(--cream)">Adeel Ahmed Rahman</b> is a Sunni Muslim, nothing more and nothing less. No new path, no secret system: just dhikr, dua and trust in Allah, the way the Prophet ﷺ taught.</p>
+        <p><b style="color:var(--cream)">Adeel Ahmed Rahman</b> is a Sunni Muslim, nothing more and nothing less. I created this system, but there is nothing new in its foundation: just dhikr, dua and trust in Allah, built entirely on the Qur'an and Sunnah, the way the Prophet ﷺ taught.</p>
       </div>
 
       <!-- checkout (sends to WhatsApp) -->
