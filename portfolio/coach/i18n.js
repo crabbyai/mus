@@ -1821,6 +1821,16 @@
   T.ko['know.btn2'] = '정말 간절히 알고 싶어요!';
   T.ko['rights'] = '모든 권리 보유. 이 사이트의 글, 강좌, 가르침은 서면 허가 없이 복제·재생산하거나 AI 시스템의 학습 또는 지시에 사용할 수 없습니다.';
 
+
+  /* chat link */
+  T.ar["chat.t"] = 'محادثة مباشرة مع عديل'; T.ar["chat.s"] = 'اسأل أي شيء الآن';
+  T.ur["chat.t"] = 'عدیل سے لائیو چیٹ'; T.ur["chat.s"] = 'ابھی کچھ بھی پوچھیں';
+  T.fr["chat.t"] = 'Chat en direct avec Adeel'; T.fr["chat.s"] = 'Posez vos questions, maintenant';
+  T.es["chat.t"] = 'Chat en vivo con Adeel'; T.es["chat.s"] = 'Pregunta lo que quieras, ahora';
+  T.ja["chat.t"] = 'アディールとライブチャット'; T.ja["chat.s"] = '今すぐ何でも質問';
+  T.zh["chat.t"] = '与阿迪尔实时聊天'; T.zh["chat.s"] = '现在就问任何问题';
+  T.ko["chat.t"] = '아딜과 실시간 채팅'; T.ko["chat.s"] = '지금 무엇이든 물어보세요';
+
   /* ---------------- engine ---------------- */
   var root = document.documentElement;
   var nodes = [].slice.call(document.querySelectorAll("[data-i18n]"));

@@ -13,6 +13,10 @@ window.COACH = {
   // Course and forum buttons then go to Skool; until then they open WhatsApp.
   skool: "",
 
+  // Optional real-time chat on the site (Tawk.to, free): sign up at tawk.to, then paste the two IDs
+  // from your widget link https://embed.tawk.to/PROPERTY_ID/WIDGET_ID. Leave blank to use the WhatsApp chat.
+  tawk: { propertyId: "", widgetId: "" },
+
   // Live posting on the forum page (GitHub Discussions via giscus).
   // Fill these four from https://giscus.app after enabling Discussions; leave blank to keep it off.
   giscus: { repo: "crabbyai/mus", repoId: "", category: "Forum", categoryId: "" }
