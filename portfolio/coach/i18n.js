@@ -1570,6 +1570,65 @@
   var RIB_LH = { en: "No power except Allah", ar: "لا حول ولا قوة إلا بالله", ur: "لا حول ولا قوۃ الا باللہ", fr: "Nulle puissance sinon par Allah", es: "No hay poder sino en Allah", ja: "アッラーのほかに力なし", zh: "无能为力，唯凭安拉", ko: "알라 외에는 힘이 없다" };
   Object.keys(RIB_LH).forEach(function (l) { RIBBON[l].unshift(RIB_LH[l]); });
 
+
+  /* ============ Added: library ============ */
+  T.ar['lib.k'] = '☾ تذكير يومي';
+  T.ar['lib.h'] = 'آية وحديث <em>اليوم</em>';
+  T.ar['lib.v'] = 'آية اليوم';
+  T.ar['lib.hd'] = 'حديث اليوم';
+  T.ar['lib.p'] = 'أكثر من 150 آية وحديثًا صحيحًا في الدعاء والذكر والرزق والزواج والشفاء والحماية والجنة، قابلة للبحث، مع روابط لكل مصدر.';
+  T.ar['lib.btn'] = 'افتح مكتبة القرآن والحديث';
+  T.ar['l11.t'] = 'مكتبة القرآن والحديث';
+  T.ar['l11.s'] = 'آيات وأحاديث صحيحة قابلة للبحث';
+  T.ur['lib.k'] = '☾ روزانہ یاد دہانی';
+  T.ur['lib.h'] = 'آج کی آیت <em>اور حدیث</em>';
+  T.ur['lib.v'] = 'آج کی آیت';
+  T.ur['lib.hd'] = 'آج کی حدیث';
+  T.ur['lib.p'] = 'دعا، ذکر، رزق، شادی، شفا، حفاظت اور جنت پر 150 سے زیادہ قرآنی آیات اور صحیح احادیث، تلاش کے قابل، ہر حوالے کے لنک کے ساتھ۔';
+  T.ur['lib.btn'] = 'قرآن و حدیث لائبریری کھولیں';
+  T.ur['l11.t'] = 'قرآن و حدیث لائبریری';
+  T.ur['l11.s'] = 'تلاش کے قابل آیات اور صحیح احادیث';
+  T.fr['lib.k'] = '☾ Rappel du jour';
+  T.fr['lib.h'] = 'Verset et hadith <em>du jour</em>';
+  T.fr['lib.v'] = 'Verset du jour';
+  T.fr['lib.hd'] = 'Hadith du jour';
+  T.fr['lib.p'] = 'Plus de 150 versets du Coran et hadiths authentiques sur la dua, le dhikr, la subsistance, le mariage, la guérison, la protection et le Paradis, consultables, avec un lien vers chaque source.';
+  T.fr['lib.btn'] = 'Ouvrir la bibliothèque Coran et hadith';
+  T.fr['l11.t'] = 'Bibliothèque Coran et hadith';
+  T.fr['l11.s'] = 'Versets et hadiths authentiques à rechercher';
+  T.es['lib.k'] = '☾ Recordatorio diario';
+  T.es['lib.h'] = 'Versículo y hadiz <em>del día</em>';
+  T.es['lib.v'] = 'Versículo del día';
+  T.es['lib.hd'] = 'Hadiz del día';
+  T.es['lib.p'] = 'Más de 150 versículos del Corán y hadices auténticos sobre la dua, el dhikr, el sustento, el matrimonio, la sanación, la protección y el Paraíso, con buscador y enlace a cada fuente.';
+  T.es['lib.btn'] = 'Abrir la biblioteca de Corán y hadiz';
+  T.es['l11.t'] = 'Biblioteca de Corán y hadiz';
+  T.es['l11.s'] = 'Versículos y hadices auténticos con buscador';
+  T.ja['lib.k'] = '☾ 毎日のリマインダー';
+  T.ja['lib.h'] = '<em>今日の</em>章句とハディース';
+  T.ja['lib.v'] = '今日の章句';
+  T.ja['lib.hd'] = '今日のハディース';
+  T.ja['lib.p'] = 'ドゥアー、ズィクル、糧、結婚、癒し、守り、天国についての150以上のクルアーンの章句と真正なハディース。検索でき、すべての出典にリンクしています。';
+  T.ja['lib.btn'] = 'クルアーン＆ハディース・ライブラリーを開く';
+  T.ja['l11.t'] = 'クルアーン＆ハディース・ライブラリー';
+  T.ja['l11.s'] = '検索できる章句と真正なハディース';
+  T.zh['lib.k'] = '☾ 每日提醒';
+  T.zh['lib.h'] = '<em>今日</em>经文与圣训';
+  T.zh['lib.v'] = '今日经文';
+  T.zh['lib.hd'] = '今日圣训';
+  T.zh['lib.p'] = '150 多条关于祈祷、记主、给养、婚姻、疗愈、保护和天园的古兰经经文与可靠圣训，可搜索，并链接到每个出处。';
+  T.zh['lib.btn'] = '打开古兰经与圣训库';
+  T.zh['l11.t'] = '古兰经与圣训库';
+  T.zh['l11.s'] = '可搜索的经文与可靠圣训';
+  T.ko['lib.k'] = '☾ 오늘의 상기';
+  T.ko['lib.h'] = '<em>오늘의</em> 구절과 하디스';
+  T.ko['lib.v'] = '오늘의 구절';
+  T.ko['lib.hd'] = '오늘의 하디스';
+  T.ko['lib.p'] = '두아, 디크르, 양식, 결혼, 치유, 보호, 천국에 관한 150개 이상의 꾸란 구절과 정통 하디스. 검색할 수 있으며 모든 출처에 연결됩니다.';
+  T.ko['lib.btn'] = '꾸란·하디스 라이브러리 열기';
+  T.ko['l11.t'] = '꾸란·하디스 라이브러리';
+  T.ko['l11.s'] = '검색 가능한 구절과 정통 하디스';
+
   /* ---------------- engine ---------------- */
   var root = document.documentElement;
   var nodes = [].slice.call(document.querySelectorAll("[data-i18n]"));

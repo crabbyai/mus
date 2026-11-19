@@ -102,6 +102,19 @@
       document.getElementById("q1").scrollIntoView({ behavior: "smooth", block: "center" });
     });
   }
+
+  /* ---- verse & hadith of the day (from the library) ---- */
+  var LIB = window.LIBRARY || [];
+  if (LIB.length && document.getElementById("vday")) {
+    var esc = function (x) { return String(x).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
+    var day = Math.floor((Date.now() - new Date().getTimezoneOffset() * 6e4) / 864e5);
+    var qs = LIB.filter(function (x) { return x.k === "q" && x.a; }), hs = LIB.filter(function (x) { return x.k === "h"; });
+    var v = qs[day % qs.length], h = hs[(day * 7) % hs.length], m = v.r.match(/^(\d+):(\d+)/);
+    document.querySelector("#vday .tbody").innerHTML = '<span class="ar" lang="ar">' + esc(v.a) + "</span><p>" + esc(v.e) +
+      '</p><a href="https://quran.com/' + m[1] + "/" + m[2] + '" target="_blank" rel="noopener">Qur\'an ' + esc(v.r) + " ↗</a>";
+    document.querySelector("#hday .tbody").innerHTML = "<p><strong>" + esc(h.r) + ".</strong> " + esc(h.e) +
+      '</p><a href="https://sunnah.com/search?q=' + encodeURIComponent(h.e.replace(/[“”"…]/g, "").split(/\s+/).slice(0, 8).join(" ")) + '" target="_blank" rel="noopener">' + esc(h.s) + " ↗</a>";
+  }
   /* ---- prayer request ---- */
   var pray = document.getElementById("prayForm");
   if (pray) pray.addEventListener("submit", function (e) {
