@@ -22,7 +22,7 @@ jobs:
       - name: Validate JavaScript syntax
         run: |
           fail=0
-          for f in $(find portfolio/js -name '*.js' -not -path '*/vendor/*'); do
+          for f in $(find portfolio/js portfolio/actor/js -name '*.js' -not -path '*/vendor/*') scripts/drama-feed.mjs; do
             if node --check "$f" 2>/dev/null; then
               echo "ok   $f"
             else
@@ -34,7 +34,7 @@ jobs:
       - name: Validate JSON data files
         run: |
           fail=0
-          for f in $(find portfolio/data -name '*.json'); do
+          for f in $(find portfolio/data portfolio/actor/data -name '*.json'); do
             if node -e "JSON.parse(require('fs').readFileSync('$f','utf8'))" 2>/dev/null; then
               echo "ok   $f"
             else
@@ -48,7 +48,7 @@ jobs:
           node <<'EOF'
           const fs = require("fs"), path = require("path");
           const root = "portfolio";
-          const html = fs.readFileSync(path.join(root, "index.html"), "utf8");
+          const html = fs.readFileSync(path.join(root, "realtor/index.html"), "utf8");
           const css = fs.readFileSync(path.join(root, "css/style.css"), "utf8");
 
           const refs = new Set();
@@ -79,7 +79,7 @@ jobs:
         run: |
           node <<'EOF'
           const fs = require("fs");
-          const html = fs.readFileSync("portfolio/index.html", "utf8");
+          const html = fs.readFileSync("portfolio/realtor/index.html", "utf8");
 
           const ids = (html.match(/\sid="([^"]+)"/g) || []).map((s) => s.match(/id="([^"]+)"/)[1]);
           const dupes = ids.filter((v, i) => ids.indexOf(v) !== i);
@@ -102,7 +102,7 @@ jobs:
         run: |
           node <<'EOF'
           const fs = require("fs");
-          const html = fs.readFileSync("portfolio/index.html", "utf8");
+          const html = fs.readFileSync("portfolio/realtor/index.html", "utf8");
           const required = {
             "<title>": /<title>[^<]{10,}<\/title>/,
             "meta description": /name="description"\s+content="[^"]{50,}"/,

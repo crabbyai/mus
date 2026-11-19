@@ -1,0 +1,79 @@
+name: Refresh drama feed (latest Pakistani drama episodes)
+
+# Rebuilds portfolio/actor/data/dramas.json (and the per-drama pages) from the broadcasters' own YouTube
+# channels (ARY Digital, HUM TV, Har Pal Geo, Green Entertainment, Express TV). New
+# episodes and brand-new serials are picked up without anyone touching the
+# site. To pin a drama that should always be listed, add it to
+# portfolio/actor/data/drama-picks.json.
+on:
+  schedule:
+    - cron: "23 * * * *"   # hourly
+  workflow_dispatch:
+  push:
+    branches:
+      - claude/portfolio-website-setup-rpyerk
+    paths:
+      - ".github/workflows/drama-feed.yml"
+      - "scripts/drama-feed.mjs"
+      - "portfolio/actor/data/drama-picks.json"
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: drama-feed
+  cancel-in-progress: false
+
+env:
+  SITE_BRANCH: claude/portfolio-website-setup-rpyerk
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.SITE_BRANCH }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build the feed
+        run: node scripts/drama-feed.mjs
+
+      - name: Check the feed is valid
+        run: |
+          node -e '
+            const f = JSON.parse(require("fs").readFileSync("portfolio/actor/data/dramas.json", "utf8"));
+            if (!Array.isArray(f.dramas) || !f.dramas.length) { console.error("empty feed"); process.exit(1); }
+            const bad = f.dramas.filter((d) => !d.id || !d.title || !d.episodes.length || d.episodes.some((e) => !/^[\w-]{11}$/.test(e.id) || !(e.n > 0)));
+            if (bad.length) { console.error("malformed: " + bad.map((d) => d.title).join(", ")); process.exit(1); }
+            console.log(f.dramas.length + " dramas OK");
+          '
+
+      - name: Commit if changed
+        id: commit
+        run: |
+          if [ -z "$(git status --porcelain portfolio/actor/data/dramas.json portfolio/actor/watch portfolio/actor/sitemap.xml)" ]; then
+            echo "Feed unchanged — nothing to commit"
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name "drama-feed-bot"
+          git config user.email "actions@github.com"
+          git add portfolio/actor/data/dramas.json portfolio/actor/watch portfolio/actor/sitemap.xml
+          git commit -m "chore: refresh drama feed"
+          git push origin "HEAD:$SITE_BRANCH"
+          echo "pushed=true" >> "$GITHUB_OUTPUT"
+
+      # Pushes from GITHUB_TOKEN don't trigger the pages workflow, so
+      # dispatch the deploy explicitly (workflow_dispatch is exempt).
+      - name: Trigger Pages deploy
+        if: steps.commit.outputs.pushed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --repo "$GITHUB_REPOSITORY" --ref "$SITE_BRANCH"
