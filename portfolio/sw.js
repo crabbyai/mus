@@ -13,7 +13,7 @@
 
    Bump VERSION to invalidate every cache after a deploy.
    ============================================================ */
-const VERSION = "v55";
+const VERSION = "v56";
 const SHELL_CACHE = `ar-shell-${VERSION}`;
 const ASSET_CACHE = `ar-assets-${VERSION}`;
 const DATA_CACHE = `ar-data-${VERSION}`;

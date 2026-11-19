@@ -2,8 +2,8 @@
    Adeel's settings: edit these and the site updates.
    ============================================================ */
 window.COACH = {
-  whatsapp: "16134083945",            // +1 613 408 3945 (WhatsApp @PakistaniMangos)
-  whatsappName: "@PakistaniMangos",
+  whatsapp: "16134083945",            // +1 613 408 3945 (WhatsApp @PakistaniMangoes)
+  whatsappName: "@PakistaniMangoes",
   tiktok: "https://www.tiktok.com/@humiliator",
   snapchat: "https://www.snapchat.com/add/androgenic",
   email: "adeel.rahman@uwaterloo.ca",
