@@ -670,7 +670,9 @@ html[dir=rtl] .road{direction:ltr}
 
 /* neon crime-city look for the 3D game (original styling) */
 #scorpion-street-3d .g3__hud>*{background:linear-gradient(135deg,rgba(40,6,40,.75),rgba(6,20,40,.75));border:1px solid rgba(255,47,160,.55);box-shadow:0 0 12px rgba(255,47,160,.25),inset 0 0 0 1px rgba(32,230,216,.18);font-style:italic;font-weight:800;letter-spacing:.02em}
-#scorpion-street-3d .g3__heat{color:#ffd23a;text-shadow:0 0 8px rgba(255,180,40,.7)}
+#scorpion-street-3d .g3__heat{color:#ff8ac8;text-shadow:0 0 8px rgba(255,60,160,.7)}
+#scorpion-street-3d .g3__heat.max{animation:humMax .5s ease-in-out infinite alternate}
+@keyframes humMax{to{box-shadow:0 0 18px rgba(255,60,160,.9);transform:scale(1.05)}}
 #scorpion-street-3d .g3__msg b{font-style:italic;font-weight:900;background:linear-gradient(180deg,#ffe0f0,#ff5fb4 55%,#ff9a3c);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 2px 0 rgba(0,0,0,.6))}
 #scorpion-street-3d .g3__msg{border:1px solid rgba(255,47,160,.5);box-shadow:0 0 30px rgba(255,47,160,.3)}
 .g3__taunt{position:absolute;z-index:5;pointer-events:none;transform:translate(-50%,-50%) rotate(var(--r,0deg));font:italic 900 clamp(2rem,7vw,4.4rem) system-ui,sans-serif;letter-spacing:.06em;color:#ff2fa0;text-shadow:0 0 12px #ff2fa0,0 0 34px #ff2fa0,3px 0 #20e6d8,-3px 0 #ffd23a;white-space:nowrap;animation:g3taunt 1.6s steps(1) forwards}
@@ -811,8 +813,8 @@ html{scroll-padding-top:70px}
 .g3__name99 span{color:#3a2a8a!important;text-shadow:none!important;font-style:italic}
 @keyframes n99f{50%{margin-top:-6px}}
 .g3__flash{position:absolute;inset:0;z-index:2;pointer-events:none;background:#eaf4ff;opacity:0}
-.g3__flash.on{animation:g3flash .45s steps(1) forwards}
-@keyframes g3flash{0%{opacity:.75}15%{opacity:.1}30%{opacity:.6}50%{opacity:0}65%{opacity:.25}100%{opacity:0}}
+.g3__flash.on{animation:g3flash .8s steps(1) forwards}
+@keyframes g3flash{0%{opacity:.95}8%{opacity:.05}16%{opacity:.85}26%{opacity:.1}36%{opacity:.7}50%{opacity:0}62%{opacity:.45}74%{opacity:0}84%{opacity:.25}100%{opacity:0}}
 @media(prefers-reduced-motion:reduce){.g3__flash{display:none}}
 .g3__dmg{position:absolute;transform:translate(-50%,-50%);pointer-events:none;font:900 1.4rem system-ui,sans-serif;color:#fff;text-shadow:0 2px 0 #000,0 0 12px rgba(0,0,0,.7);animation:dmg3 1.25s ease-out forwards;white-space:nowrap;z-index:3}
 .g3__dmg--miss{color:#b9c2d0;font-size:1.15rem}
@@ -1557,7 +1559,7 @@ html{scroll-padding-top:70px}
         <span class="g3__hp g3__you"><span data-t="you">You</span><em data-g="you"><i></i></em></span>
         <span class="g3__wealth" data-g="wealth">Crab's wealth: $1,000,000</span>
         <span data-g="mansion">Mansion: Level 1</span>
-        <span class="g3__heat" data-g="heat">HEAT ☆☆☆☆☆</span>
+        <span class="g3__heat" data-g="heat">😳 HUMILIATION ○○○○○</span>
         <button type="button" class="g3__sound" data-g="sound" aria-pressed="false"><b>🔈</b> <span data-t="sound">Sound</span></button>
       </div>
       <div class="g3__msg" data-g="msg" aria-live="polite"></div>
@@ -1576,7 +1578,7 @@ html{scroll-padding-top:70px}
 <script>
 (function () {
   var box = document.getElementById("g3"); if (!box) return;
-  var go = function () { import("./coach/game3d.js?v=39").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
+  var go = function () { import("./coach/game3d.js?v=40").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
   if (!("IntersectionObserver" in window)) { go(); return; }
   var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io.disconnect(); go(); } }, { rootMargin: "300px" });
   io.observe(box);
