@@ -689,6 +689,8 @@ export function start(root) {
     g.fillStyle = "#c2185b"; g.textAlign = "center"; L.forEach((l2, k) => g.fillText(l2, 360, 66 + k * 54));
     const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthWrite: false })); sp.scale.set(10.5, 4.4, 1); sp.material.color.setScalar(0.78); return sp;
   }
+  const jaan = { t: 9 + Math.random() * 6, phase: 0, who: null, ask: null, rep: null };
+  function jaanBubble(text) { const sp = bubble(text); sp.scale.multiplyScalar(0.85); return sp; }
   function spawnBeggars() {
     [-1, 1].forEach((sd, k) => {
       const b2 = scorp.clone(true); b2.children.slice().forEach(c => { if (c.isSprite) b2.remove(c); });
@@ -1149,6 +1151,11 @@ export function start(root) {
       b2.lookAt(crab.position.x, 0, crab.position.z); b2.rotateY(Math.PI); b2.rotation.x = Math.sin(time * 4 + k) * 0.15;
       u.t -= dt; if (u.t <= 0) { u.t = 3.5 + Math.random() * 2; const n = window.coachBegCount ? window.coachBegCount() : 4; u.line = (u.line + 1 + Math.floor(Math.random() * 2)) % n; b2.remove(u.bub); u.bub = bubble(window.coachBeg ? window.coachBeg(u.line) : tx().beg[u.line % 4]); u.bub.position.set(0, 5.6, 0); b2.add(u.bub); }
     });
+    // "Can I be your sukoon…?"  "Kiya hua meri jaan?"
+    if (window.coachJaan) { jaan.t -= dt;
+      if (jaan.phase === 0 && jaan.t <= 0) { const pool = wives.children.concat(beggars, [scorp]); jaan.who = pool[Math.floor(Math.random() * pool.length)]; jaan.ask = jaanBubble(window.coachJaan.ask); jaan.ask.position.set(0, jaan.who === scorp ? 4.2 : 5.4, 0); if (jaan.who.userData.upper) jaan.ask.position.y = 4.2; jaan.who.add(jaan.ask); jaan.phase = 1; jaan.t = 2.2; }
+      else if (jaan.phase === 1 && jaan.t <= 0) { jaan.rep = bubble(window.coachJaan.reply); jaan.rep.material.color.setRGB(1, 0.92, 0.7); jaan.rep.position.set(0, 7.4, 0); crab.add(jaan.rep); jaan.phase = 2; jaan.t = 3; }
+      else if (jaan.phase === 2 && jaan.t <= 0) { if (jaan.ask && jaan.ask.parent) jaan.ask.parent.remove(jaan.ask); if (jaan.rep) crab.remove(jaan.rep); jaan.phase = 0; jaan.t = 12 + Math.random() * 10; } }
     mist.forEach(m => { m.position.x += m.userData.v * dt; if (m.position.x > 24) m.position.x = -24; m.material.opacity = 0.35 + Math.sin(time * 0.5 + m.position.z) * 0.12; });
     bunnies.forEach(b2 => {   // bunnies with bow ties hopping across the road
       const u = b2.userData; b2.position.x += u.dir * u.sp * dt;

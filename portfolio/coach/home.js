@@ -203,6 +203,11 @@
           var sc = live[Math.floor(Math.random() * live.length)], n = sc.getBoundingClientRect();
           var b = document.createElement("span"); b.className = "beg2"; b.textContent = window.coachBeg();
           road.appendChild(b); var half = b.offsetWidth / 2 + 6;
+          if (window.coachJaan && b.textContent === window.coachJaan.ask) setTimeout(function () {   // the crab answers
+            var bb = boss.getBoundingClientRect(), rep = document.createElement("span"); rep.className = "beg2 beg2--crab"; rep.textContent = window.coachJaan.reply; road.appendChild(rep);
+            var hw = rep.offsetWidth / 2 + 6; rep.style.left = Math.max(hw, Math.min(road.clientWidth - hw, bb.left - rr.left + bb.width / 2)) + "px"; rep.style.top = Math.max(rep.offsetHeight + 4, bb.top - rr.top + 10) + "px";
+            setTimeout(function () { rep.remove(); }, 3000);
+          }, 1300);
           b.style.left = Math.max(half, Math.min(road.clientWidth - half, n.left - rr.left + n.width / 2)) + "px"; b.style.top = Math.max(b.offsetHeight + 4, n.top - rr.top - 6) + "px"; setTimeout(function () { b.remove(); }, 3400);
         }
         beg();
