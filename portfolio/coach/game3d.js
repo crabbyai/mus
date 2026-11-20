@@ -652,7 +652,7 @@ export function start(root) {
   function spawnBeggars() {
     [-1, 1].forEach((sd, k) => {
       const b2 = scorp.clone(true); b2.children.slice().forEach(c => { if (c.isSprite) b2.remove(c); });
-      b2.traverse(m => { if (m.isMesh) { m.material = m.material.clone(); if (m.material.color) m.material.color.lerp(new THREE.Color(0xff7ab8), 0.45); } });
+      b2.traverse(m => { if (m.isMesh && !m.userData.carpet) { m.material = m.material.clone(); if (m.material.color) m.material.color.lerp(new THREE.Color(0xff7ab8), 0.45); } });
       b2.scale.setScalar(0.9); shadowy(b2); scene.add(b2);
       const bub = bubble(window.coachBeg ? window.coachBeg(k) : tx().beg[k]); bub.position.set(0, 5.6, 0); b2.add(bub);
       b2.userData = { sd, bub, line: k, t: 2 + k * 1.5 }; beggars.push(b2);
@@ -668,6 +668,35 @@ export function start(root) {
   /* ---------- low mist drifting over the road ---------- */
   const mistTex = glowTex("rgba(190,200,255,0.22)", "rgba(190,200,255,0)");
   const mist = Array.from({ length: small ? 6 : 10 }, (_, i) => { const m = new THREE.Sprite(new THREE.SpriteMaterial({ map: mistTex, transparent: true, depthWrite: false, opacity: 0.5 })); m.scale.set(22, 6, 1); m.position.set((Math.random() - 0.5) * 40, 1.2, 10 - Math.random() * 45); m.userData.v = 0.4 + Math.random() * 0.6; scene.add(m); return m; });
+
+  /* ---------- flag carpets: Canada under Prince Crab, Pakistan under every scorpion ---------- */
+  function flagTex(kind) {
+    const c = document.createElement("canvas"); c.width = 512; c.height = 256; const g = c.getContext("2d");
+    if (kind === "ca") {
+      g.fillStyle = "#d52b1e"; g.fillRect(0, 0, 512, 256); g.fillStyle = "#ffffff"; g.fillRect(128, 0, 256, 256);
+      const L = [50,5,56,18,63,15,60,38,72,26,75,33,88,30,84,44,92,48,70,66,73,74,52,71,53,92,47,92,48,71,27,74,30,66,8,48,16,44,12,30,25,33,28,26,40,38,37,15,44,18];
+      g.fillStyle = "#d52b1e"; g.beginPath(); for (let i = 0; i < L.length; i += 2) { const x = 154 + L[i] * 2.04, y = 20 + L[i + 1] * 2.2; i ? g.lineTo(x, y) : g.moveTo(x, y); } g.closePath(); g.fill();
+    } else {
+      g.fillStyle = "#01411c"; g.fillRect(0, 0, 512, 256); g.fillStyle = "#ffffff"; g.fillRect(0, 0, 128, 256);
+      g.beginPath(); g.arc(328, 133, 72, 0, 6.2832); g.fill(); g.fillStyle = "#01411c"; g.beginPath(); g.arc(352, 115, 64, 0, 6.2832); g.fill();
+      g.fillStyle = "#ffffff"; g.beginPath(); for (let i = 0; i < 10; i++) { const r = i % 2 ? 10 : 26, a = (-60 + i * 36) * Math.PI / 180; const x = 380 + r * Math.cos(a), y = 92 + r * Math.sin(a); i ? g.lineTo(x, y) : g.moveTo(x, y); } g.closePath(); g.fill();
+    }
+    g.strokeStyle = "#e8c87e"; g.lineWidth = 10; g.strokeRect(5, 5, 502, 246);
+    const img = g.getImageData(0, 0, 512, 256), d = img.data;   // woven fabric grain
+    for (let i = 0; i < d.length; i += 4) { const n = (Math.random() - 0.5) * 22 + ((i / 4) % 2 ? 4 : -4); d[i] += n; d[i + 1] += n; d[i + 2] += n; }
+    g.putImageData(img, 0, 0);
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t;
+  }
+  const caT = flagTex("ca"), pkT = flagTex("pk");
+  const caMat = new THREE.MeshStandardMaterial({ map: caT, emissive: 0xffffff, emissiveMap: caT, emissiveIntensity: 0.22, roughness: 0.95 }), pkMat = new THREE.MeshStandardMaterial({ map: pkT, emissive: 0xffffff, emissiveMap: pkT, emissiveIntensity: 0.32, roughness: 0.95 });
+  function carpet(mat, w, h) {
+    const g = new THREE.Group(); const top = new THREE.Mesh(new THREE.BoxGeometry(w, 0.08, h), [mat, mat, mat, mat, mat, mat]); top.position.y = 0.05; top.receiveShadow = true; g.add(top);
+    [-1, 1].forEach(sd => { const fr = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.05, h), goldMat); fr.position.set(sd * (w / 2 + 0.15), 0.04, 0); g.add(fr); });
+    // map the flag across the top face only
+    top.geometry.attributes.uv.needsUpdate = true; return g;
+  }
+  const crabCarpet = carpet(caMat, 12, 6); scene.add(crabCarpet);
+  const scorpCarpet = carpet(pkMat, 4.8, 2.4); scorpCarpet.position.y = 0.05; scorpCarpet.rotation.y = Math.PI / 2; scorpCarpet.userData.carpet = true; scorpCarpet.traverse(m => m.userData.carpet = true); scorp.add(scorpCarpet);
 
   /* ---------- game state ---------- */
   const st = { stun: 0, round: 0, hp: 100, crabScale: 1, wealth: 1000000, level: 0, playing: false, sting: 0, cool: 0, kb: 0, crabT: 1.5, crabTarget: 0, lunge: 0, flinch: 0, shake: 0 };
@@ -938,6 +967,7 @@ export function start(root) {
     });
     if (adlT > 0) { adlT -= dt; if (adlT <= 0) adlEl.classList.remove("on"); }
 
+    crabCarpet.position.set(crab.position.x, 0, crab.position.z + 0.6 * st.crabScale); crabCarpet.scale.set(st.crabScale, 1, st.crabScale);
     // royal tags, fireflies and the horror numbers
     royalTags();
     for (let i = 0; i < FF; i++) { const sd = ffSeed[i]; ffPos[i * 3] = sd[0] + Math.sin(time * 0.5 + sd[3]) * 1.5; ffPos[i * 3 + 1] = sd[1] + Math.sin(time * 1.3 + sd[3] * 2) * 0.5; ffPos[i * 3 + 2] = sd[2] + Math.cos(time * 0.4 + sd[3]) * 1.5; }
