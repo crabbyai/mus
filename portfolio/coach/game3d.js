@@ -14,14 +14,14 @@ import { UnrealBloomPass } from "../js/vendor/three/postprocessing/UnrealBloomPa
 import { ShaderPass } from "../js/vendor/three/postprocessing/ShaderPass.js";
 
 const TX = {
-  en: { eagle: "🦅 A HUGE EAGLE descends with thunder! ⚡", buraq: "✨ Al-Burāq passes across the night sky", defend: "🛡️ The crab defends his wives while they pray", qibla: "They pray towards the Kaaba 🕋", crossfire: "Caught in the crossfire…", inna: "Inna lillahi wa inna ilayhi raji'un: to Allah we belong, and to Him we return (2:156)", beg: ["Make me your wife! 💍", "Pick me, Prince Crab! 🙏", "I'll respect you now! 👸", "Please, I'm begging! 💍"], prince: 'PRINCE CRAB', princess: 'FUTURE PRINCESS', princessSub: 'once she learns to respect the crab', mudhil: 'THE HUMILIATOR', ghani: 'THE RICH ONE', ringT: '12 LAKH WEDDING RING', hammer: "🔨 The Hammer of Justice", justice: "JUSTICE", miss: "MISS", sliced: "Sliced! 🔪", knives: "Twin knives fall for the crab 🔪🔪", push: "✨ Crab magic: pushed away!", pull: "✨ Crab magic: pulled in!", sur: "“And the Trumpet will be blown…” (39:68)", moon: "“The Hour has drawn near, and the moon has split.” (54:1)", round: "Round", hp: "Crab", wealth: "Crab's wealth", mansion: "Mansion", start: "Tap or press a key to play", nice: "Nice try 😏", niceSub: "The crab grows stronger and richer, and the mansion grows.", hit: "Sting!", back: "The crab hits back!", blood: "Blood moon 🐺 Awoooo…", sound: "Sound", sting: "Sting", lvl: "Level", lh: "لا حول ولا قوة إلا بالله" },
-  ur: { eagle: "🦅 ایک دیو ہیکل عقاب گرج کے ساتھ اترتا ہے! ⚡", buraq: "✨ البراق رات کے آسمان سے گزرتا ہے", defend: "🛡️ کیکڑا نماز پڑھتی بیویوں کی حفاظت کر رہا ہے", qibla: "وہ کعبہ کی طرف نماز پڑھ رہی ہیں 🕋", crossfire: "کراس فائر کی زد میں…", inna: "إنا للہ وإنا إلیہ راجعون: ہم اللہ کے ہیں اور اسی کی طرف لوٹنے والے ہیں (2:156)", beg: ["مجھے اپنی بیوی بنا لو! 💍", "مجھے چن لو، شہزادہ کیکڑا! 🙏", "اب میں عزت کروں گی! 👸", "پلیز، میں منت کرتی ہوں! 💍"], prince: 'شہزادہ کیکڑا', princess: 'مستقبل کی شہزادی', princessSub: 'جب وہ کیکڑے کا احترام سیکھ لے', mudhil: 'ذلیل کرنے والا', ghani: 'بے نیاز، غنی', ringT: '12 لاکھ کی شادی کی انگوٹھی', hammer: '🔨 انصاف کا ہتھوڑا', justice: 'انصاف', miss: 'MISS', sliced: 'کٹ گیا! 🔪', knives: 'کیکڑے کے لیے دو چاقو گرے 🔪🔪', push: '✨ کیکڑے کا جادو: دور دھکیل دیا!', pull: '✨ کیکڑے کا جادو: کھینچ لیا!', sur: '”اور صور پھونکا جائے گا…“ (39:68)', moon: '”قیامت قریب آ گئی اور چاند پھٹ گیا۔“ (54:1)', round: "راؤنڈ", hp: "کیکڑا", wealth: "کیکڑے کی دولت", mansion: "محل", start: "کھیلنے کے لیے ٹیپ کریں یا کوئی بٹن دبائیں", nice: "اچھی کوشش 😏", niceSub: "کیکڑا مزید طاقتور اور امیر ہو گیا، اور محل بڑا ہو گیا۔", hit: "ڈنک!", back: "کیکڑے نے جوابی وار کیا!", blood: "خونی چاند 🐺 آؤووو…", sound: "آواز", sting: "ڈنک", lvl: "لیول", lh: "لا حول ولا قوۃ الا باللہ" },
-  ar: { eagle: "🦅 نسرٌ ضخم يهبط مع الرعد! ⚡", buraq: "✨ البُراق يعبر سماء الليل", defend: "🛡️ السلطعون يحمي زوجاته وهنّ يصلّين", qibla: "يصلّين نحو الكعبة 🕋", crossfire: "وقعن في تبادل إطلاق النار…", inna: "إنا لله وإنا إليه راجعون (2:156)", beg: ["اجعلني زوجتك! 💍", "اخترني يا أمير السلطعون! 🙏", "سأحترمك الآن! 👸", "أرجوك، أتوسّل إليك! 💍"], prince: 'الأمير السلطعون', princess: 'الأميرة المستقبلية', princessSub: 'حين تتعلّم احترام السلطعون', mudhil: 'المُذِلّ', ghani: 'الغنيّ', ringT: 'خاتم زواج بـ 12 لاكه', hammer: '🔨 مطرقة العدل', justice: 'عدالة', miss: 'MISS', sliced: 'تقطّع! 🔪', knives: 'سكينان يسقطان للسلطعون 🔪🔪', push: '✨ سحر السلطعون: دُفع بعيدًا!', pull: '✨ سحر السلطعون: سُحب إليه!', sur: '«ونُفخ في الصور…» (39:68)', moon: '«اقتربت الساعة وانشق القمر» (54:1)', round: "الجولة", hp: "السلطعون", wealth: "ثروة السلطعون", mansion: "القصر", start: "اضغط أو اضغط زرًا لتلعب", nice: "محاولة جيدة 😏", niceSub: "السلطعون يزداد قوة وثراء، والقصر يكبر.", hit: "لسعة!", back: "السلطعون يردّ الضربة!", blood: "قمر دموي 🐺 أووو…", sound: "الصوت", sting: "لسعة", lvl: "المستوى", lh: "لا حول ولا قوة إلا بالله" },
-  fr: { eagle: "🦅 Un AIGLE GÉANT descend dans le tonnerre ! ⚡", buraq: "✨ Al-Bouraq traverse le ciel nocturne", defend: "🛡️ Le crabe protège ses épouses pendant leur prière", qibla: "Elles prient vers la Kaaba 🕋", crossfire: "Prises entre deux feux…", inna: "Inna lillahi wa inna ilayhi raji'un : nous sommes à Allah et c'est à Lui que nous retournerons (2:156)", beg: ["Fais de moi ta femme ! 💍", "Choisis-moi, Prince Crabe ! 🙏", "Je te respecterai maintenant ! 👸", "S'il te plaît, je t'en supplie ! 💍"], prince: 'PRINCE CRABE', princess: 'FUTURE PRINCESSE', princessSub: 'quand elle apprendra à respecter le crabe', mudhil: 'CELUI QUI HUMILIE', ghani: 'LE RICHE', ringT: 'BAGUE DE MARIAGE DE 12 LAKHS', hammer: '🔨 Le Marteau de la Justice', justice: 'JUSTICE', miss: 'RATÉ', sliced: 'Tranché ! 🔪', knives: 'Deux couteaux tombent pour le crabe 🔪🔪', push: '✨ Magie du crabe : repoussé !', pull: '✨ Magie du crabe : attiré !', sur: '« Et l’on soufflera dans la Trompe… » (39:68)', moon: '« L’Heure approche et la lune s’est fendue. » (54:1)', round: "Manche", hp: "Crabe", wealth: "Fortune du crabe", mansion: "Manoir", start: "Touchez ou appuyez sur une touche pour jouer", nice: "Bien essayé 😏", niceSub: "Le crabe devient plus fort et plus riche, et le manoir grandit.", hit: "Piqûre !", back: "Le crabe riposte !", blood: "Lune de sang 🐺 Aouuu…", sound: "Son", sting: "Piquer", lvl: "Niveau", lh: "لا حول ولا قوة إلا بالله" },
-  es: { eagle: "🦅 ¡Un ÁGUILA ENORME desciende con truenos! ⚡", buraq: "✨ Al-Buraq cruza el cielo nocturno", defend: "🛡️ El cangrejo defiende a sus esposas mientras rezan", qibla: "Rezan hacia la Kaaba 🕋", crossfire: "Atrapadas en el fuego cruzado…", inna: "Inna lillahi wa inna ilayhi raji'un: a Allah pertenecemos y a Él volveremos (2:156)", beg: ["¡Hazme tu esposa! 💍", "¡Elígeme, Príncipe Cangrejo! 🙏", "¡Ahora te respetaré! 👸", "¡Por favor, te lo suplico! 💍"], prince: 'PRÍNCIPE CANGREJO', princess: 'FUTURA PRINCESA', princessSub: 'cuando aprenda a respetar al cangrejo', mudhil: 'EL QUE HUMILLA', ghani: 'EL RICO', ringT: 'ANILLO DE BODA DE 12 LAKH', hammer: '🔨 El Martillo de la Justicia', justice: 'JUSTICIA', miss: 'FALLO', sliced: '¡Rebanado! 🔪', knives: 'Dos cuchillos caen para el cangrejo 🔪🔪', push: '✨ Magia del cangrejo: ¡empujado!', pull: '✨ Magia del cangrejo: ¡atraído!', sur: '«Y se soplará la Trompeta…» (39:68)', moon: '«Se acercó la Hora y se partió la luna.» (54:1)', round: "Ronda", hp: "Cangrejo", wealth: "Fortuna del cangrejo", mansion: "Mansión", start: "Toca o pulsa una tecla para jugar", nice: "Buen intento 😏", niceSub: "El cangrejo se vuelve más fuerte y más rico, y la mansión crece.", hit: "¡Picadura!", back: "¡El cangrejo contraataca!", blood: "Luna de sangre 🐺 Auuuu…", sound: "Sonido", sting: "Picar", lvl: "Nivel", lh: "لا حول ولا قوة إلا بالله" },
-  ja: { eagle: "🦅 巨大なワシが雷とともに舞い降りる！⚡", buraq: "✨ ブラークが夜空を駆け抜ける", defend: "🛡️ 祈る妻たちをカニが守る", qibla: "彼女たちはカアバに向かって祈る 🕋", crossfire: "流れ弾に巻き込まれて…", inna: "インナー・リッラーヒ・ワ・インナー・イライヒ・ラージウーン：私たちはアッラーのもの、そして彼のもとへ帰る（2:156）", beg: ["私を妻にして！💍", "私を選んで、カニ王子！🙏", "これからは敬います！👸", "お願い、どうか！💍"], prince: 'カニ王子', princess: '未来のプリンセス', princessSub: 'カニを敬うことを学んだら', mudhil: '辱める御方', ghani: '富める御方', ringT: '12ラーフの結婚指輪', hammer: '🔨 正義のハンマー', justice: '正義', miss: 'MISS', sliced: '斬られた！🔪', knives: 'カニのもとに2本のナイフが落ちてきた 🔪🔪', push: '✨ カニの魔法：吹き飛ばされた！', pull: '✨ カニの魔法：引き寄せられた！', sur: '「そしてラッパが吹かれる…」（39:68）', moon: '「時は近づき、月は裂けた。」（54:1）', round: "ラウンド", hp: "カニ", wealth: "カニの財産", mansion: "豪邸", start: "タップかキーでスタート", nice: "惜しい 😏", niceSub: "カニはさらに強く豊かになり、豪邸も大きくなった。", hit: "刺した！", back: "カニの反撃！", blood: "血の月 🐺 アオーン…", sound: "サウンド", sting: "刺す", lvl: "レベル", lh: "لا حول ولا قوة إلا بالله" },
-  zh: { eagle: "🦅 一只巨鹰伴着雷霆降临！⚡", buraq: "✨ 神驹布拉格划过夜空", defend: "🛡️ 螃蟹在妻子们礼拜时保护她们", qibla: "她们朝向克尔白礼拜 🕋", crossfire: "被卷入交火之中……", inna: "我们确是属于安拉的，我们必定归依他（2:156）", beg: ["让我做你的妻子吧！💍", "选我吧，螃蟹王子！🙏", "我现在会尊重你了！👸", "求求你了！💍"], prince: '螃蟹王子', princess: '未来的公主', princessSub: '等她学会尊重螃蟹', mudhil: '使人卑贱者', ghani: '富足者', ringT: '12拉克的结婚戒指', hammer: '🔨 正义之锤', justice: '公正', miss: 'MISS', sliced: '被砍了！🔪', knives: '两把刀为螃蟹落下 🔪🔪', push: '✨ 螃蟹魔法：被推开了！', pull: '✨ 螃蟹魔法：被拉过去了！', sur: '“号角将被吹响……”（39:68）', moon: '“复活时已临近了，月亮已破裂了。”（54:1）', round: "回合", hp: "螃蟹", wealth: "螃蟹的财富", mansion: "豪宅", start: "点击或按任意键开始", nice: "不错的尝试 😏", niceSub: "螃蟹变得更强更富，豪宅也更大了。", hit: "蜇中！", back: "螃蟹反击了！", blood: "血月 🐺 嗷呜…", sound: "声音", sting: "蜇", lvl: "等级", lh: "لا حول ولا قوة إلا بالله" },
-  ko: { eagle: "🦅 거대한 독수리가 천둥과 함께 내려온다! ⚡", buraq: "✨ 부라크가 밤하늘을 가로지른다", defend: "🛡️ 게가 기도하는 아내들을 지킨다", qibla: "그녀들은 카바를 향해 기도한다 🕋", crossfire: "교전에 휘말려…", inna: "인나 릴라히 와 인나 일라이히 라지운: 우리는 알라께 속하며 그분께로 돌아갑니다 (2:156)", beg: ["저를 아내로 삼아 주세요! 💍", "저를 골라 주세요, 게 왕자님! 🙏", "이제 존중할게요! 👸", "제발요, 빌게요! 💍"], prince: '게 왕자', princess: '미래의 공주', princessSub: '게를 존중하는 법을 배우면', mudhil: '낮추시는 분', ghani: '부유하신 분', ringT: '12라크 결혼반지', hammer: '🔨 정의의 망치', justice: '정의', miss: 'MISS', sliced: '베였다! 🔪', knives: '게를 위해 쌍칼이 떨어진다 🔪🔪', push: '✨ 게의 마법: 밀려났다!', pull: '✨ 게의 마법: 끌려갔다!', sur: '“나팔이 불리리라…” (39:68)', moon: '“그 시간이 다가왔고 달이 갈라졌다.” (54:1)', round: "라운드", hp: "게", wealth: "게의 재산", mansion: "저택", start: "탭하거나 키를 눌러 시작", nice: "좋은 시도였어요 😏", niceSub: "게는 더 강하고 부유해졌고, 저택도 커졌습니다.", hit: "쏘기!", back: "게의 반격!", blood: "블러드 문 🐺 아우우…", sound: "소리", sting: "쏘기", lvl: "레벨", lh: "لا حول ولا قوة إلا بالله" }
+  en: { soil: "🌱 The black road turns to rich, fertile soil… Chaunsa mangoes are growing 🥭", feed: "🥭 Women pick Chaunsa mangoes and feed the crab while he fights", eagle: "🦅 A HUGE EAGLE descends with thunder! ⚡", buraq: "✨ Al-Burāq passes across the night sky", defend: "🛡️ The crab defends his wives while they pray", qibla: "They pray towards the Kaaba 🕋", crossfire: "Caught in the crossfire…", inna: "Inna lillahi wa inna ilayhi raji'un: to Allah we belong, and to Him we return (2:156)", beg: ["Make me your wife! 💍", "Pick me, Prince Crab! 🙏", "I'll respect you now! 👸", "Please, I'm begging! 💍"], prince: 'PRINCE CRAB', princess: 'FUTURE PRINCESS', princessSub: 'once she learns to respect the crab', mudhil: 'THE HUMILIATOR', ghani: 'THE RICH ONE', ringT: '12 LAKH WEDDING RING', hammer: "🔨 The Hammer of Justice", justice: "JUSTICE", miss: "MISS", sliced: "Sliced! 🔪", knives: "Twin knives fall for the crab 🔪🔪", push: "✨ Crab magic: pushed away!", pull: "✨ Crab magic: pulled in!", sur: "“And the Trumpet will be blown…” (39:68)", moon: "“The Hour has drawn near, and the moon has split.” (54:1)", round: "Round", hp: "Crab", wealth: "Crab's wealth", mansion: "Mansion", start: "Tap or press a key to play", nice: "Nice try 😏", niceSub: "The crab grows stronger and richer, and the mansion grows.", hit: "Sting!", back: "The crab hits back!", blood: "Blood moon 🐺 Awoooo…", sound: "Sound", sting: "Sting", lvl: "Level", lh: "لا حول ولا قوة إلا بالله" },
+  ur: { soil: "🌱 کالی سڑک زرخیز مٹی میں بدل رہی ہے… چونسا آم اگ رہے ہیں 🥭", feed: "🥭 خواتین چونسا آم توڑ کر لڑتے ہوئے کیکڑے کو کھلا رہی ہیں", eagle: "🦅 ایک دیو ہیکل عقاب گرج کے ساتھ اترتا ہے! ⚡", buraq: "✨ البراق رات کے آسمان سے گزرتا ہے", defend: "🛡️ کیکڑا نماز پڑھتی بیویوں کی حفاظت کر رہا ہے", qibla: "وہ کعبہ کی طرف نماز پڑھ رہی ہیں 🕋", crossfire: "کراس فائر کی زد میں…", inna: "إنا للہ وإنا إلیہ راجعون: ہم اللہ کے ہیں اور اسی کی طرف لوٹنے والے ہیں (2:156)", beg: ["مجھے اپنی بیوی بنا لو! 💍", "مجھے چن لو، شہزادہ کیکڑا! 🙏", "اب میں عزت کروں گی! 👸", "پلیز، میں منت کرتی ہوں! 💍"], prince: 'شہزادہ کیکڑا', princess: 'مستقبل کی شہزادی', princessSub: 'جب وہ کیکڑے کا احترام سیکھ لے', mudhil: 'ذلیل کرنے والا', ghani: 'بے نیاز، غنی', ringT: '12 لاکھ کی شادی کی انگوٹھی', hammer: '🔨 انصاف کا ہتھوڑا', justice: 'انصاف', miss: 'MISS', sliced: 'کٹ گیا! 🔪', knives: 'کیکڑے کے لیے دو چاقو گرے 🔪🔪', push: '✨ کیکڑے کا جادو: دور دھکیل دیا!', pull: '✨ کیکڑے کا جادو: کھینچ لیا!', sur: '”اور صور پھونکا جائے گا…“ (39:68)', moon: '”قیامت قریب آ گئی اور چاند پھٹ گیا۔“ (54:1)', round: "راؤنڈ", hp: "کیکڑا", wealth: "کیکڑے کی دولت", mansion: "محل", start: "کھیلنے کے لیے ٹیپ کریں یا کوئی بٹن دبائیں", nice: "اچھی کوشش 😏", niceSub: "کیکڑا مزید طاقتور اور امیر ہو گیا، اور محل بڑا ہو گیا۔", hit: "ڈنک!", back: "کیکڑے نے جوابی وار کیا!", blood: "خونی چاند 🐺 آؤووو…", sound: "آواز", sting: "ڈنک", lvl: "لیول", lh: "لا حول ولا قوۃ الا باللہ" },
+  ar: { soil: "🌱 الطريق الأسود يتحوّل إلى تربة خصبة… ومانجو تشونسا تنمو 🥭", feed: "🥭 نساء يقطفن مانجو تشونسا ويطعمن السلطعون وهو يقاتل", eagle: "🦅 نسرٌ ضخم يهبط مع الرعد! ⚡", buraq: "✨ البُراق يعبر سماء الليل", defend: "🛡️ السلطعون يحمي زوجاته وهنّ يصلّين", qibla: "يصلّين نحو الكعبة 🕋", crossfire: "وقعن في تبادل إطلاق النار…", inna: "إنا لله وإنا إليه راجعون (2:156)", beg: ["اجعلني زوجتك! 💍", "اخترني يا أمير السلطعون! 🙏", "سأحترمك الآن! 👸", "أرجوك، أتوسّل إليك! 💍"], prince: 'الأمير السلطعون', princess: 'الأميرة المستقبلية', princessSub: 'حين تتعلّم احترام السلطعون', mudhil: 'المُذِلّ', ghani: 'الغنيّ', ringT: 'خاتم زواج بـ 12 لاكه', hammer: '🔨 مطرقة العدل', justice: 'عدالة', miss: 'MISS', sliced: 'تقطّع! 🔪', knives: 'سكينان يسقطان للسلطعون 🔪🔪', push: '✨ سحر السلطعون: دُفع بعيدًا!', pull: '✨ سحر السلطعون: سُحب إليه!', sur: '«ونُفخ في الصور…» (39:68)', moon: '«اقتربت الساعة وانشق القمر» (54:1)', round: "الجولة", hp: "السلطعون", wealth: "ثروة السلطعون", mansion: "القصر", start: "اضغط أو اضغط زرًا لتلعب", nice: "محاولة جيدة 😏", niceSub: "السلطعون يزداد قوة وثراء، والقصر يكبر.", hit: "لسعة!", back: "السلطعون يردّ الضربة!", blood: "قمر دموي 🐺 أووو…", sound: "الصوت", sting: "لسعة", lvl: "المستوى", lh: "لا حول ولا قوة إلا بالله" },
+  fr: { soil: "🌱 La route noire devient une terre riche et fertile… les mangues Chaunsa poussent 🥭", feed: "🥭 Des femmes cueillent des mangues Chaunsa et nourrissent le crabe pendant qu'il se bat", eagle: "🦅 Un AIGLE GÉANT descend dans le tonnerre ! ⚡", buraq: "✨ Al-Bouraq traverse le ciel nocturne", defend: "🛡️ Le crabe protège ses épouses pendant leur prière", qibla: "Elles prient vers la Kaaba 🕋", crossfire: "Prises entre deux feux…", inna: "Inna lillahi wa inna ilayhi raji'un : nous sommes à Allah et c'est à Lui que nous retournerons (2:156)", beg: ["Fais de moi ta femme ! 💍", "Choisis-moi, Prince Crabe ! 🙏", "Je te respecterai maintenant ! 👸", "S'il te plaît, je t'en supplie ! 💍"], prince: 'PRINCE CRABE', princess: 'FUTURE PRINCESSE', princessSub: 'quand elle apprendra à respecter le crabe', mudhil: 'CELUI QUI HUMILIE', ghani: 'LE RICHE', ringT: 'BAGUE DE MARIAGE DE 12 LAKHS', hammer: '🔨 Le Marteau de la Justice', justice: 'JUSTICE', miss: 'RATÉ', sliced: 'Tranché ! 🔪', knives: 'Deux couteaux tombent pour le crabe 🔪🔪', push: '✨ Magie du crabe : repoussé !', pull: '✨ Magie du crabe : attiré !', sur: '« Et l’on soufflera dans la Trompe… » (39:68)', moon: '« L’Heure approche et la lune s’est fendue. » (54:1)', round: "Manche", hp: "Crabe", wealth: "Fortune du crabe", mansion: "Manoir", start: "Touchez ou appuyez sur une touche pour jouer", nice: "Bien essayé 😏", niceSub: "Le crabe devient plus fort et plus riche, et le manoir grandit.", hit: "Piqûre !", back: "Le crabe riposte !", blood: "Lune de sang 🐺 Aouuu…", sound: "Son", sting: "Piquer", lvl: "Niveau", lh: "لا حول ولا قوة إلا بالله" },
+  es: { soil: "🌱 La carretera negra se vuelve tierra fértil… crecen mangos Chaunsa 🥭", feed: "🥭 Mujeres recogen mangos Chaunsa y alimentan al cangrejo mientras pelea", eagle: "🦅 ¡Un ÁGUILA ENORME desciende con truenos! ⚡", buraq: "✨ Al-Buraq cruza el cielo nocturno", defend: "🛡️ El cangrejo defiende a sus esposas mientras rezan", qibla: "Rezan hacia la Kaaba 🕋", crossfire: "Atrapadas en el fuego cruzado…", inna: "Inna lillahi wa inna ilayhi raji'un: a Allah pertenecemos y a Él volveremos (2:156)", beg: ["¡Hazme tu esposa! 💍", "¡Elígeme, Príncipe Cangrejo! 🙏", "¡Ahora te respetaré! 👸", "¡Por favor, te lo suplico! 💍"], prince: 'PRÍNCIPE CANGREJO', princess: 'FUTURA PRINCESA', princessSub: 'cuando aprenda a respetar al cangrejo', mudhil: 'EL QUE HUMILLA', ghani: 'EL RICO', ringT: 'ANILLO DE BODA DE 12 LAKH', hammer: '🔨 El Martillo de la Justicia', justice: 'JUSTICIA', miss: 'FALLO', sliced: '¡Rebanado! 🔪', knives: 'Dos cuchillos caen para el cangrejo 🔪🔪', push: '✨ Magia del cangrejo: ¡empujado!', pull: '✨ Magia del cangrejo: ¡atraído!', sur: '«Y se soplará la Trompeta…» (39:68)', moon: '«Se acercó la Hora y se partió la luna.» (54:1)', round: "Ronda", hp: "Cangrejo", wealth: "Fortuna del cangrejo", mansion: "Mansión", start: "Toca o pulsa una tecla para jugar", nice: "Buen intento 😏", niceSub: "El cangrejo se vuelve más fuerte y más rico, y la mansión crece.", hit: "¡Picadura!", back: "¡El cangrejo contraataca!", blood: "Luna de sangre 🐺 Auuuu…", sound: "Sonido", sting: "Picar", lvl: "Nivel", lh: "لا حول ولا قوة إلا بالله" },
+  ja: { soil: "🌱 黒い道が肥沃な土に変わっていく…チョウンサ・マンゴーが実る 🥭", feed: "🥭 女性たちがチョウンサ・マンゴーを摘み、戦うカニに食べさせる", eagle: "🦅 巨大なワシが雷とともに舞い降りる！⚡", buraq: "✨ ブラークが夜空を駆け抜ける", defend: "🛡️ 祈る妻たちをカニが守る", qibla: "彼女たちはカアバに向かって祈る 🕋", crossfire: "流れ弾に巻き込まれて…", inna: "インナー・リッラーヒ・ワ・インナー・イライヒ・ラージウーン：私たちはアッラーのもの、そして彼のもとへ帰る（2:156）", beg: ["私を妻にして！💍", "私を選んで、カニ王子！🙏", "これからは敬います！👸", "お願い、どうか！💍"], prince: 'カニ王子', princess: '未来のプリンセス', princessSub: 'カニを敬うことを学んだら', mudhil: '辱める御方', ghani: '富める御方', ringT: '12ラーフの結婚指輪', hammer: '🔨 正義のハンマー', justice: '正義', miss: 'MISS', sliced: '斬られた！🔪', knives: 'カニのもとに2本のナイフが落ちてきた 🔪🔪', push: '✨ カニの魔法：吹き飛ばされた！', pull: '✨ カニの魔法：引き寄せられた！', sur: '「そしてラッパが吹かれる…」（39:68）', moon: '「時は近づき、月は裂けた。」（54:1）', round: "ラウンド", hp: "カニ", wealth: "カニの財産", mansion: "豪邸", start: "タップかキーでスタート", nice: "惜しい 😏", niceSub: "カニはさらに強く豊かになり、豪邸も大きくなった。", hit: "刺した！", back: "カニの反撃！", blood: "血の月 🐺 アオーン…", sound: "サウンド", sting: "刺す", lvl: "レベル", lh: "لا حول ولا قوة إلا بالله" },
+  zh: { soil: "🌱 黑色的路变成了肥沃的土壤……Chaunsa芒果正在生长 🥭", feed: "🥭 女子们采摘Chaunsa芒果，喂给正在战斗的螃蟹", eagle: "🦅 一只巨鹰伴着雷霆降临！⚡", buraq: "✨ 神驹布拉格划过夜空", defend: "🛡️ 螃蟹在妻子们礼拜时保护她们", qibla: "她们朝向克尔白礼拜 🕋", crossfire: "被卷入交火之中……", inna: "我们确是属于安拉的，我们必定归依他（2:156）", beg: ["让我做你的妻子吧！💍", "选我吧，螃蟹王子！🙏", "我现在会尊重你了！👸", "求求你了！💍"], prince: '螃蟹王子', princess: '未来的公主', princessSub: '等她学会尊重螃蟹', mudhil: '使人卑贱者', ghani: '富足者', ringT: '12拉克的结婚戒指', hammer: '🔨 正义之锤', justice: '公正', miss: 'MISS', sliced: '被砍了！🔪', knives: '两把刀为螃蟹落下 🔪🔪', push: '✨ 螃蟹魔法：被推开了！', pull: '✨ 螃蟹魔法：被拉过去了！', sur: '“号角将被吹响……”（39:68）', moon: '“复活时已临近了，月亮已破裂了。”（54:1）', round: "回合", hp: "螃蟹", wealth: "螃蟹的财富", mansion: "豪宅", start: "点击或按任意键开始", nice: "不错的尝试 😏", niceSub: "螃蟹变得更强更富，豪宅也更大了。", hit: "蜇中！", back: "螃蟹反击了！", blood: "血月 🐺 嗷呜…", sound: "声音", sting: "蜇", lvl: "等级", lh: "لا حول ولا قوة إلا بالله" },
+  ko: { soil: "🌱 검은 길이 비옥한 흙으로 변한다… 차운사 망고가 자란다 🥭", feed: "🥭 여인들이 차운사 망고를 따서 싸우는 게에게 먹인다", eagle: "🦅 거대한 독수리가 천둥과 함께 내려온다! ⚡", buraq: "✨ 부라크가 밤하늘을 가로지른다", defend: "🛡️ 게가 기도하는 아내들을 지킨다", qibla: "그녀들은 카바를 향해 기도한다 🕋", crossfire: "교전에 휘말려…", inna: "인나 릴라히 와 인나 일라이히 라지운: 우리는 알라께 속하며 그분께로 돌아갑니다 (2:156)", beg: ["저를 아내로 삼아 주세요! 💍", "저를 골라 주세요, 게 왕자님! 🙏", "이제 존중할게요! 👸", "제발요, 빌게요! 💍"], prince: '게 왕자', princess: '미래의 공주', princessSub: '게를 존중하는 법을 배우면', mudhil: '낮추시는 분', ghani: '부유하신 분', ringT: '12라크 결혼반지', hammer: '🔨 정의의 망치', justice: '정의', miss: 'MISS', sliced: '베였다! 🔪', knives: '게를 위해 쌍칼이 떨어진다 🔪🔪', push: '✨ 게의 마법: 밀려났다!', pull: '✨ 게의 마법: 끌려갔다!', sur: '“나팔이 불리리라…” (39:68)', moon: '“그 시간이 다가왔고 달이 갈라졌다.” (54:1)', round: "라운드", hp: "게", wealth: "게의 재산", mansion: "저택", start: "탭하거나 키를 눌러 시작", nice: "좋은 시도였어요 😏", niceSub: "게는 더 강하고 부유해졌고, 저택도 커졌습니다.", hit: "쏘기!", back: "게의 반격!", blood: "블러드 문 🐺 아우우…", sound: "소리", sting: "쏘기", lvl: "레벨", lh: "لا حول ولا قوة إلا بالله" }
 };
 
 export function start(root) {
@@ -286,16 +286,53 @@ export function start(root) {
   const scorp = new THREE.Group(); scene.add(scorp);
   const amber = new THREE.MeshStandardMaterial({ color: 0x8a3fd0, roughness: 0.3, metalness: 0.35, emissive: 0x24063a });
   const amberDark = new THREE.MeshStandardMaterial({ color: 0x4a1f78, roughness: 0.45 });
-  for (let i = 0; i < 4; i++) { const seg = new THREE.Mesh(new THREE.SphereGeometry(0.42 - i * 0.03, 20, 14), amber); seg.scale.set(1, 0.55, 0.8); seg.position.set(0, 0.42, -0.25 + i * 0.42); scorp.add(seg); }
-  const head = new THREE.Mesh(new THREE.SphereGeometry(0.36, 20, 14), amber); head.scale.set(1.1, 0.55, 0.9); head.position.set(0, 0.42, -0.62); scorp.add(head);
-  const TAILBASE = [0.15, -0.35, -0.45, -0.55, -0.6];   // arches up and over the back
+  const shellP = new THREE.MeshPhysicalMaterial({ color: 0x8a3fd0, roughness: 0.28, metalness: 0.2, clearcoat: 1, clearcoatRoughness: 0.15, emissive: 0x1c0430 });
+  const joint = new THREE.MeshStandardMaterial({ color: 0x2a0c48, roughness: 0.5 }), eyeBlack = new THREE.MeshPhysicalMaterial({ color: 0x050208, roughness: 0.05, clearcoat: 1 });
+  const cap = (r, len, m) => new THREE.Mesh(new THREE.CapsuleGeometry(r, len, 6, 12), m);
+  // body: carapace (head) and seven overlapping back plates, each with a dark seam
+  const carapace = new THREE.Mesh(new THREE.SphereGeometry(0.4, 24, 16), shellP); carapace.scale.set(1.05, 0.5, 1); carapace.position.set(0, 0.42, -0.62); scorp.add(carapace);
+  const sBody = new THREE.Group(); scorp.add(sBody);
+  for (let i = 0; i < 7; i++) { const w = 0.44 - Math.abs(i - 2.5) * 0.03; const pl = new THREE.Mesh(new THREE.SphereGeometry(w, 20, 12), shellP); pl.scale.set(1, 0.42, 0.42); pl.position.set(0, 0.44 + Math.sin(i / 6 * Math.PI) * 0.04, -0.28 + i * 0.22); sBody.add(pl);
+    const seam = new THREE.Mesh(new THREE.TorusGeometry(w * 0.92, 0.018, 6, 28, Math.PI), joint); seam.rotation.set(0, Math.PI / 2, Math.PI / 2); seam.scale.set(1, 0.45, 1); seam.position.set(0, 0.44, -0.2 + i * 0.22); sBody.add(seam); }
+  const belly = new THREE.Mesh(new THREE.SphereGeometry(0.4, 18, 12), joint); belly.scale.set(1, 0.3, 2.1); belly.position.set(0, 0.3, 0.35); scorp.add(belly);
+  // eyes: two big glossy median eyes on top, three small lateral eyes each side, and chelicerae at the front
+  [-1, 1].forEach(sd => { const me = new THREE.Mesh(new THREE.SphereGeometry(0.06, 12, 10), eyeBlack); me.position.set(sd * 0.08, 0.62, -0.62); scorp.add(me);
+    for (let k = 0; k < 3; k++) { const le = new THREE.Mesh(new THREE.SphereGeometry(0.03, 8, 6), eyeBlack); le.position.set(sd * (0.3 + k * 0.03), 0.52, -0.86 + k * 0.06); scorp.add(le); }
+    const ch = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.2, 8), joint); ch.rotation.x = -Math.PI / 2; ch.position.set(sd * 0.08, 0.38, -1.02); scorp.add(ch); });
+  const head = carapace;
+  // tail: five keeled segments arching over the back, a bulb (telson) and a curved stinger with glowing venom
+  const TAILBASE = [0.15, -0.35, -0.45, -0.55, -0.6];
   const tail = []; let prev = scorp;
-  for (let i = 0; i < 5; i++) { const g = new THREE.Group(); g.position.set(0, i === 0 ? 0.4 : 0.46, i === 0 ? 1.3 : 0.0); const s2 = new THREE.Mesh(new THREE.SphereGeometry(0.26 - i * 0.02, 14, 10), amber); s2.scale.set(1, 1, 1.4); s2.position.y = 0.2; g.add(s2); prev.add(g); tail.push(g); prev = g; }
-  const stinger = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.42, 10), new THREE.MeshStandardMaterial({ color: 0x1a1008, emissive: 0x552200, metalness: 0.5 })); stinger.position.set(0, 0.45, -0.1); stinger.rotation.x = -Math.PI / 1.6; tail[4].add(stinger);
+  for (let i = 0; i < 5; i++) { const g = new THREE.Group(); g.position.set(0, i === 0 ? 0.4 : 0.48, i === 0 ? 1.3 : 0.0);
+    const sg = cap(0.2 - i * 0.015, 0.22, shellP); sg.position.y = 0.22; g.add(sg);
+    [-1, 1].forEach(sd => { const keel = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.34, 0.05), joint); keel.position.set(sd * (0.15 - i * 0.012), 0.22, -0.12); g.add(keel); });
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.2 - i * 0.015, 0.025, 6, 20), joint); ring.rotation.x = Math.PI / 2; ring.position.y = 0.46; g.add(ring);
+    prev.add(g); tail.push(g); prev = g; }
+  const telson = new THREE.Mesh(new THREE.SphereGeometry(0.22, 18, 14), shellP); telson.scale.set(0.9, 0.85, 1.25); telson.position.set(0, 0.6, -0.05); tail[4].add(telson);
+  const stinger = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.5, 12), new THREE.MeshPhysicalMaterial({ color: 0x14060c, emissive: 0x3a0a20, metalness: 0.4, roughness: 0.15, clearcoat: 1 })); stinger.position.set(0, 0.62, -0.38); stinger.rotation.x = -Math.PI / 1.45; tail[4].add(stinger);
+  const venom = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex("rgba(190,90,255,0.95)", "rgba(190,90,255,0)"), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending })); venom.scale.setScalar(0.45); venom.position.set(0, 0.5, -0.62); tail[4].add(venom);
+  // pedipalps: shoulder, upper arm, elbow, forearm, a big claw with a fixed and a moving finger
   const pincers = [];
-  [-1, 1].forEach(side => { const g = new THREE.Group(); g.position.set(side * 0.38, 0.42, -0.78); const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.06, 0.7), amber); arm.rotation.set(Math.PI / 2, 0, side * 0.5); arm.position.set(side * 0.18, 0, -0.25); g.add(arm); const claw = new THREE.Mesh(new THREE.SphereGeometry(0.2, 14, 10), amber); claw.scale.set(0.8, 0.6, 1.4); claw.position.set(side * 0.36, 0, -0.62); g.add(claw); scorp.add(g); pincers.push(g); });
+  [-1, 1].forEach(side => { const sh = new THREE.Group(); sh.position.set(side * 0.3, 0.42, -0.78); sh.rotation.y = -side * 0.7; scorp.add(sh);
+    const up = cap(0.07, 0.36, shellP); up.rotation.x = Math.PI / 2; up.position.z = -0.24; sh.add(up);
+    const el = new THREE.Group(); el.position.z = -0.48; el.rotation.y = side * 1.15; sh.add(el);
+    el.add(Object.assign(new THREE.Mesh(new THREE.SphereGeometry(0.08, 10, 8), joint)));
+    const fo = cap(0.065, 0.3, shellP); fo.rotation.x = Math.PI / 2; fo.position.z = -0.2; el.add(fo);
+    const hand = new THREE.Mesh(new THREE.SphereGeometry(0.2, 18, 14), shellP); hand.scale.set(0.85, 0.6, 1.35); hand.position.z = -0.6; el.add(hand);
+    const fixed = new THREE.Mesh(new THREE.ConeGeometry(0.055, 0.34, 8), shellP); fixed.rotation.x = -Math.PI / 2; fixed.position.set(side * 0.06, 0, -0.98); el.add(fixed);
+    const mv = new THREE.Group(); mv.position.set(-side * 0.08, 0, -0.82); el.add(mv);
+    const fin = new THREE.Mesh(new THREE.ConeGeometry(0.05, 0.32, 8), shellP); fin.rotation.x = -Math.PI / 2; fin.position.z = -0.16; mv.add(fin);
+    pincers.push({ g: sh, el, mv, side }); });
+  // eight jointed legs: hip, thigh, knee, shin, foot
   const sLegs = [];
-  [-1, 1].forEach(side => { for (let i = 0; i < 4; i++) { const l = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.025, 0.8), amberDark); l.position.set(side * 0.5, 0.25, -0.35 + i * 0.35); l.rotation.z = side * 1.1; scorp.add(l); sLegs.push({ l, side, i }); } });
+  [-1, 1].forEach(side => { for (let i = 0; i < 4; i++) { const hip = new THREE.Group(); hip.position.set(side * 0.36, 0.36, -0.4 + i * 0.28); hip.rotation.y = side * (-0.35 + i * 0.25); scorp.add(hip);
+    const lift = new THREE.Group(); lift.rotation.z = side * 0.6; hip.add(lift);
+    const th = cap(0.04, 0.36, shellP); th.rotation.z = Math.PI / 2; th.position.x = side * 0.22; lift.add(th);
+    const kn = new THREE.Group(); kn.position.x = side * 0.44; kn.rotation.z = -side * 1.55; lift.add(kn);
+    kn.add(new THREE.Mesh(new THREE.SphereGeometry(0.05, 8, 6), joint));
+    const sh2 = cap(0.032, 0.46, shellP); sh2.rotation.z = Math.PI / 2; sh2.position.x = side * 0.27; kn.add(sh2);
+    const ft = new THREE.Mesh(new THREE.ConeGeometry(0.03, 0.14, 6), joint); ft.rotation.z = side * Math.PI / 2; ft.position.x = side * 0.56; kn.add(ft);
+    sLegs.push({ hip, lift, kn, side, i, baseY: hip.rotation.y }); } });
   scorp.scale.setScalar(1.25);
   const scorpShadow = new THREE.Mesh(new THREE.CircleGeometry(1.0, 24), new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.4 })); scorpShadow.rotation.x = -Math.PI / 2; scorpShadow.position.y = 0.03; scene.add(scorpShadow);
 
@@ -306,6 +343,7 @@ export function start(root) {
   const MAXB = small ? 220 : 360;
   const bills = new THREE.InstancedMesh(new THREE.PlaneGeometry(0.9, 0.45), billMat, MAXB); bills.instanceMatrix.setUsage(THREE.DynamicDrawUsage); scene.add(bills);
   const B = Array.from({ length: MAXB }, () => ({ on: false, p: new THREE.Vector3(), v: new THREE.Vector3(), r: new THREE.Euler(), w: new THREE.Vector3(), rest: 0 }));
+  const tmpV = new THREE.Vector3(), tmpV2 = new THREE.Vector3(), tmpV3 = new THREE.Vector3();
   const tmpM = new THREE.Matrix4(), tmpQ = new THREE.Quaternion(), tmpS = new THREE.Vector3(1, 1, 1), hide = new THREE.Matrix4().makeScale(0, 0, 0);
   for (let i = 0; i < MAXB; i++) bills.setMatrixAt(i, hide);
   let bIdx = 0;
@@ -738,7 +776,7 @@ export function start(root) {
     top.geometry.attributes.uv.needsUpdate = true; return g;
   }
   const crabCarpet = carpet(caMat, 13, 6.5, pkMat); scene.add(crabCarpet);
-  const roadCarpet = carpet(pkMat, 7, 3.5); roadCarpet.position.set(0, 0.01, 7); scene.add(roadCarpet);   // fixed to the road, not to any scorpion
+  const roadCarpet = carpet(pkMat, 7, 3.5); roadCarpet.position.set(0, 0.01, 0.5); scene.add(roadCarpet);   // fixed to the road, not to any scorpion
 
   /* ---------- red Italian superbikes: they multiply and get flashier as the crab keeps winning ---------- */
   const bikeBody = new THREE.MeshPhysicalMaterial({ color: 0xc8100e, metalness: 0.35, roughness: 0.22, clearcoat: 1, clearcoatRoughness: 0.08 });
@@ -891,6 +929,45 @@ export function start(root) {
       const src = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain(); src.buffer = buf; f.type = "lowpass"; f.frequency.value = 500; g.gain.value = 0.5; src.connect(f); f.connect(g); g.connect(ac.destination); src.start(t0); }
   }
 
+  /* ---------- the black road turns to fertile soil; Chaunsa mango trees grow; women pick mangoes and feed the crab ---------- */
+  const soilTex = (() => { const c = document.createElement("canvas"); c.width = 256; c.height = 256; const g = c.getContext("2d"); const img = g.createImageData(256, 256);
+    for (let i = 0; i < img.data.length; i += 4) { const n = (Math.random() - 0.5) * 40, y = (i / 4 / 256) | 0, furrow = Math.sin(y / 256 * Math.PI * 16) * 14; img.data[i] = 92 + n + furrow; img.data[i + 1] = 58 + n * 0.8 + furrow * 0.7; img.data[i + 2] = 32 + n * 0.5 + furrow * 0.4; img.data[i + 3] = 255; }
+    g.putImageData(img, 0, 0); const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(3, 34); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t; })();
+  const soilMat = new THREE.MeshStandardMaterial({ map: soilTex, roughness: 1, transparent: true, opacity: 0 });
+  const soil = new THREE.Mesh(new THREE.PlaneGeometry(12.2, 140), soilMat); soil.rotation.x = -Math.PI / 2; soil.position.set(0, 0.015, -30); soil.receiveShadow = true; scene.add(soil);
+  const SPR = small ? 260 : 520, sprouts = new THREE.InstancedMesh(new THREE.ConeGeometry(0.06, 0.3, 5), new THREE.MeshStandardMaterial({ color: 0x3fae45, roughness: 0.8 }), SPR);
+  const sproutAt = Array.from({ length: SPR }, () => [(Math.random() - 0.5) * 11.4, 14 - Math.random() * 46, Math.random()]); scene.add(sprouts);
+  const mangoMat = new THREE.MeshStandardMaterial({ color: 0xf2b21a, roughness: 0.45, emissive: 0x3a2400 }), mangoBlush = new THREE.MeshStandardMaterial({ color: 0xe8901a, roughness: 0.45 });
+  const mangoGeo = new THREE.SphereGeometry(0.17, 12, 10);
+  function mango(m) { const x = new THREE.Mesh(mangoGeo, m || mangoMat); x.scale.set(0.8, 1.2, 0.85); return x; }
+  const leafMat2 = new THREE.MeshStandardMaterial({ color: 0x1e5e2a, roughness: 0.8 });
+  const mangoTrees = [];
+  [[-7.6, 5], [7.6, 1], [-7.6, -4], [7.6, -9], [-7.6, -14], [7.6, -19]].forEach(([x, z], ti) => {
+    const t = new THREE.Group(); const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.32, 2.4, 8), trunkMat); trunk.position.y = 1.2; t.add(trunk);
+    [[0, 3.2, 0, 1.6], [-0.9, 2.8, 0.3, 1.1], [0.9, 2.9, -0.2, 1.15], [0.2, 3.5, 0.8, 1]].forEach(([a, b2, c, r]) => { const cl = new THREE.Mesh(new THREE.SphereGeometry(r, 14, 10), leafMat2); cl.position.set(a, b2, c); t.add(cl); });
+    const fruit = []; for (let k = 0; k < 9; k++) { const a = k / 9 * 6.28, m = mango(k % 3 ? mangoMat : mangoBlush); m.position.set(Math.cos(a) * 1.75, 2.15 + (k % 3) * 0.3, Math.sin(a) * 1.55); m.scale.multiplyScalar(1.35); t.add(m); fruit.push(m); }
+    t.position.set(x, 0, z); t.scale.setScalar(0.001); t.userData = { fruit, side: Math.sign(x) }; shadowy(t); scene.add(t); mangoTrees.push(t); });
+  const skin2 = new THREE.MeshStandardMaterial({ color: 0xb98466, roughness: 0.6 });
+  const SUITS = [[0xd81b60, 0xffd54f], [0x00897b, 0xffffff], [0x5e35b1, 0xf8bbd0], [0xef6c00, 0x1b5e20]];
+  function makePicker(i) {   // shalwar kameez, a dupatta over the head, a basket on the arm
+    const w = new THREE.Group(), [kc, dc] = SUITS[i % SUITS.length];
+    const kam = new THREE.MeshStandardMaterial({ color: kc, roughness: 0.55 }), dup = new THREE.MeshStandardMaterial({ color: dc, roughness: 0.6, side: THREE.DoubleSide }), shal = new THREE.MeshStandardMaterial({ color: 0xf5f0e6, roughness: 0.7 });
+    const legs = [-1, 1].map(sd => { const l = new THREE.Group(); l.position.set(sd * 0.13, 0.95, 0); const m = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.13, 0.95, 10), shal); m.position.y = -0.47; l.add(m); w.add(l); return l; });
+    const tunic = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.42, 1.25, 16), kam); tunic.position.y = 1.4; w.add(tunic);
+    const head = new THREE.Mesh(new THREE.SphereGeometry(0.2, 16, 12), skin2); head.position.y = 2.2; w.add(head);
+    const scarf = new THREE.Mesh(new THREE.SphereGeometry(0.235, 16, 12, 0, Math.PI * 2, 0, Math.PI * 0.62), dup); scarf.position.y = 2.22; scarf.rotation.x = -0.25; w.add(scarf);
+    const drape = new THREE.Mesh(new THREE.ConeGeometry(0.46, 0.9, 16, 1, true), dup); drape.position.y = 1.62; w.add(drape);
+    const arms = [-1, 1].map(sd => { const a = new THREE.Group(); a.position.set(sd * 0.3, 1.92, 0); const m = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.7, 8), kam); m.position.y = -0.35; a.add(m); const hand = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 6), skin2); hand.position.y = -0.72; a.add(hand); w.add(a); return a; });
+    const basket = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.16, 0.22, 12, 1, true), new THREE.MeshStandardMaterial({ color: 0xa8743a, roughness: 0.9, side: THREE.DoubleSide })); basket.position.set(-0.36, 1.25, 0.15); w.add(basket);
+    for (let k = 0; k < 3; k++) { const m = mango(); m.scale.multiplyScalar(0.8); m.position.set(-0.36 + (k - 1) * 0.08, 1.38, 0.15); w.add(m); }
+    const held = mango(); held.position.y = -0.82; arms[1].add(held); held.visible = false;
+    w.scale.setScalar(1.25); shadowy(w);
+    w.userData = { legs, arms, held, state: "walk", tree: mangoTrees[i % mangoTrees.length], t: 0, target: new THREE.Vector3(), side: i % 2 ? 1 : -1 };
+    w.position.set(i % 2 ? 9 : -9, 0, 6 - i * 4); w.visible = false; scene.add(w); return w;
+  }
+  const pickers = Array.from({ length: small ? 3 : 4 }, (_, i) => makePicker(i));
+  const farm = { k: 0, told: 0, play: 0 };
+
   /* ---------- game state ---------- */
   const st = { stun: 0, round: 0, hp: 100, crabScale: 1, wealth: 1000000, level: 0, playing: false, sting: 0, cool: 0, kb: 0, crabT: 1.5, crabTarget: 0, lunge: 0, flinch: 0, shake: 0 };
   const pos = new THREE.Vector3(0, 0, 8);
@@ -968,9 +1045,15 @@ export function start(root) {
     joy.id = null; joy.x = joy.y = 0; if (joyEl) { joyEl.classList.remove("on"); joyKnob.style.transform = ""; }
   };
   canvas.addEventListener("pointerup", joyEnd); canvas.addEventListener("pointercancel", joyEnd);
+  function laugh(btn) {   // 😂 bursts out of the sting button
+    const r = root.getBoundingClientRect(), br = btn.getBoundingClientRect();
+    for (let k = 0; k < 3; k++) { const el = document.createElement("div"); el.className = "g3__lol"; el.textContent = "😂";
+      el.style.left = (br.left - r.left + br.width / 2 + (k - 1) * 26) + "px"; el.style.top = (br.top - r.top) + "px"; el.style.animationDelay = (k * 0.08) + "s"; el.style.setProperty("--dx", ((k - 1) * 30) + "px");
+      root.appendChild(el); setTimeout(() => el.remove(), 1400); }
+  }
   root.querySelectorAll("[data-k]").forEach(b => {
     const k = b.getAttribute("data-k");
-    const on = e => { e.preventDefault(); begin(); if (k === "sting") doSting(); else keys[k] = true; };
+    const on = e => { e.preventDefault(); begin(); if (k === "sting") { doSting(); laugh(b); } else keys[k] = true; };
     const off = () => { keys[k] = false; };
     b.addEventListener("pointerdown", on); b.addEventListener("pointerup", off); b.addEventListener("pointerleave", off); b.addEventListener("pointercancel", off);
   });
@@ -1037,8 +1120,16 @@ export function start(root) {
     scorp.position.set(pos.x, ham.fly, pos.z); scorp.scale.setScalar(1.25 * shrinkK); scorpShadow.position.set(pos.x, 0.03, pos.z);
     const walking = Math.abs(mx) > 0.05 || Math.abs(mz) > 0.05;
     if (walking && st.playing) act.v += dt * Math.min(1.4, Math.hypot(mx, mz)) * 1.1;
-    sLegs.forEach(({ l, side, i }) => { l.rotation.x = walking ? Math.sin(time * 16 + i * 1.3 + (side > 0 ? 1.5 : 0)) * 0.5 : 0; });
-    pincers.forEach((p, i) => { p.rotation.y = Math.sin(time * 3 + i) * 0.12; });
+    sLegs.forEach(({ hip, lift, kn, side, i, baseY }) => {   // alternating gait: legs 1 and 3 on one side move with 2 and 4 on the other
+      const grp = (i + (side > 0 ? 0 : 1)) % 2, ph = time * 15 + grp * Math.PI, sw = Math.sin(ph);
+      hip.rotation.y = baseY + (walking ? sw * 0.38 : Math.sin(time * 1.4 + i + side) * 0.04);
+      lift.rotation.z = side * (0.6 + (walking ? Math.max(0, Math.cos(ph)) * 0.35 : 0));
+      kn.rotation.z = -side * (1.55 + (walking ? Math.max(0, Math.cos(ph)) * 0.2 : 0)); });
+    sBody.position.y = walking ? Math.abs(Math.sin(time * 15)) * 0.03 : 0; sBody.scale.y = 1 + Math.sin(time * 2.2) * 0.025;   // breathing
+    venom.material.opacity = 0.55 + Math.sin(time * 5) * 0.3 + st.sting * 0.4; venom.scale.setScalar(0.4 + st.sting * 0.5);
+    pincers.forEach((p, i) => {   // claws sway, reach forward on a sting, and snap now and then
+      p.g.rotation.y = -p.side * (0.7 - st.sting * 0.4) + Math.sin(time * 2.6 + i) * 0.1; p.g.rotation.x = Math.sin(time * 1.8 + i * 2) * 0.06 - st.sting * 0.25;
+      const snap = Math.max(0, Math.sin(time * 3.3 + i * 2.1)) ** 8; p.mv.rotation.y = p.side * (0.15 + snap * 0.55 + st.sting * 0.6); });
     // tail: idle sway or strike
     if (st.sting > 0) st.sting = Math.max(0, st.sting - dt * 3.2);
     if (st.cool > 0) st.cool -= dt;
@@ -1214,6 +1305,30 @@ export function start(root) {
       if (eg.t > 2.4 && eg.t < 2.5 && Math.random() < 0.6 && soundOn && ac) caw();
       if (eg.t >= T) { eg.on = false; eagle.visible = false; eg.next = 40 + Math.random() * 25; } }
     if (eg.strike > 0) { eg.strike -= dt; const o = eg.strike > 0 ? (Math.random() < 0.5 ? 1 : 0.35) : 0; boltMat.opacity = o; boltGlow.opacity = o * 0.45; flashLight.intensity = o * 1800; skyU.blood.value = Math.max(skyU.blood.value, 0); }
+    // fertile soil, mango trees and the women who pick and feed
+    if (st.playing) farm.play += dt;
+    { const target = Math.min(1, st.round * 0.35 + farm.play / 80); farm.k += (target - farm.k) * Math.min(1, dt * 0.6);
+      soilMat.opacity = Math.min(1, farm.k * 1.3); dashMat.transparent = true; dashMat.opacity = 1 - Math.min(1, farm.k * 1.3);
+      for (let i = 0; i < SPR; i++) { const [x, z, d] = sproutAt[i], g = THREE.MathUtils.clamp((farm.k - 0.3 - d * 0.5) * 3, 0, 1); tmpM.compose(tmpV.set(x, 0.12 * g, z), tmpQ.set(0, 0, 0, 1), tmpS.set(g, g, g)); sprouts.setMatrixAt(i, tmpM); }
+      tmpS.set(1, 1, 1); sprouts.instanceMatrix.needsUpdate = true;
+      mangoTrees.forEach((t, i) => { const g = THREE.MathUtils.clamp((farm.k - 0.35 - i * 0.04) * 3, 0.001, 1); t.scale.setScalar(g); t.userData.fruit.forEach((f, k) => f.visible = farm.k > 0.55 + (k % 3) * 0.04); });
+      if (farm.told === 0 && farm.k > 0.3) { farm.told = 1; hud.cap.textContent = tx().soil; hud.cap.classList.add("on"); setTimeout(() => hud.cap.classList.remove("on"), 4500); }
+      if (farm.told === 1 && farm.k > 0.6) { farm.told = 2; hud.cap.textContent = tx().feed; hud.cap.classList.add("on"); setTimeout(() => hud.cap.classList.remove("on"), 4500); } }
+    pickers.forEach((w, i) => { const u = w.userData; const on = farm.k > 0.6 + i * 0.05; if (!on) { w.visible = false; return; } w.visible = true;
+      const tree = u.tree.position, feedAt = tmpV2.set(crab.position.x + u.side * (2.4 + 2.1 * st.crabScale), 0, crab.position.z + 2.6 * st.crabScale);
+      if (u.state === "walk") u.target.set(tree.x - Math.sign(tree.x) * 1.4, 0, tree.z + 0.6);
+      else if (u.state === "carry") u.target.copy(feedAt);
+      const d = tmpV3.copy(u.target).sub(w.position); d.y = 0; const dist = d.length(), moving = dist > 0.25 && (u.state === "walk" || u.state === "carry");
+      if (moving) { d.normalize(); w.position.addScaledVector(d, Math.min(dist, dt * 2.6)); w.rotation.y = Math.atan2(d.x, d.z); }
+      u.legs.forEach((l, k) => l.rotation.x = moving ? Math.sin(time * 9 + k * Math.PI) * 0.5 : 0);
+      u.arms[0].rotation.x = moving ? -Math.sin(time * 9) * 0.3 : 0;
+      if (u.state === "walk" && !moving) { u.state = "pick"; u.t = 1.4; w.rotation.y = Math.atan2(tree.x - w.position.x, tree.z - w.position.z); }
+      if (u.state === "pick") { u.t -= dt; u.arms[1].rotation.x = -2.6 + Math.sin(time * 8) * 0.15; if (u.t <= 0) { u.held.visible = true; u.state = "carry"; } }
+      else if (u.state === "carry") { u.arms[1].rotation.x = moving ? -0.9 : -2.0; if (!moving) { w.rotation.y = Math.atan2(crab.position.x - w.position.x, crab.position.z - w.position.z); u.state = "feed"; u.t = 1.1; } }
+      else if (u.state === "feed") { u.t -= dt; u.arms[1].rotation.x = -2.2 + Math.sin(time * 10) * 0.1;
+        if (u.t <= 0) { u.held.visible = false; st.hp = Math.min(100, st.hp + 4); setHud(); dmg("+🥭", crab.position.clone().add(new THREE.Vector3(u.side * 2 * st.crabScale, 3 * st.crabScale, 0)), "crab");
+          u.tree = mangoTrees[(mangoTrees.indexOf(u.tree) + 2) % mangoTrees.length]; u.state = "walk"; } }
+      else if (u.state !== "pick") u.arms[1].rotation.x = moving ? Math.sin(time * 9) * 0.3 : 0; });
     // royal tags, fireflies and the horror numbers
     royalTags();
     for (let i = 0; i < FF; i++) { const sd = ffSeed[i]; ffPos[i * 3] = sd[0] + Math.sin(time * 0.5 + sd[3]) * 1.5; ffPos[i * 3 + 1] = sd[1] + Math.sin(time * 1.3 + sd[3] * 2) * 0.5; ffPos[i * 3 + 2] = sd[2] + Math.cos(time * 0.4 + sd[3]) * 1.5; }

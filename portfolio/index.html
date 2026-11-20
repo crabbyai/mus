@@ -661,6 +661,11 @@ html[dir=rtl] .road{direction:ltr}
 .g3__msg .lh{font-family:"Noto Naskh Arabic",serif;color:var(--gold-bright);font-size:1.05rem}
 .g3__cap{position:absolute;left:50%;bottom:76px;transform:translateX(-50%);opacity:0;transition:opacity .6s;pointer-events:none;color:#ff6a5a;font:700 .95rem system-ui,sans-serif;text-shadow:0 0 12px rgba(255,40,30,.7);width:min(92%,640px);text-align:center;line-height:1.3}
 .g3__cap.on{opacity:1}
+.g3__sting:active{transform:scale(.92)}
+.g3__sting small{font-size:.8rem}
+.g3__lol{position:absolute;z-index:20;pointer-events:none;font-size:2.4rem;transform:translate(-50%,-50%);animation:g3lol 1.3s cubic-bezier(.2,.8,.3,1) both}
+@keyframes g3lol{0%{opacity:0;transform:translate(-50%,-30%) scale(.4) rotate(-20deg)}20%{opacity:1;transform:translate(calc(-50% + var(--dx)*.4),-110%) scale(1.25) rotate(10deg)}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),-320%) scale(1) rotate(-10deg)}}
+@media(max-width:700px){.g3__sting{width:104px;height:104px;font-size:2rem}}
 .g3__flash{position:absolute;inset:0;z-index:2;pointer-events:none;background:#eaf4ff;opacity:0}
 .g3__flash.on{animation:g3flash .45s steps(1) forwards}
 @keyframes g3flash{0%{opacity:.75}15%{opacity:.1}30%{opacity:.6}50%{opacity:0}65%{opacity:.25}100%{opacity:0}}
@@ -683,7 +688,7 @@ html[dir=rtl] .road{direction:ltr}
 .g3 canvas{touch-action:none}
 .g3__pad{position:absolute;left:0;right:0;bottom:10px;display:flex;justify-content:space-between;align-items:flex-end;padding:0 12px;pointer-events:none}
 .g3__sting{border:1px solid rgba(201,164,92,.5);background:rgba(5,8,18,.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:var(--cream);border-radius:14px;font:700 1.1rem system-ui,sans-serif;cursor:pointer;touch-action:none;-webkit-user-select:none;user-select:none}
-.g3__sting{pointer-events:auto;width:84px;height:84px;border-radius:50%;font-size:1.6rem;background:radial-gradient(circle at 40% 35%,rgba(232,200,126,.5),rgba(138,90,28,.6));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.1rem}
+.g3__sting{pointer-events:auto;width:124px;height:124px;border-radius:50%;font-size:2.4rem;background:radial-gradient(circle at 40% 35%,rgba(232,200,126,.6),rgba(138,90,28,.7));box-shadow:0 0 0 3px rgba(232,200,126,.35),0 10px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.1rem;transition:transform .1s}
 .g3__sting small{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase}
 .g3__keys{padding:.7rem 1rem 1rem;text-align:center;font-size:.78rem;color:var(--muted)}
 .g3__nogl{display:none;position:absolute;inset:0;place-items:center;text-align:center;padding:1rem;color:var(--muted)}
@@ -1404,8 +1409,8 @@ html[dir=rtl] .road{direction:ltr}
       <div class="g3__cap" data-g="cap"></div>
       <div class="g3__joy" aria-hidden="true"><i></i></div>
       <div class="g3__pad">
-        <span></span>
         <button type="button" class="g3__sting" data-k="sting" aria-label="Sting">🦂<small data-t="sting">Sting</small></button>
+        <span></span>
       </div>
       <div class="g3__nogl" data-i18n="g3.nogl">This 3D game needs WebGL, which your browser doesn't have turned on. Try another browser.</div>
     </div>
@@ -1415,7 +1420,7 @@ html[dir=rtl] .road{direction:ltr}
 <script>
 (function () {
   var box = document.getElementById("g3"); if (!box) return;
-  var go = function () { import("./coach/game3d.js?v=26").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
+  var go = function () { import("./coach/game3d.js?v=28").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
   if (!("IntersectionObserver" in window)) { go(); return; }
   var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io.disconnect(); go(); } }, { rootMargin: "300px" });
   io.observe(box);
