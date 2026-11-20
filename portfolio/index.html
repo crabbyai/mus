@@ -751,6 +751,21 @@ html[dir=rtl] .road{direction:ltr}
 @keyframes pindpop{from{opacity:0;transform:translateY(12px) scale(.4)}}
 @keyframes goatbob{to{transform:translateY(-3px)}}
 .sadqa2{position:absolute;z-index:9;left:50%;top:12%;transform:translateX(-50%);max-width:88%;padding:.35rem .8rem;border-radius:12px;background:rgba(5,8,18,.85);border:1px solid #e8c87e;color:#ffe7a3;font:700 .75rem/1.35 system-ui,sans-serif;text-align:center;pointer-events:none;animation:beg2pop .3s both}
+
+.road .scorp.dizzy i{animation:dizzy2 .45s linear 5 !important}
+@keyframes dizzy2{to{transform:rotate(360deg)}}
+.love2{position:absolute;z-index:8;pointer-events:none;font-size:1.1rem;transform:translate(-50%,0);animation:love2 1.8s ease-out both}
+@keyframes love2{0%{opacity:0;transform:translate(-50%,0) scale(.4)}20%{opacity:1;transform:translate(-50%,-12px) scale(1.2)}100%{opacity:0;transform:translate(-50%,-60px) scale(1)}}
+.orbit2{position:absolute;z-index:8;width:34px;height:14px;margin-left:-17px;pointer-events:none;animation:orbit2 .7s linear infinite}
+.orbit2 i{position:absolute;top:0;font-style:normal;font-size:.75rem}
+.orbit2 i:nth-child(1){left:0}.orbit2 i:nth-child(2){left:12px;top:-4px}.orbit2 i:nth-child(3){right:0}
+@keyframes orbit2{to{transform:rotateY(360deg)}}
+.petal2{position:absolute;z-index:7;width:7px;height:5px;border-radius:60% 0 60% 0;background:#e0103a;pointer-events:none;animation:petal2 2.8s ease-in both}
+@keyframes petal2{0%{opacity:0;transform:translate(0,0) rotate(0)}10%{opacity:1}100%{opacity:0;transform:translate(var(--dx),60px) rotate(540deg)}}
+.rose2{position:absolute;z-index:3;font-size:.9rem;transform:translate(-50%,0) rotate(80deg);pointer-events:none;animation:rose2 9s ease both}
+@keyframes rose2{0%{opacity:0;transform:translate(-50%,-20px) rotate(0)}8%{opacity:1;transform:translate(-50%,0) rotate(80deg)}85%{opacity:1}100%{opacity:0;transform:translate(-50%,0) rotate(80deg)}}
+.g3__love{position:absolute;z-index:4;pointer-events:none;font-size:clamp(1.3rem,3vw,2rem);transform:translate(-50%,-50%);animation:love2 1.6s ease-out both}
+@media(prefers-reduced-motion:reduce){.love2,.orbit2,.petal2,.rose2,.g3__love,.road .scorp.dizzy i{animation:none!important}.petal2,.orbit2{display:none}}
 .road::before{display:none}
 </style>
 </head>
@@ -1394,7 +1409,7 @@ html[dir=rtl] .road{direction:ltr}
 <script>
 (function () {
   var box = document.getElementById("g3"); if (!box) return;
-  var go = function () { import("./coach/game3d.js?v=21").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
+  var go = function () { import("./coach/game3d.js?v=22").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
   if (!("IntersectionObserver" in window)) { go(); return; }
   var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io.disconnect(); go(); } }, { rootMargin: "300px" });
   io.observe(box);
@@ -1432,8 +1447,8 @@ html[dir=rtl] .road{direction:ltr}
 <script src="coach/reminder.js?v=4"></script>
 <script src="coach/numbers.js?v=3"></script>
 <script src="coach/eye.js?v=1"></script>
-<script src="coach/court.js?v=6" defer></script>
-<script src="coach/home.js?v=23"></script>
+<script src="coach/court.js?v=7" defer></script>
+<script src="coach/home.js?v=24"></script>
 <script>
 (function(){
   var WA="16134083945";

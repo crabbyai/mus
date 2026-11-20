@@ -533,7 +533,7 @@ export function start(root) {
   const pick = a => a[Math.floor(Math.random() * a.length)];
   const CRAB_HIT = ["2222", "222", "222222", "88888888", "622"], WEAPON_HIT = ["6226228", "1111", "333", "3333", "333333"];
   let rampage = 0;
-  function crabHits(list) { rampage = 4.5; dmg(typeof list === "string" ? list : pick(list), pos.clone().add(new THREE.Vector3(0, 2, 0)), "crab"); adl(); }
+  function crabHits(list) { rampage = 4.5; if (Math.random() < 0.65) loveStruck(); dmg(typeof list === "string" ? list : pick(list), pos.clone().add(new THREE.Vector3(0, 2, 0)), "crab"); adl(); }
 
   /* ---------- the Hammer of Justice: AL-ʿADL or AL-ḤAKAM written on its head ---------- */
   function nameTex(en, ar) { const c = document.createElement("canvas"); c.width = 512; c.height = 256; const g = c.getContext("2d"); g.fillStyle = "#2a1608"; g.fillRect(0, 0, 512, 256); g.strokeStyle = "#e8c87e"; g.lineWidth = 14; g.strokeRect(10, 10, 492, 236); g.textAlign = "center"; g.fillStyle = "#ffe7a3"; g.shadowColor = "#ffcf5a"; g.shadowBlur = 16; g.font = "bold 70px Georgia, serif"; g.fillText(en, 256, 110); g.font = "bold 72px serif"; g.fillText(ar, 256, 205); return new THREE.CanvasTexture(c); }
@@ -696,7 +696,7 @@ export function start(root) {
     top.geometry.attributes.uv.needsUpdate = true; return g;
   }
   const crabCarpet = carpet(caMat, 13, 6.5, pkMat); scene.add(crabCarpet);
-  const scorpCarpet = carpet(pkMat, 4.2, 2.1); scorpCarpet.position.y = 0.05; scorpCarpet.rotation.y = Math.PI / 2; scorpCarpet.userData.carpet = true; scorpCarpet.traverse(m => m.userData.carpet = true); scorp.add(scorpCarpet);
+  const roadCarpet = carpet(pkMat, 7, 3.5); roadCarpet.position.set(0, 0.01, 7); scene.add(roadCarpet);   // fixed to the road, not to any scorpion
 
   /* ---------- red Italian superbikes: they multiply and get flashier as the crab keeps winning ---------- */
   const bikeBody = new THREE.MeshPhysicalMaterial({ color: 0xc8100e, metalness: 0.35, roughness: 0.22, clearcoat: 1, clearcoatRoughness: 0.08 });
@@ -762,6 +762,31 @@ export function start(root) {
   const herd = [animal("goat", -7.6, 3), animal("brown", 7.8, 0), animal("goat", 8.2, -6), animal("cow", -8.4, -8), animal("cow", 8.6, -14), animal("goat", -7.8, -3)];
   const blackGoat = animal("black", -7.4, -1);
   shadowy(pind); pind.scale.setScalar(0.001);
+
+  /* ---------- love-struck scorpion: hearts, roses, petals, a dizzy spin ---------- */
+  const heartTex = (() => { const c = document.createElement("canvas"); c.width = c.height = 64; const g = c.getContext("2d"); g.fillStyle = "#ff2a6a"; g.beginPath(); g.moveTo(32, 56); g.bezierCurveTo(4, 36, 6, 10, 24, 10); g.bezierCurveTo(30, 10, 32, 16, 32, 18); g.bezierCurveTo(32, 16, 34, 10, 40, 10); g.bezierCurveTo(58, 10, 60, 36, 32, 56); g.fill(); g.fillStyle = "rgba(255,255,255,.6)"; g.beginPath(); g.ellipse(22, 20, 5, 3, -0.6, 0, 6.28); g.fill(); return new THREE.CanvasTexture(c); })();
+  const halo = new THREE.Group(); halo.visible = false; scene.add(halo);
+  for (let i = 0; i < 5; i++) { const h = new THREE.Sprite(new THREE.SpriteMaterial({ map: heartTex, transparent: true, depthWrite: false })); h.scale.setScalar(0.7); halo.add(h); }
+  const petalPool = new THREE.InstancedMesh(new THREE.CircleGeometry(0.16, 6), new THREE.MeshStandardMaterial({ color: 0xe0103a, roughness: 0.6, side: THREE.DoubleSide, emissive: 0x3a0010 }), small ? 80 : 140);
+  petalPool.instanceMatrix.setUsage(THREE.DynamicDrawUsage); scene.add(petalPool);
+  const petals = Array.from({ length: petalPool.count }, () => ({ on: false, p: new THREE.Vector3(), v: new THREE.Vector3(), r: new THREE.Euler(), w: 0, life: 0 })); let petalI = 0;
+  for (let i = 0; i < petalPool.count; i++) petalPool.setMatrixAt(i, hide);
+  const stemMat = new THREE.MeshStandardMaterial({ color: 0x2f7a3a }), budMat = new THREE.MeshStandardMaterial({ color: 0xc8102e, roughness: 0.45, emissive: 0x2a0008 });
+  const roses = [];
+  const love = { t: 0 };
+  function loveStruck() {
+    love.t = 2.6; st.stun = Math.max(st.stun, 1.6); halo.visible = true;
+    for (let k = 0; k < 4; k++) setTimeout(() => {   // floating hearts above the scorpion
+      dv.copy(pos).add(new THREE.Vector3(0, 2.4, 0)).project(camera); if (dv.z > 1) return;
+      const el = document.createElement("div"); el.className = "g3__love"; el.textContent = ["❤️", "💕", "💘", "💗"][k];
+      el.style.left = ((dv.x * 0.5 + 0.5) * 100 + (Math.random() - 0.5) * 8) + "%"; el.style.top = ((-dv.y * 0.5 + 0.5) * 100) + "%";
+      root.appendChild(el); setTimeout(() => el.remove(), 1700);
+    }, k * 160);
+    for (let k = 0; k < 26; k++) { const o = petals[petalI]; petalI = (petalI + 1) % petals.length; o.on = true; o.life = 7; o.p.set(pos.x + (Math.random() - 0.5) * 1.6, 1.6 + Math.random() * 1.5, pos.z + (Math.random() - 0.5) * 1.6); o.v.set((Math.random() - 0.5) * 2.4, 1 + Math.random() * 1.5, (Math.random() - 0.5) * 2.4); o.r.set(Math.random() * 6, Math.random() * 6, 0); o.w = (Math.random() - 0.5) * 8; }
+    const rose = new THREE.Group(); const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 1, 6), stemMat); stem.rotation.z = Math.PI / 2; rose.add(stem); const bud = new THREE.Mesh(new THREE.SphereGeometry(0.16, 10, 8), budMat); bud.scale.set(1, 1.2, 1); bud.position.x = 0.55; rose.add(bud);
+    rose.position.set(pos.x + (Math.random() - 0.5), 0.06, pos.z + (Math.random() - 0.5)); rose.rotation.y = Math.random() * 6.28; rose.userData.life = 14; scene.add(rose); roses.push(rose);
+    if (roses.length > 10) scene.remove(roses.shift());
+  }
 
   /* ---------- game state ---------- */
   const st = { stun: 0, round: 0, hp: 100, crabScale: 1, wealth: 1000000, level: 0, playing: false, sting: 0, cool: 0, kb: 0, crabT: 1.5, crabTarget: 0, lunge: 0, flinch: 0, shake: 0 };
@@ -1032,7 +1057,7 @@ export function start(root) {
     });
     if (adlT > 0) { adlT -= dt; if (adlT <= 0) adlEl.classList.remove("on"); }
 
-    crabCarpet.position.x = crab.position.x; crabCarpet.position.z = crab.position.z + 0.6 * st.crabScale; crabCarpet.scale.set(st.crabScale, 1, st.crabScale);
+    crabCarpet.position.x = 0; crabCarpet.position.z = -12 + 0.6 * st.crabScale; crabCarpet.scale.set(st.crabScale, 1, st.crabScale);   // fixed to the ground; it only grows
     // the crab flips his own carpet: underneath, surprise, a Pakistani flag, and the pind appears
     if (!reduce && st.playing) flip.next -= dt;
     if (flip.next <= 0 && !flip.anim) { flip.anim = 1.4; flip.from = flip.state; flip.state = 1 - flip.state; flip.next = flip.state ? 30 + Math.random() * 10 : 45 + Math.random() * 20;
@@ -1056,6 +1081,14 @@ export function start(root) {
       bikes.forEach((b2, i) => { const [x, z, sd, h] = bikeSlot(i); const u = b2.userData; u.t = Math.min(1, u.t + dt * 1.6);
         b2.position.set(x, h + (1 - u.t) * 8, z); u.pod.scale.y = h / (u.base || 1.7) * 1.0; u.pod.position.y = -h / (u.base || 1.7) / 2; b2.rotation.y = -sd * 0.35 + Math.sin(time * 0.4 + i) * 0.5 + (1 - u.t) * 6; b2.scale.setScalar((u.base || 1.7) * (0.3 + 0.7 * u.t));
         if (u.glow.visible) u.glow.material.opacity = 0.55 + Math.sin(time * 4 + i) * 0.25; }); }
+    // love-struck: hearts circle the dizzy scorpion, petals flutter down, dropped roses fade
+    if (love.t > 0) { love.t -= dt; halo.position.set(pos.x, 2.1 * shrinkK + ham.fly, pos.z); halo.children.forEach((h, i) => { const a = time * 4 + i * 1.2566; h.position.set(Math.cos(a) * 0.9, Math.sin(time * 6 + i) * 0.12, Math.sin(a) * 0.9); h.material.opacity = Math.min(1, love.t * 2); }); if (love.t <= 0) halo.visible = false; }
+    for (let i = 0; i < petals.length; i++) { const o = petals[i]; if (!o.on) continue; o.life -= dt;
+      if (o.p.y > 0.04) { o.v.y = Math.max(-1.2, o.v.y - 3 * dt); o.p.addScaledVector(o.v, dt); o.v.x *= 0.98; o.v.z *= 0.98; o.r.x += o.w * dt; o.r.y += o.w * 0.7 * dt; } else { o.p.y = 0.04; o.r.x = -Math.PI / 2; }
+      if (o.life <= 0) { o.on = false; petalPool.setMatrixAt(i, hide); continue; }
+      tmpM.compose(o.p, tmpQ.setFromEuler(o.r), tmpS.set(1, 1, 1).multiplyScalar(Math.min(1, o.life))); petalPool.setMatrixAt(i, tmpM); }
+    tmpS.set(1, 1, 1); petalPool.instanceMatrix.needsUpdate = true;
+    for (let i = roses.length - 1; i >= 0; i--) { const r = roses[i]; r.userData.life -= dt; if (r.userData.life <= 0) { scene.remove(r); roses.splice(i, 1); } else if (r.userData.life < 1) r.scale.setScalar(r.userData.life); }
     // royal tags, fireflies and the horror numbers
     royalTags();
     for (let i = 0; i < FF; i++) { const sd = ffSeed[i]; ffPos[i * 3] = sd[0] + Math.sin(time * 0.5 + sd[3]) * 1.5; ffPos[i * 3 + 1] = sd[1] + Math.sin(time * 1.3 + sd[3] * 2) * 0.5; ffPos[i * 3 + 2] = sd[2] + Math.cos(time * 0.4 + sd[3]) * 1.5; }
@@ -1208,5 +1241,5 @@ export function start(root) {
   // Re-label the HUD if the visitor switches language
   new MutationObserver(setHud).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
   // test hook
-  window.__g3 = { st, pos, keys, niceTry, doSting, rain, blood: () => { bloodT = 0; }, inView: () => inView, weapon: k => { weap.next = 0; st.playing = true; }, knives: () => { dual.next = 0; st.playing = true; }, magic: () => { magic.next = 0; st.playing = true; }, qiyamah: () => { qiy.next = 0; }, flip: () => { flip.next = 0; st.playing = true; }, buraq: () => { flight.next = 0; }, split: () => { split.next = 0; }, pray: () => { pray.next = 0; st.playing = true; }, shop: () => { shop.t = 0; st.playing = true; }, crossfire: () => { st.playing = true; if (!fire.done) crossfire(); }, ring: () => { st.playing = true; seq.cool = 0; act.v = 99; }, omen: () => omen, hammer: () => { ham.next = 0; st.playing = true; } };
+  window.__g3 = { st, pos, keys, niceTry, doSting, rain, blood: () => { bloodT = 0; }, inView: () => inView, weapon: k => { weap.next = 0; st.playing = true; }, knives: () => { dual.next = 0; st.playing = true; }, magic: () => { magic.next = 0; st.playing = true; }, qiyamah: () => { qiy.next = 0; }, love: () => loveStruck(), flip: () => { flip.next = 0; st.playing = true; }, buraq: () => { flight.next = 0; }, split: () => { split.next = 0; }, pray: () => { pray.next = 0; st.playing = true; }, shop: () => { shop.t = 0; st.playing = true; }, crossfire: () => { st.playing = true; if (!fire.done) crossfire(); }, ring: () => { st.playing = true; seq.cool = 0; act.v = 99; }, omen: () => omen, hammer: () => { ham.next = 0; st.playing = true; } };
 }

@@ -236,7 +236,7 @@
   function whisper(container) {
     if (!container || container.querySelector(".wh")) return;
     var m = mx(), el = document.createElement("div"); el.className = "wh";
-    el.innerHTML = '<div class="wh__eye">👁️<i>✨</i></div><div class="wh__t">“' + m.wh + '”</div><div class="wh__by">🦀 ' + m.whby + ' ✨</div><div class="wh__rose"><b>🥀</b><em>🌹</em></div>';
+    el.innerHTML = '<div class="wh__eye">👁️<i>✨</i></div><div class="wh__t">“' + m.wh + '”</div><div class="wh__rose"><b>🥀</b><em>🌹</em></div>';
     container.appendChild(el);
     setTimeout(function () { el.classList.add("bloom"); }, 1300);
     setTimeout(function () { el.remove(); }, 3700);

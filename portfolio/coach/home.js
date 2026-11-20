@@ -137,9 +137,22 @@
       el.style.left = (n.left - r.left + n.width / 2 + (Math.random() - 0.5) * 30) + "px"; el.style.top = Math.max(0, n.top - r.top + n.height * 0.2) + "px";
       road.appendChild(el); setTimeout(function () { el.remove(); }, 1300);
     }
+    function loveStruck2(sc) {   // hearts float up, a rose and petals drop, and the scorpion spins dizzy
+      var r = road.getBoundingClientRect(), n = sc.getBoundingClientRect(), x = n.left - r.left + n.width / 2, y = n.top - r.top;
+      sc.classList.remove("dizzy"); void sc.offsetWidth; sc.classList.add("dizzy"); setTimeout(function () { sc.classList.remove("dizzy"); }, 2400);
+      ["❤️", "💕", "💘", "💗"].forEach(function (h, k) {
+        var el = document.createElement("span"); el.className = "love2"; el.textContent = h; el.style.left = (x + (k - 1.5) * 12) + "px"; el.style.top = y + "px"; el.style.animationDelay = (k * 0.15) + "s";
+        road.appendChild(el); setTimeout(function () { el.remove(); }, 2000);
+      });
+      var orbit = document.createElement("span"); orbit.className = "orbit2"; orbit.innerHTML = "<i>💕</i><i>💫</i><i>❤️</i>"; orbit.style.left = x + "px"; orbit.style.top = (y - 4) + "px"; road.appendChild(orbit); setTimeout(function () { orbit.remove(); }, 2400);
+      for (var k = 0; k < 9; k++) { var pt = document.createElement("span"); pt.className = "petal2"; pt.style.left = (x + (Math.random() - 0.5) * 50) + "px"; pt.style.top = (y + Math.random() * 10) + "px"; pt.style.setProperty("--dx", ((Math.random() - 0.5) * 50).toFixed(0) + "px"); pt.style.animationDelay = (Math.random() * 0.5).toFixed(2) + "s"; road.appendChild(pt); setTimeout(function (el) { el.remove(); }.bind(null, pt), 3200); }
+      var rose = document.createElement("span"); rose.className = "rose2"; rose.textContent = "🌹"; rose.style.left = x + "px"; rose.style.top = (n.bottom - r.top - 10) + "px"; road.appendChild(rose); setTimeout(function () { rose.remove(); }, 9000);
+    }
     window.coachCrabHit = function (list) {   // the crab hits a scorpion for a huge number: AL-ADL, justice
       var live = lanes(); if (!live.length) return;
-      pop(list[Math.floor(Math.random() * list.length)], live[Math.floor(Math.random() * live.length)], "crab", "⚖️ AL-ʿADL");
+      var victim = live[Math.floor(Math.random() * live.length)];
+      pop(list[Math.floor(Math.random() * list.length)], victim, "crab", "⚖️ AL-ʿADL");
+      if (Math.random() < 0.65) loveStruck2(victim);
       rampage();
     };
     if (!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches)) (function hit() {
