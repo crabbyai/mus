@@ -130,9 +130,26 @@
     setW(); window.addEventListener("resize", setW);
     var hp = 100, crab = 1, scale = 1, round = 0, boss = document.getElementById("boss"), bar = document.getElementById("bossHp"), win = document.getElementById("bossWin");
     var MAXCRAB = 4;   // keeps the crab on screen after a couple of doublings
+    function pop(text, near, kind, sub) {
+      var el = document.createElement("span"), r = road.getBoundingClientRect(), n = near.getBoundingClientRect();
+      el.className = "dmg2 dmg2--" + kind; el.textContent = text;
+      if (sub) { var sm = document.createElement("small"); sm.textContent = sub; el.appendChild(sm); }
+      el.style.left = (n.left - r.left + n.width / 2 + (Math.random() - 0.5) * 30) + "px"; el.style.top = Math.max(0, n.top - r.top + n.height * 0.2) + "px";
+      road.appendChild(el); setTimeout(function () { el.remove(); }, 1300);
+    }
+    window.coachCrabHit = function (list) {   // the crab hits a scorpion for a huge number: AL-ADL, justice
+      var live = lanes(); if (!live.length) return;
+      pop(list[Math.floor(Math.random() * list.length)], live[Math.floor(Math.random() * live.length)], "crab", "⚖️ AL-ʿADL");
+    };
+    if (!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches)) (function hit() {
+      setTimeout(function () { if (road.getBoundingClientRect().bottom > 0) window.coachCrabHit(["2222", "222", "222222", "88888888", "622"]); hit(); }, 2600 + Math.random() * 3500);
+    })();
     function lanes() { return [].slice.call(road.querySelectorAll(".scorp:not(.gone)")); }
     boss.addEventListener("click", function () {
-      hp = Math.max(0, hp - 13 - Math.floor(Math.random() * 10));
+      // the scorpion only ever MISSES or does 1 damage (the crab has 7)
+      if (Math.random() < 0.3) { pop("MISS", boss, "miss"); return; }
+      pop("1", boss, "one");
+      hp = Math.max(0, hp - 100 / 7);
       bar.style.width = hp + "%";
       if (hp > 0) return;
       // "Nice try": the crab doubles, one scorpion leaves, the rest shrink 34%, a new one is born
@@ -153,8 +170,8 @@
       baby.style.setProperty("--w", road.clientWidth + "px");
       baby.innerHTML = "<i>🦂</i>";
       road.insertBefore(baby, boss);
-      var flexes = "💪".repeat(Math.min(round, 3));   // more muscle every round
-      document.getElementById("flexL").textContent = flexes; document.getElementById("flexR").textContent = flexes;
+      var crown = document.getElementById("bossCrown");   // a bigger crown every round
+      crown.classList.add("on"); boss.style.setProperty("--cr", Math.min(round, 5));
       win.hidden = false;
       setTimeout(function () { hp = 100; bar.style.width = "100%"; }, 700);
     });
@@ -167,6 +184,7 @@
         var sword = Math.random() < 0.5;
         weapon.textContent = sword ? "🗡️" : "🔫";
         weapon.classList.add("on"); if (sword) weapon.classList.add("swing");
+        setTimeout(function () { if (window.coachCrabHit) window.coachCrabHit(["6226228", "1111", "333", "3333", "333333"]); }, 700);
         setTimeout(function () { weapon.classList.remove("on", "swing"); draw(); }, 2600);
       }, 5000 + Math.random() * 7000);
     })();
@@ -265,4 +283,18 @@
     open();
   }, force ? 350 : 11000);
   window.coachOpenWelcome = open;
+
+  /* ---- the "I want this so badly" pop-up, 69 seconds after the page loads ---- */
+  var offer = document.getElementById("offer");
+  if (offer) {
+    var oBack = null;
+    var oOpen = function () { oBack = document.activeElement; offer.hidden = false; document.body.style.overflow = "hidden"; store("coach-offer-shown", "1"); var c = offer.querySelector(".js-want"); if (c) c.focus(); };
+    var oClose = function () { offer.hidden = true; document.body.style.overflow = ""; if (oBack && oBack.focus) oBack.focus(); };
+    [].forEach.call(offer.querySelectorAll("[data-close]"), function (b) { b.addEventListener("click", oClose); });
+    offer.addEventListener("click", function (e) { if (e.target === offer) oClose(); });
+    document.addEventListener("keydown", function (e) { if (!offer.hidden && e.key === "Escape") oClose(); });
+    var oForce = /[?&]offer\b/.test(location.search);
+    var oTry = function () { if (document.querySelector(".welcome:not([hidden]), .xit:not([hidden]), .rmd:not([hidden]), .chat:not([hidden])")) setTimeout(oTry, 5000); else oOpen(); };
+    if (oForce || !store("coach-offer-shown")) setTimeout(oTry, oForce ? 400 : 69000);
+  }
 })();

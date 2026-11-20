@@ -14,14 +14,14 @@ import { UnrealBloomPass } from "../js/vendor/three/postprocessing/UnrealBloomPa
 import { ShaderPass } from "../js/vendor/three/postprocessing/ShaderPass.js";
 
 const TX = {
-  en: { sliced: "Sliced! 🔪", knives: "Twin knives fall for the crab 🔪🔪", push: "✨ Crab magic: pushed away!", pull: "✨ Crab magic: pulled in!", sur: "“And the Trumpet will be blown…” (39:68)", moon: "“The Hour has drawn near, and the moon has split.” (54:1)", round: "Round", hp: "Crab", wealth: "Crab's wealth", mansion: "Mansion", start: "Tap or press a key to play", nice: "Nice try 😏", niceSub: "The crab grows stronger and richer, and the mansion grows.", hit: "Sting!", back: "The crab hits back!", blood: "Blood moon 🐺 Awoooo…", sound: "Sound", sting: "Sting", lvl: "Level", lh: "لا حول ولا قوة إلا بالله" },
-  ur: { sliced: 'کٹ گیا! 🔪', knives: 'کیکڑے کے لیے دو چاقو گرے 🔪🔪', push: '✨ کیکڑے کا جادو: دور دھکیل دیا!', pull: '✨ کیکڑے کا جادو: کھینچ لیا!', sur: '”اور صور پھونکا جائے گا…“ (39:68)', moon: '”قیامت قریب آ گئی اور چاند پھٹ گیا۔“ (54:1)', round: "راؤنڈ", hp: "کیکڑا", wealth: "کیکڑے کی دولت", mansion: "محل", start: "کھیلنے کے لیے ٹیپ کریں یا کوئی بٹن دبائیں", nice: "اچھی کوشش 😏", niceSub: "کیکڑا مزید طاقتور اور امیر ہو گیا، اور محل بڑا ہو گیا۔", hit: "ڈنک!", back: "کیکڑے نے جوابی وار کیا!", blood: "خونی چاند 🐺 آؤووو…", sound: "آواز", sting: "ڈنک", lvl: "لیول", lh: "لا حول ولا قوۃ الا باللہ" },
-  ar: { sliced: 'تقطّع! 🔪', knives: 'سكينان يسقطان للسلطعون 🔪🔪', push: '✨ سحر السلطعون: دُفع بعيدًا!', pull: '✨ سحر السلطعون: سُحب إليه!', sur: '«ونُفخ في الصور…» (39:68)', moon: '«اقتربت الساعة وانشق القمر» (54:1)', round: "الجولة", hp: "السلطعون", wealth: "ثروة السلطعون", mansion: "القصر", start: "اضغط أو اضغط زرًا لتلعب", nice: "محاولة جيدة 😏", niceSub: "السلطعون يزداد قوة وثراء، والقصر يكبر.", hit: "لسعة!", back: "السلطعون يردّ الضربة!", blood: "قمر دموي 🐺 أووو…", sound: "الصوت", sting: "لسعة", lvl: "المستوى", lh: "لا حول ولا قوة إلا بالله" },
-  fr: { sliced: 'Tranché ! 🔪', knives: 'Deux couteaux tombent pour le crabe 🔪🔪', push: '✨ Magie du crabe : repoussé !', pull: '✨ Magie du crabe : attiré !', sur: '« Et l’on soufflera dans la Trompe… » (39:68)', moon: '« L’Heure approche et la lune s’est fendue. » (54:1)', round: "Manche", hp: "Crabe", wealth: "Fortune du crabe", mansion: "Manoir", start: "Touchez ou appuyez sur une touche pour jouer", nice: "Bien essayé 😏", niceSub: "Le crabe devient plus fort et plus riche, et le manoir grandit.", hit: "Piqûre !", back: "Le crabe riposte !", blood: "Lune de sang 🐺 Aouuu…", sound: "Son", sting: "Piquer", lvl: "Niveau", lh: "لا حول ولا قوة إلا بالله" },
-  es: { sliced: '¡Rebanado! 🔪', knives: 'Dos cuchillos caen para el cangrejo 🔪🔪', push: '✨ Magia del cangrejo: ¡empujado!', pull: '✨ Magia del cangrejo: ¡atraído!', sur: '«Y se soplará la Trompeta…» (39:68)', moon: '«Se acercó la Hora y se partió la luna.» (54:1)', round: "Ronda", hp: "Cangrejo", wealth: "Fortuna del cangrejo", mansion: "Mansión", start: "Toca o pulsa una tecla para jugar", nice: "Buen intento 😏", niceSub: "El cangrejo se vuelve más fuerte y más rico, y la mansión crece.", hit: "¡Picadura!", back: "¡El cangrejo contraataca!", blood: "Luna de sangre 🐺 Auuuu…", sound: "Sonido", sting: "Picar", lvl: "Nivel", lh: "لا حول ولا قوة إلا بالله" },
-  ja: { sliced: '斬られた！🔪', knives: 'カニのもとに2本のナイフが落ちてきた 🔪🔪', push: '✨ カニの魔法：吹き飛ばされた！', pull: '✨ カニの魔法：引き寄せられた！', sur: '「そしてラッパが吹かれる…」（39:68）', moon: '「時は近づき、月は裂けた。」（54:1）', round: "ラウンド", hp: "カニ", wealth: "カニの財産", mansion: "豪邸", start: "タップかキーでスタート", nice: "惜しい 😏", niceSub: "カニはさらに強く豊かになり、豪邸も大きくなった。", hit: "刺した！", back: "カニの反撃！", blood: "血の月 🐺 アオーン…", sound: "サウンド", sting: "刺す", lvl: "レベル", lh: "لا حول ولا قوة إلا بالله" },
-  zh: { sliced: '被砍了！🔪', knives: '两把刀为螃蟹落下 🔪🔪', push: '✨ 螃蟹魔法：被推开了！', pull: '✨ 螃蟹魔法：被拉过去了！', sur: '“号角将被吹响……”（39:68）', moon: '“复活时已临近了，月亮已破裂了。”（54:1）', round: "回合", hp: "螃蟹", wealth: "螃蟹的财富", mansion: "豪宅", start: "点击或按任意键开始", nice: "不错的尝试 😏", niceSub: "螃蟹变得更强更富，豪宅也更大了。", hit: "蜇中！", back: "螃蟹反击了！", blood: "血月 🐺 嗷呜…", sound: "声音", sting: "蜇", lvl: "等级", lh: "لا حول ولا قوة إلا بالله" },
-  ko: { sliced: '베였다! 🔪', knives: '게를 위해 쌍칼이 떨어진다 🔪🔪', push: '✨ 게의 마법: 밀려났다!', pull: '✨ 게의 마법: 끌려갔다!', sur: '“나팔이 불리리라…” (39:68)', moon: '“그 시간이 다가왔고 달이 갈라졌다.” (54:1)', round: "라운드", hp: "게", wealth: "게의 재산", mansion: "저택", start: "탭하거나 키를 눌러 시작", nice: "좋은 시도였어요 😏", niceSub: "게는 더 강하고 부유해졌고, 저택도 커졌습니다.", hit: "쏘기!", back: "게의 반격!", blood: "블러드 문 🐺 아우우…", sound: "소리", sting: "쏘기", lvl: "레벨", lh: "لا حول ولا قوة إلا بالله" }
+  en: { justice: "JUSTICE", miss: "MISS", sliced: "Sliced! 🔪", knives: "Twin knives fall for the crab 🔪🔪", push: "✨ Crab magic: pushed away!", pull: "✨ Crab magic: pulled in!", sur: "“And the Trumpet will be blown…” (39:68)", moon: "“The Hour has drawn near, and the moon has split.” (54:1)", round: "Round", hp: "Crab", wealth: "Crab's wealth", mansion: "Mansion", start: "Tap or press a key to play", nice: "Nice try 😏", niceSub: "The crab grows stronger and richer, and the mansion grows.", hit: "Sting!", back: "The crab hits back!", blood: "Blood moon 🐺 Awoooo…", sound: "Sound", sting: "Sting", lvl: "Level", lh: "لا حول ولا قوة إلا بالله" },
+  ur: { justice: 'انصاف', miss: 'MISS', sliced: 'کٹ گیا! 🔪', knives: 'کیکڑے کے لیے دو چاقو گرے 🔪🔪', push: '✨ کیکڑے کا جادو: دور دھکیل دیا!', pull: '✨ کیکڑے کا جادو: کھینچ لیا!', sur: '”اور صور پھونکا جائے گا…“ (39:68)', moon: '”قیامت قریب آ گئی اور چاند پھٹ گیا۔“ (54:1)', round: "راؤنڈ", hp: "کیکڑا", wealth: "کیکڑے کی دولت", mansion: "محل", start: "کھیلنے کے لیے ٹیپ کریں یا کوئی بٹن دبائیں", nice: "اچھی کوشش 😏", niceSub: "کیکڑا مزید طاقتور اور امیر ہو گیا، اور محل بڑا ہو گیا۔", hit: "ڈنک!", back: "کیکڑے نے جوابی وار کیا!", blood: "خونی چاند 🐺 آؤووو…", sound: "آواز", sting: "ڈنک", lvl: "لیول", lh: "لا حول ولا قوۃ الا باللہ" },
+  ar: { justice: 'عدالة', miss: 'MISS', sliced: 'تقطّع! 🔪', knives: 'سكينان يسقطان للسلطعون 🔪🔪', push: '✨ سحر السلطعون: دُفع بعيدًا!', pull: '✨ سحر السلطعون: سُحب إليه!', sur: '«ونُفخ في الصور…» (39:68)', moon: '«اقتربت الساعة وانشق القمر» (54:1)', round: "الجولة", hp: "السلطعون", wealth: "ثروة السلطعون", mansion: "القصر", start: "اضغط أو اضغط زرًا لتلعب", nice: "محاولة جيدة 😏", niceSub: "السلطعون يزداد قوة وثراء، والقصر يكبر.", hit: "لسعة!", back: "السلطعون يردّ الضربة!", blood: "قمر دموي 🐺 أووو…", sound: "الصوت", sting: "لسعة", lvl: "المستوى", lh: "لا حول ولا قوة إلا بالله" },
+  fr: { justice: 'JUSTICE', miss: 'RATÉ', sliced: 'Tranché ! 🔪', knives: 'Deux couteaux tombent pour le crabe 🔪🔪', push: '✨ Magie du crabe : repoussé !', pull: '✨ Magie du crabe : attiré !', sur: '« Et l’on soufflera dans la Trompe… » (39:68)', moon: '« L’Heure approche et la lune s’est fendue. » (54:1)', round: "Manche", hp: "Crabe", wealth: "Fortune du crabe", mansion: "Manoir", start: "Touchez ou appuyez sur une touche pour jouer", nice: "Bien essayé 😏", niceSub: "Le crabe devient plus fort et plus riche, et le manoir grandit.", hit: "Piqûre !", back: "Le crabe riposte !", blood: "Lune de sang 🐺 Aouuu…", sound: "Son", sting: "Piquer", lvl: "Niveau", lh: "لا حول ولا قوة إلا بالله" },
+  es: { justice: 'JUSTICIA', miss: 'FALLO', sliced: '¡Rebanado! 🔪', knives: 'Dos cuchillos caen para el cangrejo 🔪🔪', push: '✨ Magia del cangrejo: ¡empujado!', pull: '✨ Magia del cangrejo: ¡atraído!', sur: '«Y se soplará la Trompeta…» (39:68)', moon: '«Se acercó la Hora y se partió la luna.» (54:1)', round: "Ronda", hp: "Cangrejo", wealth: "Fortuna del cangrejo", mansion: "Mansión", start: "Toca o pulsa una tecla para jugar", nice: "Buen intento 😏", niceSub: "El cangrejo se vuelve más fuerte y más rico, y la mansión crece.", hit: "¡Picadura!", back: "¡El cangrejo contraataca!", blood: "Luna de sangre 🐺 Auuuu…", sound: "Sonido", sting: "Picar", lvl: "Nivel", lh: "لا حول ولا قوة إلا بالله" },
+  ja: { justice: '正義', miss: 'MISS', sliced: '斬られた！🔪', knives: 'カニのもとに2本のナイフが落ちてきた 🔪🔪', push: '✨ カニの魔法：吹き飛ばされた！', pull: '✨ カニの魔法：引き寄せられた！', sur: '「そしてラッパが吹かれる…」（39:68）', moon: '「時は近づき、月は裂けた。」（54:1）', round: "ラウンド", hp: "カニ", wealth: "カニの財産", mansion: "豪邸", start: "タップかキーでスタート", nice: "惜しい 😏", niceSub: "カニはさらに強く豊かになり、豪邸も大きくなった。", hit: "刺した！", back: "カニの反撃！", blood: "血の月 🐺 アオーン…", sound: "サウンド", sting: "刺す", lvl: "レベル", lh: "لا حول ولا قوة إلا بالله" },
+  zh: { justice: '公正', miss: 'MISS', sliced: '被砍了！🔪', knives: '两把刀为螃蟹落下 🔪🔪', push: '✨ 螃蟹魔法：被推开了！', pull: '✨ 螃蟹魔法：被拉过去了！', sur: '“号角将被吹响……”（39:68）', moon: '“复活时已临近了，月亮已破裂了。”（54:1）', round: "回合", hp: "螃蟹", wealth: "螃蟹的财富", mansion: "豪宅", start: "点击或按任意键开始", nice: "不错的尝试 😏", niceSub: "螃蟹变得更强更富，豪宅也更大了。", hit: "蜇中！", back: "螃蟹反击了！", blood: "血月 🐺 嗷呜…", sound: "声音", sting: "蜇", lvl: "等级", lh: "لا حول ولا قوة إلا بالله" },
+  ko: { justice: '정의', miss: 'MISS', sliced: '베였다! 🔪', knives: '게를 위해 쌍칼이 떨어진다 🔪🔪', push: '✨ 게의 마법: 밀려났다!', pull: '✨ 게의 마법: 끌려갔다!', sur: '“나팔이 불리리라…” (39:68)', moon: '“그 시간이 다가왔고 달이 갈라졌다.” (54:1)', round: "라운드", hp: "게", wealth: "게의 재산", mansion: "저택", start: "탭하거나 키를 눌러 시작", nice: "좋은 시도였어요 😏", niceSub: "게는 더 강하고 부유해졌고, 저택도 커졌습니다.", hit: "쏘기!", back: "게의 반격!", blood: "블러드 문 🐺 아우우…", sound: "소리", sting: "쏘기", lvl: "레벨", lh: "لا حول ولا قوة إلا بالله" }
 };
 
 export function start(root) {
@@ -255,9 +255,15 @@ export function start(root) {
     spikes.visible = m >= 2; spikes.scale.setScalar(0.8 + m * 0.12);
     shellMat.color.set(0xd9482b).lerp(new THREE.Color(0x9a1608), Math.min(1, m / 5));
     shellMat.emissive.set(0x2a0500).lerp(new THREE.Color(0x4a0800), Math.min(1, m / 5));
-    crown.position.y = 3.05 + m * 0.12; chain.scale.setScalar(1 + m * 0.08);
+    crown.scale.setScalar(1.2 + Math.min(m, 6) * 0.28); chain.scale.setScalar(1 + m * 0.08);
   }
-  const crown = new THREE.Group(); { const ring = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.62, 0.35, 24, 1, true), goldMat); crown.add(ring); for (let i = 0; i < 7; i++) { const sp2 = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.4, 8), goldMat); const a = i / 7 * 6.28; sp2.position.set(Math.cos(a) * 0.6, 0.35, Math.sin(a) * 0.6); crown.add(sp2); } }
+  const crown = new THREE.Group(); {
+    const gemCols = [0xff2244, 0x22ff88, 0x3aa6ff, 0xffffff, 0xb04dff];
+    for (let i = 0; i < 10; i++) { const a = i / 10 * 6.28; const gem = new THREE.Mesh(new THREE.OctahedronGeometry(0.1, 0), new THREE.MeshStandardMaterial({ color: gemCols[i % 5], emissive: gemCols[i % 5], emissiveIntensity: 1.4, roughness: 0.1 })); gem.position.set(Math.cos(a) * 0.64, 0.02, Math.sin(a) * 0.64); crown.add(gem); }
+    for (let i = 0; i < 7; i++) { const a = (i + 0.5) / 7 * 6.28; const tip = new THREE.Mesh(new THREE.ConeGeometry(0.09, 0.75, 8), goldMat); tip.position.set(Math.cos(a) * 0.6, 0.5, Math.sin(a) * 0.6); crown.add(tip); const orb = new THREE.Mesh(new THREE.SphereGeometry(0.07, 10, 8), new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xfff2c8, emissiveIntensity: 2 })); orb.position.set(Math.cos(a) * 0.6, 0.9, Math.sin(a) * 0.6); crown.add(orb); }
+    const cap = new THREE.Mesh(new THREE.SphereGeometry(0.55, 20, 10, 0, 6.28, 0, Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0x8a0f2a, roughness: 0.6 })); cap.position.y = 0.05; crown.add(cap);
+    const top = new THREE.Mesh(new THREE.OctahedronGeometry(0.2, 0), new THREE.MeshStandardMaterial({ color: 0xff2244, emissive: 0xff2244, emissiveIntensity: 1.6 })); top.position.y = 0.75; crown.add(top);
+    const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex("rgba(255,215,120,0.9)", "rgba(255,215,120,0)"), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending })); halo.scale.set(3.2, 3.2, 1); halo.position.y = 0.4; crown.add(halo); const ring = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.62, 0.35, 24, 1, true), goldMat); crown.add(ring); for (let i = 0; i < 7; i++) { const sp2 = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.4, 8), goldMat); const a = i / 7 * 6.28; sp2.position.set(Math.cos(a) * 0.6, 0.35, Math.sin(a) * 0.6); crown.add(sp2); } }
   crown.position.set(0, 3.05, 0); crown.visible = false; crab.add(crown);
   const chain = new THREE.Mesh(new THREE.TorusGeometry(1.0, 0.09, 12, 48), goldMat); chain.rotation.x = Math.PI / 2.2; chain.position.set(0, 1.25, 0.55); chain.visible = false; crab.add(chain);
   const crabShadow = new THREE.Mesh(new THREE.CircleGeometry(2.2, 32), new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.45 })); crabShadow.rotation.x = -Math.PI / 2; crabShadow.position.y = 0.03; scene.add(crabShadow);
@@ -388,6 +394,86 @@ export function start(root) {
     const gd = new THREE.Mesh(new THREE.PlaneGeometry(150, 23.4), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthWrite: false, fog: false, opacity: 0.85 }));
     gd.position.copy(toSky(22, 15, 470)); gd.lookAt(0, 0, 0); scene.add(gd); fx.gold = gd; }
 
+  /* ---------- palms lining the road, and the ROYAL ORCHARD gate behind the crab ---------- */
+  const trunkMat = new THREE.MeshStandardMaterial({ color: 0x6b4a2a, roughness: 0.9 }), leafMat = new THREE.MeshStandardMaterial({ color: 0x1f7a3a, roughness: 0.7 });
+  function palmTree(x, z, h) {
+    const g = new THREE.Group(); const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.32, h, 8), trunkMat); trunk.position.y = h / 2; g.add(trunk);
+    for (let i = 0; i < 7; i++) { const leaf = new THREE.Mesh(new THREE.ConeGeometry(0.45, 3.6, 5), leafMat); const a = i / 7 * 6.28; leaf.position.set(Math.cos(a) * 1.4, h + 0.1, Math.sin(a) * 1.4); leaf.rotation.set(Math.sin(a) * 1.2, 0, -Math.cos(a) * 1.2); g.add(leaf); }
+    g.position.set(x, 0, z); g.rotation.z = (Math.random() - 0.5) * 0.12; scene.add(g);
+  }
+  for (let z = 14; z > -30; z -= small ? 9 : 6.5) [-1, 1].forEach(sd => palmTree(sd * (9.5 + Math.random() * 1.5), z + Math.random() * 2, 6 + Math.random() * 3));
+  {
+    const gate = new THREE.Group(), GH = 13;
+    [-1, 1].forEach(sd => { const pil = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.7, GH, 16), goldMat); pil.position.set(sd * 9, GH / 2, 0); gate.add(pil); const fin = new THREE.Mesh(new THREE.SphereGeometry(0.8, 16, 12), goldMat); fin.position.set(sd * 9, GH + 0.6, 0); gate.add(fin); });
+    const c = document.createElement("canvas"); c.width = 1024; c.height = 150; const g = c.getContext("2d");
+    g.fillStyle = "#0b3b24"; g.fillRect(0, 0, 1024, 150); g.strokeStyle = "#e8c87e"; g.lineWidth = 10; g.strokeRect(8, 8, 1008, 134);
+    g.font = "bold 92px Georgia, serif"; g.textAlign = "center"; g.fillStyle = "#ffe7a3"; g.shadowColor = "#ffcf5a"; g.shadowBlur = 18; g.fillText("ROYAL ORCHARD", 512, 108);
+    const board = new THREE.Mesh(new THREE.PlaneGeometry(17, 2.5), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c) })); board.position.set(0, GH - 0.6, 0.2); gate.add(board);
+    const beam = new THREE.Mesh(new THREE.BoxGeometry(19, 0.5, 0.6), goldMat); beam.position.y = GH + 0.9; gate.add(beam);
+    gate.position.set(0, 0, -23); scene.add(gate);
+  }
+
+  /* ---------- the crab's four wives: party dress, then hijab, then niqab ---------- */
+  const skinMat = new THREE.MeshStandardMaterial({ color: 0xc99272, roughness: 0.6 });
+  const PARTY = [0xe8c87e, 0xff4fa3, 0x2fd39a, 0x9b5cff], HIJAB = [0xf3e3c3, 0xb0306a, 0x1f6b52, 0x5a3a8a];
+  function makeWife(i, stage) {
+    const w = new THREE.Group();
+    const col = stage === 0 ? PARTY[i] : stage === 1 ? HIJAB[i] : 0x111118;
+    const cloth = new THREE.MeshStandardMaterial({ color: col, roughness: stage === 0 ? 0.25 : 0.8, metalness: stage === 0 ? 0.6 : 0, emissive: stage === 0 ? col : 0x000000, emissiveIntensity: stage === 0 ? 0.15 : 0 });
+    const gown = new THREE.Mesh(new THREE.ConeGeometry(0.75, 1.9, 24), cloth); gown.position.y = 0.95; w.add(gown);
+    const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.36, 0.8, 16), cloth); torso.position.y = 2.1; w.add(torso);
+    [-1, 1].forEach(sd => { const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.09, 0.9, 8), stage === 0 ? skinMat : cloth); arm.position.set(sd * 0.4, 2.0, 0); arm.rotation.z = sd * 0.25; w.add(arm); });
+    const head = new THREE.Mesh(new THREE.SphereGeometry(0.3, 20, 16), skinMat); head.position.y = 2.78; w.add(head);
+    if (stage === 0) {
+      const hair = new THREE.Mesh(new THREE.SphereGeometry(0.33, 20, 16, 0, 6.28, 0, Math.PI * 0.55), new THREE.MeshStandardMaterial({ color: 0x1a0e08, roughness: 0.5 })); hair.position.y = 2.8; hair.rotation.x = -0.35; w.add(hair);
+      const back = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.22, 0.8, 12), hair.material); back.position.set(0, 2.45, -0.15); w.add(back);
+      const neck = new THREE.Mesh(new THREE.TorusGeometry(0.22, 0.03, 8, 24), goldMat); neck.position.y = 2.5; neck.rotation.x = Math.PI / 2; w.add(neck);
+    } else {
+      const wrap = new THREE.Mesh(new THREE.SphereGeometry(0.36, 22, 16, stage === 1 ? 0.75 : 0, stage === 1 ? 4.78 : 6.28), cloth); wrap.position.y = 2.8; wrap.rotation.y = Math.PI; w.add(wrap);
+      const drape = new THREE.Mesh(new THREE.ConeGeometry(0.62, 0.9, 20, 1, true), cloth); drape.position.y = 2.35; w.add(drape);
+      if (stage === 2) { const slit = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.07, 0.05), skinMat); slit.position.set(0, 2.86, 0.34); w.add(slit); [-1, 1].forEach(sd => { const eye = new THREE.Mesh(new THREE.SphereGeometry(0.025, 8, 6), new THREE.MeshBasicMaterial({ color: 0x000000 })); eye.position.set(sd * 0.08, 2.86, 0.37); w.add(eye); }); }
+    }
+    return w;
+  }
+  const wives = new THREE.Group(); scene.add(wives);
+  function buildWives(round) {
+    while (wives.children.length) wives.remove(wives.children[0]);
+    const stage = Math.min(2, round);
+    [-2, -1, 1, 2].forEach((slot, i) => { const w = makeWife(i, stage); w.userData.slot = slot; wives.add(w); });
+  }
+  buildWives(0);
+
+  /* ---------- cartoon bunnies with bow ties flying by ---------- */
+  const bunnies = [];
+  { const fur = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.8 }), pink = new THREE.MeshStandardMaterial({ color: 0xff9ec7 }), black = new THREE.MeshStandardMaterial({ color: 0x0a0a0a }), wing = new THREE.MeshBasicMaterial({ color: 0xfff2c8, transparent: true, opacity: 0.8, side: THREE.DoubleSide });
+    for (let i = 0; i < 3; i++) {
+      const b2 = new THREE.Group();
+      const body = new THREE.Mesh(new THREE.SphereGeometry(0.7, 16, 12), fur); body.scale.set(1, 0.9, 1.2); b2.add(body);
+      const head = new THREE.Mesh(new THREE.SphereGeometry(0.48, 16, 12), fur); head.position.set(0, 0.6, 0.75); b2.add(head);
+      [-1, 1].forEach(sd => { const ear = new THREE.Mesh(new THREE.CapsuleGeometry(0.12, 0.7, 4, 8), fur); ear.position.set(sd * 0.2, 1.35, 0.6); ear.rotation.z = sd * 0.2; b2.add(ear); const inner = new THREE.Mesh(new THREE.CapsuleGeometry(0.06, 0.5, 4, 8), pink); inner.position.set(sd * 0.2, 1.35, 0.7); inner.rotation.z = sd * 0.2; b2.add(inner);
+        const bow = new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.26, 4), black); bow.rotation.z = sd * Math.PI / 2; bow.position.set(sd * 0.13, 0.2, 1.05); b2.add(bow);
+        const wg = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 0.6), wing); wg.position.set(sd * 0.9, 0.4, -0.1); wg.userData.sd = sd; b2.add(wg); });
+      b2.scale.setScalar(1.4); b2.userData = { sp: 5 + Math.random() * 4, y: 9 + Math.random() * 8, z: -10 - Math.random() * 30, ph: Math.random() * 6, dir: i % 2 ? 1 : -1 };
+      b2.position.set(-40 + i * 30, b2.userData.y, b2.userData.z); scene.add(b2); bunnies.push(b2);
+    }
+  }
+
+  /* ---------- floating damage numbers and the AL-ʿADL banner ---------- */
+  const PRAYER = "👁️✨May every evil eye on Adeel Ahmed Rahman go blind🧿🪬";
+  const adlEl = document.createElement("div"); adlEl.className = "g3__adl"; root.appendChild(adlEl);
+  let adlT = 0;
+  function adl() { adlEl.innerHTML = "⚖️ AL-ʿADL <span lang='ar'>العدل</span> · " + tx().justice; adlEl.classList.add("on"); adlT = 1.6; }
+  const dv = new THREE.Vector3();
+  function dmg(text, at, kind) {
+    dv.copy(at).project(camera); if (dv.z > 1) return;
+    const el = document.createElement("div"); el.className = "g3__dmg g3__dmg--" + kind; el.textContent = text;
+    el.style.left = ((dv.x * 0.5 + 0.5) * 100 + (Math.random() - 0.5) * 6) + "%"; el.style.top = ((-dv.y * 0.5 + 0.5) * 100) + "%";
+    root.appendChild(el); setTimeout(() => el.remove(), 1300);
+  }
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+  const CRAB_HIT = ["2222", "222", "222222", "88888888", "622"], WEAPON_HIT = ["6226228", "1111", "333", "3333", "333333"];
+  function crabHits(list) { dmg(typeof list === "string" ? list : pick(list), pos.clone().add(new THREE.Vector3(0, 2, 0)), "crab"); adl(); }
+
   /* ---------- game state ---------- */
   const st = { stun: 0, round: 0, hp: 100, crabScale: 1, wealth: 1000000, level: 0, playing: false, sting: 0, cool: 0, kb: 0, crabT: 1.5, crabTarget: 0, lunge: 0, flinch: 0, shake: 0 };
   const pos = new THREE.Vector3(0, 0, 8);
@@ -416,7 +502,8 @@ export function start(root) {
     crown.visible = st.round >= 1; chain.visible = st.round >= 2; strength(st.round);
     rain(MAXB); drop(coins, coins.n, false, false); drop(diamonds, 120, true, true);
     pos.set(0, 0, 8); st.hp = 100; st.shake = 0.6;
-    const t = tx(); say(t.nice, t.niceSub, 3200); setHud();
+    buildWives(st.round); adl();
+    const t = tx(); say(t.nice, t.niceSub + "</span><span class='adl'>⚖️ AL-ʿADL · " + t.justice + "</span><span class='g3pray'>" + PRAYER, 4200); setHud();
   }
   function doSting() {
     begin(); if (st.cool > 0) return;
@@ -424,7 +511,9 @@ export function start(root) {
     const reach = 2.4 * st.crabScale + 2.2;
     const dx = pos.x - crab.position.x, dz = pos.z - crab.position.z;
     if (Math.hypot(dx, dz) < reach) {
-      st.hp = Math.max(0, st.hp - (9 + Math.random() * 8)); st.flinch = 1; st.shake = 0.25; rain(40); drop(coins, 30, false, false); drop(diamonds, 25, false, true);
+      if (Math.random() < 0.3) { dmg(tx().miss, crab.position.clone().add(new THREE.Vector3(0, 3 * st.crabScale, 0)), "miss"); return; }
+      dmg("1", crab.position.clone().add(new THREE.Vector3(0, 3 * st.crabScale, 0)), "one");
+      st.hp = Math.max(0, st.hp - 12.5); st.flinch = 1; st.shake = 0.25; rain(40); drop(coins, 30, false, false); drop(diamonds, 25, false, true);
       st.wealth += 25000 + Math.random() * 60000; setHud();
       if (st.hp <= 0) niceTry(); else say(tx().hit, "", 500);
     }
@@ -541,7 +630,7 @@ export function start(root) {
     crab.position.x += THREE.MathUtils.clamp(st.crabTarget - crab.position.x, -1, 1) * crabSpeed * dt;
     let lz = 0;
     if (st.lunge > 0) { st.lunge = Math.max(0, st.lunge - dt * 2.2); lz = Math.sin((1 - st.lunge) * Math.PI) * (2 + st.crabScale);
-      if (st.lunge < 0.55 && st.lunge > 0.45 && Math.hypot(pos.x - crab.position.x, pos.z - (crab.position.z + lz)) < 3 * st.crabScale + 1.6) { st.kb = 2.4 + level * 0.3; st.shake = 0.35; say(tx().back, "", 900); } }
+      if (st.lunge < 0.55 && st.lunge > 0.45 && Math.hypot(pos.x - crab.position.x, pos.z - (crab.position.z + lz)) < 3 * st.crabScale + 1.6) { st.kb = 2.4 + level * 0.3; st.shake = 0.35; say(tx().back, "", 900); crabHits(CRAB_HIT); } }
     crab.scale.setScalar(st.crabScale * (1 + Math.sin(time * 2) * 0.015));
     crab.position.set(crab.position.x, 0, -12);
     crabShadow.position.set(crab.position.x, 0.03, -12); crabShadow.scale.setScalar(st.crabScale);
@@ -550,14 +639,14 @@ export function start(root) {
     claws.forEach(({ g, top, side }, i) => { const snap = Math.max(0, Math.sin(time * 4 + i * 2)) ** 6; top.rotation.z = snap * 0.6 * side; g.rotation.y = side * (0.2 + Math.sin(time * 1.5 + i) * 0.1) - st.flinch * side * 0.4; g.rotation.x = -st.lunge * 0.6; });
     body.rotation.z = st.flinch * Math.sin(time * 40) * 0.08;
     eyes.forEach((e, i) => { e.position.y = 2.3 + Math.sin(time * 3 + i) * 0.04; });
-    crown.rotation.y += dt * 0.6; crown.position.y = 3.05 + Math.min(st.round, 6) * 0.12 + Math.sin(time * 2.2) * 0.08;
+    crown.rotation.y += dt * 0.6; crown.position.y = 3.5 + Math.min(st.round, 6) * 0.3 + Math.sin(time * 2.2) * 0.1;
     // weapons: now and then the crab pulls out a sword or a gun for a few seconds
     weap.next -= dt;
     if (!weap.kind && weap.next <= 0 && st.playing) { weap.kind = Math.random() < 0.5 ? "sword" : "gun"; weap.t = 3.2; weap.shot = 0.9; (weap.kind === "sword" ? sword : gun).visible = true; say(weap.kind === "sword" ? "🗡️" : "🔫", "", 900); }
     if (weap.kind) {
       weap.t -= dt;
-      if (weap.kind === "sword") { sword.rotation.z = -0.5 + Math.sin(time * 6) * 0.9; sword.rotation.x = 0.25 + Math.sin(time * 3) * 0.3; }
-      else { weap.shot -= dt; flash.visible = weap.shot < 0.08 && weap.shot > -0.02; if (weap.shot <= -0.02) { weap.shot = 0.7; if (Math.abs(pos.x - crab.position.x) < 3 + st.crabScale) { st.kb = Math.max(st.kb, 1.4); st.shake = Math.max(st.shake, 0.18); } } gun.rotation.x = flash.visible ? -0.35 : 0; gun.rotation.y = -0.55; }
+      if (weap.kind === "sword") { weap.shot -= dt; if (weap.shot <= 0) { weap.shot = 0.8; if (Math.hypot(pos.x - crab.position.x, pos.z - crab.position.z) < 4 * st.crabScale + 3) { crabHits(WEAPON_HIT); st.kb = Math.max(st.kb, 1.8); st.shake = Math.max(st.shake, 0.25); } } sword.rotation.z = -0.5 + Math.sin(time * 6) * 0.9; sword.rotation.x = 0.25 + Math.sin(time * 3) * 0.3; }
+      else { weap.shot -= dt; flash.visible = weap.shot < 0.08 && weap.shot > -0.02; if (weap.shot <= -0.02) { weap.shot = 0.7; if (Math.abs(pos.x - crab.position.x) < 3 + st.crabScale) { crabHits(WEAPON_HIT); st.kb = Math.max(st.kb, 1.4); st.shake = Math.max(st.shake, 0.18); } } gun.rotation.x = flash.visible ? -0.35 : 0; gun.rotation.y = -0.55; }
       if (weap.t <= 0) { sword.visible = gun.visible = flash.visible = false; weap.kind = null; weap.next = 7 + Math.random() * 8 - Math.min(st.round, 4); }
     }
     crab.lookAt(pos.x, 0, pos.z); crab.rotation.x = 0; crab.rotation.z = 0;   // the lunge moves the body and claws, not the crab's spot
@@ -588,6 +677,10 @@ export function start(root) {
     wolves.forEach((w, i) => { w.position.y = THREE.MathUtils.lerp(w.userData.y - 6, w.userData.y, THREE.MathUtils.clamp(bp * 1.4 - i * 0.15, 0, 1)); });
     constLines.forEach(m => { m.opacity = 0.26 + Math.sin(time * 0.8) * 0.06 + bp * 0.1; });
 
+    wives.children.forEach((w, i) => { const sl = w.userData.slot; w.position.set(crab.position.x + sl * (1.9 + st.crabScale * 1.5), 0, crab.position.z - 2.2 - Math.abs(sl) * 0.6); w.rotation.y = Math.sin(time * 1.2 + i) * 0.25; w.position.y = Math.abs(Math.sin(time * 2.4 + i)) * 0.12; });
+    bunnies.forEach(b2 => { const u = b2.userData; b2.position.x += u.dir * u.sp * dt; if (Math.abs(b2.position.x) > 55) { b2.position.x = -u.dir * 55; u.y = 9 + Math.random() * 8; u.z = -10 - Math.random() * 30; } b2.position.y = u.y + Math.sin(time * 3 + u.ph) * 1.2; b2.position.z = u.z; b2.rotation.y = u.dir * Math.PI / 2; b2.children.forEach(c => { if (c.userData.sd) c.rotation.y = c.userData.sd * Math.sin(time * 14 + u.ph) * 0.7; }); });
+    if (adlT > 0) { adlT -= dt; if (adlT <= 0) adlEl.classList.remove("on"); }
+
     // constant money weather: bills, coins and diamonds
     if (Math.random() < dt * 4) rain(1);
     if (Math.random() < dt * 6) drop(coins, 1, true, false);
@@ -605,7 +698,7 @@ export function start(root) {
       dual.t -= dt; dual.hitCool -= dt;
       claws.forEach((c, i) => { c.g.rotation.y = c.side * (0.4 + Math.sin(time * 18 + i * 1.6) * 1.1); c.g.rotation.x = Math.sin(time * 14 + i) * 0.6; });
       slash.position.set(crab.position.x, 1.6 * st.crabScale, crab.position.z + 1.5 * st.crabScale); slash.rotation.set(-Math.PI / 2 + Math.sin(time * 9) * 0.6, 0, time * 22); slash.scale.setScalar(st.crabScale); slash.material.opacity = 0.35 + Math.abs(Math.sin(time * 18)) * 0.4;
-      if (dist < 3.4 * st.crabScale + 2.6 && dual.hitCool <= 0) { dual.hitCool = 0.9; st.kb = 3.4; st.stun = 0.8; st.shake = 0.5; say(tx().sliced, "", 800); }
+      if (dist < 3.4 * st.crabScale + 2.6 && dual.hitCool <= 0) { dual.hitCool = 0.9; st.kb = 3.4; st.stun = 0.8; st.shake = 0.5; say(tx().sliced, "", 800); crabHits("3434343434"); }
       if (st.lunge <= 0 && Math.random() < dt * 0.8) st.lunge = 1;
       if (dual.t <= 0) { dual.phase = "idle"; dual.next = 18 + Math.random() * 12 - Math.min(st.round, 5); knives.forEach(k => { k.parent && k.parent.remove(k); scene.add(k); k.visible = false; }); slash.material.opacity = 0; }
     }
@@ -621,7 +714,7 @@ export function start(root) {
       if (magic.mode === "push") pos.z += dt * 9 * k;
       else { pos.z += (crab.position.z + 2.6 * st.crabScale + 1.6 - pos.z) * Math.min(1, dt * 3 * k); pos.x += (crab.position.x - pos.x) * Math.min(1, dt * 2 * k); }
       if (magic.t <= 0) { const m = magic.mode; magic.mode = null; magic.next = 14 + Math.random() * 10 - Math.min(st.round, 5); rune.material.opacity = 0; magicLight.intensity = 0;
-        if (m === "pull") { if (dual.phase === "wield") { st.kb = 4; st.stun = 1; st.shake = 0.6; say(tx().sliced, "", 900); } else { weap.next = 0; st.lunge = 1; } } }
+        if (m === "pull") { if (dual.phase === "wield") { st.kb = 4; st.stun = 1; st.shake = 0.6; say(tx().sliced, "", 900); crabHits("3434343434"); } else { weap.next = 0; st.lunge = 1; } } }
     }
 
     // Qiyamah: the Trumpet sounds, shockwaves roll, the moon splits

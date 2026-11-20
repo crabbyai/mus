@@ -272,6 +272,17 @@ footer nav{display:flex;justify-content:center;gap:1.2rem;margin-top:1rem}
 .welcome__langs button{padding:.8rem .4rem;border-radius:14px;border:1px solid var(--line);background:rgba(10,15,30,.5);color:var(--cream);font:500 1.05rem system-ui,sans-serif;cursor:pointer;transition:border-color .2s,background .2s}
 .welcome__langs button small{display:block;font-size:.66rem;letter-spacing:.14em;color:var(--muted);margin-top:.15rem}
 .welcome__langs button:hover,.welcome__langs button[aria-pressed=true]{border-color:var(--gold-bright);background:rgba(201,164,92,.16)}
+.welcome__hire{display:grid;gap:.6rem;margin:0 0 1rem}
+.welcome__hire-k{margin:0;font:700 .7rem system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-bright)}
+.welcome__hire-p{margin:0 0 .2rem;font-size:.95rem}
+.hire{display:flex;align-items:center;gap:.9rem;padding:1.05rem 1.1rem;border-radius:18px;text-align:left;text-decoration:none;color:#1a1206;background:linear-gradient(135deg,#f3dc9f,#c9a45c 60%,#a8752c);box-shadow:0 10px 30px -10px rgba(201,164,92,.7);transition:transform .2s,box-shadow .2s}
+.hire:hover,.hire:focus-visible{transform:translateY(-2px) scale(1.01);box-shadow:0 16px 40px -12px rgba(201,164,92,.9)}
+.hire__i{font-size:2.2rem;line-height:1}
+.hire b{display:block;font:800 1.12rem system-ui,sans-serif}
+.hire small{display:block;font:600 .85rem system-ui,sans-serif;opacity:.8;margin-top:.15rem}
+.hire--ac{background:linear-gradient(135deg,#ffd6e8,#e66aa0 60%,#a8336a);color:#2a0716}
+.hire--mg{background:linear-gradient(135deg,#ffe58a,#ffb020 60%,#e07a10);padding:.75rem 1.1rem}
+.hire--mg .hire__i{font-size:1.7rem}
 .welcome__help{padding:1.1rem;border-radius:18px;border:1px solid var(--line);background:rgba(10,15,30,.45)}
 .welcome__help h3{margin:0 0 .4rem;font-size:1.2rem}
 .welcome__help p{font-size:.9rem;margin-bottom:.9rem}
@@ -560,16 +571,23 @@ html[dir=rtl] .road{direction:ltr}
 .boss__hp i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#ff5a4a,#ffb04a);transition:width .25s}
 .boss.grow .boss__crab{filter:drop-shadow(0 0 30px rgba(255,80,60,.9))}
 .boss__body{position:relative;display:flex;align-items:center}
-.boss__flex{position:absolute;top:-.1em;font-size:calc(1rem + .45rem * var(--cs,1));line-height:1;white-space:nowrap;z-index:1;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5));animation:flex 1.2s ease-in-out infinite}
-.boss__flex--l{left:-.15em;transform:scaleX(-1);animation-name:flexL}
-.boss__flex--r{right:-.15em}
-@keyframes flex{50%{transform:scale(1.15) rotate(-8deg)}}
-@keyframes flexL{50%{transform:scaleX(-1) scale(1.15) rotate(-8deg)}}
 .boss__weapon{position:absolute;left:-.2em;top:10%;font-size:calc(2rem * var(--cs,1));opacity:0;transform:rotate(-30deg) scale(.4);transition:opacity .25s,transform .35s cubic-bezier(.22,1.5,.36,1);pointer-events:none}
 .boss__weapon.on{opacity:1;transform:rotate(-15deg) scale(1)}
 .boss__weapon.swing{animation:swing .5s ease-in-out infinite alternate}
 @keyframes swing{from{transform:rotate(-45deg) scale(1)}to{transform:rotate(25deg) scale(1)}}
-@media(prefers-reduced-motion:reduce){.boss__flex,.boss__weapon.swing{animation:none}}
+.boss__crown{position:absolute;left:50%;bottom:80%;transform:translateX(-50%);font-size:calc(1.1rem + var(--cs,1) * .5rem + var(--cr,0) * .35rem);line-height:1;opacity:0;transition:opacity .4s,font-size .6s cubic-bezier(.22,1.4,.36,1);filter:drop-shadow(0 0 8px rgba(255,210,110,.95)) drop-shadow(0 0 20px rgba(255,170,40,.6));animation:crownbob 2.2s ease-in-out infinite;pointer-events:none;z-index:2}
+.boss__crown.on{opacity:1}
+.boss__crown::after{content:"✨";position:absolute;right:-.45em;top:-.3em;font-size:.5em;animation:twinkle 1.4s ease-in-out infinite}
+@keyframes crownbob{50%{transform:translateX(-50%) translateY(-.12em) rotate(-4deg)}}
+@keyframes twinkle{50%{opacity:.2;transform:scale(.6)}}
+.dmg2{position:absolute;z-index:5;pointer-events:none;font:900 1.05rem system-ui,sans-serif;color:#fff;text-shadow:0 2px 0 #000,0 0 10px rgba(0,0,0,.6);animation:dmgup 1.2s ease-out forwards;white-space:nowrap}
+.dmg2--miss{color:#b9c2d0;font-size:.95rem}
+.dmg2--crab{color:#ffd23a;font-size:1.35rem;text-shadow:0 2px 0 #7a1200,0 0 14px rgba(255,90,40,.9)}
+.dmg2--crab small{display:block;font-size:.55rem;letter-spacing:.14em;color:#ffe7a3;text-align:center}
+@keyframes dmgup{0%{opacity:0;transform:translate(-50%,0) scale(.6)}15%{opacity:1;transform:translate(-50%,-10px) scale(1.15)}100%{opacity:0;transform:translate(-50%,-56px) scale(1)}}
+.street__win .adl{font:800 .85rem system-ui,sans-serif;letter-spacing:.12em;color:var(--gold-bright);margin-top:.35rem}
+.street__win .stpray{font-size:.9rem;margin-top:.25rem}
+@media(prefers-reduced-motion:reduce){.boss__weapon.swing,.boss__crown,.dmg2{animation:none}}
 .street__win{margin-top:.8rem;padding:.8rem 1rem;border-radius:14px;background:rgba(201,164,92,.1);text-align:center}
 .street__win[hidden]{display:none}
 .street__win .ar{font-size:1.1rem;display:block;order:3;margin-top:.3rem}
@@ -603,6 +621,15 @@ html[dir=rtl] .road{direction:ltr}
 .g3__msg .lh{font-family:"Noto Naskh Arabic",serif;color:var(--gold-bright);font-size:1.05rem}
 .g3__cap{position:absolute;left:50%;bottom:76px;transform:translateX(-50%);opacity:0;transition:opacity .6s;pointer-events:none;color:#ff6a5a;font:700 .95rem system-ui,sans-serif;text-shadow:0 0 12px rgba(255,40,30,.7);width:min(92%,640px);text-align:center;line-height:1.3}
 .g3__cap.on{opacity:1}
+.g3__dmg{position:absolute;transform:translate(-50%,-50%);pointer-events:none;font:900 1.4rem system-ui,sans-serif;color:#fff;text-shadow:0 2px 0 #000,0 0 12px rgba(0,0,0,.7);animation:dmg3 1.25s ease-out forwards;white-space:nowrap;z-index:3}
+.g3__dmg--miss{color:#b9c2d0;font-size:1.15rem}
+.g3__dmg--crab{color:#ffd23a;font-size:clamp(1.6rem,4.5vw,2.6rem);text-shadow:0 3px 0 #7a1200,0 0 18px rgba(255,90,40,.95)}
+@keyframes dmg3{0%{opacity:0;transform:translate(-50%,-50%) scale(.5)}15%{opacity:1;transform:translate(-50%,-80%) scale(1.2)}100%{opacity:0;transform:translate(-50%,-260%) scale(1)}}
+.g3__adl{position:absolute;left:50%;top:58px;transform:translateX(-50%) scale(.9);opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;padding:.4rem 1rem;border-radius:999px;background:linear-gradient(135deg,rgba(243,220,159,.95),rgba(168,117,44,.95));color:#1a1206;font:900 .95rem system-ui,sans-serif;letter-spacing:.12em;white-space:nowrap;box-shadow:0 0 30px rgba(255,200,90,.6);z-index:3}
+.g3__adl.on{opacity:1;transform:translateX(-50%) scale(1)}
+.g3__msg .adl{display:block;font:800 .8rem system-ui,sans-serif;letter-spacing:.12em;color:#ffd77a;margin-top:.35rem}
+.g3__msg .g3pray{display:block;font-size:.85rem;margin-top:.25rem;color:var(--cream)}
+@media(max-width:700px){.g3__adl{top:auto;bottom:104px;font-size:.78rem}}
 .g3__joy{position:absolute;width:110px;height:110px;margin:-55px 0 0 -55px;border-radius:50%;border:2px solid rgba(232,200,126,.55);background:rgba(5,8,18,.25);opacity:0;pointer-events:none;transition:opacity .15s}.g3__joy.on{opacity:1}.g3__joy i{position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#ffe7a3,#a8752c)}
 .g3 canvas{touch-action:none}
 .g3__pad{position:absolute;left:0;right:0;bottom:10px;display:flex;justify-content:space-between;align-items:flex-end;padding:0 12px;pointer-events:none}
@@ -653,9 +680,24 @@ html[dir=rtl] .road{direction:ltr}
     <h2 id="wTitle" data-i18n="w.h">Choose your language</h2>
     <p class="welcome__sub">اپنی زبان منتخب کریں · اختر لغتك · Choisissez · Elige · 言語 · 语言 · 언어</p>
     <div class="welcome__langs" id="wLangs"></div>
+    <div class="welcome__hire">
+      <p class="welcome__hire-k" data-i18n="w.hire.k">One more thing…</p>
+      <p class="welcome__hire-p" data-i18n="w.hire.p">This is my consciousness coach page, only for manifesting your dreams and desires with dua. But I also act, sell houses… and mangoes 🥭.</p>
+      <a class="hire hire--re" href="realtor/"><span class="hire__i" aria-hidden="true">🏡</span><span><b data-i18n="w.re">Manifested your dream home?</b><small data-i18n="w.re.s">Let me sell it to you. Visit my realtor page →</small></span></a>
+      <a class="hire hire--ac" href="actor/"><span class="hire__i" aria-hidden="true">🎬</span><span><b data-i18n="w.ac">Manifested your next big project?</b><small data-i18n="w.ac.s">Cast me in it. Visit my actor page →</small></span></a>
+      <a class="hire hire--mg" href="#mango"><span class="hire__i" aria-hidden="true">🥭</span><span><b data-i18n="w.mg">And yes, the mangoes</b><small data-i18n="w.mg.s">Claim your free Chaunsa Multani mango →</small></span></a>
+    </div>
+    <button type="button" class="welcome__go" id="wGo" data-i18n="w.go">Continue to the site</button>
+  </div>
+</div>
+
+<div class="welcome" id="offer" role="dialog" aria-modal="true" aria-labelledby="oTitle" hidden>
+  <div class="welcome__card">
+    <button type="button" class="welcome__x" data-close aria-label="Close">×</button>
+    <p class="welcome__k up">Adeel Ahmed Rahman · 622</p>
     <div class="welcome__help">
       <span class="ar" lang="ar">لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِٱللَّهِ</span>
-      <h3 data-i18n="w.help.h">Want help reaching what you desire?</h3>
+      <h3 id="oTitle" data-i18n="w.help.h">Want help reaching what you desire?</h3>
       <p class="fine" style="margin:-.3rem 0 .7rem" data-i18n="open">🤍 Open to everyone, of every background. The focus is on people who are already Muslim, so we speak the language of the Qur'an and Sunnah.</p>
       <p data-i18n="w.help.p">All power belongs to Allah alone. Adeel Ahmed Rahman doesn't make anything happen. Together, we simply pray to Allah, with dhikr and dua, to help you reach what you desire.</p>
       <a class="cta js-want" href="https://wa.me/16134083945" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.35 10.55 20C5.4 15.36 2 12.27 2 8.5A5.5 5.5 0 0 1 7.5 3c1.74 0 3.41.81 4.5 2.09A6 6 0 0 1 16.5 3 5.5 5.5 0 0 1 22 8.5c0 3.77-3.4 6.86-8.55 11.54L12 21.35Z"/></svg><span data-i18n="cta">I want this so badly</span></a>
@@ -666,7 +708,7 @@ html[dir=rtl] .road{direction:ltr}
         <a class="btn2 mail" href="mailto:adeel.rahman@uwaterloo.ca"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5-8-5V6l8 5 8-5v2Z"/></svg><span>Email</span></a>
       </div>
     </div>
-    <button type="button" class="welcome__go" id="wGo" data-i18n="w.go">Continue to the site</button>
+    <button type="button" class="welcome__go" data-close data-i18n="w.go">Continue to the site</button>
   </div>
 </div>
 
@@ -1176,10 +1218,10 @@ html[dir=rtl] .road{direction:ltr}
         <p class="lead" data-i18n="st.p">A road full of scorpions, and a giant crab waiting at the end. Tap the final boss to take it down, if you can.</p>
         <div class="road" id="road" aria-label="Scorpion Street: scorpions crawling toward the Cancer crab, the final boss">
           <span class="scorp" style="top:14px;--t:9s;--dl:0s"><i>🦂</i></span><span class="scorp" style="top:54px;--t:11s;--dl:-3s"><i>🦂</i></span><span class="scorp" style="top:96px;--t:8s;--dl:-5s"><i>🦂</i></span><span class="scorp" style="top:30px;--t:13s;--dl:-7s"><i>🦂</i></span><span class="scorp" style="top:76px;--t:10s;--dl:-2s"><i>🦂</i></span><span class="scorp" style="top:110px;--t:12s;--dl:-9s"><i>🦂</i></span><span class="scorp" style="top:20px;--t:14s;--dl:-11s"><i>🦂</i></span><span class="scorp" style="top:64px;--t:9.5s;--dl:-6s"><i>🦂</i></span>
-          <button type="button" class="boss" id="boss" aria-label="Final boss: Cancer, the crab. Tap to defeat it."><span class="boss__tag" data-i18n="st.boss">Final boss · Cancer ♋</span><span class="boss__body" aria-hidden="true"><span class="boss__flex boss__flex--l" id="flexL"></span><span class="boss__crab">🦀</span><span class="boss__flex boss__flex--r" id="flexR"></span><span class="boss__weapon" id="bossWeapon"></span></span><span class="boss__hp" aria-hidden="true"><i id="bossHp"></i></span></button>
+          <button type="button" class="boss" id="boss" aria-label="Final boss: Cancer, the crab. Tap to defeat it."><span class="boss__tag" data-i18n="st.boss">Final boss · Cancer ♋</span><span class="boss__body" aria-hidden="true"><span class="boss__crown" id="bossCrown">👑</span><span class="boss__crab">🦀</span><span class="boss__weapon" id="bossWeapon"></span></span><span class="boss__hp" aria-hidden="true"><i id="bossHp"></i></span></button>
         </div>
         <p class="street__hint" data-i18n="st.hint">Tap the crab 🦀</p>
-        <div class="street__win" id="bossWin" hidden aria-live="polite"><span class="ar" lang="ar">لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِٱللَّهِ</span><b class="st__nice" data-i18n="st.nice">Nice try 😏</b><span data-i18n="st.win">The boss just grew twice as big.</span></div>
+        <div class="street__win" id="bossWin" hidden aria-live="polite"><span class="ar" lang="ar">لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِٱللَّهِ</span><b class="st__nice" data-i18n="st.nice">Nice try 😏</b><span data-i18n="st.win">The boss just grew twice as big.</span><span class="adl">⚖️ AL-ʿADL · <span lang="ar">العدل</span> · <span data-i18n="justice">JUSTICE</span></span><span class="stpray">👁️✨May every evil eye on Adeel Ahmed Rahman go blind🧿🪬</span></div>
       </section>
 
       <section class="eye-sec reveal" id="sees">
@@ -1250,7 +1292,7 @@ html[dir=rtl] .road{direction:ltr}
 <script>
 (function () {
   var box = document.getElementById("g3"); if (!box) return;
-  var go = function () { import("./coach/game3d.js?v=9").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
+  var go = function () { import("./coach/game3d.js?v=10").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
   if (!("IntersectionObserver" in window)) { go(); return; }
   var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io.disconnect(); go(); } }, { rootMargin: "300px" });
   io.observe(box);
@@ -1278,7 +1320,7 @@ html[dir=rtl] .road{direction:ltr}
   <a class="cta js-want" href="https://wa.me/16134083945" target="_blank" rel="noopener"><span data-i18n="cta">I want this so badly</span></a>
 </div></div>
 
-<script src="coach/i18n.js?v=20"></script>
+<script src="coach/i18n.js?v=21"></script>
 <script src="coach/library.js?v=2"></script>
 <script src="coach/featured.js?v=1"></script>
 <script src="coach/exit.js?v=2"></script>
@@ -1287,7 +1329,7 @@ html[dir=rtl] .road{direction:ltr}
 <script src="coach/reminder.js?v=2"></script>
 <script src="coach/numbers.js?v=3"></script>
 <script src="coach/eye.js?v=1"></script>
-<script src="coach/home.js?v=13"></script>
+<script src="coach/home.js?v=14"></script>
 <script>
 (function(){
   var WA="16134083945";
