@@ -1331,12 +1331,12 @@ export function start(root) {
   function doPray() { begin(); if (prayS.on) return; prayS.on = true; st.playing = false; Object.keys(keys).forEach(x => keys[x] = false); prayS.bow = 1;
     let i; do { i = Math.floor(Math.random() * PRAYS.length); } while (i === prayS.last && PRAYS.length > 1); prayS.last = i; const n = PRAYS[i];
     const ov = document.createElement("div"); ov.className = "g3__pray"; ov.setAttribute("role", "dialog"); ov.setAttribute("aria-label", n[0]);
-    ov.innerHTML = '<div class="g3__pcard"><b lang="ar">' + n[1] + '</b><span class="g3__pn">' + n[0] + ' · ' + n[2] + '</span>' +
-      '<p class="g3__pr">🤍 ' + n[3] + '</p><p class="g3__pd">🤲 ' + n[4] + '</p><p class="g3__pa">🦂 ' + n[5] + '</p><button type="button">آمين · Ameen</button></div>';
+    ov.innerHTML = '<div class="g3__pcard"><small class="g3__pal">🤲 We pray to Allah alone · never to the crab</small><b lang="ar">' + n[1] + '</b><span class="g3__pn">' + n[0] + ' · ' + n[2] + '</span>' +
+      '<p class="g3__pr">🤍 ' + n[3] + '</p><p class="g3__pd">🤲 ' + n[4] + '</p><p class="g3__pa">🦂 ' + n[5] + '</p><p class="g3__pb">✨ Every sincere Ameen brings barakah to the crab too.</p><button type="button">آمين · Ameen</button></div>';
     root.appendChild(ov);
     const close = () => { if (!ov.isConnected) return; ov.remove(); prayS.on = false; st.playing = true;
       pz.hp = Math.min(pz.max, pz.hp + 40); if (pz.on) { pz.on = false; shellP.emissive.copy(venomBase); greenBubbles.forEach(b2 => b2.material.opacity = 0); } youHud(); heat.v = Math.max(0, heat.v - 1.5);
-      dmg("🤲 +40", pos.clone().add(new THREE.Vector3(0, 2.4, 0)), "miss"); crabSay("JazakAllahu khayran meri jaan 🤍"); };
+      dmg("🤲 +40", pos.clone().add(new THREE.Vector3(0, 2.4, 0)), "miss"); st.hp = Math.min(100, st.hp + 10); st.wealth += 500000; setHud(); dmg("✨ BARAKAH", crab.position.clone().add(new THREE.Vector3(0, 4 * st.crabScale, 0)), "crab"); crabSay("Ameen. JazakAllahu khayran meri jaan 🤍"); };
     ov.querySelector("button").addEventListener("click", close); setTimeout(close, 20000); }
 
   /* ---------- "The Eagle" (Alfred, Lord Tennyson, 1851, public domain) and the diving flock ---------- */
@@ -1368,6 +1368,26 @@ export function start(root) {
   function recite(line) { if (!soundOn || !window.speechSynthesis) return; try { const u = new SpeechSynthesisUtterance(line); u.rate = 0.85; u.pitch = 0.7; speechSynthesis.speak(u); } catch (e) {} }
   function startPoem() { poem.on = true; poem.i = 0; poem.t = 0.4; poem.cool = 50; poemEl.innerHTML = '<small>The Eagle · Alfred, Lord Tennyson</small>'; poemEl.classList.add("on"); }
   function diveBird(f) { f.phase = "dive"; f.t = 0; f.e.visible = true; f.from.set((Math.random() - 0.5) * 70, 70 + Math.random() * 20, -20 - Math.random() * 40); f.to.set((Math.random() - 0.5) * 22, 0, 8 - Math.random() * 38); if (Math.random() < 0.25) f.to.set(pos.x + (Math.random() - 0.5) * 3, 0, pos.z - 1); }
+
+  /* ---------- third eyes, the cusp of magic, Gemini, and the Day of Judgement ---------- */
+  const eyeW = new THREE.MeshBasicMaterial({ color: 0xffffff }), eyeI = new THREE.MeshBasicMaterial({ color: 0x8a2be2 }), eyeGlowT = glowTex("rgba(190,120,255,0.95)", "rgba(190,120,255,0)");
+  function thirdEye(parent, x, y, z, size, faceZ, big) {
+    if (parent.userData.eye3) return; const g = new THREE.Group(); g.position.set(x, y, z);
+    const w = new THREE.Mesh(new THREE.SphereGeometry(size, 16, 12), eyeW); w.scale.set(1.3, 0.85, 0.5); g.add(w);
+    const ir = new THREE.Mesh(new THREE.SphereGeometry(size * 0.55, 14, 10), eyeI); ir.position.z = faceZ * size * 0.3; g.add(ir);
+    const pu = new THREE.Mesh(new THREE.SphereGeometry(size * 0.25, 10, 8), bikeDark); pu.position.z = faceZ * size * 0.48; g.add(pu);
+    const gl = new THREE.Sprite(new THREE.SpriteMaterial({ map: eyeGlowT, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending })); gl.scale.setScalar(size * (big ? 9 : 4)); g.add(gl);
+    g.scale.setScalar(0.001); g.userData = { glow: gl, big, t: 0 }; parent.add(g); parent.userData.eye3 = g; eyes3.push(g);
+  }
+  const eyes3 = [];
+  const mystic = { on: false, phase: "idle", t: 0, nextRound: 3 };
+  // Gemini: two glowing star twins who come to stand by the crab
+  function twin(col) { const g = new THREE.Group(); const m = new THREE.MeshStandardMaterial({ color: col, emissive: col, emissiveIntensity: 0.9, roughness: 0.3, transparent: true, opacity: 0.9 });
+    const body = new THREE.Mesh(new THREE.ConeGeometry(0.7, 2.6, 20), m); body.position.y = 1.3; g.add(body); const head = new THREE.Mesh(new THREE.SphereGeometry(0.45, 18, 14), m); head.position.y = 2.95; g.add(head);
+    const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex("rgba(255,240,200,0.9)", "rgba(255,240,200,0)"), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending })); halo.scale.setScalar(6); halo.position.y = 2; g.add(halo);
+    const star = new THREE.Mesh(new THREE.OctahedronGeometry(0.3, 0), new THREE.MeshBasicMaterial({ color: 0xffffff })); star.position.y = 3.8; g.add(star); g.userData.star = star; g.scale.setScalar(1.8); g.visible = false; scene.add(g); return g; }
+  const twins = [twin(0x8fd8ff), twin(0xffd77a)];
+  const CUSP = "You are not a rare energy. Scorpio is the most common sign. I, however, am rare: I was born on the cusp of magic. I have TWO signs!!! I am a Gemini too ♊";
 
   /* ---------- game state ---------- */
   const st = { stun: 0, round: 0, hp: 100, crabScale: 1, wealth: 1000000, level: 0, playing: false, sting: 0, cool: 0, kb: 0, crabT: 1.5, crabTarget: 0, lunge: 0, flinch: 0, shake: 0 };
@@ -1875,6 +1895,22 @@ export function start(root) {
     // the gratitude ayah
     ayah.t -= dt; if (ayah.t <= 0 && st.playing) { ayah.t = 70 + Math.random() * 30; showAyah(); }
     if (prayS.bow > 0) { if (!prayS.on) prayS.bow = Math.max(0, prayS.bow - dt); scorp.rotation.x = -0.5 * Math.min(1, prayS.bow * 2); if (prayS.bow === 0) scorp.rotation.x = 0; }   // the scorpion bows in prayer
+    // when the game is going well, everyone grows a third eye; the crab's is the biggest
+    if (!mystic.on && st.round >= 2) { mystic.on = true; hud.cap.textContent = "👁️ Everyone begins growing a third eye…"; hud.cap.classList.add("on"); setTimeout(() => hud.cap.classList.remove("on"), 3500); }
+    if (mystic.on) {
+      thirdEye(crab, 0, 2.55, 0.85, 0.32, 1, true); thirdEye(scorp, 0, 0.72, -0.72, 0.09, -1);
+      beggars.forEach(b2 => thirdEye(b2, 0, 0.72, -0.72, 0.09, -1));
+      wives.children.forEach(w => w.userData.upper && thirdEye(w.userData.upper, 0, 1.17, 0.28, 0.06, 1));
+      gals.forEach(w => thirdEye(w, 0, 2.24, 0.17, 0.05, 1)); pickers.forEach(w => w.visible && thirdEye(w, 0, 2.3, 0.18, 0.05, 1));
+      eyes3.forEach((g, i) => { const u = g.userData; u.t = Math.min(1, u.t + dt * 0.4); const pulse = u.big ? 1 + Math.sin(time * 3) * 0.12 : 1; g.scale.setScalar(Math.max(0.001, u.t) * pulse); u.glow.material.opacity = (u.big ? 0.75 : 0.45) + Math.sin(time * 4 + i) * 0.2; });
+    }
+    // the cusp of magic → Gemini → the Day of Judgement
+    if (mystic.phase === "idle" && mystic.on && st.round >= mystic.nextRound && st.playing) { mystic.phase = "cusp"; mystic.t = 7; mystic.nextRound = st.round + 3; say("👁️ The crab's third eye is the biggest, strongest and most powerful", "", 2600); crabSay(CUSP); }
+    else if (mystic.phase === "cusp") { mystic.t -= dt; if (mystic.t <= 0) { mystic.phase = "gemini"; mystic.t = 6; twins.forEach((t2, k) => { t2.visible = true; t2.position.set(crab.position.x + (k ? 1 : -1) * 5 * st.crabScale, 30, crab.position.z + 1); }); say("♊ Gemini comes to the crab's aid!", "", 2400); } }
+    else if (mystic.phase === "gemini") { mystic.t -= dt; twins.forEach((t2, k) => { const tgt = crab.position.x + (k ? 1 : -1) * 4.2 * st.crabScale; t2.position.x += (tgt - t2.position.x) * Math.min(1, dt * 2); t2.position.y = Math.max(0, t2.position.y - dt * 12) + Math.sin(time * 2 + k) * 0.1; t2.userData.star.rotation.y += dt * 3; });
+      if (mystic.t <= 2.5 && !mystic.trumpet) { mystic.trumpet = true; qiy.next = 0; }
+      if (mystic.t <= 0 && window.coachQiyamah) { mystic.phase = "scene"; mystic.trumpet = false; st.playing = false; Object.keys(keys).forEach(x => keys[x] = false);
+        window.coachQiyamah.play(() => { st.playing = true; mystic.phase = "idle"; twins.forEach(t2 => t2.visible = false); }); } }
     // TOUCH ME / KILL ME flashes
     if (!reduce) { tauntEl.t -= dt; if (tauntEl.t <= 0) { tauntEl.t = 14 + Math.random() * 10; taunt(); } }
     // the cologne and perfume care package

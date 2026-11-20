@@ -244,6 +244,59 @@
     setTimeout(function () { el.remove(); }, 3700);
   }
   window.coachMall = { play: mall };
+
+  /* ---- Yawm al-Qiyamah: everyone gathered, the scale of deeds, and the crab's dua at the gate of Jannat al-Firdaus.
+         Allah is never depicted: only light. Who enters Jannah is known only to Allah; the crab's wish is a dua. ---- */
+  var QCSS = '\
+.qy--light{background:radial-gradient(ellipse at 50% 0%,#fffbe8 0,#ffe7a3 18%,#b88a3a 45%,#2a1a08 80%)}\
+.qy__rays{position:absolute;inset:0;background:repeating-conic-gradient(from 0deg at 50% -10%,rgba(255,255,255,.18) 0 4deg,transparent 4deg 12deg);animation:qySpin 40s linear infinite}\
+@keyframes qySpin{to{transform:rotate(360deg)}}\
+.qy__crowd{position:absolute;left:0;right:0;bottom:6%;display:flex;flex-wrap:wrap;justify-content:center;gap:2px;padding:0 4%;font-size:clamp(.8rem,2.4vw,1.2rem);opacity:.85}\
+.qy__crowd i{font-style:normal;animation:qyBob 2s ease-in-out infinite}\
+@keyframes qyBob{50%{transform:translateY(-3px)}}\
+.qy__scale{position:absolute;left:50%;top:22%;transform:translateX(-50%);width:min(70%,460px);height:46%}\
+.qy__beam{position:absolute;left:0;right:0;top:20%;height:8px;border-radius:4px;background:linear-gradient(90deg,#e8c87e,#fff3c4,#e8c87e);transform-origin:50% 50%;animation:qyTilt 3s 1s ease-in-out forwards}\
+.qy__post{position:absolute;left:50%;top:20%;width:8px;height:80%;margin-left:-4px;background:linear-gradient(#e8c87e,#8a6a2e)}\
+.qy__pan{position:absolute;top:calc(20% + 4px);width:30%;text-align:center;font-size:clamp(2rem,7vw,3.4rem);transition:transform 3s 1s ease-in-out}\
+.qy__pan small{display:block;font:800 .7rem system-ui,sans-serif;letter-spacing:.12em;color:#fff6d8}\
+.qy__pan--l{left:-6%}.qy__pan--r{right:-6%}\
+.ct__scene.on .qy__pan--l{transform:translateY(-16%)}.ct__scene.on .qy__pan--r{transform:translateY(34%)}\
+@keyframes qyTilt{to{transform:rotate(9deg)}}\
+.qy--jannah{background:linear-gradient(180deg,#fff8e0 0,#d9f6e4 40%,#7fd6a8 70%,#2f8a5a 100%)}\
+.qy__gate{position:absolute;left:50%;bottom:16%;transform:translateX(-50%);width:min(52%,340px);height:62%;border:10px solid #e8c87e;border-bottom:0;border-radius:50% 50% 0 0/36% 36% 0 0;box-shadow:0 0 60px rgba(255,230,160,.9),inset 0 0 60px rgba(255,255,255,.9);background:radial-gradient(ellipse at 50% 60%,#ffffff,#fff3c4 40%,rgba(255,243,196,.2) 70%)}\
+.qy__gate b{position:absolute;left:50%;top:-24%;transform:translateX(-50%);white-space:nowrap;font:700 clamp(1.4rem,5vw,2.4rem) "Aref Ruqaa","Noto Naskh Arabic",serif;color:#8a5a14;text-shadow:0 0 14px #fff}\
+.qy__river{position:absolute;left:0;right:0;bottom:5%;height:9%;background:repeating-linear-gradient(90deg,#9fe0ff 0 30px,#c8f0ff 30px 60px);opacity:.85;animation:qyFlow 3s linear infinite}\
+@keyframes qyFlow{to{background-position:60px 0}}\
+.qy__tree{position:absolute;bottom:13%;font-size:clamp(2.2rem,7vw,3.6rem)}\
+.qy__walk{position:absolute;bottom:13%;left:6%;animation:qyWalk 5s ease-in-out forwards}\
+@keyframes qyWalk{to{left:44%}}\
+.qy__dua{max-width:700px;padding:0 6%;text-align:center;font:600 clamp(1.05rem,3.6vw,1.5rem)/1.55 Georgia,serif;color:#fff6d8}\
+.qy__dua b{display:block;font:700 clamp(1.6rem,5vw,2.4rem) "Aref Ruqaa","Noto Naskh Arabic",serif;color:#ffe7a3;margin-bottom:.6rem}\
+.qy__dua em{display:block;margin-top:.9rem;font-style:normal;font-size:.85em;color:#ffd6ea}\
+.qy__pair{display:flex;justify-content:center;gap:1rem;margin-top:.8rem;font-size:clamp(2rem,6vw,3rem)}\
+@media(prefers-reduced-motion:reduce){.qy__rays,.qy__crowd i,.qy__river,.qy__walk{animation:none}}';
+  function qiyamah(done) {
+    if (busy) return; busy = true;
+    if (!document.getElementById("qyCss")) { var s2 = document.createElement("style"); s2.id = "qyCss"; s2.textContent = QCSS; document.head.appendChild(s2); }
+    var crowd = ""; var faces = ["🧍", "🧍‍♀️", "🧕", "👳", "🧔", "👵", "👴", "🧑"]; for (var k = 0; k < 140; k++) crowd += "<i style=\"animation-delay:" + (k % 9) * 0.2 + "s\">" + faces[k % faces.length] + "</i>";
+    var box = document.createElement("div"); box.className = "ct"; box.setAttribute("role", "dialog"); box.setAttribute("aria-modal", "true"); box.setAttribute("aria-label", "Yawm al-Qiyamah");
+    var S = [
+      ["qy--light", '<div class="qy__rays"></div><div class="qy__crowd">' + crowd + "</div>", "📯 The Trumpet is blown by Allah's command. Every soul on earth is gathered on the Day of Judgement. يَوْمَ الْقِيَامَة"],
+      ["qy--light", '<div class="qy__rays"></div><div class="qy__scale"><div class="qy__post"></div><div class="qy__beam"></div><div class="qy__pan qy__pan--l">' + suit("🦂") + "<small>THE SCORPIOS</small></div><div class=\"qy__pan qy__pan--r\">" + suit("🦀", "👁️", true) + "<small>THE CRAB</small></div></div>", "⚖️ The scale of deeds is set up. Among the multitude, all eyes are on the scorpios and the crab… and the crab's good deeds weigh heavy."],
+      ["qy--jannah", '<div class="qy__gate"><b>جَنَّةُ الْفِرْدَوْس</b></div><div class="qy__river"></div><span class="qy__tree" style="left:4%">🌴</span><span class="qy__tree" style="right:5%">🌳</span><span class="qy__tree" style="right:22%">🍇</span><div class="qy__walk">' + suit("🦀", "👑", true) + "</div>", "🌿 The crab is seen walking towards the gate of Jannat al-Firdaus, with rivers flowing beneath it."],
+      ["ct--end", '<div class="qy__dua"><b>يَا رَبّ</b>“O Allah, make these scorpios my wives in Jannat al-Firdaus, as they were in the dunya.” 🤲<div class="qy__pair"><span>👸🦂</span><span>🦀👑</span><span>🦂👸</span></div><em>With Adeel Ahmed Rahman, the crab, in Jannat al-Firdaus, إن شاء الله</em></div>', ""],
+      ["ct--end", '<div class="qy__dua"><b>آمِين</b>Ameen. Only Allah knows who will enter Jannah. We ask Him for al-Firdaus, for ourselves and for everyone. And Allah knows best.</div>', ""]
+    ];
+    box.innerHTML = S.map(function (s3) { return '<div class="ct__scene ' + s3[0] + '">' + s3[1] + (s3[2] ? '<p class="ct__cap">' + s3[2] + "</p>" : "") + "</div>"; }).join("") +
+      '<button type="button" class="ct__skip">' + tx().skip + ' ✕</button><button type="button" class="ct__back">' + tx().back + "</button>";
+    document.body.appendChild(box);
+    var els = box.querySelectorAll(".ct__scene"), i = -1, timer = 0, back = box.querySelector(".ct__back"), DUR = [5500, 6500, 6000, 7500, 6500];
+    function finish() { clearTimeout(timer); box.remove(); busy = false; document.removeEventListener("keydown", onKey); if (done) done(); }
+    function next() { if (i >= 0) els[i].classList.remove("on"); i++; if (i >= els.length) { finish(); return; } els[i].classList.add("on"); if (i === els.length - 1) { back.classList.add("on"); back.focus(); } timer = setTimeout(next, DUR[i]); }
+    function onKey(e) { if (e.key === "Escape") finish(); }
+    box.querySelector(".ct__skip").addEventListener("click", finish); back.addEventListener("click", finish); document.addEventListener("keydown", onKey); box.querySelector(".ct__skip").focus(); next();
+  }
+  window.coachQiyamah = { play: qiyamah };
   window.coachWhisper = whisper;
   window.coachBeg = function (i) { var l = begLines(); return l[(i == null ? Math.floor(Math.random() * l.length) : i) % l.length]; };
   window.coachBegCount = function () { return begLines().length; };

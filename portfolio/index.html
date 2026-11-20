@@ -845,6 +845,8 @@ html{scroll-padding-top:70px}
 .g3__poem span.new{opacity:1;color:#fff6d8;animation:poemIn 1s ease both;text-shadow:0 2px 6px #000,0 0 22px rgba(255,220,140,.95)}
 @keyframes poemIn{from{opacity:0;transform:translateY(8px);filter:blur(4px)}}
 @media(max-width:700px){.g3__poem{width:92%;bottom:auto;top:150px}.g3__poem span{font-size:.85rem}}
+.g3__pal{display:block;font:800 .7rem system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#5a2a9a;margin-bottom:.2rem}
+.g3__pb{color:#1a6a4a;font-weight:800!important}
 .g3__flash{position:absolute;inset:0;z-index:2;pointer-events:none;background:#eaf4ff;opacity:0}
 .g3__flash.on{animation:g3flash .8s steps(1) forwards}
 @keyframes g3flash{0%{opacity:.95}8%{opacity:.05}16%{opacity:.85}26%{opacity:.1}36%{opacity:.7}50%{opacity:0}62%{opacity:.45}74%{opacity:0}84%{opacity:.25}100%{opacity:0}}
@@ -1611,7 +1613,7 @@ html{scroll-padding-top:70px}
 <script>
 (function () {
   var box = document.getElementById("g3"); if (!box) return;
-  var go = function () { import("./coach/game3d.js?v=42").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
+  var go = function () { import("./coach/game3d.js?v=43").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
   if (!("IntersectionObserver" in window)) { go(); return; }
   var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io.disconnect(); go(); } }, { rootMargin: "300px" });
   io.observe(box);
@@ -1649,7 +1651,7 @@ html{scroll-padding-top:70px}
 <script src="coach/reminder.js?v=4"></script>
 <script src="coach/numbers.js?v=3"></script>
 <script src="coach/eye.js?v=1"></script>
-<script src="coach/court.js?v=8" defer></script>
+<script src="coach/court.js?v=9" defer></script>
 <script src="coach/home.js?v=25"></script>
 <script>
 (function(){
