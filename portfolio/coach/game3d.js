@@ -1339,6 +1339,36 @@ export function start(root) {
       dmg("🤲 +40", pos.clone().add(new THREE.Vector3(0, 2.4, 0)), "miss"); crabSay("JazakAllahu khayran meri jaan 🤍"); };
     ov.querySelector("button").addEventListener("click", close); setTimeout(close, 20000); }
 
+  /* ---------- "The Eagle" (Alfred, Lord Tennyson, 1851, public domain) and the diving flock ---------- */
+  const POEM = ["He clasps the crag with crooked hands;", "Close to the sun in lonely lands,", "Ring'd with the azure world, he stands.", "The wrinkled sea beneath him crawls;", "He watches from his mountain walls,", "And like a thunderbolt he falls."];
+  const poemEl = document.createElement("div"); poemEl.className = "g3__poem"; root.appendChild(poemEl);
+  const wingIdx = eagle.userData.wings.map(w => eagle.children.indexOf(w));
+  const flockEye = new THREE.MeshBasicMaterial({ color: 0xffffff }), flockIris = new THREE.MeshBasicMaterial({ color: 0x8a2be2 }), rageGlow = glowTex("rgba(255,30,10,0.95)", "rgba(255,30,10,0)");
+  const flock = Array.from({ length: small ? 10 : 22 }, (_, i) => {
+    const e = eagle.clone(true); e.visible = false; e.scale.setScalar(1.15 + Math.random() * 0.35); scene.add(e);
+    const wings = wingIdx.map(k => e.children[k]); wings.forEach(w => { w.userData = { tip: w.children[w.children.length - 1] }; });
+    const kind = i % 3;   // 0 plain, 1 enraged, 2 with an eye on the forehead
+    if (kind === 1) { [-1, 1].forEach(sd => { const g = new THREE.Sprite(new THREE.SpriteMaterial({ map: rageGlow, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending })); g.scale.set(0.7, 0.4, 1); g.position.set(sd * 0.3, 0.74, 2.3); e.add(g); }); }
+    if (kind === 2) { const eye = new THREE.Mesh(new THREE.SphereGeometry(0.2, 14, 10), flockEye); eye.scale.z = 0.5; eye.position.set(0, 1.05, 2.15); e.add(eye); const iris = new THREE.Mesh(new THREE.SphereGeometry(0.1, 12, 8), flockIris); iris.position.set(0, 1.05, 2.25); e.add(iris);
+      const pupil = new THREE.Mesh(new THREE.SphereGeometry(0.045, 8, 6), bikeDark); pupil.position.set(0, 1.05, 2.31); e.add(pupil); }
+    return { e, wings, kind, phase: "idle", t: 0, from: new THREE.Vector3(), to: new THREE.Vector3(), a: Math.random() * 6.28, r: 14 + Math.random() * 26, h: 22 + Math.random() * 22, sp: (0.25 + Math.random() * 0.3) * (Math.random() < 0.5 ? -1 : 1), cz: -15 - Math.random() * 25 };
+  });
+  const eagleHoles = [];
+  const craterMat = new THREE.MeshBasicMaterial({ color: 0x050302, transparent: true, opacity: 0.9, depthWrite: false }), rimMat = new THREE.MeshStandardMaterial({ color: 0x4a3420, roughness: 1 });
+  function crater(x, z) {
+    const g = new THREE.Group(); const hole = new THREE.Mesh(new THREE.CircleGeometry(1.6, 24), craterMat.clone()); hole.rotation.x = -Math.PI / 2; hole.position.y = 0.04; g.add(hole);
+    const rim = new THREE.Mesh(new THREE.TorusGeometry(1.75, 0.32, 8, 24), rimMat); rim.rotation.x = Math.PI / 2; rim.scale.z = 0.5; rim.position.y = 0.06; g.add(rim);
+    const rocks = []; for (let k = 0; k < 7; k++) { const r = new THREE.Mesh(new THREE.DodecahedronGeometry(0.18 + Math.random() * 0.2, 0), rimMat); r.position.set(0, 0.3, 0); r.userData.v = new THREE.Vector3((Math.random() - 0.5) * 9, 6 + Math.random() * 5, (Math.random() - 0.5) * 9); g.add(r); rocks.push(r); }
+    const dust = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex("rgba(200,170,130,0.8)", "rgba(200,170,130,0)"), transparent: true, depthWrite: false })); dust.scale.setScalar(6); dust.position.y = 1.2; g.add(dust);
+    g.position.set(x, 0, z); g.userData = { life: 28, rocks, dust, hole }; scene.add(g); eagleHoles.push(g); if (eagleHoles.length > 14) scene.remove(eagleHoles.shift());
+    st.shake = Math.max(st.shake, 0.8); ham.qt = 1; quake.position.set(x, 0.08, z);
+    if (Math.hypot(x - pos.x, z - pos.z) < 4) { st.kb = Math.max(st.kb, 2.5); st.stun = Math.max(st.stun, 0.6); dmg("🦅💥", pos.clone().add(new THREE.Vector3(0, 2, 0)), "crab"); humiliate(0.8); }
+  }
+  const poem = { on: false, i: 0, t: 0, cool: 0, soar: 0 };
+  function recite(line) { if (!soundOn || !window.speechSynthesis) return; try { const u = new SpeechSynthesisUtterance(line); u.rate = 0.85; u.pitch = 0.7; speechSynthesis.speak(u); } catch (e) {} }
+  function startPoem() { poem.on = true; poem.i = 0; poem.t = 0.4; poem.cool = 50; poemEl.innerHTML = '<small>The Eagle · Alfred, Lord Tennyson</small>'; poemEl.classList.add("on"); }
+  function diveBird(f) { f.phase = "dive"; f.t = 0; f.e.visible = true; f.from.set((Math.random() - 0.5) * 70, 70 + Math.random() * 20, -20 - Math.random() * 40); f.to.set((Math.random() - 0.5) * 22, 0, 8 - Math.random() * 38); if (Math.random() < 0.25) f.to.set(pos.x + (Math.random() - 0.5) * 3, 0, pos.z - 1); }
+
   /* ---------- game state ---------- */
   const st = { stun: 0, round: 0, hp: 100, crabScale: 1, wealth: 1000000, level: 0, playing: false, sting: 0, cool: 0, kb: 0, crabT: 1.5, crabTarget: 0, lunge: 0, flinch: 0, shake: 0 };
   const pos = new THREE.Vector3(0, 0, 8);
@@ -1673,7 +1703,27 @@ export function start(root) {
       else { u.wings.forEach((w, k) => w.rotation.z = (k ? -1 : 1) * 0.15); c.rotation.x = Math.max(0, Math.sin(time * 1.5 + u.ph)) * 0.35; } });
     if (Math.random() < dt * 0.12) caw();
     // the eagle arrives from the sky, thunderbolts crack around it
-    if (!eg.on && !reduce) { eg.next -= dt; if (eg.next <= 0) { eg.on = true; eg.t = 0; eg.side = Math.random() < 0.5 ? 1 : -1; eagle.visible = true; lightning(); say(tx().eagle, "", 2200); } }
+    if (!eg.on && !reduce) { eg.next -= dt; if (eg.next <= 0) { eg.on = true; eg.t = 0; eg.side = Math.random() < 0.5 ? 1 : -1; eagle.visible = true; lightning(); say(tx().eagle, "", 2200); if (poem.cool <= 0 && !poem.on) startPoem(); } }
+    // the poem, line by line; with each line more eagles dive into the earth
+    poem.cool -= dt;
+    if (poem.on) { poem.t -= dt;
+      if (poem.t <= 0 && poem.i < POEM.length) { const line = POEM[poem.i++]; poemEl.innerHTML = '<small>The Eagle · Alfred, Lord Tennyson</small>' + POEM.slice(0, poem.i).map((l2, k) => '<span' + (k === poem.i - 1 ? ' class="new"' : '') + '>' + l2 + '</span>').join(""); recite(line); poem.t = 2.2;
+        const idle = flock.filter(f => f.phase === "idle"); for (let k = 0; k < Math.ceil(flock.length / POEM.length) && idle.length; k++) diveBird(idle.splice(Math.floor(Math.random() * idle.length), 1)[0]);
+        if (poem.i === POEM.length) { lightning(); setTimeout(lightning, 300); setTimeout(lightning, 700); } }
+      if (poem.i >= POEM.length && poem.t <= -3) { poem.on = false; poemEl.classList.remove("on"); poem.soar = 22; } }
+    if (poem.soar > 0) { poem.soar -= dt; if (Math.random() < dt * 0.3) lightning(); }
+    flock.forEach(f => { const e = f.e;
+      if (f.phase === "dive") { f.t += dt * 0.75; const k = Math.min(1, f.t), kk = k * k;
+        const prev = e.position.clone(); e.position.lerpVectors(f.from, f.to, kk); e.lookAt(e.position.clone().add(e.position.clone().sub(prev).normalize())); f.wings.forEach((w, j) => w.rotation.z = (j ? -1 : 1) * -0.9);   // wings folded back
+        if (k >= 1) { crater(f.to.x, f.to.z); f.phase = "rise"; f.t = 0; } }
+      else if (f.phase === "rise") { f.t += dt; e.position.y += dt * (10 + f.t * 8); e.rotation.set(-1.1, e.rotation.y, 0); f.wings.forEach((w, j) => w.rotation.z = (j ? -1 : 1) * Math.sin(time * 9) * 0.8);
+        if (e.position.y >= f.h) { f.phase = "soar"; f.life = 18 + Math.random() * 8; } }
+      else if (f.phase === "soar") { f.life -= dt; f.a += f.sp * dt; const tx3 = Math.cos(f.a) * f.r, tz3 = f.cz + Math.sin(f.a) * f.r * 0.6;
+        e.position.x += (tx3 - e.position.x) * Math.min(1, dt * 1.5); e.position.z += (tz3 - e.position.z) * Math.min(1, dt * 1.5); e.position.y += (f.h + Math.sin(time + f.a) * 3 - e.position.y) * Math.min(1, dt);
+        e.rotation.set(0, Math.atan2(-Math.sin(f.a) * f.sp, Math.cos(f.a) * f.sp * 0.6), -Math.sign(f.sp) * 0.35); f.wings.forEach((w, j) => { const fl = Math.sin(time * 5 + f.a) * 0.55; w.rotation.z = (j ? -1 : 1) * fl; });
+        if (f.life <= 0) { e.position.y += dt * 30; if (e.position.y > 120) { f.phase = "idle"; e.visible = false; } } } });
+    eagleHoles.forEach((c, i) => { const u = c.userData; u.life -= dt; u.rocks.forEach(r => { if (r.position.y > 0.1 || r.userData.v.y > 0) { r.userData.v.y -= 22 * dt; r.position.addScaledVector(r.userData.v, dt); if (r.position.y < 0.1) { r.position.y = 0.1; r.userData.v.set(0, 0, 0); } } });
+      u.dust.material.opacity = Math.max(0, u.dust.material.opacity - dt * 0.4); if (u.life < 4) u.hole.material.opacity = 0.9 * u.life / 4; if (u.life <= 0) { scene.remove(c); eagleHoles.splice(i, 1); } });
     if (eg.on) { eg.t += dt; const T = 9, k = eg.t / T;
       const x = eg.side * (34 - k * 68), y = 30 - Math.sin(Math.min(1, k * 1.8) * Math.PI / 2) * 18 + Math.max(0, k - 0.7) * 60, z = -18 + Math.sin(k * Math.PI) * 4;
       const prev = eagle.position.clone(); eagle.position.set(x, y, z); if (eg.t > 0.05) eagle.lookAt(eagle.position.clone().add(eagle.position.clone().sub(prev))); eagle.rotation.z += -eg.side * 0.25;

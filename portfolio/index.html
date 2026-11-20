@@ -838,6 +838,13 @@ html{scroll-padding-top:70px}
 .g3__pa{color:#8a1a5a}
 .g3__pcard button{margin-top:.5rem;border:0;border-radius:999px;padding:.6rem 1.4rem;background:linear-gradient(135deg,#7a3fd0,#3a2a8a);color:#fff;font:800 1rem system-ui,sans-serif;cursor:pointer}
 @media(prefers-reduced-motion:reduce){.g3__kind .g3__mv::after,.g3__kind .g3__mv--pray{animation:none}}
+.g3__poem{position:absolute;left:50%;bottom:13%;z-index:6;transform:translateX(-50%);width:min(620px,70%);text-align:center;pointer-events:none;opacity:0;transition:opacity .8s}
+.g3__poem.on{opacity:1}
+.g3__poem small{display:block;font:800 .65rem system-ui,sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#ffd77a;margin-bottom:.3rem;text-shadow:0 0 8px #000}
+.g3__poem span{display:block;font:italic 600 clamp(.95rem,2.6vw,1.35rem)/1.4 Georgia,serif;color:#f6efe0;text-shadow:0 2px 6px #000,0 0 14px rgba(160,200,255,.6);opacity:.75}
+.g3__poem span.new{opacity:1;color:#fff6d8;animation:poemIn 1s ease both;text-shadow:0 2px 6px #000,0 0 22px rgba(255,220,140,.95)}
+@keyframes poemIn{from{opacity:0;transform:translateY(8px);filter:blur(4px)}}
+@media(max-width:700px){.g3__poem{width:92%;bottom:auto;top:150px}.g3__poem span{font-size:.85rem}}
 .g3__flash{position:absolute;inset:0;z-index:2;pointer-events:none;background:#eaf4ff;opacity:0}
 .g3__flash.on{animation:g3flash .8s steps(1) forwards}
 @keyframes g3flash{0%{opacity:.95}8%{opacity:.05}16%{opacity:.85}26%{opacity:.1}36%{opacity:.7}50%{opacity:0}62%{opacity:.45}74%{opacity:0}84%{opacity:.25}100%{opacity:0}}
@@ -1604,7 +1611,7 @@ html{scroll-padding-top:70px}
 <script>
 (function () {
   var box = document.getElementById("g3"); if (!box) return;
-  var go = function () { import("./coach/game3d.js?v=41").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
+  var go = function () { import("./coach/game3d.js?v=42").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
   if (!("IntersectionObserver" in window)) { go(); return; }
   var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io.disconnect(); go(); } }, { rootMargin: "300px" });
   io.observe(box);
