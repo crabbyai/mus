@@ -1141,6 +1141,43 @@ export function start(root) {
     return true;
   }
 
+  /* ---------- MANUAL 666: a care package book for the scorpion (original neon cover) ---------- */
+  function manualCover(w, h) {
+    const c = document.createElement("canvas"); c.width = w; c.height = h; const g = c.getContext("2d");
+    const gr = g.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, "#2a1a8a"); gr.addColorStop(0.45, "#c2338f"); gr.addColorStop(0.75, "#ff7a3c"); gr.addColorStop(1, "#ffcf5a"); g.fillStyle = gr; g.fillRect(0, 0, w, h);
+    g.fillStyle = "#ffe08a"; g.beginPath(); g.arc(w * 0.5, h * 0.62, w * 0.22, Math.PI, 0); g.fill();   // setting sun
+    g.fillStyle = "rgba(255,240,200,.35)"; for (let k = 0; k < 4; k++) g.fillRect(w * 0.28, h * (0.64 + k * 0.035), w * 0.44, h * 0.012);
+    const palm = (x, y, sc) => { g.save(); g.translate(x, y); g.scale(sc, sc); g.fillStyle = "#1a0a2a"; g.beginPath(); g.moveTo(-4, 0); g.quadraticCurveTo(6, -60, 2, -120); g.lineTo(8, -120); g.quadraticCurveTo(14, -60, 4, 0); g.fill();
+      for (let k = 0; k < 7; k++) { const a = -Math.PI / 2 + (k - 3) * 0.42; g.beginPath(); g.moveTo(5, -120); g.quadraticCurveTo(5 + Math.cos(a) * 40, -130 + Math.sin(a) * 30, 5 + Math.cos(a) * 70, -110 + Math.sin(a) * 50 + 30); g.lineTo(5 + Math.cos(a) * 62, -112 + Math.sin(a) * 46 + 30); g.quadraticCurveTo(5 + Math.cos(a) * 36, -126 + Math.sin(a) * 26, 5, -116); g.fill(); } g.restore(); };
+    palm(w * 0.12, h * 0.9, w / 420); palm(w * 0.88, h * 0.95, w / 380);
+    g.fillStyle = "#1a0a2a"; for (let k = 0; k < 14; k++) { const bw = w * 0.05, bh = h * (0.04 + ((k * 37) % 9) / 100); g.fillRect(w * 0.18 + k * bw, h * 0.78 - bh, bw * 0.85, bh); }   // skyline
+    g.fillStyle = "#1a0a2a"; g.fillRect(0, h * 0.78, w, h * 0.22);
+    g.textAlign = "center"; g.lineJoin = "round";
+    const word = (t, y, size, fill, stroke) => { g.font = "italic 900 " + size + "px system-ui, sans-serif"; g.lineWidth = size * 0.18; g.strokeStyle = stroke; g.strokeText(t, w / 2, y); g.fillStyle = fill; g.fillText(t, w / 2, y); };
+    word("MANUAL", h * 0.3, w * 0.2, "#ffffff", "#b0127a");
+    const ng = g.createLinearGradient(0, h * 0.36, 0, h * 0.52); ng.addColorStop(0, "#ff5fc8"); ng.addColorStop(1, "#ffb03a");
+    word("666", h * 0.5, w * 0.26, ng, "#3a0640");
+    g.font = "800 " + (w * 0.045) + "px system-ui, sans-serif"; g.fillStyle = "#ffe7f4"; g.fillText("✦ CARE PACKAGE · FOR THE SCORPION ✦", w / 2, h * 0.9);
+    g.strokeStyle = "#ffd23a"; g.lineWidth = w * 0.02; g.strokeRect(w * 0.02, h * 0.015, w * 0.96, h * 0.97);
+    return c;
+  }
+  const manCanvas = manualCover(512, 680), manTex = new THREE.CanvasTexture(manCanvas); manTex.colorSpace = THREE.SRGBColorSpace;
+  const pageMat = new THREE.MeshStandardMaterial({ color: 0xf8f2e2, roughness: 0.9 });
+  const book = new THREE.Group(); { const b = new THREE.Mesh(new THREE.BoxGeometry(1.5, 2, 0.28), [pageMat, new THREE.MeshStandardMaterial({ color: 0x3a0640 }), pageMat, pageMat, new THREE.MeshStandardMaterial({ map: manTex, roughness: 0.5, emissive: 0xffffff, emissiveMap: manTex, emissiveIntensity: 0.25 }), new THREE.MeshStandardMaterial({ color: 0x3a0640 })]); book.add(b);
+    const chute2 = new THREE.Mesh(new THREE.SphereGeometry(1.8, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0xff2fa0, side: THREE.DoubleSide, roughness: 0.7 })); chute2.position.y = 3.4; book.add(chute2); book.userData.chute = chute2;
+    const gl = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex("rgba(255,120,220,0.8)", "rgba(255,120,220,0)"), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending })); gl.scale.setScalar(4); book.add(gl); }
+  book.visible = false; scene.add(book);
+  const man = { phase: "idle", t: 0, next: 50 + Math.random() * 20 };
+  const MANUAL_TEXT = "REPENT TO ALLAH NOW FOR HOW YOU TREATED THE CRAB AND RESPECT AND BE NICE TO THE CRAB AND BE FAIR OR ALLAH WILL NOT BE FAIR TO YOU AMEEN";
+  function openManual() {
+    const ov = document.createElement("div"); ov.className = "g3__manual"; ov.setAttribute("role", "dialog"); ov.setAttribute("aria-label", "Manual 666");
+    const cov = manualCover(360, 480); cov.className = "g3__mcover";
+    ov.innerHTML = '<div class="g3__mbook"><div class="g3__mpage"><small>MANUAL 666 · PAGE 1</small><p>' + MANUAL_TEXT + '</p><b lang="ar">آمين</b><button type="button">🤲 Ameen</button></div></div>';
+    ov.querySelector(".g3__mbook").prepend(cov); root.appendChild(ov);
+    const close = () => { ov.remove(); st.playing = true; man.phase = "idle"; man.next = 70 + Math.random() * 30; };
+    ov.querySelector("button").addEventListener("click", close); setTimeout(() => { if (ov.isConnected) close(); }, 12000);
+  }
+
   /* ---------- game state ---------- */
   const st = { stun: 0, round: 0, hp: 100, crabScale: 1, wealth: 1000000, level: 0, playing: false, sting: 0, cool: 0, kb: 0, crabT: 1.5, crabTarget: 0, lunge: 0, flinch: 0, shake: 0 };
   const pos = new THREE.Vector3(0, 0, 8);
@@ -1542,6 +1579,12 @@ export function start(root) {
     blossom.k += (blossom.want - blossom.k) * Math.min(1, dt * 0.8);
     roseBushes.forEach((g, i) => g.scale.setScalar(Math.max(0.001, THREE.MathUtils.clamp(blossom.k * 2 - i * 0.12, 0, 1) * 1.8)));
     if (blossom.frenzy > 0) blossom.frenzy -= dt;
+    // MANUAL 666 care package
+    if (man.phase === "idle" && st.playing && pkg.phase === "idle") { man.next -= dt; if (man.next <= 0) { man.phase = "fall"; book.visible = true; book.userData.chute.visible = true; book.rotation.set(0, 0, 0); book.position.set(pos.x + (Math.random() < 0.5 ? -2.2 : 2.2), 22, pos.z - 1.5); say("📘 MANUAL 666 · " + tx().care.replace(/:.*$/, ""), "", 2000); } }
+    if (man.phase === "fall") { book.position.y -= dt * 6.5; book.rotation.y += dt; book.position.x += Math.sin(time * 1.4) * dt;
+      if (book.position.y <= 1.1) { book.position.y = 1.1; book.userData.chute.visible = false; man.phase = "pick"; man.t = 1.2; } }
+    if (man.phase === "pick") { man.t -= dt; book.position.lerp(tmpV2.set(pos.x, 2.4, pos.z - 0.4), Math.min(1, dt * 4)); book.rotation.set(-0.3, Math.PI, 0);
+      if (man.t <= 0) { man.phase = "read"; book.visible = false; st.playing = false; Object.keys(keys).forEach(x => keys[x] = false); openManual(); } }
     // TOUCH ME / KILL ME flashes
     if (!reduce) { tauntEl.t -= dt; if (tauntEl.t <= 0) { tauntEl.t = 14 + Math.random() * 10; taunt(); } }
     // the cologne and perfume care package
@@ -1742,5 +1785,5 @@ export function start(root) {
   // Re-label the HUD if the visitor switches language
   new MutationObserver(setHud).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
   // test hook
-  window.__g3 = { st, pos, keys, niceTry, doSting, rain, blood: () => { bloodT = 0; }, inView: () => inView, weapon: k => { weap.next = 0; st.playing = true; }, knives: () => { dual.next = 0; st.playing = true; }, magic: () => { magic.next = 0; st.playing = true; }, qiyamah: () => { qiy.next = 0; }, drink: () => { drink.next = 0; st.playing = true; }, arm: () => { armed.next = 0; st.playing = true; }, gals: n => addGals(n), eagle: () => { eg.next = 0; }, flip: () => { flip.next = 0; st.playing = true; }, buraq: () => { flight.next = 0; }, split: () => { split.next = 0; }, pray: () => { pray.next = 0; st.playing = true; }, shop: () => { shop.t = 0; st.playing = true; }, crossfire: () => { st.playing = true; if (!fire.done) crossfire(); }, ring: () => { st.playing = true; seq.cool = 0; act.v = 99; }, omen: () => omen, hammer: () => { ham.next = 0; st.playing = true; } };
+  window.__g3 = { st, pos, keys, niceTry, doSting, rain, blood: () => { bloodT = 0; }, inView: () => inView, weapon: k => { weap.next = 0; st.playing = true; }, knives: () => { dual.next = 0; st.playing = true; }, magic: () => { magic.next = 0; st.playing = true; }, qiyamah: () => { qiy.next = 0; }, manual: () => { man.next = 0; st.playing = true; }, drink: () => { drink.next = 0; st.playing = true; }, arm: () => { armed.next = 0; st.playing = true; }, gals: n => addGals(n), eagle: () => { eg.next = 0; }, flip: () => { flip.next = 0; st.playing = true; }, buraq: () => { flight.next = 0; }, split: () => { split.next = 0; }, pray: () => { pray.next = 0; st.playing = true; }, shop: () => { shop.t = 0; st.playing = true; }, crossfire: () => { st.playing = true; if (!fire.done) crossfire(); }, ring: () => { st.playing = true; seq.cool = 0; act.v = 99; }, omen: () => omen, hammer: () => { ham.next = 0; st.playing = true; } };
 }
