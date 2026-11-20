@@ -675,6 +675,21 @@ html[dir=rtl] .road{direction:ltr}
 .g3__taunt{position:absolute;z-index:5;pointer-events:none;transform:translate(-50%,-50%) rotate(var(--r,0deg));font:italic 900 clamp(2rem,7vw,4.4rem) system-ui,sans-serif;letter-spacing:.06em;color:#ff2fa0;text-shadow:0 0 12px #ff2fa0,0 0 34px #ff2fa0,3px 0 #20e6d8,-3px 0 #ffd23a;white-space:nowrap;animation:g3taunt 1.6s steps(1) forwards}
 @keyframes g3taunt{0%{opacity:0}6%{opacity:1}14%{opacity:.15}20%{opacity:1;transform:translate(-48%,-52%) rotate(var(--r,0deg)) skewX(-10deg)}34%{opacity:.3}42%{opacity:1}64%{opacity:.6}72%{opacity:1}100%{opacity:0}}
 @media(prefers-reduced-motion:reduce){.g3__taunt{display:none}}
+.g3__moves{display:flex;flex-direction:column;align-items:flex-end;gap:10px;margin-bottom:64px;pointer-events:none}
+.g3__moves .g3__sting{margin-bottom:0}
+.g3__mini{display:flex;gap:8px;pointer-events:none}
+.g3__mv{pointer-events:auto;width:76px;height:76px;border-radius:50%;border:2px solid rgba(255,255,255,.55);color:#fff;font-size:1.7rem;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;touch-action:none;-webkit-user-select:none;user-select:none;box-shadow:0 6px 18px rgba(0,0,0,.45);transition:transform .1s}
+.g3__mv small{font:800 .6rem system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase}
+.g3__mv:active{transform:scale(.9)}
+.g3__mv--pinch{background:radial-gradient(circle at 40% 35%,#b98cff,#5a1fa0)}
+.g3__mv--poison{background:radial-gradient(circle at 40% 35%,#9cff7a,#1d7a10)}
+.g3__mv--repent{background:radial-gradient(circle at 40% 35%,#ffe7a3,#a8752c);color:#1a1206}
+.g3__mv--repent.hot{animation:repentpulse .7s ease-in-out infinite alternate;box-shadow:0 0 0 4px rgba(255,215,120,.6),0 0 30px rgba(255,215,120,.9)}
+@keyframes repentpulse{to{transform:scale(1.14)}}
+.g3__you em i{background:linear-gradient(90deg,#b98cff,#7a2fd0)!important}
+.g3--sick .g3__you em i{background:linear-gradient(90deg,#9cff7a,#1d7a10)!important}
+.g3__dmg--poison{color:#7dff5a;font-size:clamp(1.4rem,3.6vw,2.1rem);text-shadow:0 2px 0 #0a3a00,0 0 14px rgba(90,255,60,.9)}
+@media(max-width:700px){.g3__mv{width:62px;height:62px;font-size:1.4rem}.g3__moves{margin-bottom:58px}}
 .g3__flash{position:absolute;inset:0;z-index:2;pointer-events:none;background:#eaf4ff;opacity:0}
 .g3__flash.on{animation:g3flash .45s steps(1) forwards}
 @keyframes g3flash{0%{opacity:.75}15%{opacity:.1}30%{opacity:.6}50%{opacity:0}65%{opacity:.25}100%{opacity:0}}
@@ -1410,6 +1425,7 @@ html[dir=rtl] .road{direction:ltr}
       <div class="g3__hud">
         <span data-g="round">Round 1</span>
         <span class="g3__hp"><span data-t="hp">Crab</span><em data-g="hp"><i></i></em></span>
+        <span class="g3__hp g3__you"><span data-t="you">You</span><em data-g="you"><i></i></em></span>
         <span class="g3__wealth" data-g="wealth">Crab's wealth: $1,000,000</span>
         <span data-g="mansion">Mansion: Level 1</span>
         <span class="g3__heat" data-g="heat">HEAT ☆☆☆☆☆</span>
@@ -1420,17 +1436,17 @@ html[dir=rtl] .road{direction:ltr}
       <div class="g3__joy" aria-hidden="true"><i></i></div>
       <div class="g3__pad">
         <span></span>
-        <button type="button" class="g3__sting" data-k="sting" aria-label="Sting">🦂<small data-t="sting">Sting</small></button>
+        <div class="g3__moves"><div class="g3__mini"><button type="button" class="g3__mv g3__mv--pinch" data-k="pinch" aria-label="Pinch">✂️<small data-t="pinch">Pinch</small></button><button type="button" class="g3__mv g3__mv--poison" data-k="poison" aria-label="Poison">🧪<small data-t="poisonB">Poison</small></button><button type="button" class="g3__mv g3__mv--repent" data-k="repent" aria-label="Repent">🤲<small data-t="repent">Repent</small></button></div><button type="button" class="g3__sting" data-k="sting" aria-label="Sting">🦂<small data-t="sting">Sting</small></button></div>
       </div>
       <div class="g3__nogl" data-i18n="g3.nogl">This 3D game needs WebGL, which your browser doesn't have turned on. Try another browser.</div>
     </div>
-    <p class="g3__keys" data-i18n="g3.keys">Drag anywhere on the game to move (or WASD). Tap the screen, Space or the 🦂 button to sting. لا حول ولا قوة إلا بالله</p>
+    <p class="g3__keys" data-i18n="g3.keys">Drag anywhere on the game to move (or WASD). Tap the screen, Space or the 🦂 button to sting. Pinch ✂️ (E), Poison 🧪 (P), Repent 🤲 (R). لا حول ولا قوة إلا بالله</p>
   </div>
 </section>
 <script>
 (function () {
   var box = document.getElementById("g3"); if (!box) return;
-  var go = function () { import("./coach/game3d.js?v=30").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
+  var go = function () { import("./coach/game3d.js?v=31").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
   if (!("IntersectionObserver" in window)) { go(); return; }
   var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io.disconnect(); go(); } }, { rootMargin: "300px" });
   io.observe(box);
