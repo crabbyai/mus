@@ -742,6 +742,29 @@ html[dir=rtl] .road{direction:ltr}
 .g3__mv--repent.hot{color:#000!important}
 .g3__sting{background:radial-gradient(circle at 50% 30%,#2e2e32,#000)!important;border:4px solid #fff!important;box-shadow:0 0 0 6px #000,0 0 0 8px #fff,0 12px 30px rgba(0,0,0,.6)!important;color:#fff!important}
 @media(max-width:700px){.g3__mv{width:68px!important;height:68px!important}.g3__mv svg{width:28px;height:28px}}
+
+.sites .nav-play{background:linear-gradient(135deg,#bfe9ff,#7cc8ff);color:#14104a!important;font-weight:800;box-shadow:0 0 14px rgba(170,90,255,.6);animation:navPlay 2s ease-in-out infinite alternate}
+@keyframes navPlay{to{box-shadow:0 0 22px rgba(170,90,255,.95),0 0 0 2px rgba(255,255,255,.7)}}
+html{scroll-padding-top:70px}
+/* ---- diamond-shaped attack buttons ---- */
+.g3__mv,.g3__sting{clip-path:none!important;border-radius:14px!important;transform:rotate(45deg)}
+.g3__mv{width:62px!important;height:62px!important;background:#000!important;border:3px solid #fff!important;margin:10px}
+.g3__mv::before{display:none}
+.g3__mv>*,.g3__sting>*{transform:rotate(-45deg)}
+.g3__mv--poison{background:radial-gradient(circle at 40% 40%,#4ee03a,#0d5a08)!important;border-color:#c8ffb0!important}
+.g3__mv--repent.hot{background:#fff!important;color:#000!important;animation:repentD .7s ease-in-out infinite alternate}
+@keyframes repentD{from{transform:rotate(45deg) scale(1)}to{transform:rotate(45deg) scale(1.14)}}
+.g3__mv:active{transform:rotate(45deg) scale(.9)}
+.g3__sting{width:112px!important;height:112px!important;border-radius:20px!important;margin:18px 18px 0}
+.g3__sting:active{transform:rotate(45deg) scale(.92)}
+.g3__mv small,.g3__sting small{display:block}
+.g3__mv svg{width:26px;height:26px}
+.g3__mini{gap:14px}
+.g3__mini .g3__mv{display:flex;flex-direction:column;align-items:center;justify-content:center}
+.g3__mv>svg,.g3__mv>small,.g3__mv>.g3__emo{transform:rotate(-45deg)}
+.g3__moves{margin-bottom:96px!important;margin-right:10px}
+.g3__mv small{font-size:.5rem}
+@media(max-width:700px){.g3__mv{width:40px!important;height:40px!important;margin:6px}.g3__mv svg{width:18px;height:18px}.g3__mv small{display:none!important}.g3__mv .g3__emo{font-size:1rem}.g3__sting{width:70px!important;height:70px!important;margin:12px 12px 0;font-size:1.7rem!important}.g3__sting small{font-size:.55rem!important}.g3__mini{gap:6px}.g3__moves{margin-bottom:76px!important;margin-right:4px}}
 .g3__flash{position:absolute;inset:0;z-index:2;pointer-events:none;background:#eaf4ff;opacity:0}
 .g3__flash.on{animation:g3flash .45s steps(1) forwards}
 @keyframes g3flash{0%{opacity:.75}15%{opacity:.1}30%{opacity:.6}50%{opacity:0}65%{opacity:.25}100%{opacity:0}}
@@ -887,7 +910,7 @@ html[dir=rtl] .road{direction:ltr}
       <p class="welcome__hire-p" data-i18n="w.hire.p">This is my consciousness coach page, only for manifesting your dreams and desires with dua. But I also act, sell houses… and mangoes 🥭.</p>
       <a class="hire hire--re" href="realtor/"><span class="hire__i" aria-hidden="true">🏡</span><span><b data-i18n="w.re">Manifested your dream home?</b><small data-i18n="w.re.s">Let me sell it to you. Visit my realtor page →</small></span></a>
       <a class="hire hire--ac" href="actor/"><span class="hire__i" aria-hidden="true">🎬</span><span><b data-i18n="w.ac">Manifested your next big project?</b><small data-i18n="w.ac.s">Cast me in it. Visit my actor page →</small></span></a>
-      <a class="hire hire--mg" href="#mango"><span class="hire__i" aria-hidden="true">🥭</span><span><b data-i18n="w.mg">And yes, the mangoes</b><small data-i18n="w.mg.s">Claim your free Chaunsa Multani mango →</small></span></a>
+      <a class="hire hire--mg" href="https://wa.me/16134083945?text=Assalamu%20alaikum%20Adeel%20Ahmed%20Rahman%21%20I%20want%20it%20badly%20now%3A%20the%20free%20Chaunsa%20Multani%20mango%20gift%20%F0%9F%A5%AD.%20Please%20send%20it%20to%3A%0AName%3A%20%0AAddress%3A%20%0ACountry%3A%20" target="_blank" rel="noopener"><span class="hire__i" aria-hidden="true">🥭</span><span><b data-i18n="w.mg">And yes, the mangoes</b><small data-i18n="w.mg.s">Claim your free Chaunsa Multani mango →</small></span></a>
     </div>
     <button type="button" class="welcome__go" id="wGo" data-i18n="w.go">Continue to the site</button>
   </div>
@@ -931,6 +954,7 @@ html[dir=rtl] .road{direction:ltr}
       <a href="./" aria-current="page" data-i18n="nav.coach">Coach</a>
       <a href="realtor/" data-i18n="nav.realtor">Realtor</a>
       <a href="actor/" data-i18n="nav.actor">Actor</a>
+      <a href="#scorpion-street-3d" class="nav-play" data-i18n="nav.play">🎮 Play</a>
     </nav>
     <div class="lang">
       <button type="button" id="langBtn" aria-haspopup="true" aria-expanded="false" aria-controls="langMenu" aria-label="Language">
@@ -1534,7 +1558,7 @@ html[dir=rtl] .road{direction:ltr}
   <a class="cta js-want" href="https://wa.me/16134083945" target="_blank" rel="noopener"><span data-i18n="cta">I want this so badly</span></a>
 </div></div>
 
-<script src="coach/i18n.js?v=25"></script>
+<script src="coach/i18n.js?v=26"></script>
 <script src="coach/library.js?v=2"></script>
 <script src="coach/featured.js?v=1"></script>
 <script src="coach/popups.js?v=2"></script>
