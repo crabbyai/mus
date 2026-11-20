@@ -789,6 +789,16 @@ html{scroll-padding-top:70px}
 .g3__build span{font-size:clamp(1.8rem,6vw,2.8rem)}
 .g3__build.on{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1);animation:buildPulse 1s ease-in-out infinite alternate}
 @keyframes buildPulse{to{box-shadow:0 0 0 9px rgba(255,255,255,.55),0 0 80px rgba(255,200,90,1)}}
+.g3__name99{position:absolute;z-index:8;transform:translate(-50%,-50%);pointer-events:none;text-align:center;animation:n99 1.4s ease-out both}
+.g3__name99 b{display:block;font:700 clamp(1.7rem,6vw,3.2rem)/1.15 "Noto Naskh Arabic",serif;background:linear-gradient(180deg,#fff6cc,#f0c860 55%,#b07a1a);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 10px rgba(255,200,90,.85)) drop-shadow(0 2px 0 rgba(60,30,0,.7))}
+.g3__name99 span{display:block;font:800 clamp(.7rem,2.2vw,1rem) system-ui,sans-serif;letter-spacing:.12em;color:#ffe7a3;text-shadow:0 0 8px rgba(0,0,0,.8)}
+@keyframes n99{0%{opacity:0;transform:translate(-50%,-50%) scale(.4)}15%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}70%{opacity:1}100%{opacity:0;transform:translate(-50%,-90%) scale(1)}}
+.g3__ayah{position:absolute;left:50%;top:58%;z-index:7;transform:translate(-50%,-50%) scale(.9);opacity:0;pointer-events:none;text-align:center;padding:1rem 1.5rem;border-radius:18px;max-width:min(560px,88%);background:rgba(6,8,20,.82);border:1px solid #e8c87e;box-shadow:0 0 40px rgba(255,200,90,.4);transition:opacity .6s,transform .6s}
+.g3__ayah.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.g3__ayah b{display:block;font:700 clamp(1.6rem,5.5vw,2.6rem) "Noto Naskh Arabic",serif;color:#ffe7a3}
+.g3__ayah span{display:block;margin-top:.3rem;font:italic 600 clamp(.95rem,3vw,1.25rem) Georgia,serif;color:#f6efe0}
+.g3__ayah em{display:block;margin-top:.4rem;font:800 .85rem system-ui,sans-serif;font-style:normal;color:#9cffc8;letter-spacing:.04em}
+@media(prefers-reduced-motion:reduce){.g3__name99{animation:none}}
 .g3__flash{position:absolute;inset:0;z-index:2;pointer-events:none;background:#eaf4ff;opacity:0}
 .g3__flash.on{animation:g3flash .45s steps(1) forwards}
 @keyframes g3flash{0%{opacity:.75}15%{opacity:.1}30%{opacity:.6}50%{opacity:0}65%{opacity:.25}100%{opacity:0}}
@@ -1555,7 +1565,7 @@ html{scroll-padding-top:70px}
 <script>
 (function () {
   var box = document.getElementById("g3"); if (!box) return;
-  var go = function () { import("./coach/game3d.js?v=37").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
+  var go = function () { import("./coach/game3d.js?v=38").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
   if (!("IntersectionObserver" in window)) { go(); return; }
   var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io.disconnect(); go(); } }, { rootMargin: "300px" });
   io.observe(box);
