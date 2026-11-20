@@ -128,12 +128,33 @@
   if (road) {
     var setW = function () { road.style.setProperty("--w", road.clientWidth + "px"); [].forEach.call(road.querySelectorAll(".scorp"), function (sc) { sc.style.setProperty("--w", road.clientWidth + "px"); }); };
     setW(); window.addEventListener("resize", setW);
-    var hp = 100, boss = document.getElementById("boss"), bar = document.getElementById("bossHp"), win = document.getElementById("bossWin");
+    var hp = 100, crab = 1, scale = 1, round = 0, boss = document.getElementById("boss"), bar = document.getElementById("bossHp"), win = document.getElementById("bossWin");
+    var MAXCRAB = 4;   // keeps the crab on screen after a couple of doublings
+    function lanes() { return [].slice.call(road.querySelectorAll(".scorp:not(.gone)")); }
     boss.addEventListener("click", function () {
-      if (hp <= 0) { hp = 100; boss.classList.remove("down"); win.hidden = true; bar.style.width = "100%"; return; }   // tap again to replay
       hp = Math.max(0, hp - 13 - Math.floor(Math.random() * 10));
       bar.style.width = hp + "%";
-      if (hp === 0) { boss.classList.add("down"); win.hidden = false; }
+      if (hp > 0) return;
+      // "Nice try": the crab doubles, one scorpion leaves, the rest shrink 34%, a new one is born
+      round++;
+      crab = Math.min(MAXCRAB, crab * 2);
+      road.style.setProperty("--cs", crab); boss.style.setProperty("--cs", crab);
+      road.style.setProperty("--rh", Math.max(150, Math.round(67 * 1.3 * crab + 40)) + "px");
+      boss.classList.add("grow"); setTimeout(function () { boss.classList.remove("grow"); }, 900);
+      var live = lanes();
+      if (live.length) { var out = live[Math.floor(Math.random() * live.length)]; out.classList.add("gone"); setTimeout(function () { out.remove(); }, 600); }
+      scale = Math.max(0.15, scale * 0.66);
+      lanes().forEach(function (sc) { sc.style.setProperty("--s", scale.toFixed(3)); });
+      var baby = document.createElement("span");
+      var h = road.clientHeight || 150;
+      baby.className = "scorp born";
+      baby.style.top = Math.round(10 + Math.random() * Math.max(20, h - 50)) + "px";
+      baby.style.setProperty("--t", (8 + Math.random() * 6).toFixed(1) + "s");
+      baby.style.setProperty("--w", road.clientWidth + "px");
+      baby.innerHTML = "<i>🦂</i>";
+      road.insertBefore(baby, boss);
+      win.hidden = false;
+      setTimeout(function () { hp = 100; bar.style.width = "100%"; }, 700);
     });
   }
   /* ---- prayer request ---- */

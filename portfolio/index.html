@@ -28,6 +28,7 @@
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="preload" href="assets/fonts/playfair-display-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/fonts.css">
+<script type="importmap">{ "imports": { "three": "./js/vendor/three.module.min.js" } }</script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Person","name":"Adeel Ahmed Rahman","jobTitle":"Consciousness Coach — Dhikr and Dua for Muslims","description":"Sunni Muslim coach helping Muslims connect with Allah through focused dhikr and dua.","birthDate":"--06-22","telephone":"+1-613-408-3945","image":"https://crabbyai.github.io/mus/coach/assets/lobby-3.jpg","url":"https://crabbyai.github.io/mus/","sameAs":["https://wa.me/16134083945","https://crabbyai.github.io/mus/realtor/","https://crabbyai.github.io/mus/actor/"]}
 </script>
@@ -539,27 +540,72 @@ html[dir=rtl] .tier .badge{transform:translateX(50%)}
 .street__sign small{font:600 .6rem system-ui,sans-serif;letter-spacing:.2em;opacity:.9}
 .street h3{margin:.9rem 0 .3rem}
 .street p.lead{font-size:.95rem}
-.road{position:relative;height:150px;margin-top:1rem;border-radius:14px;overflow:hidden;background:linear-gradient(180deg,#1b1f2b 0 8%,#2a2f3d 8% 92%,#1b1f2b 92%);box-shadow:inset 0 0 0 2px rgba(201,164,92,.35)}
+.road{position:relative;height:var(--rh,150px);transition:height .5s cubic-bezier(.22,1,.36,1);margin-top:1rem;border-radius:14px;overflow:hidden;background:linear-gradient(180deg,#1b1f2b 0 8%,#2a2f3d 8% 92%,#1b1f2b 92%);box-shadow:inset 0 0 0 2px rgba(201,164,92,.35)}
 .road::before{content:"";position:absolute;left:0;right:0;top:50%;height:4px;margin-top:-2px;background:repeating-linear-gradient(90deg,#e8c87e 0 28px,transparent 28px 56px);opacity:.75;animation:lane 1.6s linear infinite}
 @keyframes lane{to{background-position:-56px 0}}
 html[dir=rtl] .road{direction:ltr}
 .scorp{position:absolute;left:-40px;font-size:1.6rem;line-height:1;filter:drop-shadow(0 3px 4px rgba(0,0,0,.6));animation:crawl var(--t,9s) linear infinite;animation-delay:var(--dl,0s)}
-@keyframes crawl{0%{transform:translateX(0) scaleX(-1)}100%{transform:translateX(calc(var(--w,700px) - 90px)) scaleX(-1)}}
+@keyframes crawl{0%{transform:translateX(0) scale(calc(var(--s,1) * -1),var(--s,1))}100%{transform:translateX(calc(var(--w,700px) - 90px)) scale(calc(var(--s,1) * -1),var(--s,1))}}
+.scorp.gone{opacity:0;transition:opacity .5s}
+.scorp.born i{animation:born .6s cubic-bezier(.22,1.6,.36,1),wiggle .35s ease-in-out .6s infinite alternate}
+@keyframes born{from{transform:scale(0)}}
 .scorp i{display:inline-block;animation:wiggle .35s ease-in-out infinite alternate;font-style:normal}
 @keyframes wiggle{to{transform:translateY(-2px) rotate(4deg)}}
 .boss{position:absolute;right:8px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:.2rem;border:0;background:none;color:var(--cream);cursor:pointer;z-index:2}
-.boss__crab{font-size:4.2rem;line-height:1;filter:drop-shadow(0 0 16px rgba(255,80,60,.55));animation:bossbob 1.8s ease-in-out infinite;transition:transform .2s}
+.boss__crab{font-size:calc(4.2rem * var(--cs,1));transition:font-size .6s cubic-bezier(.22,1.4,.36,1);line-height:1;filter:drop-shadow(0 0 16px rgba(255,80,60,.55));animation:bossbob 1.8s ease-in-out infinite;transition:transform .2s}
 .boss:active .boss__crab{transform:scale(.88)}
 @keyframes bossbob{50%{transform:translateY(-5px) rotate(-4deg)}}
 .boss__tag{font:800 .6rem system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#ff8a7a;background:rgba(10,15,30,.75);padding:.15rem .45rem;border-radius:6px}
 .boss__hp{width:84px;height:7px;border-radius:999px;background:rgba(255,255,255,.15);overflow:hidden}
 .boss__hp i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#ff5a4a,#ffb04a);transition:width .25s}
-.boss.down .boss__crab{animation:none;transform:rotate(180deg) scale(.7);filter:grayscale(1) opacity(.5)}
+.boss.grow .boss__crab{filter:drop-shadow(0 0 30px rgba(255,80,60,.9))}
 .street__win{margin-top:.8rem;padding:.8rem 1rem;border-radius:14px;background:rgba(201,164,92,.1);text-align:center}
 .street__win[hidden]{display:none}
-.street__win .ar{font-size:1.3rem;display:block}
+.street__win .ar{font-size:1.1rem;display:block;order:3;margin-top:.3rem}
+.street__win{display:flex;flex-direction:column;align-items:center}
+.st__nice{display:block;font-family:var(--serif);font-weight:500;font-size:1.5rem;color:#ff8a7a}
 .street__hint{margin-top:.6rem;font-size:.8rem;color:var(--muted);text-align:center}
 @media(prefers-reduced-motion:reduce){.scorp,.scorp i,.boss__crab,.road::before{animation:none}.scorp{display:none}}
+
+/* ---- Scorpion Street 3D ---- */
+.g3wrap{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:0 16px 2rem}
+.g3{position:relative;border-radius:26px;overflow:hidden;border:1px solid var(--gold);background:#03050c;box-shadow:0 40px 100px -40px rgba(0,0,0,.9)}
+.g3__head{padding:1.4rem 1.3rem .4rem;text-align:center}
+.g3__head h3{margin:.3rem 0 .4rem;font-size:clamp(1.5rem,4.5vw,2.2rem)}
+.g3__head p{font-size:.92rem;color:var(--muted)}
+.g3__stage{position:relative;aspect-ratio:16/9;width:100%;background:radial-gradient(ellipse at 50% 0%,#0b1433,#02040c)}
+@media(max-width:700px){.g3__stage{aspect-ratio:4/5}}
+.g3__stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:crosshair}
+.g3__hud{position:absolute;top:10px;left:10px;right:10px;display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;pointer-events:none;font:600 .78rem system-ui,sans-serif}
+.g3__hud>*{background:rgba(5,8,18,.6);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border:1px solid rgba(201,164,92,.35);border-radius:999px;padding:.32rem .7rem;color:var(--cream)}
+.g3__hp{display:flex;align-items:center;gap:.4rem}
+.g3__hp em{display:block;width:90px;height:7px;border-radius:999px;background:rgba(255,255,255,.15);overflow:hidden}
+.g3__hp em i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#ff5a4a,#ffb04a);transition:width .25s}
+.g3__wealth{color:#7ee2a0!important}
+.g3__sound{pointer-events:auto;cursor:pointer;margin-inline-start:auto}
+.g3__sound b{font-weight:400}
+.g3__msg{position:absolute;left:50%;top:21%;transform:translate(-50%,-50%) scale(.96);opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;text-align:center;padding:1rem 1.3rem;border-radius:18px;background:rgba(5,8,18,.7);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(201,164,92,.4);max-width:86%}
+.g3__msg.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+@media(max-width:700px){.g3__msg{top:96px;transform:translate(-50%,0) scale(.96);padding:.6rem .9rem}.g3__msg.on{transform:translate(-50%,0) scale(1)}.g3__hud{font-size:.7rem}.g3__hp em{width:60px}}
+.g3__msg b{display:block;font-family:var(--serif);font-weight:500;font-size:clamp(1.15rem,3.4vw,1.7rem);color:#ff8a7a}
+.g3__msg span{display:block;font-size:.88rem;margin-top:.3rem}
+.g3__msg .lh{font-family:"Noto Naskh Arabic",serif;color:var(--gold-bright);font-size:1.05rem}
+.g3__cap{position:absolute;left:50%;bottom:76px;transform:translateX(-50%);opacity:0;transition:opacity .6s;pointer-events:none;color:#ff6a5a;font:700 .95rem system-ui,sans-serif;text-shadow:0 0 12px rgba(255,40,30,.7);white-space:nowrap}
+.g3__cap.on{opacity:1}
+.g3__pad{position:absolute;left:0;right:0;bottom:10px;display:flex;justify-content:space-between;align-items:flex-end;padding:0 12px;pointer-events:none}
+.g3__dpad{display:grid;grid-template-columns:repeat(3,48px);grid-template-rows:repeat(2,48px);gap:6px;pointer-events:auto}
+.g3__dpad button,.g3__sting{border:1px solid rgba(201,164,92,.5);background:rgba(5,8,18,.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:var(--cream);border-radius:14px;font:700 1.1rem system-ui,sans-serif;cursor:pointer;touch-action:none;-webkit-user-select:none;user-select:none}
+.g3__dpad [data-k=arrowup]{grid-column:2}
+.g3__dpad [data-k=arrowleft]{grid-column:1;grid-row:2}
+.g3__dpad [data-k=arrowdown]{grid-column:2;grid-row:2}
+.g3__dpad [data-k=arrowright]{grid-column:3;grid-row:2}
+.g3__sting{pointer-events:auto;width:84px;height:84px;border-radius:50%;font-size:1.6rem;background:radial-gradient(circle at 40% 35%,rgba(232,200,126,.5),rgba(138,90,28,.6));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.1rem}
+.g3__sting small{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase}
+.g3__keys{padding:.7rem 1rem 1rem;text-align:center;font-size:.78rem;color:var(--muted)}
+.g3__nogl{display:none;position:absolute;inset:0;place-items:center;text-align:center;padding:1rem;color:var(--muted)}
+.g3--nogl .g3__nogl{display:grid}
+.g3__poster{position:absolute;inset:0;display:grid;place-items:center;color:var(--gold-bright);font:600 .95rem system-ui,sans-serif}
+.g3.ready .g3__poster{display:none}
 
 /* ---- floating WhatsApp ---- */
 .fab-wa{position:fixed;z-index:25;inset-inline-end:16px;bottom:calc(84px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:.5rem;padding:.75rem 1rem .75rem .8rem;border-radius:999px;background:#1fa855;color:#fff;font:700 .95rem system-ui,sans-serif;box-shadow:0 14px 34px -10px rgba(0,0,0,.7);transition:transform .2s var(--ease)}
@@ -1119,13 +1165,13 @@ html[dir=rtl] .road{direction:ltr}
       <section class="street reveal" id="scorpion-street">
         <span class="street__sign" aria-hidden="true"><small>ST.</small>🦂 SCORPION</span>
         <h3 data-i18n="st.h">Scorpion Street <em>🦂</em></h3>
-        <p class="lead" data-i18n="st.p">A road full of scorpions, and a giant crab waiting at the end. Tap the final boss to take it down.</p>
+        <p class="lead" data-i18n="st.p">A road full of scorpions, and a giant crab waiting at the end. Tap the final boss to take it down, if you can.</p>
         <div class="road" id="road" aria-label="Scorpion Street: scorpions crawling toward the Cancer crab, the final boss">
           <span class="scorp" style="top:14px;--t:9s;--dl:0s"><i>🦂</i></span><span class="scorp" style="top:54px;--t:11s;--dl:-3s"><i>🦂</i></span><span class="scorp" style="top:96px;--t:8s;--dl:-5s"><i>🦂</i></span><span class="scorp" style="top:30px;--t:13s;--dl:-7s"><i>🦂</i></span><span class="scorp" style="top:76px;--t:10s;--dl:-2s"><i>🦂</i></span><span class="scorp" style="top:110px;--t:12s;--dl:-9s"><i>🦂</i></span><span class="scorp" style="top:20px;--t:14s;--dl:-11s"><i>🦂</i></span><span class="scorp" style="top:64px;--t:9.5s;--dl:-6s"><i>🦂</i></span>
           <button type="button" class="boss" id="boss" aria-label="Final boss: Cancer, the crab. Tap to defeat it."><span class="boss__tag" data-i18n="st.boss">Final boss · Cancer ♋</span><span class="boss__crab" aria-hidden="true">🦀</span><span class="boss__hp" aria-hidden="true"><i id="bossHp"></i></span></button>
         </div>
         <p class="street__hint" data-i18n="st.hint">Tap the crab 🦀</p>
-        <div class="street__win" id="bossWin" hidden aria-live="polite"><span class="ar" lang="ar">لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِٱللَّهِ</span><span data-i18n="st.win">Final boss defeated. No matter how big the boss, there is no power except with Allah.</span></div>
+        <div class="street__win" id="bossWin" hidden aria-live="polite"><span class="ar" lang="ar">لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِٱللَّهِ</span><b class="st__nice" data-i18n="st.nice">Nice try 😏</b><span data-i18n="st.win">The boss just grew twice as big. One scorpion is gone, the rest shrank by 34%, and a new one was born.</span></div>
       </section>
 
       <section class="eye-sec reveal" id="sees">
@@ -1163,6 +1209,50 @@ html[dir=rtl] .road{direction:ltr}
   </article>
 </main>
 
+<!-- Scorpion Street 3D: Night of the Blood Moon (loads when scrolled into view) -->
+<section class="g3wrap reveal" id="scorpion-street-3d" aria-labelledby="g3h">
+  <div class="g3" id="g3">
+    <div class="g3__head">
+      <span class="up" style="font-size:.7rem;color:var(--gold)">☾ 3D</span>
+      <h3 id="g3h" data-i18n="g3.h">Scorpion Street 3D: <em>Night of the Blood Moon</em></h3>
+      <p data-i18n="g3.p">You are the scorpion. Beat the crab under the stars, if you can. Every sting rains money from the moon, and every round the crab only grows stronger and richer.</p>
+    </div>
+    <div class="g3__stage">
+      <canvas aria-label="3D game: a scorpion facing a giant crab on Scorpion Street under a full moon"></canvas>
+      <div class="g3__poster">🦂 … 🦀</div>
+      <div class="g3__hud">
+        <span data-g="round">Round 1</span>
+        <span class="g3__hp"><span data-t="hp">Crab</span><em data-g="hp"><i></i></em></span>
+        <span class="g3__wealth" data-g="wealth">Crab's wealth: $1,000,000</span>
+        <span data-g="mansion">Mansion: Level 1</span>
+        <button type="button" class="g3__sound" data-g="sound" aria-pressed="false"><b>🔈</b> <span data-t="sound">Sound</span></button>
+      </div>
+      <div class="g3__msg" data-g="msg" aria-live="polite"></div>
+      <div class="g3__cap" data-g="cap"></div>
+      <div class="g3__pad">
+        <div class="g3__dpad" aria-label="Move">
+          <button type="button" data-k="arrowup" aria-label="Forward">▲</button>
+          <button type="button" data-k="arrowleft" aria-label="Left">◀</button>
+          <button type="button" data-k="arrowdown" aria-label="Back">▼</button>
+          <button type="button" data-k="arrowright" aria-label="Right">▶</button>
+        </div>
+        <button type="button" class="g3__sting" data-k="sting" aria-label="Sting">🦂<small data-t="sting">Sting</small></button>
+      </div>
+      <div class="g3__nogl" data-i18n="g3.nogl">This 3D game needs WebGL, which your browser doesn't have turned on. Try another browser.</div>
+    </div>
+    <p class="g3__keys" data-i18n="g3.keys">Move with the arrow keys or WASD, sting with Space or by tapping the screen. On a phone, use the buttons. لا حول ولا قوة إلا بالله</p>
+  </div>
+</section>
+<script>
+(function () {
+  var box = document.getElementById("g3"); if (!box) return;
+  var go = function () { import("./coach/game3d.js?v=6").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
+  if (!("IntersectionObserver" in window)) { go(); return; }
+  var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io.disconnect(); go(); } }, { rootMargin: "300px" });
+  io.observe(box);
+})();
+</script>
+
 <footer>
   <p style="margin-bottom:.3rem"><svg class="ico" style="width:42px;height:42px" aria-hidden="true"><use href="#crescent"/></svg></p>
   <div data-eye="mini" style="margin:.4rem auto"></div>
@@ -1184,7 +1274,7 @@ html[dir=rtl] .road{direction:ltr}
   <a class="cta js-want" href="https://wa.me/16134083945" target="_blank" rel="noopener"><span data-i18n="cta">I want this so badly</span></a>
 </div></div>
 
-<script src="coach/i18n.js?v=16"></script>
+<script src="coach/i18n.js?v=18"></script>
 <script src="coach/library.js?v=2"></script>
 <script src="coach/featured.js?v=1"></script>
 <script src="coach/exit.js?v=2"></script>
@@ -1193,7 +1283,7 @@ html[dir=rtl] .road{direction:ltr}
 <script src="coach/reminder.js?v=2"></script>
 <script src="coach/numbers.js?v=3"></script>
 <script src="coach/eye.js?v=1"></script>
-<script src="coach/home.js?v=11"></script>
+<script src="coach/home.js?v=12"></script>
 <script>
 (function(){
   var WA="16134083945";
