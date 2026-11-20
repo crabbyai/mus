@@ -665,13 +665,16 @@ html[dir=rtl] .road{direction:ltr}
 .g3__sting small{font-size:.8rem}
 .g3__lol{position:absolute;z-index:20;pointer-events:none;font-size:2.4rem;transform:translate(-50%,-50%);animation:g3lol 1.3s cubic-bezier(.2,.8,.3,1) both}
 @keyframes g3lol{0%{opacity:0;transform:translate(-50%,-30%) scale(.4) rotate(-20deg)}20%{opacity:1;transform:translate(calc(-50% + var(--dx)*.4),-110%) scale(1.25) rotate(10deg)}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),-320%) scale(1) rotate(-10deg)}}
-@media(max-width:700px){.g3__sting{width:104px;height:104px;font-size:2rem}}
+@media(max-width:700px){.g3__sting{width:120px;height:120px;font-size:2.4rem;margin-bottom:58px}}
 
 /* neon crime-city look for the 3D game (original styling) */
 #scorpion-street-3d .g3__hud>*{background:linear-gradient(135deg,rgba(40,6,40,.75),rgba(6,20,40,.75));border:1px solid rgba(255,47,160,.55);box-shadow:0 0 12px rgba(255,47,160,.25),inset 0 0 0 1px rgba(32,230,216,.18);font-style:italic;font-weight:800;letter-spacing:.02em}
 #scorpion-street-3d .g3__heat{color:#ffd23a;text-shadow:0 0 8px rgba(255,180,40,.7)}
 #scorpion-street-3d .g3__msg b{font-style:italic;font-weight:900;background:linear-gradient(180deg,#ffe0f0,#ff5fb4 55%,#ff9a3c);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 2px 0 rgba(0,0,0,.6))}
 #scorpion-street-3d .g3__msg{border:1px solid rgba(255,47,160,.5);box-shadow:0 0 30px rgba(255,47,160,.3)}
+.g3__taunt{position:absolute;z-index:5;pointer-events:none;transform:translate(-50%,-50%) rotate(var(--r,0deg));font:italic 900 clamp(2rem,7vw,4.4rem) system-ui,sans-serif;letter-spacing:.06em;color:#ff2fa0;text-shadow:0 0 12px #ff2fa0,0 0 34px #ff2fa0,3px 0 #20e6d8,-3px 0 #ffd23a;white-space:nowrap;animation:g3taunt 1.6s steps(1) forwards}
+@keyframes g3taunt{0%{opacity:0}6%{opacity:1}14%{opacity:.15}20%{opacity:1;transform:translate(-48%,-52%) rotate(var(--r,0deg)) skewX(-10deg)}34%{opacity:.3}42%{opacity:1}64%{opacity:.6}72%{opacity:1}100%{opacity:0}}
+@media(prefers-reduced-motion:reduce){.g3__taunt{display:none}}
 .g3__flash{position:absolute;inset:0;z-index:2;pointer-events:none;background:#eaf4ff;opacity:0}
 .g3__flash.on{animation:g3flash .45s steps(1) forwards}
 @keyframes g3flash{0%{opacity:.75}15%{opacity:.1}30%{opacity:.6}50%{opacity:0}65%{opacity:.25}100%{opacity:0}}
@@ -694,7 +697,7 @@ html[dir=rtl] .road{direction:ltr}
 .g3 canvas{touch-action:none}
 .g3__pad{position:absolute;left:0;right:0;bottom:10px;display:flex;justify-content:space-between;align-items:flex-end;padding:0 12px;pointer-events:none}
 .g3__sting{border:1px solid rgba(201,164,92,.5);background:rgba(5,8,18,.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:var(--cream);border-radius:14px;font:700 1.1rem system-ui,sans-serif;cursor:pointer;touch-action:none;-webkit-user-select:none;user-select:none}
-.g3__sting{pointer-events:auto;width:124px;height:124px;border-radius:50%;font-size:2.4rem;background:radial-gradient(circle at 40% 35%,rgba(232,200,126,.6),rgba(138,90,28,.7));box-shadow:0 0 0 3px rgba(232,200,126,.35),0 10px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.1rem;transition:transform .1s}
+.g3__sting{pointer-events:auto;width:150px;height:150px;margin-bottom:64px;border-radius:50%;font-size:3rem;background:radial-gradient(circle at 40% 35%,rgba(255,120,200,.75),rgba(140,20,90,.8));border:2px solid rgba(255,214,240,.8);box-shadow:0 0 0 4px rgba(255,47,160,.35),0 0 34px rgba(255,47,160,.55),0 10px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.1rem;transition:transform .1s}
 .g3__sting small{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase}
 .g3__keys{padding:.7rem 1rem 1rem;text-align:center;font-size:.78rem;color:var(--muted)}
 .g3__nogl{display:none;position:absolute;inset:0;place-items:center;text-align:center;padding:1rem;color:var(--muted)}
@@ -1416,8 +1419,8 @@ html[dir=rtl] .road{direction:ltr}
       <div class="g3__cap" data-g="cap"></div>
       <div class="g3__joy" aria-hidden="true"><i></i></div>
       <div class="g3__pad">
-        <button type="button" class="g3__sting" data-k="sting" aria-label="Sting">🦂<small data-t="sting">Sting</small></button>
         <span></span>
+        <button type="button" class="g3__sting" data-k="sting" aria-label="Sting">🦂<small data-t="sting">Sting</small></button>
       </div>
       <div class="g3__nogl" data-i18n="g3.nogl">This 3D game needs WebGL, which your browser doesn't have turned on. Try another browser.</div>
     </div>
@@ -1427,7 +1430,7 @@ html[dir=rtl] .road{direction:ltr}
 <script>
 (function () {
   var box = document.getElementById("g3"); if (!box) return;
-  var go = function () { import("./coach/game3d.js?v=29").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
+  var go = function () { import("./coach/game3d.js?v=30").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
   if (!("IntersectionObserver" in window)) { go(); return; }
   var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io.disconnect(); go(); } }, { rootMargin: "300px" });
   io.observe(box);
