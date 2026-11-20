@@ -68,6 +68,7 @@
     if (!box.hidden || store("coach-exit-shown")) return;
     var other = document.querySelector(".welcome:not([hidden])");   // never on top of another pop-up
     if (other) return;
+    if (!force && window.coachPop && !window.coachPop.ask("exit")) return;   // frequency caps, calm gaps, not after contacting
     store("coach-exit-shown", "1");
     if (window.coachEyePulse) window.coachEyePulse(true);
     back = document.activeElement; fill(); box.hidden = false; document.body.style.overflow = "hidden";
@@ -77,7 +78,7 @@
   box.addEventListener("click", function (e) { if (e.target === box) close(); });
   document.addEventListener("keydown", function (e) { if (!box.hidden && e.key === "Escape") close(); });
 
-  var start = Date.now(), MIN = 8000;   // give people time to read first
+  var start = Date.now(), MIN = 15000;   // give people time to read first
   // Desktop: pointer leaves through the top edge
   document.addEventListener("mouseout", function (e) {
     if (e.relatedTarget || e.toElement) return;

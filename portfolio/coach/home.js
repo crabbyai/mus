@@ -174,7 +174,7 @@
           setTimeout(function () {
             hammer.classList.remove("up", "slam"); road.classList.remove("quake");
             var seen = false; try { seen = sessionStorage.getItem("coach-court-2d"); } catch (e) {}
-            if (window.coachCourt && !seen) { try { sessionStorage.setItem("coach-court-2d", "1"); } catch (e) {} window.coachCourt.play(); }
+            if (window.coachCourt && !seen && (!window.coachPop || window.coachPop.cutsceneOk())) { try { sessionStorage.setItem("coach-court-2d", "1"); } catch (e) {} window.coachCourt.play(); }
             swing();
           }, 1700);
         }, 1100);
@@ -298,7 +298,7 @@
       crown.classList.add("on"); boss.style.setProperty("--cr", Math.min(round, 5));
       win.hidden = false;
       // the shopping-spree joke: a bigger mall every round
-      setTimeout(function () { var rr = road.getBoundingClientRect(); if (window.coachMall && rr.bottom > 0 && rr.top < innerHeight && !(window.coachCourt && window.coachCourt.busy())) window.coachMall.play(mallLevel++); }, 1400);
+      setTimeout(function () { var rr = road.getBoundingClientRect(); if (window.coachMall && rr.bottom > 0 && rr.top < innerHeight && !(window.coachCourt && window.coachCourt.busy()) && (!window.coachPop || window.coachPop.cutsceneOk())) window.coachMall.play(mallLevel++); }, 1400);
       setTimeout(function () { hp = 100; bar.style.width = "100%"; }, 700);
     });
   }
@@ -381,6 +381,7 @@
     lastFocus = document.activeElement;
     box.hidden = false; document.body.style.overflow = "hidden"; mark();
     var c = langs.querySelector('[aria-pressed="true"]') || langs.querySelector("button");
+    if (!store("coach-lang")) { var navL = ((navigator.languages && navigator.languages[0]) || navigator.language || "en").slice(0, 2).toLowerCase(); var nb = langs.querySelector('[data-l="' + navL + '"]'); if (nb) { c = nb; nb.classList.add("suggest"); } }
     if (c) c.focus();
   }
   function close() {
@@ -401,13 +402,12 @@
       else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
     }
   });
-  var force = /[?&]welcome\b/.test(location.search);
-  // Opens 11 seconds after the page loads (straight away with ?welcome), unless another pop-up is up
-  if (force || !store("coach-welcomed")) setTimeout(function () {
-    var other = document.getElementById("know");
-    if (other && !other.hidden) return;
-    open();
-  }, force ? 350 : 11000);
+  // The language pop-up comes at the first calm moment: sooner for visitors whose browser isn't in English
+  var nav = ((navigator.languages && navigator.languages[0]) || navigator.language || "en").slice(0, 2).toLowerCase();
+  var otherLang = nav !== "en" && LIST.some(function (x) { return x[0] === nav; });
+  if (window.coachPop && (!store("coach-welcomed") || /[?&]welcome\b/.test(location.search))) {
+    window.coachPop.when("welcome", { after: otherLang ? 3500 : 8000, priority: 3, cond: function () { var k = document.getElementById("know"); return !k || k.hidden; } }, open);
+  }
   window.coachOpenWelcome = open;
 
   /* ---- the "I want this so badly" pop-up, 69 seconds after the page loads ---- */
@@ -419,8 +419,7 @@
     [].forEach.call(offer.querySelectorAll("[data-close]"), function (b) { b.addEventListener("click", oClose); });
     offer.addEventListener("click", function (e) { if (e.target === offer) oClose(); });
     document.addEventListener("keydown", function (e) { if (!offer.hidden && e.key === "Escape") oClose(); });
-    var oForce = /[?&]offer\b/.test(location.search);
-    var oTry = function () { if (document.querySelector(".welcome:not([hidden]), .xit:not([hidden]), .rmd:not([hidden]), .chat:not([hidden]), .ct")) setTimeout(oTry, 5000); else oOpen(); };
-    if (oForce || !store("coach-offer-shown")) setTimeout(oTry, oForce ? 400 : 69000);
+    // after 69 seconds of real reading, once they've seen a good part of the page (or stayed two minutes)
+    if (window.coachPop) window.coachPop.when("offer", { after: 69000, priority: 2, cond: function () { return window.coachPop.depth() > 0.3 || window.coachPop.visible() > 120000; } }, oOpen);
   }
 })();

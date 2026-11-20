@@ -68,6 +68,7 @@
   function busy() {   // another pop-up, the chat or the contact chooser is open
     return document.querySelector(".welcome:not([hidden]), .xit:not([hidden]), .chat:not([hidden]), .ct");
   }
-  function attempt() { if (busy()) setTimeout(attempt, 5000); else open(); }
-  setTimeout(attempt, force ? 600 : 34000);
+  // after 34 seconds of real reading, at a calm moment, at most once a day (see popups.js)
+  if (window.coachPop && !force) window.coachPop.when("reminder", { after: 34000, priority: 1 }, open);
+  else setTimeout(function attempt() { if (busy()) setTimeout(attempt, 5000); else open(); }, force ? 600 : 34000);
 })();
