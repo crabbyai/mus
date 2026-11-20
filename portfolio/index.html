@@ -812,6 +812,32 @@ html{scroll-padding-top:70px}
 .g3__name99 b{font:700 clamp(2rem,7vw,3.6rem)/1.2 "Aref Ruqaa","Noto Naskh Arabic",serif!important;background:none!important;-webkit-background-clip:border-box!important;background-clip:border-box!important;color:#1b0f5a!important;text-shadow:0 2px 0 #fff,0 0 14px rgba(170,90,255,.8);filter:none!important}
 .g3__name99 span{color:#3a2a8a!important;text-shadow:none!important;font-style:italic}
 @keyframes n99f{50%{margin-top:-6px}}
+
+/* lighter, sparkling pink diamonds; tapped they turn into the 99-Names light-blue style */
+.g3__kind .g3__mv{background:linear-gradient(145deg,#fff0f8,#ffd3ea 45%,#ffb0d8)!important;border-color:#ffffff!important;color:#b0306e!important;box-shadow:0 0 14px rgba(255,170,220,.85),inset 0 0 10px rgba(255,255,255,.9)!important;overflow:hidden}
+.g3__kind .g3__mv svg [fill="#fff"]{fill:#c2387e}
+.g3__kind .g3__mv small{color:#a0245e}
+.g3__kind .g3__mv::after{content:"";position:absolute;inset:-40%;background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.95) 50%,transparent 60%);animation:gemShine 2.4s ease-in-out infinite;pointer-events:none}
+.g3__kind .g3__mv:nth-child(2n)::after{animation-delay:-.8s}.g3__kind .g3__mv:nth-child(3n)::after{animation-delay:-1.6s}
+@keyframes gemShine{0%{transform:translateX(-60%)}55%,100%{transform:translateX(60%)}}
+.g3__kind .g3__mv.tapped,.g3__kind .g3__mv--pray{background:linear-gradient(160deg,#dff6ff,#9fdcff 45%,#6ec6ff)!important;border-color:#fff!important;color:#1b0f5a!important;box-shadow:0 0 0 3px rgba(170,90,255,.55),0 0 22px 6px rgba(170,90,255,.6),0 0 40px 10px rgba(255,255,255,.4)!important}
+.g3__kind .g3__mv.tapped small,.g3__kind .g3__mv--pray small{color:#1b0f5a}
+.g3__kind .g3__mv.tapped svg [fill="#fff"]{fill:#1b0f5a}
+.g3__kind .g3__mv--pray{animation:prayGlow 2s ease-in-out infinite alternate}
+@keyframes prayGlow{to{box-shadow:0 0 0 4px rgba(255,255,255,.8),0 0 30px 10px rgba(170,90,255,.8),0 0 60px 14px rgba(255,255,255,.5)!important}}
+.g3__spk{position:absolute;z-index:9;width:8px;height:8px;margin:-4px 0 0 -4px;pointer-events:none;background:#fff;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);filter:drop-shadow(0 0 4px #c48bff);animation:spk .7s ease-out forwards}
+@keyframes spk{to{transform:rotate(var(--a)) translateY(-46px) scale(1.6);opacity:0}}
+/* the Pray card */
+.g3__pray{position:absolute;inset:0;z-index:30;display:grid;place-items:center;padding:12px;background:rgba(10,6,30,.6);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);animation:mIn .4s ease both}
+.g3__pcard{max-width:min(560px,94%);max-height:94%;overflow:auto;padding:1.1rem 1.3rem;border-radius:22px;border:3px solid #fff;text-align:center;background:linear-gradient(160deg,#eaf9ff,#b6e6ff 50%,#86d0ff);color:#1b0f5a;
+  box-shadow:0 0 0 4px rgba(170,90,255,.55),0 0 50px 14px rgba(170,90,255,.6),0 0 90px 20px rgba(255,255,255,.4);animation:mOpen .6s cubic-bezier(.22,1.3,.36,1) both}
+.g3__pcard b{display:block;font:700 clamp(2.6rem,10vw,4.4rem)/1.15 "Aref Ruqaa","Noto Naskh Arabic",serif;text-shadow:0 2px 0 #fff,0 0 16px rgba(170,90,255,.7)}
+.g3__pn{display:block;font:800 clamp(.8rem,2.6vw,1rem) system-ui,sans-serif;letter-spacing:.06em;font-style:italic;color:#3a2a8a;margin-bottom:.6rem}
+.g3__pcard p{margin:.45rem 0;font:600 clamp(.85rem,2.7vw,1rem)/1.45 system-ui,sans-serif}
+.g3__pd{background:rgba(255,255,255,.55);border-radius:12px;padding:.5rem .7rem}
+.g3__pa{color:#8a1a5a}
+.g3__pcard button{margin-top:.5rem;border:0;border-radius:999px;padding:.6rem 1.4rem;background:linear-gradient(135deg,#7a3fd0,#3a2a8a);color:#fff;font:800 1rem system-ui,sans-serif;cursor:pointer}
+@media(prefers-reduced-motion:reduce){.g3__kind .g3__mv::after,.g3__kind .g3__mv--pray{animation:none}}
 .g3__flash{position:absolute;inset:0;z-index:2;pointer-events:none;background:#eaf4ff;opacity:0}
 .g3__flash.on{animation:g3flash .8s steps(1) forwards}
 @keyframes g3flash{0%{opacity:.95}8%{opacity:.05}16%{opacity:.85}26%{opacity:.1}36%{opacity:.7}50%{opacity:0}62%{opacity:.45}74%{opacity:0}84%{opacity:.25}100%{opacity:0}}
@@ -1567,18 +1593,18 @@ html{scroll-padding-top:70px}
       <div class="g3__joy" aria-hidden="true"><i></i></div>
       <button type="button" class="g3__build" data-k="build"><span>🏠🔑</span><b data-t="buildB">BUILD A HOUSE FOR ADEEL · IN HIS NAME</b></button>
       <div class="g3__pad">
-        <div class="g3__kind"><button type="button" class="g3__mv g3__mv--repent" data-k="repent" aria-label="Repent"><span class="g3__emo">🤲</span><small data-t="repent">Repent</small></button><button type="button" class="g3__mv g3__mv--gift" data-k="gift" aria-label="Offer Gift"><svg viewBox="0 0 40 40" aria-hidden="true"><rect x="7" y="16" width="26" height="18" rx="2" fill="#fff"/><rect x="5" y="11" width="30" height="7" rx="2" fill="#fff"/><rect x="18" y="11" width="4" height="23" fill="#000"/><path d="M20 11c-3-6-10-6-9-1 1 3 6 2 9 1zm0 0c3-6 10-6 9-1-1 3-6 2-9 1z" fill="none" stroke="#fff" stroke-width="2.4"/></svg><small data-t="giftB">Gift</small></button><button type="button" class="g3__mv g3__mv--flirt" data-k="flirt" aria-label="Flirt"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M6 8h28a3 3 0 0 1 3 3v15a3 3 0 0 1-3 3H17l-7 6v-6H6a3 3 0 0 1-3-3V11a3 3 0 0 1 3-3z" fill="#fff"/><path d="M20 24c-6-4-8-7-6-9 1.5-1.5 4-1 6 1 2-2 4.5-2.5 6-1 2 2 0 5-6 9z" fill="#000"/></svg><small data-t="flirtB">Flirt</small></button><button type="button" class="g3__mv g3__mv--cook" data-k="cook" aria-label="Cook"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M12 20c-4 0-7-3-7-6s3-6 7-5c1-3 4-5 8-5s7 2 8 5c4-1 7 2 7 5s-3 6-7 6v3H12z" fill="#fff"/><rect x="12" y="25" width="16" height="9" rx="2" fill="#fff"/></svg><small data-t="cookB">Cook</small></button><button type="button" class="g3__mv g3__mv--clean" data-k="clean" aria-label="Clean"><svg viewBox="0 0 40 40" aria-hidden="true"><rect x="18.5" y="3" width="3" height="22" rx="1.5" fill="#fff"/><path d="M9 25h22l3 11H6z" fill="#fff"/><path d="M12 30v5M17 30v5M23 30v5M28 30v5" stroke="#1a5aa0" stroke-width="2"/></svg><small data-t="cleanB">Clean</small></button></div>
+        <div class="g3__kind"><button type="button" class="g3__mv g3__mv--pray" data-k="pray" aria-label="Pray"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 4c-4 6-7 9-7 14 0 3 2 5 4 6l-1 12h8l-1-12c2-1 4-3 4-6 0-5-3-8-7-14z" fill="#1b0f5a"/><path d="M20 6v18" stroke="#9fdcff" stroke-width="1.5"/></svg><small data-t="prayB">Pray</small></button><button type="button" class="g3__mv g3__mv--repent" data-k="repent" aria-label="Repent"><span class="g3__emo">🤲</span><small data-t="repent">Repent</small></button><button type="button" class="g3__mv g3__mv--gift" data-k="gift" aria-label="Offer Gift"><svg viewBox="0 0 40 40" aria-hidden="true"><rect x="7" y="16" width="26" height="18" rx="2" fill="#fff"/><rect x="5" y="11" width="30" height="7" rx="2" fill="#fff"/><rect x="18" y="11" width="4" height="23" fill="#000"/><path d="M20 11c-3-6-10-6-9-1 1 3 6 2 9 1zm0 0c3-6 10-6 9-1-1 3-6 2-9 1z" fill="none" stroke="#fff" stroke-width="2.4"/></svg><small data-t="giftB">Gift</small></button><button type="button" class="g3__mv g3__mv--flirt" data-k="flirt" aria-label="Flirt"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M6 8h28a3 3 0 0 1 3 3v15a3 3 0 0 1-3 3H17l-7 6v-6H6a3 3 0 0 1-3-3V11a3 3 0 0 1 3-3z" fill="#fff"/><path d="M20 24c-6-4-8-7-6-9 1.5-1.5 4-1 6 1 2-2 4.5-2.5 6-1 2 2 0 5-6 9z" fill="#000"/></svg><small data-t="flirtB">Flirt</small></button><button type="button" class="g3__mv g3__mv--cook" data-k="cook" aria-label="Cook"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M12 20c-4 0-7-3-7-6s3-6 7-5c1-3 4-5 8-5s7 2 8 5c4-1 7 2 7 5s-3 6-7 6v3H12z" fill="#fff"/><rect x="12" y="25" width="16" height="9" rx="2" fill="#fff"/></svg><small data-t="cookB">Cook</small></button><button type="button" class="g3__mv g3__mv--clean" data-k="clean" aria-label="Clean"><svg viewBox="0 0 40 40" aria-hidden="true"><rect x="18.5" y="3" width="3" height="22" rx="1.5" fill="#fff"/><path d="M9 25h22l3 11H6z" fill="#fff"/><path d="M12 30v5M17 30v5M23 30v5M28 30v5" stroke="#1a5aa0" stroke-width="2"/></svg><small data-t="cleanB">Clean</small></button></div>
         <div class="g3__moves"><div class="g3__mini"><button type="button" class="g3__mv g3__mv--pinch" data-k="pinch" aria-label="Pinch"><svg viewBox="0 0 40 40" aria-hidden="true"><path fill="#fff" d="M8 30c-2-6 0-14 6-18 4-3 9-3 12-1l-6 6 7 1 5-6c2 4 1 9-3 12-3 2-6 3-9 2l-6 6c-2 1-4 0-6-2z"/><path fill="#fff" d="M6 8l5 3-3 4-4-3z"/></svg><small data-t="pinch">Pinch</small></button><button type="button" class="g3__mv g3__mv--poison" data-k="poison" aria-label="Poison"><svg viewBox="0 0 40 40" aria-hidden="true"><path fill="#fff" d="M20 4C14 13 9 19 9 25a11 11 0 0 0 22 0c0-6-5-12-11-21z"/><circle cx="15.5" cy="25" r="3" fill="#1d7a10"/></svg><small data-t="poisonB">Poison</small></button></div><button type="button" class="g3__sting" data-k="sting" aria-label="Sting"><span class="g3__emo">🦂</span><small data-t="sting">Sting</small></button></div>
       </div>
       <div class="g3__nogl" data-i18n="g3.nogl">This 3D game needs WebGL, which your browser doesn't have turned on. Try another browser.</div>
     </div>
-    <p class="g3__keys" data-i18n="g3.keys">Drag anywhere on the game to move (or WASD). Tap the screen, Space or the 🦂 button to sting. Pinch (E), Poison (P), Repent (R), Offer Gift, Flirt, Cook, Clean. Walk to the glowing doors to visit the gym or the salon. لا حول ولا قوة إلا بالله</p>
+    <p class="g3__keys" data-i18n="g3.keys">Drag anywhere on the game to move (or WASD). Tap the screen, Space or the 🦂 button to sting. Pinch (E), Poison (P), Repent (R), Offer Gift, Flirt, Cook, Clean, Pray. Walk to the glowing doors to visit the gym or the salon. لا حول ولا قوة إلا بالله</p>
   </div>
 </section>
 <script>
 (function () {
   var box = document.getElementById("g3"); if (!box) return;
-  var go = function () { import("./coach/game3d.js?v=40").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
+  var go = function () { import("./coach/game3d.js?v=41").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
   if (!("IntersectionObserver" in window)) { go(); return; }
   var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io.disconnect(); go(); } }, { rootMargin: "300px" });
   io.observe(box);
