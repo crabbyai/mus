@@ -181,6 +181,20 @@
       }, 22000 + Math.random() * 16000);
     })();
     // the 12 lakh wedding ring -> AL-MUDHILL -> AL-GHANI -> everything sucked into the crab and his mansion
+    // the scorpions keep begging to be the crab's wife
+    var mallLevel = 0;
+    if (!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches)) (function beg() {
+      setTimeout(function () {
+        var live = lanes(), rr = road.getBoundingClientRect();
+        if (live.length && window.coachBeg && rr.bottom > 0 && rr.top < innerHeight && !road.querySelector(".beg2")) {
+          var sc = live[Math.floor(Math.random() * live.length)], n = sc.getBoundingClientRect();
+          var b = document.createElement("span"); b.className = "beg2"; b.textContent = window.coachBeg();
+          road.appendChild(b); var half = b.offsetWidth / 2 + 6;
+          b.style.left = Math.max(half, Math.min(road.clientWidth - half, n.left - rr.left + n.width / 2)) + "px"; b.style.top = Math.max(b.offsetHeight + 4, n.top - rr.top - 6) + "px"; setTimeout(function () { b.remove(); }, 3400);
+        }
+        beg();
+      }, 4500 + Math.random() * 4000);
+    })();
     var taps = [], ringBusy = false, ringCool = 0, omen = 0, gb = 1, mk = 1;
     var castle = document.getElementById("castle2");
     function banner2(en, ar, meaning) {
@@ -247,9 +261,10 @@
           el.style.left = (10 + Math.random() * 80) + "%"; el.style.top = (15 + Math.random() * 70) + "%";
           el.style.setProperty("--r", ((Math.random() - 0.5) * 30).toFixed(1) + "deg"); el.style.fontSize = (1.8 + Math.random() * 2.2).toFixed(1) + "rem";
           road.appendChild(el); setTimeout(function () { el.remove(); }, 1500);
+          setTimeout(function () { if (window.coachWhisper) window.coachWhisper(road); }, 1100);
         }
         horror();
-      }, 2500 + Math.random() * 5000);
+      }, 8000 + Math.random() * 6000);
     })();
     function lanes() { return [].slice.call(road.querySelectorAll(".scorp:not(.gone)")); }
     boss.addEventListener("click", function () {
@@ -282,6 +297,8 @@
       var crown = document.getElementById("bossCrown");   // a bigger crown every round
       crown.classList.add("on"); boss.style.setProperty("--cr", Math.min(round, 5));
       win.hidden = false;
+      // the shopping-spree joke: a bigger mall every round
+      setTimeout(function () { var rr = road.getBoundingClientRect(); if (window.coachMall && rr.bottom > 0 && rr.top < innerHeight && !(window.coachCourt && window.coachCourt.busy())) window.coachMall.play(mallLevel++); }, 1400);
       setTimeout(function () { hp = 100; bar.style.width = "100%"; }, 700);
     });
   }

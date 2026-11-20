@@ -562,6 +562,9 @@ html[dir=rtl] .tier .badge{transform:translateX(50%)}
 .wolf2::after{content:"";position:absolute;left:28%;top:34%;width:4px;height:4px;border-radius:50%;background:#ff2a1a;box-shadow:0 0 6px 2px #ff2a1a}
 .ring2{position:absolute;z-index:7;font-size:2.4rem;line-height:1;pointer-events:none;transform:translate(-50%,-100%);transition:top 1.6s cubic-bezier(.5,0,.9,.6),left 1.6s,transform .8s,opacity .6s;filter:drop-shadow(0 0 12px rgba(190,240,255,.95))}
 .ring2 small{position:absolute;left:50%;top:-1.2em;transform:translateX(-50%);font:900 .42em system-ui,sans-serif;color:#1a1206;background:linear-gradient(135deg,#e9fbff,#9fdcff);padding:.15em .5em;border-radius:999px;white-space:nowrap}
+.beg2{position:absolute;z-index:8;transform:translate(-50%,-100%);max-width:min(70%,260px);padding:.35rem .6rem;border-radius:12px;background:#fff;color:#c2185b;font:700 .72rem/1.3 system-ui,sans-serif;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.35);pointer-events:none;animation:beg2pop .3s ease both}
+.beg2::after{content:"";position:absolute;left:50%;bottom:-6px;margin-left:-6px;border:6px solid transparent;border-bottom:0;border-top-color:#fff}
+@keyframes beg2pop{from{opacity:0;transform:translate(-50%,-100%) scale(.6)}to{opacity:1;transform:translate(-50%,-100%) scale(1)}}
 .nm2{position:absolute;left:50%;top:50%;z-index:8;transform:translate(-50%,-50%) scale(.6);opacity:0;pointer-events:none;text-align:center;padding:.45rem 1rem;border-radius:14px;background:rgba(5,8,18,.82);border:1px solid #e8c87e;box-shadow:0 0 30px rgba(255,200,90,.45);white-space:nowrap}
 .nm2.on{animation:nmin 2.6s ease forwards}
 .nm2 b{display:block;font:900 clamp(1.05rem,4vw,1.6rem) Georgia,serif;letter-spacing:.08em;color:#ffe7a3}
@@ -1364,7 +1367,7 @@ html[dir=rtl] .road{direction:ltr}
 <script>
 (function () {
   var box = document.getElementById("g3"); if (!box) return;
-  var go = function () { import("./coach/game3d.js?v=14").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
+  var go = function () { import("./coach/game3d.js?v=15").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
   if (!("IntersectionObserver" in window)) { go(); return; }
   var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io.disconnect(); go(); } }, { rootMargin: "300px" });
   io.observe(box);
@@ -1401,8 +1404,8 @@ html[dir=rtl] .road{direction:ltr}
 <script src="coach/reminder.js?v=3"></script>
 <script src="coach/numbers.js?v=3"></script>
 <script src="coach/eye.js?v=1"></script>
-<script src="coach/court.js?v=3" defer></script>
-<script src="coach/home.js?v=19"></script>
+<script src="coach/court.js?v=4" defer></script>
+<script src="coach/home.js?v=20"></script>
 <script>
 (function(){
   var WA="16134083945";

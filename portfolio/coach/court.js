@@ -14,6 +14,10 @@
     ko: { pp: "게는 왕자입니다 🤴. 전갈은 게를 존중하는 법을 배우면 공주가 될 거예요 👸.", c1: "개정합니다: 전갈들 대 게", c2: "판사의 판결: 게에게 유리하게 신청 인용 ⚖️", c3: "전갈들은 모두 감옥으로 끌려간다", c4: "해골과 시든 장미… 그래도 장미 두 송이는 아직 자라고 있다. 게가 들여다본다.", c5: "결국 게는 그들을 풀어 준다. 그들이 알라를 공경하고, 그들의 사랑을 위해 그토록 애쓴 게에게 감사하는 법을 배웠을 때.", c6: "622 · 히즈라, 메카에서 메디나로", end: "끝", skip: "건너뛰기", back: "게임으로 돌아가기", granted: "신청 인용", mk: "메카", md: "메디나" }
   };
   function tx() { return TX[(document.documentElement.lang || "en").slice(0, 2)] || TX.en; }
+  var MX = {"en": {"pause": "⏸ The crab pauses the game…", "spree": "Shopping spree! 🛍️", "dem": ["Buy me that bag! 👜", "I want the diamond necklace! 💎", "And those heels! 👠", "Gold bangles too! 🪙", "Take me to every single store! 🛍️"], "nb": "Not before shaadi. 💍", "joke": "😏 It was all a joke.", "hum": "SCORPION HUMILIATED", "back": "Back to the fight! ⚔️", "wh": "I can help you both manifest your dreams and desires", "whby": "Prince Crab, whispering", "beg": ["Pick me, Prince Crab! 🙏", "I'll respect you now! 👸"], "lvl": "Mall level"}, "ur": {"pause": "⏸ کیکڑا گیم روک دیتا ہے…", "spree": "شاپنگ اسپری! 🛍️", "dem": ["مجھے وہ بیگ دلاؤ! 👜", "مجھے ہیروں کا ہار چاہیے! 💎", "اور وہ ہیلز بھی! 👠", "سونے کی چوڑیاں بھی! 🪙", "مجھے ہر دکان پر لے چلو! 🛍️"], "nb": "شادی سے پہلے نہیں۔ 💍", "joke": "😏 یہ سب مذاق تھا۔", "hum": "بچھو کی بے عزتی", "back": "واپس لڑائی میں! ⚔️", "wh": "میں تم دونوں کی خوابوں اور خواہشات کو پانے میں مدد کر سکتا ہوں", "whby": "شہزادہ کیکڑا، سرگوشی میں", "beg": ["مجھے چن لو، شہزادہ کیکڑا! 🙏", "اب میں عزت کروں گی! 👸"], "lvl": "مال لیول"}, "ar": {"pause": "⏸ السلطعون يوقف اللعبة…", "spree": "جولة تسوّق! 🛍️", "dem": ["اشترِ لي تلك الحقيبة! 👜", "أريد عقد الألماس! 💎", "وذلك الكعب العالي! 👠", "وأساور الذهب أيضًا! 🪙", "خذني إلى كل المتاجر! 🛍️"], "nb": "ليس قبل الشادي (الزواج). 💍", "joke": "😏 كان الأمر كله مزحة.", "hum": "إذلال العقرب", "back": "عودة إلى القتال! ⚔️", "wh": "أستطيع أن أساعدكما على تحقيق أحلامكما ورغباتكما", "whby": "الأمير السلطعون، هامسًا", "beg": ["اخترني يا أمير السلطعون! 🙏", "سأحترمك الآن! 👸"], "lvl": "مستوى المول"}, "fr": {"pause": "⏸ Le crabe met le jeu en pause…", "spree": "Virée shopping ! 🛍️", "dem": ["Achète-moi ce sac ! 👜", "Je veux le collier de diamants ! 💎", "Et ces talons ! 👠", "Des bracelets en or aussi ! 🪙", "Emmène-moi dans toutes les boutiques ! 🛍️"], "nb": "Pas avant la shaadi. 💍", "joke": "😏 Ce n'était qu'une blague.", "hum": "SCORPION HUMILIÉ", "back": "Retour au combat ! ⚔️", "wh": "Je peux vous aider tous les deux à manifester vos rêves et vos désirs", "whby": "Prince Crabe, en chuchotant", "beg": ["Choisis-moi, Prince Crabe ! 🙏", "Je te respecterai maintenant ! 👸"], "lvl": "Niveau du centre"}, "es": {"pause": "⏸ El cangrejo pausa el juego…", "spree": "¡De compras! 🛍️", "dem": ["¡Cómprame ese bolso! 👜", "¡Quiero el collar de diamantes! 💎", "¡Y esos tacones! 👠", "¡Pulseras de oro también! 🪙", "¡Llévame a todas las tiendas! 🛍️"], "nb": "No antes de la shaadi. 💍", "joke": "😏 Todo era una broma.", "hum": "ESCORPIÓN HUMILLADO", "back": "¡De vuelta a la pelea! ⚔️", "wh": "Puedo ayudaros a los dos a manifestar vuestros sueños y deseos", "whby": "Príncipe Cangrejo, susurrando", "beg": ["¡Elígeme, Príncipe Cangrejo! 🙏", "¡Ahora te respetaré! 👸"], "lvl": "Nivel del centro"}, "ja": {"pause": "⏸ カニがゲームを一時停止…", "spree": "ショッピング三昧！🛍️", "dem": ["あのバッグを買って！👜", "ダイヤのネックレスがほしい！💎", "あのヒールも！👠", "金のバングルも！🪙", "全部のお店に連れてって！🛍️"], "nb": "シャーディー（結婚）の前はダメ。💍", "joke": "😏 ぜんぶ冗談でした。", "hum": "サソリ、赤っ恥", "back": "戦いに戻ろう！⚔️", "wh": "私はふたりの夢と願いを叶える手助けができる", "whby": "カニ王子のささやき", "beg": ["私を選んで、カニ王子！🙏", "これからは敬います！👸"], "lvl": "モールのレベル"}, "zh": {"pause": "⏸ 螃蟹暂停了游戏……", "spree": "疯狂购物！🛍️", "dem": ["给我买那个包！👜", "我要那条钻石项链！💎", "还有那双高跟鞋！👠", "金手镯也要！🪙", "带我逛遍每一家店！🛍️"], "nb": "婚礼（shaadi）之前不行。💍", "joke": "😏 这一切都只是个玩笑。", "hum": "蝎子颜面扫地", "back": "回到战斗！⚔️", "wh": "我可以帮助你们俩实现梦想与愿望", "whby": "螃蟹王子的低语", "beg": ["选我吧，螃蟹王子！🙏", "我现在会尊重你了！👸"], "lvl": "商场等级"}, "ko": {"pause": "⏸ 게가 게임을 일시정지한다…", "spree": "쇼핑 대잔치! 🛍️", "dem": ["저 가방 사 줘! 👜", "다이아몬드 목걸이 갖고 싶어! 💎", "저 힐도! 👠", "금팔찌도! 🪙", "모든 가게에 데려가 줘! 🛍️"], "nb": "샤디(결혼) 전에는 안 돼. 💍", "joke": "😏 전부 농담이었어.", "hum": "전갈 망신", "back": "다시 싸우자! ⚔️", "wh": "나는 너희 둘이 꿈과 소망을 이루도록 도울 수 있어", "whby": "게 왕자의 속삭임", "beg": ["저를 골라 주세요, 게 왕자님! 🙏", "이제 존중할게요! 👸"], "lvl": "몰 레벨"}};
+  var BEG = ["Mr Crab can I be your wife? 💍", "Do you feel it Mr Crabs? The tension? 😳", "Main apko sukoon doongi aur ap mujhe sukoon do ge. 🥺"];   // the scorpions' own words, kept as written
+  function mx() { return MX[(document.documentElement.lang || "en").slice(0, 2)] || MX.en; }
+  function begLines() { return BEG.concat(mx().beg); }
 
   var CSS = '\
 .ct{position:fixed;inset:0;z-index:9999;background:#05070f;color:#f6efe0;font-family:system-ui,sans-serif;overflow:hidden;display:flex;align-items:center;justify-content:center}\
@@ -73,7 +77,37 @@
 .ct__back{position:absolute;left:50%;bottom:3%;transform:translateX(-50%);z-index:4;border:0;border-radius:999px;padding:.8rem 1.5rem;background:linear-gradient(135deg,#f3dc9f,#c9a45c);color:#1a1206;font:800 1rem system-ui,sans-serif;cursor:pointer;opacity:0;transition:opacity .5s}\
 .ct__back.on{opacity:1}\
 .ct--holy .ct__cap{bottom:auto;top:12%;font-size:clamp(.9rem,2.6vw,1.15rem)}\
-@media(prefers-reduced-motion:reduce){.ct *{animation:none!important}}';
+@media(prefers-reduced-motion:reduce){.ct *{animation:none!important}}\
+.ct--mall{background:linear-gradient(180deg,#1b1240 0,#3a2470 45%,#d9c2a0 45%,#b89a74 100%)}\
+.ml__bldg{position:absolute;left:50%;bottom:44%;transform:translateX(-50%);display:flex;flex-direction:column-reverse;gap:4px;padding:8px;border-radius:10px 10px 0 0;background:linear-gradient(180deg,#f5ecff,#d8c8f0);box-shadow:0 0 40px rgba(255,120,220,.35)}\
+.ml__floor{display:flex;gap:4px}\
+.ml__shop{width:clamp(36px,8vw,64px);height:clamp(34px,7vw,56px);border-radius:6px 6px 0 0;background:linear-gradient(180deg,#ffe7a3,#ffb84a);display:flex;align-items:center;justify-content:center;font-size:clamp(.9rem,2.6vw,1.5rem);box-shadow:inset 0 -6px 0 rgba(0,0,0,.12)}\
+.ml__name{position:absolute;left:50%;top:5%;transform:translateX(-50%);font:900 clamp(1.1rem,4vw,2rem) Georgia,serif;color:#ffd6f7;text-shadow:0 0 10px #ff2fd6,0 0 26px #ff2fd6;white-space:nowrap}\
+.ml__lvl{position:absolute;left:50%;top:14%;transform:translateX(-50%);font:800 .8rem system-ui,sans-serif;letter-spacing:.2em;color:#ffe7a3}\
+.ml__cast{position:absolute;left:0;right:0;bottom:6%;display:flex;justify-content:space-around;align-items:flex-end}\
+.ml__bub{position:absolute;max-width:min(46vw,340px);padding:.55rem .9rem;border-radius:16px;background:#fff;color:#7a1050;font:700 clamp(.85rem,2.6vw,1.1rem)/1.3 system-ui,sans-serif;box-shadow:0 6px 20px rgba(0,0,0,.4);opacity:0;transform:scale(.6);animation:mlpop .35s ease forwards,mlout .35s ease forwards}\
+.ml__bub--crab{background:#1b1206;color:#ffe7a3;border:2px solid #e8c87e}\
+@keyframes mlpop{to{opacity:1;transform:scale(1)}}\
+@keyframes mlout{from{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(.9) translateY(-14px)}}\
+.ml__joke{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);text-align:center;font:900 clamp(1.6rem,6vw,3.2rem) Georgia,serif;color:#ffe7a3;text-shadow:0 0 20px rgba(255,200,90,.7)}\
+.ml__stamp{display:inline-block;margin-top:1rem;border:5px solid #ff4a3a;color:#ff4a3a;padding:.2rem .9rem;border-radius:10px;font:900 clamp(1rem,4vw,1.8rem) system-ui,sans-serif;letter-spacing:.08em;transform:rotate(-7deg) scale(2);opacity:0;animation:ctstamp2 .4s .8s ease-in forwards}\
+@keyframes ctstamp2{to{opacity:1;transform:rotate(-7deg) scale(1)}}\
+.wh{position:absolute;inset:0;z-index:9;pointer-events:none;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 6%;animation:whin 3.6s ease forwards}\
+.wh__eye{font-size:clamp(3.2rem,12vw,6.5rem);line-height:1;animation:whpop .6s cubic-bezier(.22,1.6,.36,1) both;filter:drop-shadow(0 0 24px rgba(160,220,255,.9))}\
+.wh__eye i{font-style:normal;font-size:.55em;display:inline-block;animation:whspark 1s ease-in-out infinite alternate}\
+.wh__t{margin-top:.4rem;font:italic 600 clamp(1.05rem,4.2vw,2rem)/1.3 Georgia,serif;color:#fff6d8;text-shadow:0 0 14px rgba(255,220,140,.9),0 0 40px rgba(255,200,90,.6);animation:whflick 3.6s steps(1) forwards}\
+.wh__by{margin-top:.3rem;font:700 .72rem system-ui,sans-serif;letter-spacing:.22em;text-transform:uppercase;color:#ffd77a}\
+.wh__rose{position:relative;font-size:clamp(2rem,7vw,3.4rem);margin-top:.3rem;width:1.2em;height:1.2em}\
+.wh__rose b,.wh__rose em{position:absolute;inset:0;font-style:normal;transition:opacity .8s,transform .8s}\
+.wh__rose em{opacity:0;transform:scale(.5)}\
+.wh.bloom .wh__rose b{opacity:0;transform:scale(.6) rotate(-20deg)}\
+.wh.bloom .wh__rose em{opacity:1;transform:scale(1.15)}\
+@keyframes whin{0%{opacity:0;background:rgba(0,0,0,0)}10%{opacity:1;background:radial-gradient(ellipse,rgba(255,230,160,.18),rgba(0,0,0,.35) 70%)}85%{opacity:1}100%{opacity:0}}\
+@keyframes whpop{from{transform:scale(0) rotate(-30deg)}to{transform:scale(1)}}\
+@keyframes whspark{to{transform:scale(1.4) rotate(20deg);opacity:.6}}\
+@keyframes whflick{0%{opacity:0}8%{opacity:1}12%{opacity:.3}16%{opacity:1}30%{opacity:.75}34%{opacity:1}60%{opacity:.85}64%{opacity:1}100%{opacity:1}}\
+@media(prefers-reduced-motion:reduce){.wh,.wh *{animation:none!important}}';
+  (function () { var st = document.createElement("style"); st.id = "ctCss"; st.textContent = CSS; document.head.appendChild(st); })();
 
   function suit(face, label, big) {
     return '<div class="ct__p' + (big ? " ct__p--big" : "") + '"><b>' + face + "</b><i></i>" + (label ? "<small>" + label + "</small>" : "") + "</div>";
@@ -114,7 +148,6 @@
   var busy = false;
   function play(done) {
     if (busy) return; busy = true;
-    if (!document.getElementById("ctCss")) { var st = document.createElement("style"); st.id = "ctCss"; st.textContent = CSS; document.head.appendChild(st); }
     var t = tx(), name = Math.random() < 0.5 ? "AL-ʿADL" : "AL-ḤAKAM";
     var box = document.createElement("div");
     box.className = "ct"; box.setAttribute("role", "dialog"); box.setAttribute("aria-modal", "true"); box.setAttribute("aria-label", t.c1);
@@ -156,4 +189,44 @@
     next();
   }
   window.coachCourt = { play: play, busy: function () { return busy; } };
+
+  /* ---- the shopping-spree joke: a bigger mall every time ---- */
+  var MALLS = ["Corner Bazaar", "City Mall", "Mega Mall", "Royal Orchard Grand Mall", "Galactic Giga Mall"];
+  var SHOPS = ["👜", "💎", "👠", "⌚", "🕶️", "💍", "👗", "🪙", "💄", "🧴"];
+  function mall(level, done) {
+    if (busy) return; busy = true;
+    var m = mx(), lv = Math.max(0, level), floors = Math.min(6, 1 + lv), per = Math.min(7, 3 + lv), html = "";
+    for (var f = 0; f < floors; f++) { html += '<div class="ml__floor">'; for (var k = 0; k < per; k++) html += '<span class="ml__shop">' + SHOPS[(f * 3 + k) % SHOPS.length] + "</span>"; html += "</div>"; }
+    var name = MALLS[Math.min(lv, MALLS.length - 1)] + (lv >= MALLS.length ? " " + "+".repeat(lv - MALLS.length + 1) : "");
+    var box = document.createElement("div"); box.className = "ct"; box.setAttribute("role", "dialog"); box.setAttribute("aria-modal", "true"); box.setAttribute("aria-label", m.spree);
+    var bubbles = "", d = 0.6;
+    m.dem.forEach(function (q, i) {
+      bubbles += '<span class="ml__bub" style="left:4%;bottom:30%;animation-delay:' + d.toFixed(1) + 's,' + (d + 1.5).toFixed(1) + 's">🦂 ' + q + "</span>"; d += 1.6;
+      if (i % 2 === 1 || i === m.dem.length - 1) { bubbles += '<span class="ml__bub ml__bub--crab" style="right:4%;bottom:36%;animation-delay:' + (d - 0.5).toFixed(1) + 's,' + (d + 1.2).toFixed(1) + 's">🦀 ' + m.nb + "</span>"; d += 1.2; }
+    });
+    box.innerHTML = '<div class="ct__scene ct--mall on"><div class="ml__name">🛍️ ' + name + '</div><div class="ml__lvl">' + m.lvl + " " + (lv + 1) + '</div><div class="ml__bldg">' + html + "</div>" +
+      '<div class="ml__cast">' + suit("🦂", "👸?", false) + suit("🦀", "🤴 👑", true) + "</div>" + bubbles + '<p class="ct__cap">' + m.pause + " " + m.spree + "</p></div>" +
+      '<div class="ct__scene ct--end"><div class="ml__joke">' + m.joke + '<br><span class="ml__stamp">' + m.hum + " 😳</span></div><p class=\"ct__cap\">" + m.back + "</p></div>" +
+      '<button type="button" class="ct__skip">' + tx().skip + " ✕</button>";
+    document.body.appendChild(box);
+    var sc = box.querySelectorAll(".ct__scene"), timer;
+    function finish() { clearTimeout(timer); box.remove(); busy = false; document.removeEventListener("keydown", onKey); if (done) done(); }
+    function onKey(e) { if (e.key === "Escape") finish(); }
+    box.querySelector(".ct__skip").addEventListener("click", finish); document.addEventListener("keydown", onKey); box.querySelector(".ct__skip").focus();
+    timer = setTimeout(function () { sc[0].classList.remove("on"); sc[1].classList.add("on"); timer = setTimeout(finish, 4200); }, (d + 1.6) * 1000);
+  }
+
+  /* ---- the crab's whisper of hope, after the horror numbers ---- */
+  function whisper(container) {
+    if (!container || container.querySelector(".wh")) return;
+    var m = mx(), el = document.createElement("div"); el.className = "wh";
+    el.innerHTML = '<div class="wh__eye">👁️<i>✨</i></div><div class="wh__t">“' + m.wh + '”</div><div class="wh__by">🦀 ' + m.whby + ' ✨</div><div class="wh__rose"><b>🥀</b><em>🌹</em></div>';
+    container.appendChild(el);
+    setTimeout(function () { el.classList.add("bloom"); }, 1300);
+    setTimeout(function () { el.remove(); }, 3700);
+  }
+  window.coachMall = { play: mall };
+  window.coachWhisper = whisper;
+  window.coachBeg = function (i) { var l = begLines(); return l[(i == null ? Math.floor(Math.random() * l.length) : i) % l.length]; };
+  window.coachBegCount = function () { return begLines().length; };
 })();

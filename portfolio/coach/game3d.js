@@ -594,6 +594,7 @@ export function start(root) {
     kaaba.userData.mats = [kMat, kGold, glow.material];
   }
   kaaba.position.copy(toSky(-25, 8, 230)); kaaba.position.y -= 12; kaaba.scale.setScalar(2.2); kaaba.lookAt(0, kaaba.position.y, 0); kaaba.rotateY(-0.6); kaaba.visible = false; scene.add(kaaba);
+  const shop = { t: 55 + Math.random() * 20, level: 0 };
   const pray = { on: false, t: 0, next: 22 + Math.random() * 12, k: 0 };
   // prayer timeline (seconds): stand, bow (ruku), stand, prostrate (sujud), sit, prostrate, sit and salam
   function pose(t) { return t < 3 ? [0, 0] : t < 5.5 ? [1.35, 0] : t < 6.5 ? [0, 0] : t < 9 ? [1.95, 1] : t < 10 ? [0.15, 0.7] : t < 12.5 ? [1.95, 1] : [0.15, 0.7]; }
@@ -604,17 +605,20 @@ export function start(root) {
   const tracers = new THREE.LineSegments(new THREE.BufferGeometry().setAttribute("position", new THREE.BufferAttribute(new Float32Array(16 * 6), 3)), tracerMat); scene.add(tracers);
   const beggars = [];
   function bubble(text) {
-    const c = document.createElement("canvas"); c.width = 640; c.height = 200; const g = c.getContext("2d");
-    g.fillStyle = "#fff"; g.beginPath(); g.roundRect ? g.roundRect(10, 10, 620, 140, 60) : g.rect(10, 10, 620, 140); g.fill(); g.beginPath(); g.moveTo(300, 148); g.lineTo(330, 196); g.lineTo(350, 148); g.fill();
-    g.fillStyle = "#c2185b"; g.font = "bold 50px Georgia, serif"; g.textAlign = "center"; g.fillText(text, 320, 98);
-    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthWrite: false })); sp.scale.set(7, 2.2, 1); return sp;
+    const c = document.createElement("canvas"); c.width = 720; c.height = 300; const g = c.getContext("2d");
+    g.font = "bold 44px Georgia, serif"; const words = text.split(" "), lines = []; let ln = "";
+    words.forEach(wd => { const t2 = ln ? ln + " " + wd : wd; if (g.measureText(t2).width > 640 && ln) { lines.push(ln); ln = wd; } else ln = t2; }); lines.push(ln);
+    const L = lines.slice(0, 4), h = 40 + L.length * 54;
+    g.fillStyle = "#fff"; g.beginPath(); g.roundRect ? g.roundRect(10, 10, 700, h, 50) : g.rect(10, 10, 700, h); g.fill(); g.beginPath(); g.moveTo(330, h + 8); g.lineTo(360, Math.min(296, h + 56)); g.lineTo(390, h + 8); g.fill();
+    g.fillStyle = "#c2185b"; g.textAlign = "center"; L.forEach((l2, k) => g.fillText(l2, 360, 66 + k * 54));
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthWrite: false })); sp.scale.set(10.5, 4.4, 1); sp.material.color.setScalar(0.78); return sp;
   }
   function spawnBeggars() {
     [-1, 1].forEach((sd, k) => {
       const b2 = scorp.clone(true); b2.children.slice().forEach(c => { if (c.isSprite) b2.remove(c); });
       b2.traverse(m => { if (m.isMesh) { m.material = m.material.clone(); if (m.material.color) m.material.color.lerp(new THREE.Color(0xff7ab8), 0.45); } });
       b2.scale.setScalar(0.9); shadowy(b2); scene.add(b2);
-      const bub = bubble(tx().beg[k]); bub.position.set(0, 4.2, 0); b2.add(bub);
+      const bub = bubble(window.coachBeg ? window.coachBeg(k) : tx().beg[k]); bub.position.set(0, 5.6, 0); b2.add(bub);
       b2.userData = { sd, bub, line: k, t: 2 + k * 1.5 }; beggars.push(b2);
     });
   }
@@ -647,6 +651,7 @@ export function start(root) {
   let msgT = 0;
   function say(main, sub, ms) { hud.msg.innerHTML = "<b>" + main + "</b>" + (sub ? "<span>" + sub + "</span><span class='lh' lang='ar'>" + tx().lh + "</span>" : ""); hud.msg.classList.add("on"); msgT = ms || 1200; }
   shadowy(crab); shadowy(scorp);
+  spawnBeggars();
   setHud(); say(tx().start, "", 99999);
 
   function begin() { if (window.coachCourt && window.coachCourt.busy()) return; if (!st.playing) { st.playing = true; hud.msg.classList.remove("on"); } }
@@ -877,7 +882,7 @@ export function start(root) {
         if (d.t < 0.8) { w.rotation.x = -Math.min(1, d.t / 0.8) * Math.PI / 2; w.position.y = 0; finished = false; }
         else if (d.t < 4.5) {   // a soft light carries them up
           if (!d.soul) { d.soul = true; w.traverse(m => { if (m.isMesh) { m.material = m.material.clone(); m.material.transparent = true; m.material.emissive && m.material.emissive.set(0x8899ff); } }); const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex("rgba(220,230,255,0.9)", "rgba(220,230,255,0)"), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending })); halo.scale.set(5, 5, 1); halo.position.y = 1.5; w.add(halo);
-            if (d === fire.dying[0]) { hud.cap.textContent = tx().inna; hud.cap.classList.add("on"); spawnBeggars(); } }
+            if (d === fire.dying[0]) { hud.cap.textContent = tx().inna; hud.cap.classList.add("on"); if (!beggars.length) spawnBeggars(); } }
           const k = (d.t - 0.8) / 3.7; w.rotation.x = -Math.PI / 2 * (1 - k); w.position.y = k * 9; w.traverse(m => { if (m.isMesh) m.material.opacity = 1 - k; else if (m.isSprite) m.material.opacity = 1 - k; }); finished = false;
         }
       });
@@ -886,7 +891,7 @@ export function start(root) {
     beggars.forEach((b2, k) => {   // kneeling by the crab, always begging
       const u = b2.userData; b2.position.set(crab.position.x + u.sd * (2.8 * st.crabScale + 2.2), 0, crab.position.z + 2.4 * st.crabScale + 1);
       b2.lookAt(crab.position.x, 0, crab.position.z); b2.rotateY(Math.PI); b2.rotation.x = Math.sin(time * 4 + k) * 0.15;
-      u.t -= dt; if (u.t <= 0) { u.t = 3 + Math.random() * 2; u.line = (u.line + 2) % 4; b2.remove(u.bub); u.bub = bubble(tx().beg[u.line]); u.bub.position.set(0, 4.2, 0); b2.add(u.bub); }
+      u.t -= dt; if (u.t <= 0) { u.t = 3.5 + Math.random() * 2; const n = window.coachBegCount ? window.coachBegCount() : 4; u.line = (u.line + 1 + Math.floor(Math.random() * 2)) % n; b2.remove(u.bub); u.bub = bubble(window.coachBeg ? window.coachBeg(u.line) : tx().beg[u.line % 4]); u.bub.position.set(0, 5.6, 0); b2.add(u.bub); }
     });
     mist.forEach(m => { m.position.x += m.userData.v * dt; if (m.position.x > 24) m.position.x = -24; m.material.opacity = 0.35 + Math.sin(time * 0.5 + m.position.z) * 0.12; });
     bunnies.forEach(b2 => { const u = b2.userData; b2.position.x += u.dir * u.sp * dt; if (Math.abs(b2.position.x) > 55) { b2.position.x = -u.dir * 55; u.y = 9 + Math.random() * 8; u.z = -10 - Math.random() * 30; } b2.position.y = u.y + Math.sin(time * 3 + u.ph) * 1.2; b2.position.z = u.z; b2.rotation.y = u.dir * Math.PI / 2; b2.children.forEach(c => { if (c.userData.sd) c.rotation.y = c.userData.sd * Math.sin(time * 14 + u.ph) * 0.7; }); });
@@ -897,7 +902,7 @@ export function start(root) {
     for (let i = 0; i < FF; i++) { const sd = ffSeed[i]; ffPos[i * 3] = sd[0] + Math.sin(time * 0.5 + sd[3]) * 1.5; ffPos[i * 3 + 1] = sd[1] + Math.sin(time * 1.3 + sd[3] * 2) * 0.5; ffPos[i * 3 + 2] = sd[2] + Math.cos(time * 0.4 + sd[3]) * 1.5; }
     ffGeo.attributes.position.needsUpdate = true; fireflies.material.opacity = 0.55 + Math.sin(time * 3) * 0.25;
     finalPass.uniforms.time.value = time % 100; finalPass.uniforms.vig.value = 0.55 + omen * 0.09;
-    if (!reduce) { horror.t -= dt; if (horror.t <= 0) { horror.t = 3 + Math.random() * 6 - Math.min(omen, 3) * 0.6; flash1315(); } }
+    if (!reduce) { horror.t -= dt; if (horror.t <= 0) { horror.t = 8 + Math.random() * 6 - Math.min(omen, 3) * 0.6; flash1315(); setTimeout(() => { if (window.coachWhisper && inView) window.coachWhisper(root); }, 1100); } }
 
     // the ring sequence: drop -> AL-MUDHILL -> AL-GHANI and the flood -> everything sucked into the crab and the mansion
     act.v = Math.max(0, act.v - dt * 0.3); seq.cool -= dt;
@@ -932,6 +937,11 @@ export function start(root) {
       w.scale.setScalar(1.25); w.lookAt(pos.x, 0, pos.z);
       u.legs.forEach((lg, k) => { lg.rotation.x = moving ? Math.sin(time * 10 + k * Math.PI) * 0.5 : 0; });
     });
+
+    // the shopping-spree joke
+    if (st.playing && seq.phase === "idle" && ham.phase === "idle" && !pray.on && !fire.dying.length) { shop.t -= dt;
+      if (shop.t <= 0 && window.coachMall && !(window.coachCourt && window.coachCourt.busy())) { shop.t = 70 + Math.random() * 25; st.playing = false; Object.keys(keys).forEach(x => keys[x] = false);
+        window.coachMall.play(shop.level++, () => { st.playing = true; st.kb = 2; say(tx().hit, "", 400); }); } }
 
     // the Hammer of Justice
     if (ham.phase === "idle" && st.playing && !weap.kind && dual.phase === "idle" && !magic.mode) { ham.next -= dt; if (ham.next <= 0) {
@@ -1019,5 +1029,5 @@ export function start(root) {
   // Re-label the HUD if the visitor switches language
   new MutationObserver(setHud).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
   // test hook
-  window.__g3 = { st, pos, keys, niceTry, doSting, rain, blood: () => { bloodT = 0; }, inView: () => inView, weapon: k => { weap.next = 0; st.playing = true; }, knives: () => { dual.next = 0; st.playing = true; }, magic: () => { magic.next = 0; st.playing = true; }, qiyamah: () => { qiy.next = 0; }, pray: () => { pray.next = 0; st.playing = true; }, crossfire: () => { st.playing = true; if (!fire.done) crossfire(); }, ring: () => { st.playing = true; seq.cool = 0; act.v = 99; }, omen: () => omen, hammer: () => { ham.next = 0; st.playing = true; } };
+  window.__g3 = { st, pos, keys, niceTry, doSting, rain, blood: () => { bloodT = 0; }, inView: () => inView, weapon: k => { weap.next = 0; st.playing = true; }, knives: () => { dual.next = 0; st.playing = true; }, magic: () => { magic.next = 0; st.playing = true; }, qiyamah: () => { qiy.next = 0; }, pray: () => { pray.next = 0; st.playing = true; }, shop: () => { shop.t = 0; st.playing = true; }, crossfire: () => { st.playing = true; if (!fire.done) crossfire(); }, ring: () => { st.playing = true; seq.cool = 0; act.v = 99; }, omen: () => omen, hammer: () => { ham.next = 0; st.playing = true; } };
 }
