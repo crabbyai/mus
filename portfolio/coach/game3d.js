@@ -208,10 +208,40 @@ export function start(root) {
     const palm = new THREE.Mesh(new THREE.SphereGeometry(0.55, 20, 14), shellMat); palm.scale.set(0.9, 0.7, 1.2); palm.position.set(0, 0.25, 1.05); g.add(palm);
     const top = new THREE.Mesh(new THREE.ConeGeometry(0.22, 0.9, 12), shellMat); top.rotation.x = Math.PI / 2; top.position.set(0, 0.42, 1.75); g.add(top);
     const bot = new THREE.Mesh(new THREE.ConeGeometry(0.16, 0.75, 12), shellMat); bot.rotation.x = Math.PI / 2; bot.position.set(0, 0.06, 1.65); g.add(bot);
-    crab.add(g); claws.push({ g, top, bot, side });
+    const bicep = new THREE.Mesh(new THREE.SphereGeometry(0.32, 20, 14), shellMat); bicep.scale.set(1, 0.85, 1.35); bicep.position.set(side * 0.05, 0.12, 0.35); g.add(bicep);
+    crab.add(g); claws.push({ g, top, bot, side, arm, palm, bicep });
   });
+  // battle spikes on the shell (shown as the crab gets stronger)
+  const spikes = new THREE.Group(); crab.add(spikes);
+  for (let i = 0; i < 9; i++) { const a = -Math.PI * 0.85 + i / 8 * Math.PI * 0.7 + Math.PI / 2; const sp3 = new THREE.Mesh(new THREE.ConeGeometry(0.13, 0.5, 8), dark); sp3.position.set(Math.cos(a) * 1.25, 1.72 - Math.abs(i - 4) * 0.05, Math.sin(a) * -0.55 - 0.1); sp3.rotation.x = -0.35; spikes.add(sp3); }
+  spikes.visible = false;
+  // weapons the crab sometimes pulls out
+  const steel = new THREE.MeshStandardMaterial({ color: 0xdfe6ee, metalness: 1, roughness: 0.18 });
+  const blackMetal = new THREE.MeshStandardMaterial({ color: 0x1c1e24, metalness: 0.8, roughness: 0.3 });
+  const sword = new THREE.Group();
+  { const blade = new THREE.Mesh(new THREE.BoxGeometry(0.14, 2.4, 0.04), steel); blade.position.y = 1.5; sword.add(blade); const tip = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.35, 4), steel); tip.position.y = 2.87; tip.rotation.y = Math.PI / 4; sword.add(tip);
+    const guard = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.1, 0.14), goldMat); guard.position.y = 0.28; sword.add(guard); const grip = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.5), blackMetal); sword.add(grip); const pom = new THREE.Mesh(new THREE.SphereGeometry(0.09, 10, 8), goldMat); pom.position.y = -0.28; sword.add(pom); }
+  const gun = new THREE.Group();
+  { const barrel = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.24, 1.0), blackMetal); barrel.position.set(0, 0.25, 0.45); gun.add(barrel); const grip2 = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.55, 0.26), blackMetal); grip2.rotation.x = -0.25; grip2.position.set(0, -0.05, 0); gun.add(grip2);
+    const trim = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.06, 1.02), goldMat); trim.position.set(0, 0.39, 0.45); gun.add(trim); }
+  const flash = new THREE.Sprite(new THREE.SpriteMaterial({ map: (() => { const c = document.createElement("canvas"); c.width = c.height = 128; const g = c.getContext("2d"); const gr = g.createRadialGradient(64, 64, 4, 64, 64, 64); gr.addColorStop(0, "rgba(255,250,210,1)"); gr.addColorStop(0.35, "rgba(255,190,80,.8)"); gr.addColorStop(1, "rgba(255,120,20,0)"); g.fillStyle = gr; g.fillRect(0, 0, 128, 128); return new THREE.CanvasTexture(c); })(), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
+  flash.scale.set(1.4, 1.4, 1); flash.position.set(0, 0.25, 1.1); flash.visible = false; gun.add(flash);
+  [sword, gun].forEach(w => { w.visible = false; claws[1].g.add(w); });
+  sword.scale.setScalar(1.7); sword.position.set(0.2, 0.7, 1.3); sword.rotation.set(0.25, 0, -0.5);
+  gun.scale.setScalar(2.1); gun.position.set(0.35, 1.05, 1.0); gun.rotation.y = -0.55;
+  const weap = { kind: null, t: 0, next: 6 + Math.random() * 6, shot: 0 };
+  function strength(level) {
+    const m = Math.min(level, 6);
+    body.scale.set(1.7 + m * 0.12, 0.75 + m * 0.07, 1.25 + m * 0.09);
+    claws.forEach(c => { c.palm.scale.set(0.9 + m * 0.16, 0.7 + m * 0.12, 1.2 + m * 0.14); c.arm.scale.set(1 + m * 0.35, 1, 1 + m * 0.35); c.bicep.scale.set(1 + m * 0.3, 0.85 + m * 0.25, 1.35 + m * 0.3); c.bicep.visible = m >= 1; });
+    legs.forEach(l => l.g.children.forEach(seg => seg.scale.set(1 + m * 0.3, 1, 1 + m * 0.3)));
+    spikes.visible = m >= 2; spikes.scale.setScalar(0.8 + m * 0.12);
+    shellMat.color.set(0xd9482b).lerp(new THREE.Color(0x9a1608), Math.min(1, m / 5));
+    shellMat.emissive.set(0x2a0500).lerp(new THREE.Color(0x4a0800), Math.min(1, m / 5));
+    crown.position.y = 3.05 + m * 0.12; chain.scale.setScalar(1 + m * 0.08);
+  }
   const crown = new THREE.Group(); { const ring = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.62, 0.35, 24, 1, true), goldMat); crown.add(ring); for (let i = 0; i < 7; i++) { const sp2 = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.4, 8), goldMat); const a = i / 7 * 6.28; sp2.position.set(Math.cos(a) * 0.6, 0.35, Math.sin(a) * 0.6); crown.add(sp2); } }
-  crown.position.set(0, 2.0, 0); crown.visible = false; crab.add(crown);
+  crown.position.set(0, 3.05, 0); crown.visible = false; crab.add(crown);
   const chain = new THREE.Mesh(new THREE.TorusGeometry(1.0, 0.09, 12, 48), goldMat); chain.rotation.x = Math.PI / 2.2; chain.position.set(0, 1.25, 0.55); chain.visible = false; crab.add(chain);
   const crabShadow = new THREE.Mesh(new THREE.CircleGeometry(2.2, 32), new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.45 })); crabShadow.rotation.x = -Math.PI / 2; crabShadow.position.y = 0.03; scene.add(crabShadow);
 
@@ -292,7 +322,7 @@ export function start(root) {
     st.crabScale = Math.min(3, st.crabScale * 1.3);
     st.wealth = st.wealth * 1.9 + 750000 + Math.random() * 400000;
     buildMansion(st.level); buildStacks(st.level);
-    crown.visible = st.round >= 1; chain.visible = st.round >= 2;
+    crown.visible = st.round >= 1; chain.visible = st.round >= 2; strength(st.round);
     rain(Math.min(MAXB, 140));
     pos.set(0, 0, 8); st.hp = 100; st.shake = 0.6;
     const t = tx(); say(t.nice, t.niceSub, 3200); setHud();
@@ -411,7 +441,16 @@ export function start(root) {
     claws.forEach(({ g, top, side }, i) => { const snap = Math.max(0, Math.sin(time * 4 + i * 2)) ** 6; top.rotation.z = snap * 0.6 * side; g.rotation.y = side * (0.2 + Math.sin(time * 1.5 + i) * 0.1) - st.flinch * side * 0.4; g.rotation.x = -st.lunge * 0.6; });
     body.rotation.z = st.flinch * Math.sin(time * 40) * 0.08;
     eyes.forEach((e, i) => { e.position.y = 2.3 + Math.sin(time * 3 + i) * 0.04; });
-    crown.rotation.y += dt * 0.6;
+    crown.rotation.y += dt * 0.6; crown.position.y = 3.05 + Math.min(st.round, 6) * 0.12 + Math.sin(time * 2.2) * 0.08;
+    // weapons: now and then the crab pulls out a sword or a gun for a few seconds
+    weap.next -= dt;
+    if (!weap.kind && weap.next <= 0 && st.playing) { weap.kind = Math.random() < 0.5 ? "sword" : "gun"; weap.t = 3.2; weap.shot = 0.9; (weap.kind === "sword" ? sword : gun).visible = true; say(weap.kind === "sword" ? "🗡️" : "🔫", "", 900); }
+    if (weap.kind) {
+      weap.t -= dt;
+      if (weap.kind === "sword") { sword.rotation.z = -0.5 + Math.sin(time * 6) * 0.9; sword.rotation.x = 0.25 + Math.sin(time * 3) * 0.3; }
+      else { weap.shot -= dt; flash.visible = weap.shot < 0.08 && weap.shot > -0.02; if (weap.shot <= -0.02) { weap.shot = 0.7; if (Math.abs(pos.x - crab.position.x) < 3 + st.crabScale) { st.kb = Math.max(st.kb, 1.4); st.shake = Math.max(st.shake, 0.18); } } gun.rotation.x = flash.visible ? -0.35 : 0; gun.rotation.y = -0.55; }
+      if (weap.t <= 0) { sword.visible = gun.visible = flash.visible = false; weap.kind = null; weap.next = 7 + Math.random() * 8 - Math.min(st.round, 4); }
+    }
     crab.lookAt(pos.x, 0, pos.z); crab.rotation.x = 0; crab.rotation.z = 0;   // the lunge moves the body and claws, not the crab's spot
     body.position.z = lz * 0.5; claws.forEach(c => { c.g.position.z = 1.0 + lz * 0.8; });
 
@@ -455,5 +494,5 @@ export function start(root) {
   // Re-label the HUD if the visitor switches language
   new MutationObserver(setHud).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
   // test hook
-  window.__g3 = { st, pos, keys, niceTry, doSting, rain, blood: () => { bloodT = 0; }, inView: () => inView };
+  window.__g3 = { st, pos, keys, niceTry, doSting, rain, blood: () => { bloodT = 0; }, inView: () => inView, weapon: k => { weap.next = 0; st.playing = true; } };
 }

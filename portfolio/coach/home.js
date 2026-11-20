@@ -153,9 +153,23 @@
       baby.style.setProperty("--w", road.clientWidth + "px");
       baby.innerHTML = "<i>🦂</i>";
       road.insertBefore(baby, boss);
+      var flexes = "💪".repeat(Math.min(round, 3));   // more muscle every round
+      document.getElementById("flexL").textContent = flexes; document.getElementById("flexR").textContent = flexes;
       win.hidden = false;
       setTimeout(function () { hp = 100; bar.style.width = "100%"; }, 700);
     });
+  }
+  /* ---- Scorpion Street: now and then the crab pulls out a sword or a gun ---- */
+  var weapon = document.getElementById("bossWeapon");
+  if (weapon && !(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches)) {
+    (function draw() {
+      setTimeout(function () {
+        var sword = Math.random() < 0.5;
+        weapon.textContent = sword ? "🗡️" : "🔫";
+        weapon.classList.add("on"); if (sword) weapon.classList.add("swing");
+        setTimeout(function () { weapon.classList.remove("on", "swing"); draw(); }, 2600);
+      }, 5000 + Math.random() * 7000);
+    })();
   }
   /* ---- prayer request ---- */
   var pray = document.getElementById("prayForm");

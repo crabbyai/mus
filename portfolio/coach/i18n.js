@@ -1977,6 +1977,16 @@
   T.ko['g3.keys'] = '화살표 키나 WASD로 움직이고, 스페이스나 화면을 탭해 쏘세요. 휴대폰에서는 버튼을 사용하세요. لا حول ولا قوة إلا بالله';
   T.ko['g3.nogl'] = '이 3D 게임에는 WebGL이 필요한데 브라우저에서 켜져 있지 않습니다. 다른 브라우저로 시도해 보세요.';
 
+
+  /* Scorpion Street: shorter nice-try line */
+  T.ar["st.win"] = 'كبر الزعيم إلى ضعف حجمه.';
+  T.ur["st.win"] = 'باس دُگنا بڑا ہو گیا۔';
+  T.fr["st.win"] = 'Le boss est devenu deux fois plus gros.';
+  T.es["st.win"] = 'El jefe acaba de duplicar su tamaño.';
+  T.ja["st.win"] = 'ボスが2倍の大きさになりました。';
+  T.zh["st.win"] = 'boss 刚刚变大了一倍。';
+  T.ko["st.win"] = '보스가 두 배로 커졌습니다.';
+
   /* ---------------- engine ---------------- */
   var root = document.documentElement;
   var nodes = [].slice.call(document.querySelectorAll("[data-i18n]"));
