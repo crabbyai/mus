@@ -503,17 +503,57 @@ export function start(root) {
   }
   buildWives(0);
 
-  /* ---------- cartoon bunnies with bow ties flying by ---------- */
+  const stemMat = new THREE.MeshStandardMaterial({ color: 0x2f7a3a }), budMat = new THREE.MeshStandardMaterial({ color: 0xc8102e, roughness: 0.45, emissive: 0x2a0008 });
+  /* ---------- magician bunny rabbits hopping on the road: top hat, wand, a rose in the mouth ---------- */
   const bunnies = [];
-  { const fur = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.8 }), pink = new THREE.MeshStandardMaterial({ color: 0xff9ec7 }), black = new THREE.MeshStandardMaterial({ color: 0x0a0a0a }), wing = new THREE.MeshBasicMaterial({ color: 0xfff2c8, transparent: true, opacity: 0.8, side: THREE.DoubleSide });
+  { const fur = new THREE.MeshStandardMaterial({ color: 0xf4f1ec, roughness: 0.9 }), furShade = new THREE.MeshStandardMaterial({ color: 0xe2dcd2, roughness: 0.95 }),
+      pink = new THREE.MeshStandardMaterial({ color: 0xffa6c4, roughness: 0.7 }), eyeM = new THREE.MeshStandardMaterial({ color: 0x120608, roughness: 0.15 }),
+      hatM = new THREE.MeshStandardMaterial({ color: 0x0c0c10, roughness: 0.35, metalness: 0.2 }), bandM = new THREE.MeshStandardMaterial({ color: 0xc8102e, roughness: 0.5 }),
+      wandM = new THREE.MeshStandardMaterial({ color: 0x0c0c10, roughness: 0.3 }), tipM = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 0.6 }),
+      starM = new THREE.MeshStandardMaterial({ color: 0xffd77a, emissive: 0xffc030, emissiveIntensity: 1.2, metalness: 0.6, roughness: 0.2 }),
+      whisk = new THREE.LineBasicMaterial({ color: 0x9a9a9a });
+    const starShape = new THREE.Shape(); for (let k = 0; k < 10; k++) { const r = k % 2 ? 0.07 : 0.17, a = k / 10 * Math.PI * 2 + Math.PI / 2; k ? starShape.lineTo(Math.cos(a) * r, Math.sin(a) * r) : starShape.moveTo(Math.cos(a) * r, Math.sin(a) * r); }
+    const starGeo = new THREE.ExtrudeGeometry(starShape, { depth: 0.04, bevelEnabled: false });
     for (let i = 0; i < 3; i++) {
-      const b2 = new THREE.Group();
-      const body = new THREE.Mesh(new THREE.SphereGeometry(0.7, 16, 12), fur); body.scale.set(1, 0.9, 1.2); b2.add(body);
-      const head = new THREE.Mesh(new THREE.SphereGeometry(0.48, 16, 12), fur); head.position.set(0, 0.6, 0.75); b2.add(head);
-      [-1, 1].forEach(sd => { const ear = new THREE.Mesh(new THREE.CapsuleGeometry(0.12, 0.7, 4, 8), fur); ear.position.set(sd * 0.2, 1.35, 0.6); ear.rotation.z = sd * 0.2; b2.add(ear); const inner = new THREE.Mesh(new THREE.CapsuleGeometry(0.06, 0.5, 4, 8), pink); inner.position.set(sd * 0.2, 1.35, 0.7); inner.rotation.z = sd * 0.2; b2.add(inner);
-        const bow = new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.26, 4), black); bow.rotation.z = sd * Math.PI / 2; bow.position.set(sd * 0.13, 0.2, 1.05); b2.add(bow);
-        const wg = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 0.6), wing); wg.position.set(sd * 0.9, 0.4, -0.1); wg.userData.sd = sd; b2.add(wg); });
-      b2.scale.setScalar(0.85); b2.children.forEach(c => { if (c.userData.sd) c.visible = false; }); shadowy(b2); b2.userData = { sp: 3.5 + Math.random() * 2.5, z: 6 - Math.random() * 24, ph: Math.random() * 6, dir: i % 2 ? 1 : -1 };
+      const b2 = new THREE.Group(), add = (m, x, y, z) => { m.position.set(x, y, z); b2.add(m); return m; };
+      const body = add(new THREE.Mesh(new THREE.SphereGeometry(0.55, 20, 16), fur), 0, 0.62, -0.1); body.scale.set(0.9, 0.95, 1.25); body.rotation.x = -0.35;
+      add(new THREE.Mesh(new THREE.SphereGeometry(0.36, 16, 12), fur), 0, 0.95, 0.32).scale.set(0.85, 0.9, 0.8);                // chest
+      [-1, 1].forEach(sd => {
+        const haunch = add(new THREE.Mesh(new THREE.SphereGeometry(0.32, 16, 12), furShade), sd * 0.36, 0.42, -0.35); haunch.scale.set(0.6, 1, 1.25);
+        const foot = add(new THREE.Mesh(new THREE.CapsuleGeometry(0.09, 0.42, 4, 10), fur), sd * 0.36, 0.09, -0.05); foot.rotation.x = Math.PI / 2;   // long hind feet
+        add(new THREE.Mesh(new THREE.CapsuleGeometry(0.07, 0.3, 4, 8), fur), sd * 0.17, 0.42, 0.42);                             // front paws
+      });
+      add(new THREE.Mesh(new THREE.SphereGeometry(0.17, 12, 10), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 1 })), 0, 0.72, -0.82);   // cotton tail
+      const head = new THREE.Group(); head.position.set(0, 1.38, 0.42); b2.add(head);
+      const skull = new THREE.Mesh(new THREE.SphereGeometry(0.33, 20, 16), fur); skull.scale.set(0.9, 0.88, 1.05); head.add(skull);
+      const snout = new THREE.Mesh(new THREE.SphereGeometry(0.2, 16, 12), fur); snout.scale.set(1, 0.8, 0.9); snout.position.set(0, -0.08, 0.24); head.add(snout);
+      [-1, 1].forEach(sd => { const ch = new THREE.Mesh(new THREE.SphereGeometry(0.11, 12, 10), fur); ch.position.set(sd * 0.09, -0.12, 0.33); head.add(ch); });
+      const nose = new THREE.Mesh(new THREE.SphereGeometry(0.045, 10, 8), pink); nose.scale.set(1.2, 0.8, 0.8); nose.position.set(0, -0.03, 0.42); head.add(nose);
+      [-1, 1].forEach(sd => {
+        const eye = new THREE.Mesh(new THREE.SphereGeometry(0.065, 12, 10), eyeM); eye.position.set(sd * 0.2, 0.07, 0.2); head.add(eye);
+        const glint = new THREE.Mesh(new THREE.SphereGeometry(0.018, 6, 6), tipM); glint.position.set(sd * 0.21, 0.1, 0.26); head.add(glint);
+        const ear = new THREE.Group(); ear.position.set(sd * 0.13, 0.26, -0.05); ear.rotation.set(-0.2, 0, sd * 0.22); head.add(ear);
+        const outer = new THREE.Mesh(new THREE.CapsuleGeometry(0.085, 0.58, 4, 10), fur); outer.scale.z = 0.45; outer.position.y = 0.36; ear.add(outer);
+        const inner = new THREE.Mesh(new THREE.CapsuleGeometry(0.05, 0.48, 4, 8), pink); inner.scale.z = 0.3; inner.position.set(0, 0.36, 0.03); ear.add(inner);
+        for (let k = -1; k <= 1; k++) { const g2 = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(sd * 0.1, -0.08 + k * 0.03, 0.36), new THREE.Vector3(sd * 0.42, -0.04 + k * 0.08, 0.3)]); head.add(new THREE.Line(g2, whisk)); }
+      });
+      // a red rose held in the mouth
+      const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 0.6, 6), stemMat); stem.rotation.z = Math.PI / 2; stem.position.set(0.12, -0.17, 0.4); head.add(stem);
+      const bloom = new THREE.Mesh(new THREE.SphereGeometry(0.15, 14, 12), new THREE.MeshStandardMaterial({ color: 0xe0102e, emissive: 0x6a0010, emissiveIntensity: 0.8, roughness: 0.4 })); bloom.scale.set(1, 1.15, 1); bloom.position.set(0.48, -0.15, 0.42); head.add(bloom);
+      const leaf = new THREE.Mesh(new THREE.SphereGeometry(0.05, 8, 6), stemMat); leaf.scale.set(1.6, 0.4, 0.9); leaf.position.set(0.25, -0.13, 0.42); head.add(leaf);
+      // magician's top hat
+      const hat = new THREE.Group(); hat.position.set(0.02, 0.27, 0.02); hat.rotation.z = -0.18; head.add(hat);
+      const brim = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.03, 24), hatM); hat.add(brim);
+      const crown = new THREE.Mesh(new THREE.CylinderGeometry(0.19, 0.2, 0.4, 24), hatM); crown.position.y = 0.21; hat.add(crown);
+      const band = new THREE.Mesh(new THREE.CylinderGeometry(0.205, 0.205, 0.07, 24), bandM); band.position.y = 0.06; hat.add(band);
+      // magic wand in the right paw, sparkling star at the tip
+      const wand = new THREE.Group(); wand.position.set(0.3, 0.55, 0.55); wand.rotation.set(0.3, 0, -0.75); wand.scale.setScalar(1.6); b2.add(wand);
+      const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.7, 8), wandM); rod.position.y = 0.35; wand.add(rod);
+      const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.026, 0.1, 8), tipM); cap.position.y = 0.66; wand.add(cap);
+      const star = new THREE.Mesh(starGeo, starM); star.position.set(0, 0.82, -0.02); wand.add(star);
+      const spark = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex("rgba(255,230,140,0.95)", "rgba(255,230,140,0)"), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending })); spark.scale.setScalar(1.3); spark.position.y = 0.82; wand.add(spark);
+      shadowy(b2); b2.scale.setScalar(1.7);
+      b2.userData = { sp: 3.5 + Math.random() * 2.5, z: 6 - Math.random() * 24, ph: Math.random() * 6, dir: i % 2 ? 1 : -1, wand, star, spark, head };
       b2.position.set(-14 + i * 12, 0, b2.userData.z); scene.add(b2); bunnies.push(b2);
     }
   }
@@ -771,7 +811,6 @@ export function start(root) {
   petalPool.instanceMatrix.setUsage(THREE.DynamicDrawUsage); scene.add(petalPool);
   const petals = Array.from({ length: petalPool.count }, () => ({ on: false, p: new THREE.Vector3(), v: new THREE.Vector3(), r: new THREE.Euler(), w: 0, life: 0 })); let petalI = 0;
   for (let i = 0; i < petalPool.count; i++) petalPool.setMatrixAt(i, hide);
-  const stemMat = new THREE.MeshStandardMaterial({ color: 0x2f7a3a }), budMat = new THREE.MeshStandardMaterial({ color: 0xc8102e, roughness: 0.45, emissive: 0x2a0008 });
   const roses = [];
   const love = { t: 0 };
   function loveStruck() {
@@ -1053,7 +1092,8 @@ export function start(root) {
       const u = b2.userData; b2.position.x += u.dir * u.sp * dt;
       if (Math.abs(b2.position.x) > 18) { b2.position.x = -u.dir * 18; u.z = 6 - Math.random() * 24; }
       b2.position.y = Math.abs(Math.sin(time * 5.5 + u.ph)) * 1.3; b2.position.z = u.z; b2.rotation.y = u.dir * Math.PI / 2;
-      b2.rotation.z = -u.dir * Math.sin(time * 5.5 + u.ph) * 0.12;
+      b2.rotation.z = 0; b2.rotation.x = -Math.cos(time * 5.5 + u.ph) * 0.12;
+      u.wand.rotation.z = -0.75 + Math.sin(time * 3 + u.ph) * 0.45; u.star.rotation.y += dt * 4; u.spark.material.opacity = 0.6 + Math.sin(time * 9 + u.ph) * 0.35; u.head.rotation.y = Math.sin(time * 1.3 + u.ph) * 0.2;
     });
     if (adlT > 0) { adlT -= dt; if (adlT <= 0) adlEl.classList.remove("on"); }
 
@@ -1241,5 +1281,5 @@ export function start(root) {
   // Re-label the HUD if the visitor switches language
   new MutationObserver(setHud).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
   // test hook
-  window.__g3 = { st, pos, keys, niceTry, doSting, rain, blood: () => { bloodT = 0; }, inView: () => inView, weapon: k => { weap.next = 0; st.playing = true; }, knives: () => { dual.next = 0; st.playing = true; }, magic: () => { magic.next = 0; st.playing = true; }, qiyamah: () => { qiy.next = 0; }, love: () => loveStruck(), flip: () => { flip.next = 0; st.playing = true; }, buraq: () => { flight.next = 0; }, split: () => { split.next = 0; }, pray: () => { pray.next = 0; st.playing = true; }, shop: () => { shop.t = 0; st.playing = true; }, crossfire: () => { st.playing = true; if (!fire.done) crossfire(); }, ring: () => { st.playing = true; seq.cool = 0; act.v = 99; }, omen: () => omen, hammer: () => { ham.next = 0; st.playing = true; } };
+  window.__g3 = { st, pos, keys, niceTry, doSting, rain, blood: () => { bloodT = 0; }, inView: () => inView, weapon: k => { weap.next = 0; st.playing = true; }, knives: () => { dual.next = 0; st.playing = true; }, magic: () => { magic.next = 0; st.playing = true; }, qiyamah: () => { qiy.next = 0; }, flip: () => { flip.next = 0; st.playing = true; }, buraq: () => { flight.next = 0; }, split: () => { split.next = 0; }, pray: () => { pray.next = 0; st.playing = true; }, shop: () => { shop.t = 0; st.playing = true; }, crossfire: () => { st.playing = true; if (!fire.done) crossfire(); }, ring: () => { st.playing = true; seq.cool = 0; act.v = 99; }, omen: () => omen, hammer: () => { ham.next = 0; st.playing = true; } };
 }
