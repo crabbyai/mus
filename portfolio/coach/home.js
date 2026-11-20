@@ -319,6 +319,16 @@
         flipLoop();
       }, flipped ? 22000 : 30000 + Math.random() * 15000);
     })();
+    // 2D: the 99 Names dhikr now and then, and a Pray button
+    var street = document.getElementById("scorpion-street");
+    function dhikr2() { if (!window.coachDhikr) return; var cap = document.createElement("span"); cap.className = "sadqa2"; cap.textContent = "📿 The crab begins his dhikr: the 99 Names of Allah"; road.appendChild(cap); setTimeout(function () { cap.remove(); }, 3000);
+      window.coachDhikr(street, function (kind) { var live = lanes(); if (!live.length) return; var sc = live[Math.floor(Math.random() * live.length)];
+          pop(kind === "heal" ? "+12" : kind === "push" ? "💥" : kind === "gold" ? "🪙" : kind === "light" ? "✨" : "🤍", sc, kind === "push" || kind === "gold" ? "crab" : "miss"); },
+        function () { road.classList.remove("quake"); void road.offsetWidth; road.classList.add("quake"); var b2 = document.createElement("span"); b2.className = "nm2 on"; b2.innerHTML = '<b>Subḥān Allāh</b><span lang="ar">سُبْحَانَ اللّٰه</span><em>99 NAMES</em>'; road.appendChild(b2); setTimeout(function () { b2.remove(); road.classList.remove("quake"); }, 2700); }); }
+    if (!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches)) (function dz() { setTimeout(function () { var rr = road.getBoundingClientRect(); if (rr.bottom > 0 && rr.top < innerHeight && !(window.coachCourt && window.coachCourt.busy())) dhikr2(); dz(); }, 70000 + Math.random() * 40000); })();
+    var prayBtn = document.getElementById("pray2");
+    if (prayBtn) prayBtn.addEventListener("click", function () { if (!window.coachPrayCard) return; window.coachPrayCard(street, function () {
+      lanes().forEach(function (sc) { pop("🤲", sc, "miss"); }); pop("✨ BARAKAH", boss, "crab"); }); });
     function lanes() { return [].slice.call(road.querySelectorAll(".scorp:not(.gone)")); }
     boss.addEventListener("click", function () {
       taps.push(Date.now()); taps = taps.filter(function (t) { return Date.now() - t < 6000; });
@@ -351,7 +361,10 @@
       crown.classList.add("on"); boss.style.setProperty("--cr", Math.min(round, 5));
       win.hidden = false;
       // the shopping-spree joke: a bigger mall every round
-      setTimeout(function () { var rr = road.getBoundingClientRect(); if (window.coachMall && rr.bottom > 0 && rr.top < innerHeight && !(window.coachCourt && window.coachCourt.busy()) && (!window.coachPop || window.coachPop.cutsceneOk())) window.coachMall.play(mallLevel++); }, 1400);
+      setTimeout(function () { var rr = road.getBoundingClientRect(); if (!(rr.bottom > 0 && rr.top < innerHeight) || (window.coachCourt && window.coachCourt.busy())) return;
+        if (round % 3 === 0 && window.coachQiyamah) window.coachQiyamah.play();          // every third round: the Day of Judgement and Jannat al-Firdaus
+        else if (window.coachMall && (!window.coachPop || window.coachPop.cutsceneOk())) window.coachMall.play(mallLevel++); }, 1400);
+      setTimeout(function () { if (window.coachAyah) window.coachAyah(street); }, 600);
       setTimeout(function () { hp = 100; bar.style.width = "100%"; }, 700);
     });
   }
