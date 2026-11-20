@@ -161,7 +161,9 @@
 
   var busy = false;
   function play(done) {
-    if (busy) return; busy = true;
+    var seen = false; try { seen = sessionStorage.getItem("coach-court-seen"); } catch (e) {}
+    if (seen) { if (done) done(); return; }   // the court and jail story plays only once per visit
+    if (busy) return; busy = true; try { sessionStorage.setItem("coach-court-seen", "1"); } catch (e) {}
     if (!document.getElementById("qyCss")) { var q0 = document.createElement("style"); q0.id = "qyCss"; q0.textContent = QCSS; document.head.appendChild(q0); }
     var t = tx(), P = px(), name = Math.random() < 0.5 ? "AL-ʿADL" : "AL-ḤAKAM";
     var box = document.createElement("div");
@@ -320,13 +322,13 @@
       ['ct--akbar', '<div class="ak"><b lang="ar">اللهُ أَكْبَر</b><span>Allahu Akbar</span></div>', ""]
     ];
     box.innerHTML = S.map(function (s3) { return '<div class="ct__scene ' + s3[0] + '">' + s3[1] + (s3[2] ? '<p class="ct__cap">' + s3[2] + "</p>" : "") + "</div>"; }).join("") +
-      '<button type="button" class="ct__skip">' + tx().skip + ' ✕</button><button type="button" class="ct__back">' + tx().back + "</button>";
+      '<button type="button" class="ct__back">' + tx().back + "</button>";   // the Day of Judgement cannot be skipped
     document.body.appendChild(box);
     var els = box.querySelectorAll(".ct__scene"), i = -1, timer = 0, back = box.querySelector(".ct__back"), DUR = [5500, 6500, 6000, 8000, 7500, 7000, 6500, 5000];
     function finish() { clearTimeout(timer); box.remove(); busy = false; document.removeEventListener("keydown", onKey); if (done) done(); }
     function next() { if (i >= 0) els[i].classList.remove("on"); i++; if (i >= els.length) { finish(); return; } els[i].classList.add("on"); if (i === els.length - 1) { back.classList.add("on"); back.focus(); } timer = setTimeout(next, DUR[i]); }
-    function onKey(e) { if (e.key === "Escape") finish(); }
-    box.querySelector(".ct__skip").addEventListener("click", finish); back.addEventListener("click", finish); document.addEventListener("keydown", onKey); box.querySelector(".ct__skip").focus(); next();
+    function onKey() {}
+    back.addEventListener("click", finish); document.addEventListener("keydown", onKey); next();
   }
   window.coachQiyamah = { play: qiyamah };
 

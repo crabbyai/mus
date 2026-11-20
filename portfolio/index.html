@@ -590,7 +590,7 @@ html[dir=rtl] .road{direction:ltr}
 .scorp i{display:inline-block;animation:wiggle .35s ease-in-out infinite alternate;font-style:normal}
 @keyframes wiggle{to{transform:translateY(-2px) rotate(4deg)}}
 .boss{position:absolute;right:8px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:.2rem;border:0;background:none;color:var(--cream);cursor:pointer;z-index:2}
-.boss__crab{font-size:calc(5.2rem * var(--cs,1) * var(--gb,1));transition:font-size .6s cubic-bezier(.22,1.4,.36,1);line-height:1;filter:drop-shadow(0 0 16px rgba(255,80,60,.55));animation:bossbob 1.8s ease-in-out infinite;transition:transform .2s}
+.boss__crab{font-size:min(calc(5.2rem * var(--cs,1) * var(--gb,1)),10.5rem);transition:font-size .6s cubic-bezier(.22,1.4,.36,1);line-height:1;filter:drop-shadow(0 0 16px rgba(255,80,60,.55));animation:bossbob 1.8s ease-in-out infinite;transition:transform .2s}
 .boss:active .boss__crab{transform:scale(.88)}
 @keyframes bossbob{50%{transform:translateY(-5px) rotate(-4deg)}}
 .boss__tag{font:800 .6rem system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#ff8a7a;background:rgba(10,15,30,.75);padding:.15rem .45rem;border-radius:6px}
@@ -602,7 +602,7 @@ html[dir=rtl] .road{direction:ltr}
 .boss__weapon.on{opacity:1;transform:rotate(-15deg) scale(1)}
 .boss__weapon.swing{animation:swing .5s ease-in-out infinite alternate}
 @keyframes swing{from{transform:rotate(-45deg) scale(1)}to{transform:rotate(25deg) scale(1)}}
-.boss__crown{position:absolute;left:50%;bottom:80%;transform:translateX(-50%);font-size:calc(1.1rem + var(--cs,1) * .5rem + var(--cr,0) * .35rem);line-height:1;opacity:0;transition:opacity .4s,font-size .6s cubic-bezier(.22,1.4,.36,1);filter:drop-shadow(0 0 8px rgba(255,210,110,.95)) drop-shadow(0 0 20px rgba(255,170,40,.6));animation:crownbob 2.2s ease-in-out infinite;pointer-events:none;z-index:2}
+.boss__crown{position:absolute;left:50%;bottom:80%;transform:translateX(-50%);font-size:min(calc(1.1rem + var(--cs,1) * .5rem + var(--cr,0) * .35rem),3.4rem);line-height:1;opacity:0;transition:opacity .4s,font-size .6s cubic-bezier(.22,1.4,.36,1);filter:drop-shadow(0 0 8px rgba(255,210,110,.95)) drop-shadow(0 0 20px rgba(255,170,40,.6));animation:crownbob 2.2s ease-in-out infinite;pointer-events:none;z-index:2}
 .boss__crown.on{opacity:1}
 .boss__crown::after{content:"✨";position:absolute;right:-.45em;top:-.3em;font-size:.5em;animation:twinkle 1.4s ease-in-out infinite}
 @keyframes crownbob{50%{transform:translateX(-50%) translateY(-.12em) rotate(-4deg)}}
@@ -853,6 +853,30 @@ html{scroll-padding-top:70px}
 .pray2{border:2px solid #fff;border-radius:16px;padding:.6rem 1.6rem;background:linear-gradient(160deg,#dff6ff,#9fdcff 45%,#6ec6ff);color:#1b0f5a;font:900 1.05rem system-ui,sans-serif;letter-spacing:.04em;cursor:pointer;box-shadow:0 0 0 3px rgba(170,90,255,.5),0 0 22px rgba(170,90,255,.55);animation:prayGlow 2s ease-in-out infinite alternate}
 #scorpion-street .g3__pray{position:absolute}
 #scorpion-street .g3__name99 b{font-size:clamp(1.6rem,6vw,2.6rem)!important}
+
+/* 2D: the Gemini twins beside Gemini-Cancer */
+.gc2{position:absolute;bottom:10%;z-index:3;display:flex;flex-direction:column;align-items:center;pointer-events:none;animation:gcFloat 2.4s ease-in-out infinite alternate,gcIn .9s cubic-bezier(.22,1.5,.36,1) both}
+.gc2 i{font-style:normal;font-size:calc(1.5rem * var(--cs,1));line-height:1;filter:drop-shadow(0 0 8px #fff) drop-shadow(0 0 16px rgba(143,216,255,.9))}
+.gc2--r i{filter:drop-shadow(0 0 8px #fff) drop-shadow(0 0 16px rgba(255,215,122,.95))}
+.gc2 b{font-size:.8rem;animation:twinkle 1.2s ease-in-out infinite}
+.gc2--l{right:100%;margin-right:-.2em}.gc2--r{left:100%;margin-left:-.2em;animation-delay:-1.2s,0s}
+.gc2__arc{position:absolute;left:-30%;right:-30%;top:-35%;height:70%;border:3px solid transparent;border-top-color:rgba(255,220,140,.9);border-radius:50% 50% 0 0;filter:drop-shadow(0 0 6px rgba(255,220,140,.95));pointer-events:none;animation:gcIn 1s .3s both}
+@keyframes gcFloat{to{transform:translateY(-6px)}}
+@keyframes gcIn{from{opacity:0;transform:translateY(-30px) scale(.4)}}
+.gc2__say{max-width:min(86%,340px)!important}
+@media(prefers-reduced-motion:reduce){.gc2,.gc2__arc{animation:none}}
+
+/* 2D: a big, readable game window */
+.road .scorp{font-size:2.3rem}
+.road .dmg2{font-size:1.7rem!important}.road .dmg2--crab{font-size:2.3rem!important}
+.road .beg2{font-size:.95rem!important;max-width:min(80%,360px)!important;padding:.5rem .8rem!important}
+.road .sadqa2{font-size:.95rem!important;padding:.5rem 1rem!important}
+.road .nm2 b{font-size:clamp(1.5rem,5vw,2.4rem)!important}.road .nm2 span{font-size:1.5rem!important}.road .nm2 em{font-size:.9rem!important}
+.road .dd2{font-size:clamp(1.2rem,4.6vw,2rem)!important}
+.boss__name{font-size:.9rem!important}.boss__tag{font-size:.75rem!important}.boss__hp{width:130px!important;height:12px!important}
+.road .h1315{font-size:3.4rem}
+.street__hint,.street__royal{font-size:1rem!important}
+@media(max-width:700px){.road{height:max(64vh,calc(var(--rh,150px) + 44px))!important}}
 .g3__flash{position:absolute;inset:0;z-index:2;pointer-events:none;background:#eaf4ff;opacity:0}
 .g3__flash.on{animation:g3flash .8s steps(1) forwards}
 @keyframes g3flash{0%{opacity:.95}8%{opacity:.05}16%{opacity:.85}26%{opacity:.1}36%{opacity:.7}50%{opacity:0}62%{opacity:.45}74%{opacity:0}84%{opacity:.25}100%{opacity:0}}
@@ -895,7 +919,7 @@ html{scroll-padding-top:70px}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
 
 /* ---- Scorpion Street 2D: MapleStory-inspired look (original art, CSS and SVG) ---- */
-.road{height:calc(var(--rh,150px) + 44px) !important;background:linear-gradient(180deg,#2a1f63 0%,#5a3f9e 14%,#c77bb0 24%,#ffb48a 30%,#3fae45 30%) !important;}
+.road{height:max(min(78vh,600px),calc(var(--rh,150px) + 44px)) !important;background:linear-gradient(180deg,#2a1f63 0%,#5a3f9e 14%,#c77bb0 24%,#ffb48a 30%,#3fae45 30%) !important;}
 .road .scorp{margin-top:44px}
 .road{border:3px solid #f3d27a;box-shadow:0 0 0 2px #6b4214,inset 0 0 0 2px rgba(255,255,255,.35),0 10px 30px -10px rgba(0,0,0,.8) !important}
 .road::before{top:auto !important;bottom:16%;height:20% !important;margin-top:0 !important;left:-2% !important;right:-2% !important;border-radius:50%/30%;background:radial-gradient(circle at 20% 40%,rgba(0,0,0,.12) 0 2px,transparent 3px),radial-gradient(circle at 70% 60%,rgba(0,0,0,.1) 0 2px,transparent 3px),linear-gradient(180deg,#e8c48a,#c99a5e) !important;background-size:38px 20px,52px 24px,auto !important;opacity:.9 !important;animation:none !important;box-shadow:inset 0 3px 0 rgba(255,255,255,.35),inset 0 -3px 0 rgba(0,0,0,.15)}
@@ -1620,7 +1644,7 @@ html{scroll-padding-top:70px}
 <script>
 (function () {
   var box = document.getElementById("g3"); if (!box) return;
-  var go = function () { import("./coach/game3d.js?v=44").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
+  var go = function () { import("./coach/game3d.js?v=46").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
   if (!("IntersectionObserver" in window)) { go(); return; }
   var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io.disconnect(); go(); } }, { rootMargin: "300px" });
   io.observe(box);
@@ -1658,8 +1682,8 @@ html{scroll-padding-top:70px}
 <script src="coach/reminder.js?v=4"></script>
 <script src="coach/numbers.js?v=3"></script>
 <script src="coach/eye.js?v=1"></script>
-<script src="coach/court.js?v=10" defer></script>
-<script src="coach/home.js?v=26"></script>
+<script src="coach/court.js?v=11" defer></script>
+<script src="coach/home.js?v=28"></script>
 <script>
 (function(){
   var WA="16134083945";

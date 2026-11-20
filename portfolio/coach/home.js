@@ -186,8 +186,8 @@
           window.coachCrabHit(["88888888", "622", "222222"]);
           setTimeout(function () {
             hammer.classList.remove("up", "slam"); road.classList.remove("quake");
-            var seen = false; try { seen = sessionStorage.getItem("coach-court-2d"); } catch (e) {}
-            if (window.coachCourt && !seen && (!window.coachPop || window.coachPop.cutsceneOk())) { try { sessionStorage.setItem("coach-court-2d", "1"); } catch (e) {} window.coachCourt.play(); }
+            var seen = false; try { seen = sessionStorage.getItem("coach-court-seen"); } catch (e) {}
+            if (window.coachCourt && !seen && (!window.coachPop || window.coachPop.cutsceneOk())) { window.coachCourt.play(); }
             swing();
           }, 1700);
         }, 1100);
@@ -213,6 +213,20 @@
         beg();
       }, 4500 + Math.random() * 4000);
     })();
+    // round 2: the crab reveals he is a Gemini too, and becomes Gemini-Cancer
+    var gcDone = false;
+    function geminiReveal() { if (gcDone) return; gcDone = true;
+      var rr = road.getBoundingClientRect(), bb = boss.getBoundingClientRect();
+      var rep = document.createElement("span"); rep.className = "beg2 beg2--crab gc2__say"; rep.textContent = "You are not a rare energy. Scorpio is the most common sign. I, however, am rare: I was born on the cusp of magic. I have TWO signs!!! I am a Gemini too ♊";
+      road.appendChild(rep); var hw = rep.offsetWidth / 2 + 6; rep.style.left = Math.max(hw, Math.min(road.clientWidth - hw, bb.left - rr.left + bb.width / 2)) + "px"; rep.style.top = Math.max(rep.offsetHeight + 4, bb.top - rr.top + 6) + "px"; setTimeout(function () { rep.remove(); }, 6000);
+      setTimeout(function () {
+        var body = boss.querySelector(".boss__body"); ["l", "r"].forEach(function (sd) { var t2 = document.createElement("span"); t2.className = "gc2 gc2--" + sd; t2.setAttribute("aria-hidden", "true"); t2.innerHTML = "<i>" + (sd === "l" ? "🧚‍♂️" : "🧚‍♀️") + "</i><b>✨</b>"; body.appendChild(t2); });
+        var arc = document.createElement("span"); arc.className = "gc2__arc"; arc.setAttribute("aria-hidden", "true"); body.appendChild(arc);
+        var nm = boss.querySelector(".boss__name"); nm.removeAttribute("data-i18n"); nm.textContent = "♊ Gemini-Cancer ♋";
+        var tg = boss.querySelector(".boss__tag"); tg.removeAttribute("data-i18n"); tg.textContent = "Final boss · Gemini-Cancer ♊♋";
+        boss.setAttribute("aria-label", "Final boss: Gemini-Cancer, the crab. Tap to defeat it.");
+        var note = document.createElement("span"); note.className = "sadqa2"; note.textContent = "♊ Gemini comes to the crab's aid! He is now GEMINI-CANCER ♋"; road.appendChild(note); setTimeout(function () { note.remove(); }, 4000);
+      }, 2600); }
     var taps = [], ringBusy = false, ringCool = 0, omen = 0, gb = 1, mk = 1;
     var castle = document.getElementById("castle2");
     function banner2(en, ar, meaning) {
@@ -360,6 +374,7 @@
       var crown = document.getElementById("bossCrown");   // a bigger crown every round
       crown.classList.add("on"); boss.style.setProperty("--cr", Math.min(round, 5));
       win.hidden = false;
+      if (round >= 2) setTimeout(geminiReveal, 2400);
       // the shopping-spree joke: a bigger mall every round
       setTimeout(function () { var rr = road.getBoundingClientRect(); if (!(rr.bottom > 0 && rr.top < innerHeight) || (window.coachCourt && window.coachCourt.busy())) return;
         if (round % 3 === 0 && window.coachQiyamah) window.coachQiyamah.play();          // every third round: the Day of Judgement and Jannat al-Firdaus
