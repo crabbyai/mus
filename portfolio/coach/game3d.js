@@ -1015,8 +1015,9 @@ export function start(root) {
   const gym = new THREE.Group(); {
     const box = new THREE.Mesh(new THREE.BoxGeometry(6, 3.4, 4.5), new THREE.MeshStandardMaterial({ color: 0x1c1c26, roughness: 0.6, metalness: 0.3 })); box.position.y = 1.7; gym.add(box);
     const glass = new THREE.Mesh(new THREE.PlaneGeometry(5, 2.2), new THREE.MeshBasicMaterial({ color: 0x3fd6ff, transparent: true, opacity: 0.35 })); glass.position.set(0, 1.4, 2.26); gym.add(glass);
-    const c = document.createElement("canvas"); c.width = 256; c.height = 96; const g = c.getContext("2d"); g.font = "italic 900 74px system-ui, sans-serif"; g.textAlign = "center"; g.shadowColor = "#ff2fa0"; g.shadowBlur = 22; g.fillStyle = "#ffd6f0"; g.fillText("GYM", 128, 74);
-    const sign = new THREE.Mesh(new THREE.PlaneGeometry(3, 1.1), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c), transparent: true })); sign.position.set(0, 3.9, 2.26); gym.add(sign);
+    const c = document.createElement("canvas"); c.width = 512; c.height = 200; const g = c.getContext("2d"); g.fillStyle = "rgba(20,8,40,.85)"; g.fillRect(0, 0, 512, 200); g.textAlign = "center"; g.shadowColor = "#a05aff"; g.shadowBlur = 22; g.fillStyle = "#e9d6ff"; g.font = "italic 900 78px system-ui, sans-serif"; g.fillText("24/7 FITNESS", 256, 92);
+    g.shadowColor = "#20e6d8"; g.fillStyle = "#c8fff8"; g.font = "800 40px system-ui, sans-serif"; g.fillText("OPEN 24 HOURS", 256, 160);
+    const sign = new THREE.Mesh(new THREE.PlaneGeometry(4.6, 1.8), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c), transparent: true })); sign.position.set(0, 4.3, 2.26); gym.add(sign);
     for (let k = -1; k <= 1; k++) { const db = new THREE.Group(); const bar = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.9, 6), bikeChrome); bar.rotation.z = Math.PI / 2; db.add(bar); [-1, 1].forEach(sd => { const w = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.14, 12), bikeDark); w.rotation.z = Math.PI / 2; w.position.x = sd * 0.42; db.add(w); }); db.position.set(k * 1.4, 0.2, 3.2); gym.add(db); }
     shadowy(gym);
   }
@@ -1178,6 +1179,24 @@ export function start(root) {
     ov.querySelector("button").addEventListener("click", close); setTimeout(() => { if (ov.isConnected) close(); }, 12000);
   }
 
+  /* ---------- the salon on the right side of the road ---------- */
+  const salon = new THREE.Group(); {
+    const box = new THREE.Mesh(new THREE.BoxGeometry(6, 3.4, 4.5), new THREE.MeshStandardMaterial({ color: 0xf6d6e6, roughness: 0.6 })); box.position.y = 1.7; salon.add(box);
+    const glass = new THREE.Mesh(new THREE.PlaneGeometry(5, 2.2), new THREE.MeshBasicMaterial({ color: 0xff9ad0, transparent: true, opacity: 0.4 })); glass.position.set(0, 1.4, 2.26); salon.add(glass);
+    const awn = new THREE.Mesh(new THREE.BoxGeometry(6.4, 0.18, 1.2), new THREE.MeshStandardMaterial({ color: 0xff2fa0, roughness: 0.6 })); awn.position.set(0, 2.9, 2.7); awn.rotation.x = 0.25; salon.add(awn);
+    const c = document.createElement("canvas"); c.width = 512; c.height = 160; const g = c.getContext("2d"); g.textAlign = "center"; g.shadowColor = "#ff2fa0"; g.shadowBlur = 24; g.fillStyle = "#fff0f8"; g.font = "italic 900 92px Georgia, serif"; g.fillText("SALON ✂", 256, 110);
+    const sg = new THREE.Mesh(new THREE.PlaneGeometry(4.2, 1.3), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c), transparent: true })); sg.position.set(0, 4.1, 2.26); salon.add(sg);
+    const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 1.8, 16), new THREE.MeshStandardMaterial({ map: (() => { const cc = document.createElement("canvas"); cc.width = 64; cc.height = 128; const gg = cc.getContext("2d"); gg.fillStyle = "#fff"; gg.fillRect(0, 0, 64, 128); gg.fillStyle = "#ff2fa0"; for (let k = -2; k < 8; k++) { gg.beginPath(); gg.moveTo(0, k * 20); gg.lineTo(64, k * 20 + 30); gg.lineTo(64, k * 20 + 40); gg.lineTo(0, k * 20 + 10); gg.fill(); } const t = new THREE.CanvasTexture(cc); t.wrapS = t.wrapT = THREE.RepeatWrapping; return t; })() }));
+    pole.position.set(3.3, 1.4, 2.3); salon.add(pole); salon.userData.pole = pole; shadowy(salon);
+  }
+  salon.position.set(15.5, 0, -5); salon.rotation.y = -Math.PI / 2; scene.add(salon);
+  // glowing doorway markers at the road's edge
+  const doorMk = [[-6.0, 0xa05aff], [6.0, 0xff2fa0]].map(([x, c]) => { const m = new THREE.Mesh(new THREE.RingGeometry(0.7, 1, 32), new THREE.MeshBasicMaterial({ color: c, transparent: true, opacity: 0.8, side: THREE.DoubleSide })); m.rotation.x = -Math.PI / 2; m.position.set(x, 0.06, -5); scene.add(m); return m; });
+  const GYM_LINE = "EW YOU STINK 🤢 YOU NEED COLOGNE FROM DUBAI. TRY DIOR SAUVAGE!";
+  const SALON_LINE = "EWWW YOU HAVE NO HAIR! 💇‍♀️ MY HAIR STRAIGHTENER FROM DUBAI WILL NOT WORK ON YOU. GET LOST!!!";
+  const door = { phase: "idle", side: 0, t: 0, cool: 0, bub: null };
+  function enterDoor(side) { door.phase = "in"; door.side = side; door.t = 0.9; Object.keys(keys).forEach(x => keys[x] = false); }
+
   /* ---------- game state ---------- */
   const st = { stun: 0, round: 0, hp: 100, crabScale: 1, wealth: 1000000, level: 0, playing: false, sting: 0, cool: 0, kb: 0, crabT: 1.5, crabTarget: 0, lunge: 0, flinch: 0, shake: 0 };
   const pos = new THREE.Vector3(0, 0, 8);
@@ -1326,7 +1345,7 @@ export function start(root) {
     if (st.stun > 0) { st.stun -= dt; mx = mz = 0; scorp.rotation.y += dt * 14; } else scorp.rotation.y = 0;
     if (!st.playing) { mx = mz = 0; }
     if (st.kb > 0) { pos.z += st.kb * dt * 3; st.kb = Math.max(0, st.kb - dt * 6); }
-    pos.x = THREE.MathUtils.clamp(pos.x + mx * sp2 * dt, -5.2, 5.2);
+    if (door.phase === "idle") pos.x = THREE.MathUtils.clamp(pos.x + mx * sp2 * dt, -5.2, 5.2);
     const minZ = crab.position.z + 2.4 * st.crabScale + 1.2;
     pos.z = THREE.MathUtils.clamp(pos.z + mz * sp2 * dt, minZ, 12);
     scorp.position.set(pos.x, ham.fly + pz.y, pos.z); scorp.scale.setScalar(1.25 * shrinkK); scorpShadow.position.set(pos.x, 0.03, pos.z);
@@ -1585,6 +1604,20 @@ export function start(root) {
       if (book.position.y <= 1.1) { book.position.y = 1.1; book.userData.chute.visible = false; man.phase = "pick"; man.t = 1.2; } }
     if (man.phase === "pick") { man.t -= dt; book.position.lerp(tmpV2.set(pos.x, 2.4, pos.z - 0.4), Math.min(1, dt * 4)); book.rotation.set(-0.3, Math.PI, 0);
       if (man.t <= 0) { man.phase = "read"; book.visible = false; st.playing = false; Object.keys(keys).forEach(x => keys[x] = false); openManual(); } }
+    // the gym and the salon: walk to the glowing door at the road's edge, go in, get thrown out
+    doorMk.forEach((m, k) => { m.material.opacity = 0.45 + Math.sin(time * 4 + k) * 0.35; m.scale.setScalar(1 + Math.sin(time * 3 + k) * 0.08); });
+    salon.userData.pole.material.map.offset.y = (time * 0.4) % 1;
+    door.cool -= dt;
+    if (door.phase === "idle" && st.playing && door.cool <= 0 && Math.abs(pos.z + 5) < 2.6) { if (pos.x <= -5.15) enterDoor(-1); else if (pos.x >= 5.15) enterDoor(1); }
+    if (door.phase === "in") { door.t -= dt; pos.x += door.side * dt * 9; pos.z += (-5 - pos.z) * Math.min(1, dt * 4); scorp.scale.multiplyScalar(Math.max(0.05, door.t / 0.9));
+      if (door.t <= 0) { door.phase = "inside"; door.t = 1.2; scorp.visible = false; } }
+    else if (door.phase === "inside") { door.t -= dt; st.shake = Math.max(st.shake, 0.15);
+      if (door.t <= 0) { door.phase = "out"; door.t = 1.1; scorp.visible = true; pos.y0 = 0; door.vy = 9;
+        door.bub = bubble(door.side < 0 ? GYM_LINE : SALON_LINE); door.bub.scale.multiplyScalar(1.15); door.bub.position.set(0, 6, 0); (door.side < 0 ? gym : salon).add(door.bub); door.bub.rotation.set(0, 0, 0);
+        say((door.side < 0 ? GYM_LINE : SALON_LINE).replace(/\s*\p{Extended_Pictographic}[\u200d\ufe0f\u2640\u2642\p{Extended_Pictographic}]*/gu, ""), "", 3800); dmg("🤢", pos.clone().add(new THREE.Vector3(0, 2, 0)), "miss"); } }
+    else if (door.phase === "out") { door.t -= dt; door.vy -= 22 * dt; pz.y = Math.max(0, pz.y + door.vy * dt); pos.x -= door.side * dt * 8; scorp.rotation.z += door.side * dt * 10;
+      if (door.t <= 0 || (pz.y <= 0 && door.t < 0.6)) { door.phase = "idle"; pz.y = 0; scorp.rotation.z = 0; pos.x = THREE.MathUtils.clamp(pos.x, -5.2, 5.2); st.stun = 1; door.cool = 6;
+        setTimeout(() => { if (door.bub && door.bub.parent) door.bub.parent.remove(door.bub); }, 3500); } }
     // TOUCH ME / KILL ME flashes
     if (!reduce) { tauntEl.t -= dt; if (tauntEl.t <= 0) { tauntEl.t = 14 + Math.random() * 10; taunt(); } }
     // the cologne and perfume care package

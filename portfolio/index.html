@@ -701,6 +701,47 @@ html[dir=rtl] .road{direction:ltr}
 .g3__mpage b{font:700 1.6rem "Noto Naskh Arabic",serif;color:#8a5a1a}
 .g3__mpage button{align-self:center;border:0;border-radius:999px;padding:.6rem 1.3rem;background:linear-gradient(135deg,#ff5fc8,#ffb03a);color:#fff;font:800 .95rem system-ui,sans-serif;cursor:pointer}
 @media(max-width:560px){.g3__mbook{flex-direction:column}.g3__mcover{width:100%;max-height:34vh;object-fit:cover}}
+
+/* ---- huge PLAY GAME button ---- */
+.playcta{display:flex;justify-content:center;padding:clamp(18px,4vw,34px) 16px 6px;position:relative;z-index:2}
+.playcta__btn{position:relative;display:flex;flex-direction:column;align-items:center;gap:.35rem;width:min(720px,100%);padding:clamp(1.1rem,3.5vw,1.8rem) 1rem;border-radius:26px;text-decoration:none;
+  background:linear-gradient(160deg,#dff6ff,#9fdcff 45%,#6ec6ff);border:3px solid #fff;color:#14104a;
+  box-shadow:0 0 0 4px rgba(170,90,255,.55),0 0 40px 10px rgba(170,90,255,.55),0 0 90px 24px rgba(255,255,255,.35);animation:pcFloat 3.2s ease-in-out infinite,pcAura 2.4s ease-in-out infinite alternate}
+.playcta__btn::before{content:"";position:absolute;inset:-18px;border-radius:40px;background:radial-gradient(ellipse at 30% 50%,rgba(180,107,255,.85),transparent 60%),radial-gradient(ellipse at 70% 50%,rgba(255,255,255,.8),transparent 60%);filter:blur(18px);z-index:-1;animation:pcGlow 2.6s ease-in-out infinite alternate}
+@keyframes pcGlow{from{opacity:.55;transform:scale(.97)}to{opacity:1;transform:scale(1.04)}}
+.playcta__btn::after{content:"";position:absolute;inset:0;border-radius:23px;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.75) 45%,transparent 60%);background-size:250% 100%;animation:pcShine 2.8s ease-in-out infinite;pointer-events:none}
+.playcta__t{position:relative;font:900 clamp(2.2rem,9vw,4.6rem)/1 system-ui,sans-serif;letter-spacing:.04em;font-style:italic;color:#1b0f5a;text-shadow:0 2px 0 #fff,0 0 18px rgba(170,90,255,.8)}
+.playcta__ic{display:inline-block;animation:pcPulse 1s ease-in-out infinite}
+.playcta small{position:relative;font:800 clamp(.75rem,2.6vw,1rem) system-ui,sans-serif;color:#3a2a8a}
+.playcta__orb{position:absolute;inset:0;pointer-events:none}
+.playcta__orb i{position:absolute;left:50%;top:50%;font-style:normal;font-size:clamp(1.6rem,5vw,2.6rem);filter:drop-shadow(0 0 10px rgba(255,255,255,.9));animation:pcOrbit 9s linear infinite}
+.playcta__orb i:nth-child(2){animation-delay:-1.5s}.playcta__orb i:nth-child(3){animation-delay:-3s}.playcta__orb i:nth-child(4){animation-delay:-4.5s}.playcta__orb i:nth-child(5){animation-delay:-6s}.playcta__orb i:nth-child(6){animation-delay:-7.5s}
+@keyframes pcOrbit{from{transform:translate(-50%,-50%) rotate(0) translateX(min(48vw,390px)) rotate(0) scaleY(1)}to{transform:translate(-50%,-50%) rotate(360deg) translateX(min(48vw,390px)) rotate(-360deg)}}
+.playcta__spark b{position:absolute;width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:0 0 10px 3px #c48bff;animation:pcSpark 2.2s ease-out infinite;opacity:0}
+.playcta__spark b:nth-child(1){left:6%;top:20%}.playcta__spark b:nth-child(2){left:92%;top:30%;animation-delay:.3s}.playcta__spark b:nth-child(3){left:18%;top:86%;animation-delay:.6s}.playcta__spark b:nth-child(4){left:80%;top:84%;animation-delay:.9s}
+.playcta__spark b:nth-child(5){left:50%;top:-4%;animation-delay:1.2s}.playcta__spark b:nth-child(6){left:35%;top:100%;animation-delay:1.5s}.playcta__spark b:nth-child(7){left:-2%;top:60%;animation-delay:1.8s}.playcta__spark b:nth-child(8){left:100%;top:65%;animation-delay:.45s}
+@keyframes pcSpark{0%{opacity:0;transform:scale(.2)}30%{opacity:1;transform:scale(1.4)}100%{opacity:0;transform:translateY(-26px) scale(.3)}}
+@keyframes pcFloat{50%{transform:translateY(-8px)}}
+@keyframes pcAura{to{box-shadow:0 0 0 4px rgba(255,255,255,.85),0 0 60px 16px rgba(170,90,255,.75),0 0 120px 30px rgba(255,255,255,.45)}}
+@keyframes pcSpin{to{transform:rotate(360deg)}}
+@keyframes pcShine{0%{background-position:150% 0}60%,100%{background-position:-60% 0}}
+@keyframes pcPulse{50%{transform:scale(1.25)}}
+.playcta__btn:hover{transform:translateY(-4px) scale(1.02)}
+@media(prefers-reduced-motion:reduce){.playcta__btn,.playcta__btn::before,.playcta__btn::after,.playcta__orb i,.playcta__spark b,.playcta__ic{animation:none}}
+
+/* ---- game buttons: black and white, poison green, hexagons ---- */
+.g3__mv{width:84px!important;height:84px!important;border:0!important;border-radius:0!important;background:#fff!important;clip-path:polygon(25% 3%,75% 3%,100% 50%,75% 97%,25% 97%,0 50%);color:#fff!important;box-shadow:none!important;position:relative;filter:drop-shadow(0 6px 10px rgba(0,0,0,.5))}
+.g3__mv::before{content:"";position:absolute;inset:4px;background:radial-gradient(circle at 50% 30%,#3a3a3e,#050506);clip-path:polygon(25% 3%,75% 3%,100% 50%,75% 97%,25% 97%,0 50%);z-index:0}
+.g3__mv>*{position:relative;z-index:1}
+.g3__mv svg{width:34px;height:34px}
+.g3__mv--poison{background:#b8ff9a!important}
+.g3__mv--poison::before{background:radial-gradient(circle at 50% 30%,#4ee03a,#0d5a08)}
+.g3__mv--repent .g3__emo,.g3__sting .g3__emo{filter:grayscale(1) brightness(1.9) contrast(1.2)}
+.g3__mv--repent.hot{animation:repentpulse .7s ease-in-out infinite alternate}
+.g3__mv--repent.hot::before{background:radial-gradient(circle at 50% 30%,#ffffff,#9a9aa0)}
+.g3__mv--repent.hot{color:#000!important}
+.g3__sting{background:radial-gradient(circle at 50% 30%,#2e2e32,#000)!important;border:4px solid #fff!important;box-shadow:0 0 0 6px #000,0 0 0 8px #fff,0 12px 30px rgba(0,0,0,.6)!important;color:#fff!important}
+@media(max-width:700px){.g3__mv{width:68px!important;height:68px!important}.g3__mv svg{width:28px;height:28px}}
 .g3__flash{position:absolute;inset:0;z-index:2;pointer-events:none;background:#eaf4ff;opacity:0}
 .g3__flash.on{animation:g3flash .45s steps(1) forwards}
 @keyframes g3flash{0%{opacity:.75}15%{opacity:.1}30%{opacity:.6}50%{opacity:0}65%{opacity:.25}100%{opacity:0}}
@@ -904,6 +945,14 @@ html[dir=rtl] .road{direction:ltr}
 <div class="ribbon" aria-hidden="true"><div class="ribbon__track" id="ribbon"></div></div>
 
 <!-- Featured hadith: always at the top -->
+<div class="playcta" aria-label="Play Scorpion Street 3D">
+  <a class="playcta__btn" href="#scorpion-street-3d">
+    <span class="playcta__orb" aria-hidden="true"><i>🦀</i><i>🦂</i><i>🦀</i><i>🦂</i><i>✨</i><i>🦂</i></span>
+    <span class="playcta__spark" aria-hidden="true"><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b></span>
+    <span class="playcta__t"><span class="playcta__ic" aria-hidden="true">▶</span> <span data-i18n="play">PLAY GAME</span></span>
+    <small data-i18n="play.s">🦂 Scorpion Street 3D · 🦀 can you beat the crab?</small>
+  </a>
+</div>
 <div class="fh-strip" data-featured="strip"></div>
 
 <main class="wrap">
@@ -1447,17 +1496,17 @@ html[dir=rtl] .road{direction:ltr}
       <div class="g3__joy" aria-hidden="true"><i></i></div>
       <div class="g3__pad">
         <span></span>
-        <div class="g3__moves"><div class="g3__mini"><button type="button" class="g3__mv g3__mv--pinch" data-k="pinch" aria-label="Pinch">✂️<small data-t="pinch">Pinch</small></button><button type="button" class="g3__mv g3__mv--poison" data-k="poison" aria-label="Poison">🧪<small data-t="poisonB">Poison</small></button><button type="button" class="g3__mv g3__mv--repent" data-k="repent" aria-label="Repent">🤲<small data-t="repent">Repent</small></button></div><button type="button" class="g3__sting" data-k="sting" aria-label="Sting">🦂<small data-t="sting">Sting</small></button></div>
+        <div class="g3__moves"><div class="g3__mini"><button type="button" class="g3__mv g3__mv--pinch" data-k="pinch" aria-label="Pinch"><svg viewBox="0 0 40 40" aria-hidden="true"><path fill="#fff" d="M8 30c-2-6 0-14 6-18 4-3 9-3 12-1l-6 6 7 1 5-6c2 4 1 9-3 12-3 2-6 3-9 2l-6 6c-2 1-4 0-6-2z"/><path fill="#fff" d="M6 8l5 3-3 4-4-3z"/></svg><small data-t="pinch">Pinch</small></button><button type="button" class="g3__mv g3__mv--poison" data-k="poison" aria-label="Poison"><svg viewBox="0 0 40 40" aria-hidden="true"><path fill="#fff" d="M20 4C14 13 9 19 9 25a11 11 0 0 0 22 0c0-6-5-12-11-21z"/><circle cx="15.5" cy="25" r="3" fill="#1d7a10"/></svg><small data-t="poisonB">Poison</small></button><button type="button" class="g3__mv g3__mv--repent" data-k="repent" aria-label="Repent"><span class="g3__emo">🤲</span><small data-t="repent">Repent</small></button></div><button type="button" class="g3__sting" data-k="sting" aria-label="Sting"><span class="g3__emo">🦂</span><small data-t="sting">Sting</small></button></div>
       </div>
       <div class="g3__nogl" data-i18n="g3.nogl">This 3D game needs WebGL, which your browser doesn't have turned on. Try another browser.</div>
     </div>
-    <p class="g3__keys" data-i18n="g3.keys">Drag anywhere on the game to move (or WASD). Tap the screen, Space or the 🦂 button to sting. Pinch ✂️ (E), Poison 🧪 (P), Repent 🤲 (R). لا حول ولا قوة إلا بالله</p>
+    <p class="g3__keys" data-i18n="g3.keys">Drag anywhere on the game to move (or WASD). Tap the screen, Space or the 🦂 button to sting. Pinch (E), Poison (P), Repent (R). Walk to the glowing doors to visit the gym or the salon. لا حول ولا قوة إلا بالله</p>
   </div>
 </section>
 <script>
 (function () {
   var box = document.getElementById("g3"); if (!box) return;
-  var go = function () { import("./coach/game3d.js?v=33").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
+  var go = function () { import("./coach/game3d.js?v=34").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
   if (!("IntersectionObserver" in window)) { go(); return; }
   var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io.disconnect(); go(); } }, { rootMargin: "300px" });
   io.observe(box);
@@ -1485,7 +1534,7 @@ html[dir=rtl] .road{direction:ltr}
   <a class="cta js-want" href="https://wa.me/16134083945" target="_blank" rel="noopener"><span data-i18n="cta">I want this so badly</span></a>
 </div></div>
 
-<script src="coach/i18n.js?v=24"></script>
+<script src="coach/i18n.js?v=25"></script>
 <script src="coach/library.js?v=2"></script>
 <script src="coach/featured.js?v=1"></script>
 <script src="coach/popups.js?v=2"></script>
