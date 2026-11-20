@@ -666,6 +666,12 @@ html[dir=rtl] .road{direction:ltr}
 .g3__lol{position:absolute;z-index:20;pointer-events:none;font-size:2.4rem;transform:translate(-50%,-50%);animation:g3lol 1.3s cubic-bezier(.2,.8,.3,1) both}
 @keyframes g3lol{0%{opacity:0;transform:translate(-50%,-30%) scale(.4) rotate(-20deg)}20%{opacity:1;transform:translate(calc(-50% + var(--dx)*.4),-110%) scale(1.25) rotate(10deg)}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),-320%) scale(1) rotate(-10deg)}}
 @media(max-width:700px){.g3__sting{width:104px;height:104px;font-size:2rem}}
+
+/* neon crime-city look for the 3D game (original styling) */
+#scorpion-street-3d .g3__hud>*{background:linear-gradient(135deg,rgba(40,6,40,.75),rgba(6,20,40,.75));border:1px solid rgba(255,47,160,.55);box-shadow:0 0 12px rgba(255,47,160,.25),inset 0 0 0 1px rgba(32,230,216,.18);font-style:italic;font-weight:800;letter-spacing:.02em}
+#scorpion-street-3d .g3__heat{color:#ffd23a;text-shadow:0 0 8px rgba(255,180,40,.7)}
+#scorpion-street-3d .g3__msg b{font-style:italic;font-weight:900;background:linear-gradient(180deg,#ffe0f0,#ff5fb4 55%,#ff9a3c);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 2px 0 rgba(0,0,0,.6))}
+#scorpion-street-3d .g3__msg{border:1px solid rgba(255,47,160,.5);box-shadow:0 0 30px rgba(255,47,160,.3)}
 .g3__flash{position:absolute;inset:0;z-index:2;pointer-events:none;background:#eaf4ff;opacity:0}
 .g3__flash.on{animation:g3flash .45s steps(1) forwards}
 @keyframes g3flash{0%{opacity:.75}15%{opacity:.1}30%{opacity:.6}50%{opacity:0}65%{opacity:.25}100%{opacity:0}}
@@ -1403,6 +1409,7 @@ html[dir=rtl] .road{direction:ltr}
         <span class="g3__hp"><span data-t="hp">Crab</span><em data-g="hp"><i></i></em></span>
         <span class="g3__wealth" data-g="wealth">Crab's wealth: $1,000,000</span>
         <span data-g="mansion">Mansion: Level 1</span>
+        <span class="g3__heat" data-g="heat">HEAT ☆☆☆☆☆</span>
         <button type="button" class="g3__sound" data-g="sound" aria-pressed="false"><b>🔈</b> <span data-t="sound">Sound</span></button>
       </div>
       <div class="g3__msg" data-g="msg" aria-live="polite"></div>
@@ -1420,7 +1427,7 @@ html[dir=rtl] .road{direction:ltr}
 <script>
 (function () {
   var box = document.getElementById("g3"); if (!box) return;
-  var go = function () { import("./coach/game3d.js?v=28").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
+  var go = function () { import("./coach/game3d.js?v=29").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
   if (!("IntersectionObserver" in window)) { go(); return; }
   var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io.disconnect(); go(); } }, { rootMargin: "300px" });
   io.observe(box);
