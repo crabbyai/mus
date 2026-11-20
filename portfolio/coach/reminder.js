@@ -66,7 +66,7 @@
   document.addEventListener("keydown", function (e) { if (!box.hidden && e.key === "Escape") close(); });
 
   function busy() {   // another pop-up, the chat or the contact chooser is open
-    return document.querySelector(".welcome:not([hidden]), .xit:not([hidden]), .chat:not([hidden])");
+    return document.querySelector(".welcome:not([hidden]), .xit:not([hidden]), .chat:not([hidden]), .ct");
   }
   function attempt() { if (busy()) setTimeout(attempt, 5000); else open(); }
   setTimeout(attempt, force ? 600 : 34000);

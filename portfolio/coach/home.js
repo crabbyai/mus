@@ -159,6 +159,27 @@
         road.appendChild(g); setTimeout(function (el) { el.remove(); }.bind(null, g), 2200);
       }
     }
+    // the Hammer of Justice: AL-ʿADL or AL-ḤAKAM. Every scorpion goes flying, they survive, and the case goes to court.
+    var hammer = document.getElementById("bossHammer");
+    if (hammer && !(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches)) (function swing() {
+      setTimeout(function () {
+        var r = road.getBoundingClientRect();
+        if (r.bottom < 0 || r.top > innerHeight || (window.coachCourt && window.coachCourt.busy())) { swing(); return; }
+        hammer.querySelector("em").textContent = Math.random() < 0.5 ? "AL-ʿADL" : "AL-ḤAKAM";
+        hammer.classList.add("up");
+        setTimeout(function () {
+          hammer.classList.add("slam");
+          road.classList.remove("quake"); void road.offsetWidth; road.classList.add("quake");
+          window.coachCrabHit(["88888888", "622", "222222"]);
+          setTimeout(function () {
+            hammer.classList.remove("up", "slam"); road.classList.remove("quake");
+            var seen = false; try { seen = sessionStorage.getItem("coach-court-2d"); } catch (e) {}
+            if (window.coachCourt && !seen) { try { sessionStorage.setItem("coach-court-2d", "1"); } catch (e) {} window.coachCourt.play(); }
+            swing();
+          }, 1700);
+        }, 1100);
+      }, 22000 + Math.random() * 16000);
+    })();
     function lanes() { return [].slice.call(road.querySelectorAll(".scorp:not(.gone)")); }
     boss.addEventListener("click", function () {
       // the scorpion only ever MISSES or does 1 damage (the crab has 7)
@@ -309,7 +330,7 @@
     offer.addEventListener("click", function (e) { if (e.target === offer) oClose(); });
     document.addEventListener("keydown", function (e) { if (!offer.hidden && e.key === "Escape") oClose(); });
     var oForce = /[?&]offer\b/.test(location.search);
-    var oTry = function () { if (document.querySelector(".welcome:not([hidden]), .xit:not([hidden]), .rmd:not([hidden]), .chat:not([hidden])")) setTimeout(oTry, 5000); else oOpen(); };
+    var oTry = function () { if (document.querySelector(".welcome:not([hidden]), .xit:not([hidden]), .rmd:not([hidden]), .chat:not([hidden]), .ct")) setTimeout(oTry, 5000); else oOpen(); };
     if (oForce || !store("coach-offer-shown")) setTimeout(oTry, oForce ? 400 : 69000);
   }
 })();

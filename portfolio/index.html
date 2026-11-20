@@ -587,6 +587,15 @@ html[dir=rtl] .road{direction:ltr}
 @keyframes dmgup{0%{opacity:0;transform:translate(-50%,0) scale(.6)}15%{opacity:1;transform:translate(-50%,-10px) scale(1.15)}100%{opacity:0;transform:translate(-50%,-56px) scale(1)}}
 .street__win .adl{font:800 .85rem system-ui,sans-serif;letter-spacing:.12em;color:var(--gold-bright);margin-top:.35rem}
 .street__win .stpray{font-size:.9rem;margin-top:.25rem}
+.boss__hammer{position:absolute;right:-.3em;bottom:30%;font-size:calc(2.6rem * var(--cs,1));line-height:1;opacity:0;transform-origin:80% 90%;transform:rotate(-70deg) scale(.4);pointer-events:none;z-index:3;transition:opacity .25s,transform .5s cubic-bezier(.22,1.5,.36,1)}
+.boss__hammer b{display:block;filter:drop-shadow(0 0 12px rgba(255,210,110,.9))}
+.boss__hammer em{position:absolute;left:50%;top:6%;transform:translateX(-50%) rotate(-38deg);font:900 calc(.16em + .1rem) system-ui,sans-serif;font-style:normal;letter-spacing:.05em;color:#1a1206;background:linear-gradient(135deg,#ffe7a3,#c9a45c);padding:.1em .35em;border-radius:.3em;white-space:nowrap}
+.boss__hammer.up{opacity:1;transform:rotate(-55deg) scale(1)}
+.boss__hammer.slam{opacity:1;transform:rotate(25deg) scale(1.1);transition:transform .14s ease-in}
+.road.quake{animation:quake .5s linear}
+@keyframes quake{20%{transform:translate(-6px,3px)}40%{transform:translate(6px,-3px)}60%{transform:translate(-4px,2px)}80%{transform:translate(4px,-1px)}}
+.road.quake .scorp i{animation:flyoff 1.6s cubic-bezier(.2,.7,.4,1) both}
+@keyframes flyoff{30%{transform:translate(-30px,-120px) rotate(-360deg)}100%{transform:translate(0,0) rotate(-720deg)}}
 .dd2{position:absolute;left:50%;top:6px;transform:translateX(-50%) scale(.8);z-index:4;pointer-events:none;opacity:0;transition:opacity .3s,transform .3s;white-space:nowrap;font:900 clamp(.85rem,3.6vw,1.35rem) Georgia,serif;letter-spacing:.08em;color:#e9fbff;text-shadow:0 0 10px #7fe8ff,0 0 26px #3aa6ff}
 .dd2.on{opacity:1;transform:translateX(-50%) scale(1);animation:ddglow .5s ease-in-out infinite alternate}
 @keyframes ddglow{to{text-shadow:0 0 16px #bff4ff,0 0 40px #7fe8ff}}
@@ -1223,7 +1232,7 @@ html[dir=rtl] .road{direction:ltr}
         <p class="lead" data-i18n="st.p">A road full of scorpions, and a giant crab waiting at the end. Tap the final boss to take it down, if you can.</p>
         <div class="road" id="road" aria-label="Scorpion Street: scorpions crawling toward the Cancer crab, the final boss">
           <span class="scorp" style="top:14px;--t:9s;--dl:0s"><i>🦂</i></span><span class="scorp" style="top:54px;--t:11s;--dl:-3s"><i>🦂</i></span><span class="scorp" style="top:96px;--t:8s;--dl:-5s"><i>🦂</i></span><span class="scorp" style="top:30px;--t:13s;--dl:-7s"><i>🦂</i></span><span class="scorp" style="top:76px;--t:10s;--dl:-2s"><i>🦂</i></span><span class="scorp" style="top:110px;--t:12s;--dl:-9s"><i>🦂</i></span><span class="scorp" style="top:20px;--t:14s;--dl:-11s"><i>🦂</i></span><span class="scorp" style="top:64px;--t:9.5s;--dl:-6s"><i>🦂</i></span>
-          <button type="button" class="boss" id="boss" aria-label="Final boss: Cancer, the crab. Tap to defeat it."><span class="boss__tag" data-i18n="st.boss">Final boss · Cancer ♋</span><span class="boss__body" aria-hidden="true"><span class="boss__crown" id="bossCrown">👑</span><span class="boss__crab">🦀</span><span class="boss__weapon" id="bossWeapon"></span></span><span class="boss__hp" aria-hidden="true"><i id="bossHp"></i></span></button>
+          <button type="button" class="boss" id="boss" aria-label="Final boss: Cancer, the crab. Tap to defeat it."><span class="boss__tag" data-i18n="st.boss">Final boss · Cancer ♋</span><span class="boss__body" aria-hidden="true"><span class="boss__crown" id="bossCrown">👑</span><span class="boss__crab">🦀</span><span class="boss__weapon" id="bossWeapon"></span><span class="boss__hammer" id="bossHammer"><b>🔨</b><em>AL-ʿADL</em></span></span><span class="boss__hp" aria-hidden="true"><i id="bossHp"></i></span></button>
         </div>
         <p class="street__hint" data-i18n="st.hint">Tap the crab 🦀</p>
         <div class="street__win" id="bossWin" hidden aria-live="polite"><span class="ar" lang="ar">لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِٱللَّهِ</span><b class="st__nice" data-i18n="st.nice">Nice try 😏</b><span data-i18n="st.win">The boss just grew twice as big.</span><span class="adl">⚖️ AL-ʿADL · <span lang="ar">العدل</span> · <span data-i18n="justice">JUSTICE</span></span><span class="stpray">👁️✨May every evil eye on Adeel Ahmed Rahman go blind🧿🪬</span></div>
@@ -1297,7 +1306,7 @@ html[dir=rtl] .road{direction:ltr}
 <script>
 (function () {
   var box = document.getElementById("g3"); if (!box) return;
-  var go = function () { import("./coach/game3d.js?v=11").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
+  var go = function () { import("./coach/game3d.js?v=12").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
   if (!("IntersectionObserver" in window)) { go(); return; }
   var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io.disconnect(); go(); } }, { rootMargin: "300px" });
   io.observe(box);
@@ -1331,10 +1340,11 @@ html[dir=rtl] .road{direction:ltr}
 <script src="coach/exit.js?v=2"></script>
 <script src="coach/config.js?v=3"></script>
 <script src="coach/chat.js?v=1"></script>
-<script src="coach/reminder.js?v=2"></script>
+<script src="coach/reminder.js?v=3"></script>
 <script src="coach/numbers.js?v=3"></script>
 <script src="coach/eye.js?v=1"></script>
-<script src="coach/home.js?v=15"></script>
+<script src="coach/court.js?v=2" defer></script>
+<script src="coach/home.js?v=17"></script>
 <script>
 (function(){
   var WA="16134083945";

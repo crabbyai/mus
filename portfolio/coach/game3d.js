@@ -14,14 +14,14 @@ import { UnrealBloomPass } from "../js/vendor/three/postprocessing/UnrealBloomPa
 import { ShaderPass } from "../js/vendor/three/postprocessing/ShaderPass.js";
 
 const TX = {
-  en: { justice: "JUSTICE", miss: "MISS", sliced: "Sliced! 🔪", knives: "Twin knives fall for the crab 🔪🔪", push: "✨ Crab magic: pushed away!", pull: "✨ Crab magic: pulled in!", sur: "“And the Trumpet will be blown…” (39:68)", moon: "“The Hour has drawn near, and the moon has split.” (54:1)", round: "Round", hp: "Crab", wealth: "Crab's wealth", mansion: "Mansion", start: "Tap or press a key to play", nice: "Nice try 😏", niceSub: "The crab grows stronger and richer, and the mansion grows.", hit: "Sting!", back: "The crab hits back!", blood: "Blood moon 🐺 Awoooo…", sound: "Sound", sting: "Sting", lvl: "Level", lh: "لا حول ولا قوة إلا بالله" },
-  ur: { justice: 'انصاف', miss: 'MISS', sliced: 'کٹ گیا! 🔪', knives: 'کیکڑے کے لیے دو چاقو گرے 🔪🔪', push: '✨ کیکڑے کا جادو: دور دھکیل دیا!', pull: '✨ کیکڑے کا جادو: کھینچ لیا!', sur: '”اور صور پھونکا جائے گا…“ (39:68)', moon: '”قیامت قریب آ گئی اور چاند پھٹ گیا۔“ (54:1)', round: "راؤنڈ", hp: "کیکڑا", wealth: "کیکڑے کی دولت", mansion: "محل", start: "کھیلنے کے لیے ٹیپ کریں یا کوئی بٹن دبائیں", nice: "اچھی کوشش 😏", niceSub: "کیکڑا مزید طاقتور اور امیر ہو گیا، اور محل بڑا ہو گیا۔", hit: "ڈنک!", back: "کیکڑے نے جوابی وار کیا!", blood: "خونی چاند 🐺 آؤووو…", sound: "آواز", sting: "ڈنک", lvl: "لیول", lh: "لا حول ولا قوۃ الا باللہ" },
-  ar: { justice: 'عدالة', miss: 'MISS', sliced: 'تقطّع! 🔪', knives: 'سكينان يسقطان للسلطعون 🔪🔪', push: '✨ سحر السلطعون: دُفع بعيدًا!', pull: '✨ سحر السلطعون: سُحب إليه!', sur: '«ونُفخ في الصور…» (39:68)', moon: '«اقتربت الساعة وانشق القمر» (54:1)', round: "الجولة", hp: "السلطعون", wealth: "ثروة السلطعون", mansion: "القصر", start: "اضغط أو اضغط زرًا لتلعب", nice: "محاولة جيدة 😏", niceSub: "السلطعون يزداد قوة وثراء، والقصر يكبر.", hit: "لسعة!", back: "السلطعون يردّ الضربة!", blood: "قمر دموي 🐺 أووو…", sound: "الصوت", sting: "لسعة", lvl: "المستوى", lh: "لا حول ولا قوة إلا بالله" },
-  fr: { justice: 'JUSTICE', miss: 'RATÉ', sliced: 'Tranché ! 🔪', knives: 'Deux couteaux tombent pour le crabe 🔪🔪', push: '✨ Magie du crabe : repoussé !', pull: '✨ Magie du crabe : attiré !', sur: '« Et l’on soufflera dans la Trompe… » (39:68)', moon: '« L’Heure approche et la lune s’est fendue. » (54:1)', round: "Manche", hp: "Crabe", wealth: "Fortune du crabe", mansion: "Manoir", start: "Touchez ou appuyez sur une touche pour jouer", nice: "Bien essayé 😏", niceSub: "Le crabe devient plus fort et plus riche, et le manoir grandit.", hit: "Piqûre !", back: "Le crabe riposte !", blood: "Lune de sang 🐺 Aouuu…", sound: "Son", sting: "Piquer", lvl: "Niveau", lh: "لا حول ولا قوة إلا بالله" },
-  es: { justice: 'JUSTICIA', miss: 'FALLO', sliced: '¡Rebanado! 🔪', knives: 'Dos cuchillos caen para el cangrejo 🔪🔪', push: '✨ Magia del cangrejo: ¡empujado!', pull: '✨ Magia del cangrejo: ¡atraído!', sur: '«Y se soplará la Trompeta…» (39:68)', moon: '«Se acercó la Hora y se partió la luna.» (54:1)', round: "Ronda", hp: "Cangrejo", wealth: "Fortuna del cangrejo", mansion: "Mansión", start: "Toca o pulsa una tecla para jugar", nice: "Buen intento 😏", niceSub: "El cangrejo se vuelve más fuerte y más rico, y la mansión crece.", hit: "¡Picadura!", back: "¡El cangrejo contraataca!", blood: "Luna de sangre 🐺 Auuuu…", sound: "Sonido", sting: "Picar", lvl: "Nivel", lh: "لا حول ولا قوة إلا بالله" },
-  ja: { justice: '正義', miss: 'MISS', sliced: '斬られた！🔪', knives: 'カニのもとに2本のナイフが落ちてきた 🔪🔪', push: '✨ カニの魔法：吹き飛ばされた！', pull: '✨ カニの魔法：引き寄せられた！', sur: '「そしてラッパが吹かれる…」（39:68）', moon: '「時は近づき、月は裂けた。」（54:1）', round: "ラウンド", hp: "カニ", wealth: "カニの財産", mansion: "豪邸", start: "タップかキーでスタート", nice: "惜しい 😏", niceSub: "カニはさらに強く豊かになり、豪邸も大きくなった。", hit: "刺した！", back: "カニの反撃！", blood: "血の月 🐺 アオーン…", sound: "サウンド", sting: "刺す", lvl: "レベル", lh: "لا حول ولا قوة إلا بالله" },
-  zh: { justice: '公正', miss: 'MISS', sliced: '被砍了！🔪', knives: '两把刀为螃蟹落下 🔪🔪', push: '✨ 螃蟹魔法：被推开了！', pull: '✨ 螃蟹魔法：被拉过去了！', sur: '“号角将被吹响……”（39:68）', moon: '“复活时已临近了，月亮已破裂了。”（54:1）', round: "回合", hp: "螃蟹", wealth: "螃蟹的财富", mansion: "豪宅", start: "点击或按任意键开始", nice: "不错的尝试 😏", niceSub: "螃蟹变得更强更富，豪宅也更大了。", hit: "蜇中！", back: "螃蟹反击了！", blood: "血月 🐺 嗷呜…", sound: "声音", sting: "蜇", lvl: "等级", lh: "لا حول ولا قوة إلا بالله" },
-  ko: { justice: '정의', miss: 'MISS', sliced: '베였다! 🔪', knives: '게를 위해 쌍칼이 떨어진다 🔪🔪', push: '✨ 게의 마법: 밀려났다!', pull: '✨ 게의 마법: 끌려갔다!', sur: '“나팔이 불리리라…” (39:68)', moon: '“그 시간이 다가왔고 달이 갈라졌다.” (54:1)', round: "라운드", hp: "게", wealth: "게의 재산", mansion: "저택", start: "탭하거나 키를 눌러 시작", nice: "좋은 시도였어요 😏", niceSub: "게는 더 강하고 부유해졌고, 저택도 커졌습니다.", hit: "쏘기!", back: "게의 반격!", blood: "블러드 문 🐺 아우우…", sound: "소리", sting: "쏘기", lvl: "레벨", lh: "لا حول ولا قوة إلا بالله" }
+  en: { hammer: "🔨 The Hammer of Justice", justice: "JUSTICE", miss: "MISS", sliced: "Sliced! 🔪", knives: "Twin knives fall for the crab 🔪🔪", push: "✨ Crab magic: pushed away!", pull: "✨ Crab magic: pulled in!", sur: "“And the Trumpet will be blown…” (39:68)", moon: "“The Hour has drawn near, and the moon has split.” (54:1)", round: "Round", hp: "Crab", wealth: "Crab's wealth", mansion: "Mansion", start: "Tap or press a key to play", nice: "Nice try 😏", niceSub: "The crab grows stronger and richer, and the mansion grows.", hit: "Sting!", back: "The crab hits back!", blood: "Blood moon 🐺 Awoooo…", sound: "Sound", sting: "Sting", lvl: "Level", lh: "لا حول ولا قوة إلا بالله" },
+  ur: { hammer: '🔨 انصاف کا ہتھوڑا', justice: 'انصاف', miss: 'MISS', sliced: 'کٹ گیا! 🔪', knives: 'کیکڑے کے لیے دو چاقو گرے 🔪🔪', push: '✨ کیکڑے کا جادو: دور دھکیل دیا!', pull: '✨ کیکڑے کا جادو: کھینچ لیا!', sur: '”اور صور پھونکا جائے گا…“ (39:68)', moon: '”قیامت قریب آ گئی اور چاند پھٹ گیا۔“ (54:1)', round: "راؤنڈ", hp: "کیکڑا", wealth: "کیکڑے کی دولت", mansion: "محل", start: "کھیلنے کے لیے ٹیپ کریں یا کوئی بٹن دبائیں", nice: "اچھی کوشش 😏", niceSub: "کیکڑا مزید طاقتور اور امیر ہو گیا، اور محل بڑا ہو گیا۔", hit: "ڈنک!", back: "کیکڑے نے جوابی وار کیا!", blood: "خونی چاند 🐺 آؤووو…", sound: "آواز", sting: "ڈنک", lvl: "لیول", lh: "لا حول ولا قوۃ الا باللہ" },
+  ar: { hammer: '🔨 مطرقة العدل', justice: 'عدالة', miss: 'MISS', sliced: 'تقطّع! 🔪', knives: 'سكينان يسقطان للسلطعون 🔪🔪', push: '✨ سحر السلطعون: دُفع بعيدًا!', pull: '✨ سحر السلطعون: سُحب إليه!', sur: '«ونُفخ في الصور…» (39:68)', moon: '«اقتربت الساعة وانشق القمر» (54:1)', round: "الجولة", hp: "السلطعون", wealth: "ثروة السلطعون", mansion: "القصر", start: "اضغط أو اضغط زرًا لتلعب", nice: "محاولة جيدة 😏", niceSub: "السلطعون يزداد قوة وثراء، والقصر يكبر.", hit: "لسعة!", back: "السلطعون يردّ الضربة!", blood: "قمر دموي 🐺 أووو…", sound: "الصوت", sting: "لسعة", lvl: "المستوى", lh: "لا حول ولا قوة إلا بالله" },
+  fr: { hammer: '🔨 Le Marteau de la Justice', justice: 'JUSTICE', miss: 'RATÉ', sliced: 'Tranché ! 🔪', knives: 'Deux couteaux tombent pour le crabe 🔪🔪', push: '✨ Magie du crabe : repoussé !', pull: '✨ Magie du crabe : attiré !', sur: '« Et l’on soufflera dans la Trompe… » (39:68)', moon: '« L’Heure approche et la lune s’est fendue. » (54:1)', round: "Manche", hp: "Crabe", wealth: "Fortune du crabe", mansion: "Manoir", start: "Touchez ou appuyez sur une touche pour jouer", nice: "Bien essayé 😏", niceSub: "Le crabe devient plus fort et plus riche, et le manoir grandit.", hit: "Piqûre !", back: "Le crabe riposte !", blood: "Lune de sang 🐺 Aouuu…", sound: "Son", sting: "Piquer", lvl: "Niveau", lh: "لا حول ولا قوة إلا بالله" },
+  es: { hammer: '🔨 El Martillo de la Justicia', justice: 'JUSTICIA', miss: 'FALLO', sliced: '¡Rebanado! 🔪', knives: 'Dos cuchillos caen para el cangrejo 🔪🔪', push: '✨ Magia del cangrejo: ¡empujado!', pull: '✨ Magia del cangrejo: ¡atraído!', sur: '«Y se soplará la Trompeta…» (39:68)', moon: '«Se acercó la Hora y se partió la luna.» (54:1)', round: "Ronda", hp: "Cangrejo", wealth: "Fortuna del cangrejo", mansion: "Mansión", start: "Toca o pulsa una tecla para jugar", nice: "Buen intento 😏", niceSub: "El cangrejo se vuelve más fuerte y más rico, y la mansión crece.", hit: "¡Picadura!", back: "¡El cangrejo contraataca!", blood: "Luna de sangre 🐺 Auuuu…", sound: "Sonido", sting: "Picar", lvl: "Nivel", lh: "لا حول ولا قوة إلا بالله" },
+  ja: { hammer: '🔨 正義のハンマー', justice: '正義', miss: 'MISS', sliced: '斬られた！🔪', knives: 'カニのもとに2本のナイフが落ちてきた 🔪🔪', push: '✨ カニの魔法：吹き飛ばされた！', pull: '✨ カニの魔法：引き寄せられた！', sur: '「そしてラッパが吹かれる…」（39:68）', moon: '「時は近づき、月は裂けた。」（54:1）', round: "ラウンド", hp: "カニ", wealth: "カニの財産", mansion: "豪邸", start: "タップかキーでスタート", nice: "惜しい 😏", niceSub: "カニはさらに強く豊かになり、豪邸も大きくなった。", hit: "刺した！", back: "カニの反撃！", blood: "血の月 🐺 アオーン…", sound: "サウンド", sting: "刺す", lvl: "レベル", lh: "لا حول ولا قوة إلا بالله" },
+  zh: { hammer: '🔨 正义之锤', justice: '公正', miss: 'MISS', sliced: '被砍了！🔪', knives: '两把刀为螃蟹落下 🔪🔪', push: '✨ 螃蟹魔法：被推开了！', pull: '✨ 螃蟹魔法：被拉过去了！', sur: '“号角将被吹响……”（39:68）', moon: '“复活时已临近了，月亮已破裂了。”（54:1）', round: "回合", hp: "螃蟹", wealth: "螃蟹的财富", mansion: "豪宅", start: "点击或按任意键开始", nice: "不错的尝试 😏", niceSub: "螃蟹变得更强更富，豪宅也更大了。", hit: "蜇中！", back: "螃蟹反击了！", blood: "血月 🐺 嗷呜…", sound: "声音", sting: "蜇", lvl: "等级", lh: "لا حول ولا قوة إلا بالله" },
+  ko: { hammer: '🔨 정의의 망치', justice: '정의', miss: 'MISS', sliced: '베였다! 🔪', knives: '게를 위해 쌍칼이 떨어진다 🔪🔪', push: '✨ 게의 마법: 밀려났다!', pull: '✨ 게의 마법: 끌려갔다!', sur: '“나팔이 불리리라…” (39:68)', moon: '“그 시간이 다가왔고 달이 갈라졌다.” (54:1)', round: "라운드", hp: "게", wealth: "게의 재산", mansion: "저택", start: "탭하거나 키를 눌러 시작", nice: "좋은 시도였어요 😏", niceSub: "게는 더 강하고 부유해졌고, 저택도 커졌습니다.", hit: "쏘기!", back: "게의 반격!", blood: "블러드 문 🐺 아우우…", sound: "소리", sting: "쏘기", lvl: "레벨", lh: "لا حول ولا قوة إلا بالله" }
 };
 
 export function start(root) {
@@ -479,6 +479,22 @@ export function start(root) {
   let rampage = 0;
   function crabHits(list) { rampage = 4.5; dmg(typeof list === "string" ? list : pick(list), pos.clone().add(new THREE.Vector3(0, 2, 0)), "crab"); adl(); }
 
+  /* ---------- the Hammer of Justice: AL-ʿADL or AL-ḤAKAM written on its head ---------- */
+  function nameTex(en, ar) { const c = document.createElement("canvas"); c.width = 512; c.height = 256; const g = c.getContext("2d"); g.fillStyle = "#2a1608"; g.fillRect(0, 0, 512, 256); g.strokeStyle = "#e8c87e"; g.lineWidth = 14; g.strokeRect(10, 10, 492, 236); g.textAlign = "center"; g.fillStyle = "#ffe7a3"; g.shadowColor = "#ffcf5a"; g.shadowBlur = 16; g.font = "bold 70px Georgia, serif"; g.fillText(en, 256, 110); g.font = "bold 72px serif"; g.fillText(ar, 256, 205); return new THREE.CanvasTexture(c); }
+  const hamTex = { adl: nameTex("AL-ʿADL", "العدل"), hakam: nameTex("AL-ḤAKAM", "الحكم") };
+  const hamFace = new THREE.MeshStandardMaterial({ map: hamTex.adl, roughness: 0.5, metalness: 0.2, emissive: 0xffffff, emissiveMap: hamTex.adl, emissiveIntensity: 0.35 });
+  const hammer = new THREE.Group(); {
+    const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.2, 5.5, 12), new THREE.MeshStandardMaterial({ color: 0x5a3416, roughness: 0.6 })); handle.position.y = 2.75; hammer.add(handle);
+    const wood = new THREE.MeshStandardMaterial({ color: 0x4a2a10, roughness: 0.45, metalness: 0.1 });
+    const head = new THREE.Mesh(new THREE.BoxGeometry(1.6, 1.6, 3.2), [goldMat, goldMat, wood, wood, wood, wood]); head.position.y = 5.8; head.rotation.y = Math.PI / 2; hammer.add(head);
+    [-1, 1].forEach(sd => { const face = new THREE.Mesh(new THREE.PlaneGeometry(2.9, 1.45), hamFace); face.position.set(0, 5.8, sd * 0.81); if (sd < 0) face.rotation.y = Math.PI; hammer.add(face); const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.95, 0.95, 0.3, 24), goldMat); cap.rotation.z = Math.PI / 2; cap.position.set(sd * 1.7, 5.8, 0); hammer.add(cap); });
+    const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex("rgba(255,215,120,0.8)", "rgba(255,215,120,0)"), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending })); glow.scale.set(6, 6, 1); glow.position.y = 5.8; hammer.add(glow);
+  }
+  hammer.position.set(0, 1.4, 0.4); hammer.visible = false; crab.add(hammer);
+  const quake = new THREE.Mesh(new THREE.RingGeometry(1, 1.5, 64), new THREE.MeshBasicMaterial({ color: 0xffd77a, transparent: true, opacity: 0, side: THREE.DoubleSide, blending: THREE.AdditiveBlending, depthWrite: false }));
+  quake.rotation.x = -Math.PI / 2; quake.position.y = 0.08; scene.add(quake);
+  const ham = { phase: "idle", t: 0, next: 28 + Math.random() * 12, fly: 0, vy: 0, qt: 0 };
+
   /* ---------- game state ---------- */
   const st = { stun: 0, round: 0, hp: 100, crabScale: 1, wealth: 1000000, level: 0, playing: false, sting: 0, cool: 0, kb: 0, crabT: 1.5, crabTarget: 0, lunge: 0, flinch: 0, shake: 0 };
   const pos = new THREE.Vector3(0, 0, 8);
@@ -498,7 +514,7 @@ export function start(root) {
   function say(main, sub, ms) { hud.msg.innerHTML = "<b>" + main + "</b>" + (sub ? "<span>" + sub + "</span><span class='lh' lang='ar'>" + tx().lh + "</span>" : ""); hud.msg.classList.add("on"); msgT = ms || 1200; }
   setHud(); say(tx().start, "", 99999);
 
-  function begin() { if (!st.playing) { st.playing = true; hud.msg.classList.remove("on"); } }
+  function begin() { if (window.coachCourt && window.coachCourt.busy()) return; if (!st.playing) { st.playing = true; hud.msg.classList.remove("on"); } }
   function niceTry() {
     st.round++; st.level++;
     st.crabScale = Math.min(3, st.crabScale * 1.3);
@@ -511,7 +527,7 @@ export function start(root) {
     const t = tx(); say(t.nice, t.niceSub + "</span><span class='adl'>⚖️ AL-ʿADL · " + t.justice + "</span><span class='g3pray'>" + PRAYER, 4200); setHud();
   }
   function doSting() {
-    begin(); if (st.cool > 0) return;
+    begin(); if (!st.playing || st.cool > 0) return;
     st.sting = 1; st.cool = 0.55;
     const reach = 2.4 * st.crabScale + 2.2;
     const dx = pos.x - crab.position.x, dz = pos.z - crab.position.z;
@@ -614,11 +630,12 @@ export function start(root) {
     let mx = (keys.arrowright || keys.d ? 1 : 0) - (keys.arrowleft || keys.a ? 1 : 0) + joy.x;
     let mz = (keys.arrowdown || keys.s ? 1 : 0) - (keys.arrowup || keys.w ? 1 : 0) + joy.y;
     if (st.stun > 0) { st.stun -= dt; mx = mz = 0; scorp.rotation.y += dt * 14; } else scorp.rotation.y = 0;
+    if (!st.playing) { mx = mz = 0; }
     if (st.kb > 0) { pos.z += st.kb * dt * 3; st.kb = Math.max(0, st.kb - dt * 6); }
     pos.x = THREE.MathUtils.clamp(pos.x + mx * sp2 * dt, -5.2, 5.2);
     const minZ = crab.position.z + 2.4 * st.crabScale + 1.2;
     pos.z = THREE.MathUtils.clamp(pos.z + mz * sp2 * dt, minZ, 12);
-    scorp.position.set(pos.x, 0, pos.z); scorpShadow.position.set(pos.x, 0.03, pos.z);
+    scorp.position.set(pos.x, ham.fly, pos.z); scorpShadow.position.set(pos.x, 0.03, pos.z);
     const walking = Math.abs(mx) > 0.05 || Math.abs(mz) > 0.05;
     sLegs.forEach(({ l, side, i }) => { l.rotation.x = walking ? Math.sin(time * 16 + i * 1.3 + (side > 0 ? 1.5 : 0)) * 0.5 : 0; });
     pincers.forEach((p, i) => { p.rotation.y = Math.sin(time * 3 + i) * 0.12; });
@@ -685,6 +702,24 @@ export function start(root) {
     wives.children.forEach((w, i) => { const sl = w.userData.slot; w.position.set(crab.position.x + sl * (1.9 + st.crabScale * 1.5), 0, crab.position.z - 2.2 - Math.abs(sl) * 0.6); w.rotation.y = Math.sin(time * 1.2 + i) * 0.25; w.position.y = Math.abs(Math.sin(time * 2.4 + i)) * 0.12; });
     bunnies.forEach(b2 => { const u = b2.userData; b2.position.x += u.dir * u.sp * dt; if (Math.abs(b2.position.x) > 55) { b2.position.x = -u.dir * 55; u.y = 9 + Math.random() * 8; u.z = -10 - Math.random() * 30; } b2.position.y = u.y + Math.sin(time * 3 + u.ph) * 1.2; b2.position.z = u.z; b2.rotation.y = u.dir * Math.PI / 2; b2.children.forEach(c => { if (c.userData.sd) c.rotation.y = c.userData.sd * Math.sin(time * 14 + u.ph) * 0.7; }); });
     if (adlT > 0) { adlT -= dt; if (adlT <= 0) adlEl.classList.remove("on"); }
+
+    // the Hammer of Justice
+    if (ham.phase === "idle" && st.playing && !weap.kind && dual.phase === "idle" && !magic.mode) { ham.next -= dt; if (ham.next <= 0) {
+      const adlName = Math.random() < 0.5; hamFace.map = hamFace.emissiveMap = adlName ? hamTex.adl : hamTex.hakam; hamFace.needsUpdate = true;
+      ham.phase = "raise"; ham.t = 1.3; hammer.visible = true; say(tx().hammer, "", 1300); } }
+    if (ham.phase === "raise") { ham.t -= dt; hammer.rotation.x = -0.2 - (1 - ham.t / 1.3) * 1.1; hammer.scale.setScalar(Math.min(1, 1.3 - ham.t + 0.3)); rampage = Math.max(rampage, 1);
+      if (ham.t <= 0) { ham.phase = "slam"; ham.t = 0.18; } }
+    if (ham.phase === "slam") { ham.t -= dt; hammer.rotation.x = -1.3 + (1 - ham.t / 0.18) * 2.9;
+      if (ham.t <= 0) { ham.phase = "after"; ham.t = 1.2; hammer.rotation.x = 1.6; st.shake = 1.4; ham.qt = 1;
+        quake.position.x = crab.position.x; quake.position.z = crab.position.z + 4 * st.crabScale;
+        ham.vy = 16; ham.fly = 0.001; st.kb = 5; st.stun = 2.2; crabHits(["88888888", "622", "222222"]); drop(diamonds, 60, true, true); } }
+    if (ham.phase === "after") { ham.t -= dt; if (ham.t <= 0) { ham.phase = "idle"; hammer.visible = false; hammer.rotation.x = 0; ham.next = 50 + Math.random() * 20; } }
+    if (ham.qt > 0) { ham.qt = Math.max(0, ham.qt - dt * 0.9); quake.scale.setScalar(2 + (1 - ham.qt) * 26); quake.material.opacity = ham.qt * 0.9; }
+    if (ham.fly > 0) {   // the scorpion goes flying… and survives, so the case goes to court
+      ham.vy -= 22 * dt; ham.fly += ham.vy * dt; scorp.position.y = ham.fly; scorp.rotation.x += dt * 9;
+      if (ham.fly <= 0) { ham.fly = 0; scorp.position.y = 0; scorp.rotation.x = 0;
+        if (window.coachCourt && !window.coachCourt.busy()) { st.playing = false; const k = Object.keys(keys); k.forEach(x => keys[x] = false);
+          window.coachCourt.play(() => { st.playing = true; niceTry(); }); } } }
 
     // rampage: diamonds pour down and DIAMOND DIGGER lights up the sky
     if (dual.phase === "wield" || weap.kind) rampage = Math.max(rampage, 1);
@@ -754,5 +789,5 @@ export function start(root) {
   // Re-label the HUD if the visitor switches language
   new MutationObserver(setHud).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
   // test hook
-  window.__g3 = { st, pos, keys, niceTry, doSting, rain, blood: () => { bloodT = 0; }, inView: () => inView, weapon: k => { weap.next = 0; st.playing = true; }, knives: () => { dual.next = 0; st.playing = true; }, magic: () => { magic.next = 0; st.playing = true; }, qiyamah: () => { qiy.next = 0; } };
+  window.__g3 = { st, pos, keys, niceTry, doSting, rain, blood: () => { bloodT = 0; }, inView: () => inView, weapon: k => { weap.next = 0; st.playing = true; }, knives: () => { dual.next = 0; st.playing = true; }, magic: () => { magic.next = 0; st.playing = true; }, qiyamah: () => { qiy.next = 0; }, hammer: () => { ham.next = 0; st.playing = true; } };
 }
