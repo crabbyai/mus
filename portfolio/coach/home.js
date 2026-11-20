@@ -180,8 +180,81 @@
         }, 1100);
       }, 22000 + Math.random() * 16000);
     })();
+    // the 12 lakh wedding ring -> AL-MUDHILL -> AL-GHANI -> everything sucked into the crab and his mansion
+    var taps = [], ringBusy = false, ringCool = 0, omen = 0, gb = 1, mk = 1;
+    var castle = document.getElementById("castle2");
+    function banner2(en, ar, meaning) {
+      var b = document.createElement("div"); b.className = "nm2"; b.innerHTML = "<b>" + en + '</b><span lang="ar">' + ar + "</span><em>" + meaning + "</em>";
+      road.appendChild(b); void b.offsetWidth; b.classList.add("on"); setTimeout(function () { b.remove(); }, 2700);
+    }
+    function L2() { var M = { en: ["THE HUMILIATOR", "THE RICH ONE"], ur: ["ذلیل کرنے والا", "بے نیاز، غنی"], ar: ["المُذِلّ", "الغنيّ"], fr: ["CELUI QUI HUMILIE", "LE RICHE"], es: ["EL QUE HUMILLA", "EL RICO"], ja: ["辱める御方", "富める御方"], zh: ["使人卑贱者", "富足者"], ko: ["낮추시는 분", "부유하신 분"] }; return M[(document.documentElement.lang || "en").slice(0, 2)] || M.en; }
+    function ringSeq() {
+      ringBusy = true;
+      var r = road.getBoundingClientRect(), bb = boss.querySelector(".boss__crab").getBoundingClientRect();
+      var cx = Math.min(road.clientWidth - 70, Math.max(70, bb.left - r.left + bb.width / 2)), cy = bb.top - r.top + bb.height * 0.25;
+      var ring = document.createElement("span"); ring.className = "ring2"; ring.innerHTML = "💍<small>₨ 12 LAKH</small>";
+      ring.style.left = cx + "px"; ring.style.top = "-40px"; road.appendChild(ring);
+      requestAnimationFrame(function () { requestAnimationFrame(function () { ring.style.top = cy + "px"; }); });
+      setTimeout(function () {   // it lands: AL-MUDHILL
+        road.classList.remove("quake"); void road.offsetWidth; road.classList.add("quake");
+        banner2("AL-MUDHILL", "المُذِلّ", L2()[0]);
+        setTimeout(function () {   // AL-GHANI: gold and diamonds everywhere
+          road.classList.remove("quake");
+          banner2("AL-GHANI", "الغَنِيّ", L2()[1]);
+          var w = road.clientWidth, h = road.clientHeight, loot = [];
+          for (var i = 0; i < 46; i++) {
+            var g = document.createElement("span"); g.className = "loot2"; g.textContent = i % 2 ? "💎" : "🪙";
+            g.style.left = Math.round(Math.random() * (w - 24)) + "px"; g.style.top = Math.round(Math.random() * (h - 24)) + "px";
+            g.style.fontSize = (0.9 + Math.random() * 0.8).toFixed(2) + "rem"; g.style.opacity = "0"; g.style.transform = "scale(.2)";
+            road.appendChild(g); loot.push(g);
+            (function (el, d) { setTimeout(function () { el.style.opacity = "1"; el.style.transform = "scale(1) rotate(" + Math.round(Math.random() * 360) + "deg)"; }, d); })(g, Math.random() * 600);
+          }
+          setTimeout(function () {   // everything is sucked into the crab and his mansion
+            var cr = castle.getBoundingClientRect();
+            var mx = cr.left - r.left + cr.width / 2, my = cr.top - r.top + cr.height / 2;
+            loot.forEach(function (el, i) { el.style.left = (i % 2 ? cx : mx) + "px"; el.style.top = (i % 2 ? cy + 20 : my) + "px"; el.style.transform = "scale(0) rotate(720deg)"; el.style.opacity = "0"; });
+            ring.style.transform = "translate(-50%,-50%) scale(0)"; ring.style.opacity = "0";
+            setTimeout(function () {
+              loot.forEach(function (el) { el.remove(); }); ring.remove();
+              gb = Math.min(1.3, gb * 1.07); boss.style.setProperty("--gb", gb.toFixed(3));
+              mk = Math.min(2.2, mk * 1.15); road.style.setProperty("--mk", mk.toFixed(3));
+              scale = Math.max(0.15, scale * 0.95); lanes().forEach(function (sc) { sc.style.setProperty("--s", scale.toFixed(3)); });
+              omen = Math.min(6, omen + 1); road.style.setProperty("--om", omen);
+              wolves2();
+              window.coachCrabHit(["88888888", "622", "222222"]);
+              ringBusy = false; ringCool = Date.now() + 20000;
+            }, 950);
+          }, 2600);
+        }, 2600);
+      }, 1700);
+    }
+    function wolves2() {   // the wolves creep in toward the scorpions, a little closer every time
+      var want = Math.min(6, omen), have = road.querySelectorAll(".wolf2"), h = road.clientHeight;
+      for (var i = have.length; i < want; i++) {
+        var wf = document.createElement("span"); wf.className = "wolf2"; wf.textContent = "🐺";
+        wf.style.top = Math.round(8 + (i * 37) % Math.max(30, h - 40)) + "px"; wf.style.left = "-40px"; road.appendChild(wf);
+      }
+      [].forEach.call(road.querySelectorAll(".wolf2"), function (wf, i) {
+        requestAnimationFrame(function () { wf.style.left = Math.round(Math.min(road.clientWidth * 0.55, 10 + omen * 28 + (i % 3) * 14)) + "px"; });
+      });
+    }
+    // 13 and 15 flicker across the road, horror style
+    if (!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches)) (function horror() {
+      setTimeout(function () {
+        var rr = road.getBoundingClientRect();
+        if (rr.bottom > 0 && rr.top < innerHeight) {
+          var el = document.createElement("span"); el.className = "h1315"; el.textContent = Math.random() < 0.5 ? "13" : "15";
+          el.style.left = (10 + Math.random() * 80) + "%"; el.style.top = (15 + Math.random() * 70) + "%";
+          el.style.setProperty("--r", ((Math.random() - 0.5) * 30).toFixed(1) + "deg"); el.style.fontSize = (1.8 + Math.random() * 2.2).toFixed(1) + "rem";
+          road.appendChild(el); setTimeout(function () { el.remove(); }, 1500);
+        }
+        horror();
+      }, 2500 + Math.random() * 5000);
+    })();
     function lanes() { return [].slice.call(road.querySelectorAll(".scorp:not(.gone)")); }
     boss.addEventListener("click", function () {
+      taps.push(Date.now()); taps = taps.filter(function (t) { return Date.now() - t < 6000; });
+      if (taps.length >= 8 && !ringBusy && Date.now() > ringCool) { taps = []; ringSeq(); }
       // the scorpion only ever MISSES or does 1 damage (the crab has 7)
       if (Math.random() < 0.3) { pop("MISS", boss, "miss"); return; }
       pop("1", boss, "one");
