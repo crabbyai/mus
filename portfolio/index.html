@@ -643,7 +643,7 @@ html[dir=rtl] .road{direction:ltr}
 .g3__head h3{margin:.3rem 0 .4rem;font-size:clamp(1.5rem,4.5vw,2.2rem)}
 .g3__head p{font-size:.92rem;color:var(--muted)}
 .g3__stage{position:relative;aspect-ratio:16/9;width:100%;background:radial-gradient(ellipse at 50% 0%,#0b1433,#02040c)}
-@media(max-width:700px){.g3__stage{aspect-ratio:4/5}}
+@media(max-width:700px){.g3__stage{aspect-ratio:9/15}}
 .g3__stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:crosshair}
 .g3__hud{position:absolute;top:10px;left:10px;right:10px;display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;pointer-events:none;font:600 .78rem system-ui,sans-serif}
 .g3__hud>*{background:rgba(5,8,18,.6);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border:1px solid rgba(201,164,92,.35);border-radius:999px;padding:.32rem .7rem;color:var(--cream)}
@@ -765,6 +765,16 @@ html{scroll-padding-top:70px}
 .g3__moves{margin-bottom:96px!important;margin-right:10px}
 .g3__mv small{font-size:.5rem}
 @media(max-width:700px){.g3__mv{width:40px!important;height:40px!important;margin:6px}.g3__mv svg{width:18px;height:18px}.g3__mv small{display:none!important}.g3__mv .g3__emo{font-size:1rem}.g3__sting{width:70px!important;height:70px!important;margin:12px 12px 0;font-size:1.7rem!important}.g3__sting small{font-size:.55rem!important}.g3__mini{gap:6px}.g3__moves{margin-bottom:76px!important;margin-right:4px}}
+
+/* button grid: Pinch / Poison / Repent, then Gift under Pinch and Flirt under Poison */
+.g3__mini{display:grid!important;grid-template-columns:repeat(3,auto);justify-items:center}
+@media(max-width:700px){.g3__mv{width:54px!important;height:54px!important;margin:9px!important}.g3__mv svg{width:20px!important;height:20px!important}
+  .g3__mv small{display:block!important;font-size:.46rem!important;letter-spacing:.02em;line-height:1;margin-top:1px;white-space:nowrap}.g3__mv .g3__emo{font-size:1.05rem}
+  .g3__sting{width:84px!important;height:84px!important;margin:16px 16px 0!important;font-size:2rem!important}.g3__sting small{font-size:.6rem!important}
+  .g3__mini{gap:2px 4px!important}.g3__moves{margin-bottom:78px!important;margin-right:6px!important}}
+.g3__talk{position:absolute;left:10px;right:10px;top:118px;z-index:6;padding:.6rem .8rem;border-radius:16px;background:#fff;color:#c2185b;font:700 .9rem/1.35 Georgia,serif;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,.45);opacity:0;transform:translateY(-6px);transition:opacity .25s,transform .25s;pointer-events:none}
+.g3__talk.on{opacity:1;transform:none}
+.g3__talk--crab{background:#1b1206;color:#ffe7a3;border:1px solid #e8c87e}
 .g3__flash{position:absolute;inset:0;z-index:2;pointer-events:none;background:#eaf4ff;opacity:0}
 .g3__flash.on{animation:g3flash .45s steps(1) forwards}
 @keyframes g3flash{0%{opacity:.75}15%{opacity:.1}30%{opacity:.6}50%{opacity:0}65%{opacity:.25}100%{opacity:0}}
@@ -1520,17 +1530,17 @@ html{scroll-padding-top:70px}
       <div class="g3__joy" aria-hidden="true"><i></i></div>
       <div class="g3__pad">
         <span></span>
-        <div class="g3__moves"><div class="g3__mini"><button type="button" class="g3__mv g3__mv--pinch" data-k="pinch" aria-label="Pinch"><svg viewBox="0 0 40 40" aria-hidden="true"><path fill="#fff" d="M8 30c-2-6 0-14 6-18 4-3 9-3 12-1l-6 6 7 1 5-6c2 4 1 9-3 12-3 2-6 3-9 2l-6 6c-2 1-4 0-6-2z"/><path fill="#fff" d="M6 8l5 3-3 4-4-3z"/></svg><small data-t="pinch">Pinch</small></button><button type="button" class="g3__mv g3__mv--poison" data-k="poison" aria-label="Poison"><svg viewBox="0 0 40 40" aria-hidden="true"><path fill="#fff" d="M20 4C14 13 9 19 9 25a11 11 0 0 0 22 0c0-6-5-12-11-21z"/><circle cx="15.5" cy="25" r="3" fill="#1d7a10"/></svg><small data-t="poisonB">Poison</small></button><button type="button" class="g3__mv g3__mv--repent" data-k="repent" aria-label="Repent"><span class="g3__emo">🤲</span><small data-t="repent">Repent</small></button></div><button type="button" class="g3__sting" data-k="sting" aria-label="Sting"><span class="g3__emo">🦂</span><small data-t="sting">Sting</small></button></div>
+        <div class="g3__moves"><div class="g3__mini"><button type="button" class="g3__mv g3__mv--pinch" data-k="pinch" aria-label="Pinch"><svg viewBox="0 0 40 40" aria-hidden="true"><path fill="#fff" d="M8 30c-2-6 0-14 6-18 4-3 9-3 12-1l-6 6 7 1 5-6c2 4 1 9-3 12-3 2-6 3-9 2l-6 6c-2 1-4 0-6-2z"/><path fill="#fff" d="M6 8l5 3-3 4-4-3z"/></svg><small data-t="pinch">Pinch</small></button><button type="button" class="g3__mv g3__mv--poison" data-k="poison" aria-label="Poison"><svg viewBox="0 0 40 40" aria-hidden="true"><path fill="#fff" d="M20 4C14 13 9 19 9 25a11 11 0 0 0 22 0c0-6-5-12-11-21z"/><circle cx="15.5" cy="25" r="3" fill="#1d7a10"/></svg><small data-t="poisonB">Poison</small></button><button type="button" class="g3__mv g3__mv--repent" data-k="repent" aria-label="Repent"><span class="g3__emo">🤲</span><small data-t="repent">Repent</small></button><button type="button" class="g3__mv g3__mv--gift" data-k="gift" aria-label="Offer Gift"><svg viewBox="0 0 40 40" aria-hidden="true"><rect x="7" y="16" width="26" height="18" rx="2" fill="#fff"/><rect x="5" y="11" width="30" height="7" rx="2" fill="#fff"/><rect x="18" y="11" width="4" height="23" fill="#000"/><path d="M20 11c-3-6-10-6-9-1 1 3 6 2 9 1zm0 0c3-6 10-6 9-1-1 3-6 2-9 1z" fill="none" stroke="#fff" stroke-width="2.4"/></svg><small data-t="giftB">Gift</small></button><button type="button" class="g3__mv g3__mv--flirt" data-k="flirt" aria-label="Flirt"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M6 8h28a3 3 0 0 1 3 3v15a3 3 0 0 1-3 3H17l-7 6v-6H6a3 3 0 0 1-3-3V11a3 3 0 0 1 3-3z" fill="#fff"/><path d="M20 24c-6-4-8-7-6-9 1.5-1.5 4-1 6 1 2-2 4.5-2.5 6-1 2 2 0 5-6 9z" fill="#000"/></svg><small data-t="flirtB">Flirt</small></button></div><button type="button" class="g3__sting" data-k="sting" aria-label="Sting"><span class="g3__emo">🦂</span><small data-t="sting">Sting</small></button></div>
       </div>
       <div class="g3__nogl" data-i18n="g3.nogl">This 3D game needs WebGL, which your browser doesn't have turned on. Try another browser.</div>
     </div>
-    <p class="g3__keys" data-i18n="g3.keys">Drag anywhere on the game to move (or WASD). Tap the screen, Space or the 🦂 button to sting. Pinch (E), Poison (P), Repent (R). Walk to the glowing doors to visit the gym or the salon. لا حول ولا قوة إلا بالله</p>
+    <p class="g3__keys" data-i18n="g3.keys">Drag anywhere on the game to move (or WASD). Tap the screen, Space or the 🦂 button to sting. Pinch (E), Poison (P), Repent (R), Offer Gift, Flirt. Walk to the glowing doors to visit the gym or the salon. لا حول ولا قوة إلا بالله</p>
   </div>
 </section>
 <script>
 (function () {
   var box = document.getElementById("g3"); if (!box) return;
-  var go = function () { import("./coach/game3d.js?v=34").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
+  var go = function () { import("./coach/game3d.js?v=36").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
   if (!("IntersectionObserver" in window)) { go(); return; }
   var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io.disconnect(); go(); } }, { rootMargin: "300px" });
   io.observe(box);
