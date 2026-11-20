@@ -949,12 +949,50 @@ export function start(root) {
     t.position.set(x, 0, z); t.scale.setScalar(0.001); t.userData = { fruit, side: Math.sign(x) }; shadowy(t); scene.add(t); mangoTrees.push(t); });
   const skin2 = new THREE.MeshStandardMaterial({ color: 0xb98466, roughness: 0.6 });
   const SUITS = [[0xd81b60, 0xffd54f], [0x00897b, 0xffffff], [0x5e35b1, 0xf8bbd0], [0xef6c00, 0x1b5e20]];
+  /* ---------- faces with big eyes, and long flowing black hair ---------- */
+  const lashM = new THREE.MeshStandardMaterial({ color: 0x0a0505, roughness: 0.4 }), scleraM = new THREE.MeshStandardMaterial({ color: 0xfbf7f2, roughness: 0.3 });
+  const irisM = [0x3a2010, 0x5a3418, 0x1f4a2a, 0x2a1a0c].map(c => new THREE.MeshPhysicalMaterial({ color: c, roughness: 0.1, clearcoat: 1 })), shineM = new THREE.MeshBasicMaterial({ color: 0xffffff });
+  const lipM = new THREE.MeshStandardMaterial({ color: 0xc0405a, roughness: 0.35 }), blushM = new THREE.MeshBasicMaterial({ color: 0xff7a9a, transparent: true, opacity: 0.28, depthWrite: false });
+  const silkHair = new THREE.MeshPhysicalMaterial({ color: 0x080506, roughness: 0.32, sheen: 1, sheenColor: new THREE.Color(0x5a4a6a), clearcoat: 0.35, side: THREE.DoubleSide });
+  function face(head, r, skinMat, k) {   // head: a sphere of radius r; the face looks toward +z
+    head.geometry.dispose(); head.geometry = new THREE.SphereGeometry(r, 32, 24); head.scale.set(0.92, 1.06, 0.96);   // a softer oval
+    const f = new THREE.Group(); head.add(f);
+    [-1, 1].forEach(sd => {
+      const eye = new THREE.Group(); eye.position.set(sd * r * 0.38, r * 0.08, r * 0.86); eye.rotation.y = sd * 0.32; f.add(eye);
+      const scl = new THREE.Mesh(new THREE.SphereGeometry(r * 0.25, 16, 12), scleraM); scl.scale.set(1.25, 0.82, 0.45); eye.add(scl);   // big almond eyes
+      const iris = new THREE.Mesh(new THREE.SphereGeometry(r * 0.16, 16, 12), irisM[k % irisM.length]); iris.scale.set(1, 1.05, 0.4); iris.position.z = r * 0.07; eye.add(iris);
+      const pup = new THREE.Mesh(new THREE.SphereGeometry(r * 0.08, 10, 8), lashM); pup.scale.z = 0.4; pup.position.z = r * 0.11; eye.add(pup);
+      const sh = new THREE.Mesh(new THREE.SphereGeometry(r * 0.035, 8, 6), shineM); sh.position.set(r * 0.05, r * 0.06, r * 0.14); eye.add(sh);
+      const lash = new THREE.Mesh(new THREE.TorusGeometry(r * 0.27, r * 0.03, 6, 18, Math.PI), lashM); lash.scale.set(1.2, 0.85, 1); lash.position.set(0, r * 0.02, r * 0.04); eye.add(lash);
+      const wing = new THREE.Mesh(new THREE.ConeGeometry(r * 0.03, r * 0.14, 5), lashM); wing.rotation.z = -sd * 1.9; wing.position.set(sd * r * 0.34, r * 0.08, r * 0.04); eye.add(wing);   // winged liner
+      const brow = new THREE.Mesh(new THREE.TorusGeometry(r * 0.3, r * 0.022, 5, 14, Math.PI * 0.75), lashM); brow.position.set(0, r * 0.2, r * 0.02); brow.rotation.z = Math.PI * 0.125; brow.scale.set(1.1, 0.5, 1); eye.add(brow);
+      const bl = new THREE.Mesh(new THREE.CircleGeometry(r * 0.16, 14), blushM); bl.position.set(sd * r * 0.5, -r * 0.24, r * 0.84); bl.rotation.y = sd * 0.5; f.add(bl);
+    });
+    const nose = new THREE.Mesh(new THREE.SphereGeometry(r * 0.08, 10, 8), skinMat); nose.scale.set(0.8, 1.3, 0.9); nose.position.set(0, -r * 0.12, r * 0.97); f.add(nose);
+    const up = new THREE.Mesh(new THREE.SphereGeometry(r * 0.11, 12, 8), lipM); up.scale.set(1.5, 0.45, 0.6); up.position.set(0, -r * 0.42, r * 0.9); f.add(up);
+    const lo = new THREE.Mesh(new THREE.SphereGeometry(r * 0.1, 12, 8), lipM); lo.scale.set(1.3, 0.55, 0.6); lo.position.set(0, -r * 0.52, r * 0.88); f.add(lo);
+  }
+  function longHair(parent, headY, r, flowing) {   // long, glossy black hair falling to the waist, with locks framing the face
+    const h = new THREE.Group(); h.position.y = headY; parent.add(h);
+    const crown = new THREE.Mesh(new THREE.SphereGeometry(r * 1.1, 28, 20, 0, Math.PI * 2, 0, Math.PI * 0.55), silkHair); crown.position.set(0, r * 0.06, -r * 0.08); crown.rotation.x = -0.32; h.add(crown);
+    const part = new THREE.Mesh(new THREE.SphereGeometry(r * 1.06, 24, 16, Math.PI * 0.1, Math.PI * 0.55, Math.PI * 0.1, Math.PI * 0.22), silkHair); part.position.y = r * 0.04; h.add(part);   // soft side-swept fringe
+    const fall = new THREE.Group(); fall.position.set(0, 0, -r * 0.35); h.add(fall);
+    // the curtain of hair down the back: a curved sheet that narrows into tapered ends
+    const prof = []; const L = flowing ? 4.6 : 3.2; for (let k = 0; k <= 10; k++) { const t = k / 10; prof.push(new THREE.Vector2(r * (1.08 + Math.sin(t * Math.PI) * 0.35 - t * 0.55), -t * r * L)); }
+    const sheet = new THREE.Mesh(new THREE.LatheGeometry(prof, 28, Math.PI * 0.18, Math.PI * 1.64), silkHair); fall.add(sheet);
+    const strands = []; for (let k = 0; k < 7; k++) { const a = -Math.PI * (0.12 + k * 0.125); const st2 = new THREE.Mesh(new THREE.ConeGeometry(r * 0.2, r * L * 0.45, 8), silkHair); st2.rotation.x = Math.PI; st2.position.set(Math.cos(a) * r * 0.62, -r * L * 0.95, Math.sin(a) * r * 0.5); fall.add(st2); strands.push(st2); }
+    [-1, 1].forEach(sd => { const lock = new THREE.Mesh(new THREE.CapsuleGeometry(r * 0.16, r * 2.4, 6, 10), silkHair); lock.position.set(sd * r * 0.92, -r * 1.2, r * 0.32); lock.rotation.z = sd * 0.08; lock.scale.z = 0.6; h.add(lock); strands.push(lock); });
+    h.userData = { fall, strands }; return h;
+  }
+  function swayHair(h, t, k, lying) { if (!h) return; h.userData.fall.rotation.x = (lying ? -0.6 : 0.06) + Math.sin(t * 1.6 + k) * 0.06; h.userData.fall.rotation.z = Math.sin(t * 1.1 + k * 2) * 0.05; }
+
   function makePicker(i) {   // shalwar kameez, a dupatta over the head, a basket on the arm
     const w = new THREE.Group(), [kc, dc] = SUITS[i % SUITS.length];
     const kam = new THREE.MeshStandardMaterial({ color: kc, roughness: 0.55 }), dup = new THREE.MeshStandardMaterial({ color: dc, roughness: 0.6, side: THREE.DoubleSide }), shal = new THREE.MeshStandardMaterial({ color: 0xf5f0e6, roughness: 0.7 });
     const legs = [-1, 1].map(sd => { const l = new THREE.Group(); l.position.set(sd * 0.13, 0.95, 0); const m = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.13, 0.95, 10), shal); m.position.y = -0.47; l.add(m); w.add(l); return l; });
     const tunic = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.42, 1.25, 16), kam); tunic.position.y = 1.4; w.add(tunic);
-    const head = new THREE.Mesh(new THREE.SphereGeometry(0.2, 16, 12), skin2); head.position.y = 2.2; w.add(head);
+    const head = new THREE.Mesh(new THREE.SphereGeometry(0.2, 16, 12), skin2); head.position.y = 2.2; w.add(head); face(head, 0.2, skin2, i);
+    const pHair = longHair(w, 2.2, 0.2, true); pHair.children[0].visible = pHair.children[1].visible = false;   // the dupatta covers the crown; the long hair flows out beneath it
     const scarf = new THREE.Mesh(new THREE.SphereGeometry(0.235, 16, 12, 0, Math.PI * 2, 0, Math.PI * 0.62), dup); scarf.position.y = 2.22; scarf.rotation.x = -0.25; w.add(scarf);
     const drape = new THREE.Mesh(new THREE.ConeGeometry(0.46, 0.9, 16, 1, true), dup); drape.position.y = 1.62; w.add(drape);
     const arms = [-1, 1].map(sd => { const a = new THREE.Group(); a.position.set(sd * 0.3, 1.92, 0); const m = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.7, 8), kam); m.position.y = -0.35; a.add(m); const hand = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 6), skin2); hand.position.y = -0.72; a.add(hand); w.add(a); return a; });
@@ -963,7 +1001,7 @@ export function start(root) {
     const held = mango(); held.position.y = -0.82; arms[1].add(held); held.visible = false;
     const fan = new THREE.Mesh(new THREE.CircleGeometry(0.42, 18, 0, Math.PI), new THREE.MeshStandardMaterial({ color: [0xffd23a, 0xff6fb4, 0x3fd6ff, 0xffffff][i % 4], side: THREE.DoubleSide, roughness: 0.6 })); fan.position.set(0, -0.86, 0.05); fan.rotation.set(0, Math.PI / 2, Math.PI); arms[0].add(fan); fan.visible = false;
     w.scale.setScalar(1.25); shadowy(w);
-    w.userData = { legs, arms, held, fan, state: "walk", tree: mangoTrees[i % mangoTrees.length], t: 0, target: new THREE.Vector3(), side: i % 2 ? 1 : -1 };
+    w.userData = { hair: pHair, legs, arms, held, fan, state: "walk", tree: mangoTrees[i % mangoTrees.length], t: 0, target: new THREE.Vector3(), side: i % 2 ? 1 : -1 };
     w.position.set(i % 2 ? 9 : -9, 0, 6 - i * 4); w.visible = false; scene.add(w); return w;
   }
   const pickers = Array.from({ length: small ? 3 : 4 }, (_, i) => makePicker(i));
@@ -1001,22 +1039,22 @@ export function start(root) {
     const w = new THREE.Group(), hipW = curvy ? 1.22 : 0.95;
     const legs = [-1, 1].map(sd => { const l = new THREE.Group(); l.position.set(sd * 0.12 * hipW, 1.0, 0); const m = new THREE.Mesh(new THREE.CylinderGeometry(0.075 * hipW, 0.05, 0.98, 10), outfit === "lawyer" ? new THREE.MeshStandardMaterial({ color: 0x2a1a14, roughness: 0.4 }) : skin); m.position.y = -0.49; l.add(m);
       const heel = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.05, 0.22), outfit === "lawyer" ? bikeDark : red); heel.position.set(0, -0.98, 0.05); l.add(heel); const spike = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.12, 4), outfit === "lawyer" ? bikeDark : red); spike.position.set(0, -1.02, -0.06); l.add(spike); w.add(l); return l; });
-    const hips = new THREE.Mesh(new THREE.SphereGeometry(0.24, 16, 12), outfit === "red" || outfit === "polka" ? skin : cloth); hips.scale.set(hipW, 0.75, 0.85); hips.position.y = 1.05; w.add(hips);
-    const waist = new THREE.Mesh(new THREE.CylinderGeometry(0.2, curvy ? 0.15 : 0.18, 0.5, 14), outfit === "red" || outfit === "polka" ? skin : cloth); waist.position.y = 1.4; w.add(waist);
-    const chest = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.2, 0.32, 14), outfit === "lawyer" ? navy : cloth); chest.position.y = 1.72; w.add(chest);
+    const bare = outfit === "red" || outfit === "polka";
+    const body = [[0.06, 0.92], [0.2 * hipW, 0.96], [0.235 * hipW, 1.08], [0.2 * hipW, 1.22], [curvy ? 0.145 : 0.165, 1.4], [0.175, 1.56], [0.205, 1.7], [0.19, 1.8], [0.13, 1.88], [0.065, 1.94]].map(([x, y]) => new THREE.Vector2(x, y));
+    const torso = new THREE.Mesh(new THREE.LatheGeometry(body, 32), bare ? skin : (outfit === "lawyer" ? navy : cloth)); torso.scale.z = 0.82; w.add(torso);   // one smooth curved silhouette
+    if (bare) { const top = new THREE.Mesh(new THREE.LatheGeometry(body.slice(5, 8).map(v => new THREE.Vector2(v.x + 0.012, v.y)), 32), cloth); top.scale.z = 0.84; w.add(top); }
     if (outfit === "red" || outfit === "polka") { const bottom = new THREE.Mesh(new THREE.CylinderGeometry(0.26 * hipW, 0.2 * hipW, 0.16, 14), cloth); bottom.position.y = 1.0; w.add(bottom); }
     if (outfit === "dress") { const skirt = new THREE.Mesh(new THREE.ConeGeometry(0.38 * hipW, 0.6, 18, 1, true), red); skirt.position.y = 0.98; skirt.material.side = THREE.DoubleSide; w.add(skirt); }
     if (outfit === "lawyer") { const skirt = new THREE.Mesh(new THREE.CylinderGeometry(0.25 * hipW, 0.2 * hipW, 0.55, 14), navy); skirt.position.y = 0.92; w.add(skirt); const shirt = new THREE.Mesh(new THREE.ConeGeometry(0.09, 0.22, 3), white); shirt.position.set(0, 1.78, 0.19); shirt.rotation.x = Math.PI; w.add(shirt); }
     const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.07, 0.14, 8), skin); neck.position.y = 1.94; w.add(neck);
-    const head = new THREE.Mesh(new THREE.SphereGeometry(0.19, 16, 12), skin); head.position.y = 2.14; w.add(head);
-    const hr = new THREE.Mesh(new THREE.SphereGeometry(0.21, 16, 12, 0, Math.PI * 2, 0, Math.PI * 0.6), hair); hr.position.set(0, 2.17, -0.02); hr.rotation.x = -0.3; w.add(hr);
-    const tail = new THREE.Mesh(new THREE.CapsuleGeometry(0.07, 0.4, 4, 8), hair); tail.position.set(0, 1.92, -0.2); w.add(tail);
+    const head = new THREE.Mesh(new THREE.SphereGeometry(0.19, 16, 12), skin); head.position.y = 2.14; w.add(head); face(head, 0.19, skin, i);
+    const gHair = longHair(w, 2.14, 0.19, true);
     const arms = [-1, 1].map(sd => { const a = new THREE.Group(); a.position.set(sd * 0.27, 1.85, 0); const m = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.045, 0.68, 8), outfit === "lawyer" ? navy : skin); m.position.y = -0.34; a.add(m); const hd = new THREE.Mesh(new THREE.SphereGeometry(0.055, 8, 6), skin); hd.position.y = -0.7; a.add(hd); w.add(a); return a; });
     const gun = handGun(); gun.position.set(0, -0.72, 0.1); gun.rotation.x = -Math.PI / 2; arms[1].add(gun);
     const tray = new THREE.Group(); { const pl = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.02, 16), bikeChrome); tray.add(pl); const cup = mango(); cup.position.y = 0.1; tray.add(cup); } tray.position.set(0, -0.72, 0.18); arms[0].add(tray); tray.visible = false;
     if (outfit === "lawyer") { const brief = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.25, 0.08), new THREE.MeshStandardMaterial({ color: 0x5a3416, roughness: 0.5 })); brief.position.set(0, -0.82, 0); arms[0].add(brief); w.userData.brief = brief; }
     w.scale.setScalar(1.22); shadowy(w);
-    Object.assign(w.userData, { legs, arms, gun, tray, state: "gym", t: 0, target: new THREE.Vector3(), side: i % 2 ? 1 : -1, slot: i });
+    Object.assign(w.userData, { hair: gHair, legs, arms, gun, tray, state: "gym", t: 0, target: new THREE.Vector3(), side: i % 2 ? 1 : -1, slot: i });
     w.position.set(mansion.position.x + (Math.random() - 0.5) * 4, 0, mansion.position.z + 7 * mansionK); scene.add(w); return w;
   }
   const gals = [], galCap = small ? 6 : 10;
@@ -1027,7 +1065,7 @@ export function start(root) {
   // shared armed behaviour for every woman: run to the mansion, grab a gun, take a post, open fire
   function armedStep(w, u, dt, idx) {
     const door = tmpV2.set(mansion.position.x + (idx % 3 - 1) * 1.5, 0, mansion.position.z + 6.5 * mansionK);
-    if (!u.armState) { u.armState = "toDoor"; w.rotation.set(0, w.rotation.y, 0); w.position.y = 0; if (u.fan) u.fan.visible = false; if (u.state === "lounge") u.state = "walk"; }
+    if (!u.armState) { u.armState = "toDoor"; w.rotation.set(0, w.rotation.y, 0); w.position.y = 0; if (u.fan) u.fan.visible = false; if (u.state === "lounge") u.state = "walk"; if (u.state === "attend") u.state = "gym"; }
     if (u.armState === "toDoor") u.target.copy(door);
     else if (u.armState === "toPost") u.target.set(crab.position.x + ((idx % 6) - 2.5) * 2.1, 0, crab.position.z + 4 + 1.6 * st.crabScale + Math.floor(idx / 6) * 1.5);
     const d = tmpV3.copy(u.target).sub(w.position); d.y = 0; const dist = d.length(), moving = dist > 0.3 && u.armState !== "grab" && u.armState !== "fire";
@@ -1479,7 +1517,8 @@ export function start(root) {
         else { const rub = Math.sin(time * 12) * 0.25; u.arms[0].rotation.set(-1.35 + rub, 0, 0.15); u.arms[1].rotation.set(-1.35 - rub, 0, -0.15);
           if (Math.random() < dt * 0.4) dmg("💆", crab.position.clone().add(new THREE.Vector3(Math.sin(ang) * 2.2 * st.crabScale, 1.6, Math.cos(ang) * 1.6 * st.crabScale)), "miss"); }
         u.t -= dt; if (u.t <= 0) { w.rotation.set(0, face, 0); w.position.y = 0; u.held.visible = false; u.fan.visible = false; u.arms.forEach(a2 => a2.rotation.set(0, 0, 0)); u.tree = mangoTrees[(mangoTrees.indexOf(u.tree) + 2) % mangoTrees.length]; u.state = "walk"; } }
-      if (u.state === "walk" && !moving) u.arms[1].rotation.x = 0; });
+      if (u.state === "walk" && !moving) u.arms[1].rotation.x = 0;
+      swayHair(u.hair, time, i, u.state === "lounge"); });
     // the poison move
     if (pz.phase === "wind") { pz.t -= dt; st.stun = Math.max(st.stun, 0.05);   // the scorpion rushes in, tail high and glowing green
       pos.x += (crab.position.x - pos.x) * Math.min(1, dt * 4); pos.z += (crab.position.z + 3.2 * st.crabScale * 1.2 + 1.2 - pos.z) * Math.min(1, dt * 4);
@@ -1547,8 +1586,10 @@ export function start(root) {
       else if (u.state === "workout") { u.t -= dt; const sq = Math.max(0, Math.sin(time * 4 + i)); w.position.y = -sq * 0.25; u.legs.forEach(l => l.rotation.x = -sq * 0.6); u.arms.forEach(a => a.rotation.x = -1.5 - Math.sin(time * 4 + i) * 0.8); w.rotation.y = Math.PI / 2 * -1;
         if (u.t <= 0) { u.state = "serve"; u.arms.forEach(a => a.rotation.x = 0); u.tray.visible = true; if (u.brief) u.brief.visible = false; } }
       else if (u.state === "serve" && !moving) { u.state = "attend"; u.t = 7; }
-      else if (u.state === "attend") { u.t -= dt; w.rotation.y = Math.atan2(crab.position.x - w.position.x, crab.position.z - w.position.z); u.arms[0].rotation.x = -1.3; w.position.y = Math.abs(Math.sin(time * 3 + i)) * 0.05;
-        if (u.t <= 0) { u.state = "gym"; u.tray.visible = false; u.arms[0].rotation.x = 0; if (u.brief) u.brief.visible = true; } } });
+      else if (u.state === "attend") { u.t -= dt; const fc = Math.atan2(crab.position.x - w.position.x, crab.position.z - w.position.z);
+        w.rotation.set(0, fc, (i % 2 ? 1 : -1) * 1.38, "YXZ"); w.position.y = 0.36; u.arms[0].rotation.x = -1.3; u.legs[0].rotation.x = 0.15; u.legs[1].rotation.x = 0.55;   // reclining beside him
+        if (u.t <= 0) { u.state = "gym"; w.rotation.set(0, fc, 0); w.position.y = 0; u.tray.visible = false; u.arms[0].rotation.x = 0; if (u.brief) u.brief.visible = true; } }
+      swayHair(u.hair, time, i, u.state === "attend"); });
     // royal tags, fireflies and the horror numbers
     royalTags();
     for (let i = 0; i < FF; i++) { const sd = ffSeed[i]; ffPos[i * 3] = sd[0] + Math.sin(time * 0.5 + sd[3]) * 1.5; ffPos[i * 3 + 1] = sd[1] + Math.sin(time * 1.3 + sd[3] * 2) * 0.5; ffPos[i * 3 + 2] = sd[2] + Math.cos(time * 0.4 + sd[3]) * 1.5; }
