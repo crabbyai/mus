@@ -266,6 +266,14 @@
         horror();
       }, 8000 + Math.random() * 6000);
     })();
+    // red superbikes line up behind the crab, more (and flashier) as he keeps winning
+    var bikes2 = document.createElement("span"); bikes2.className = "bikes2"; bikes2.setAttribute("aria-hidden", "true"); road.appendChild(bikes2);
+    function bikesUp() {
+      var want = Math.min(10, 2 + round * 2 + (omen || 0) * 2);
+      while (bikes2.children.length < want) { var bk = document.createElement("i"); bk.textContent = "🏍️"; bikes2.appendChild(bk); }
+      bikes2.className = "bikes2 bikes2--t" + Math.min(3, round + ((omen || 0) >= 3 ? 1 : 0));
+    }
+    bikesUp(); setInterval(bikesUp, 1500);
     function lanes() { return [].slice.call(road.querySelectorAll(".scorp:not(.gone)")); }
     boss.addEventListener("click", function () {
       taps.push(Date.now()); taps = taps.filter(function (t) { return Date.now() - t < 6000; });

@@ -698,6 +698,46 @@ export function start(root) {
   const crabCarpet = carpet(caMat, 12, 6); scene.add(crabCarpet);
   const scorpCarpet = carpet(pkMat, 4.8, 2.4); scorpCarpet.position.y = 0.05; scorpCarpet.rotation.y = Math.PI / 2; scorpCarpet.userData.carpet = true; scorpCarpet.traverse(m => m.userData.carpet = true); scorp.add(scorpCarpet);
 
+  /* ---------- red Italian superbikes: they multiply and get flashier as the crab keeps winning ---------- */
+  const bikeBody = new THREE.MeshPhysicalMaterial({ color: 0xc8100e, metalness: 0.35, roughness: 0.22, clearcoat: 1, clearcoatRoughness: 0.08 });
+  const bikeDark = new THREE.MeshStandardMaterial({ color: 0x141418, metalness: 0.6, roughness: 0.45 });
+  const bikeRim = new THREE.MeshStandardMaterial({ color: 0x1a1a1e, metalness: 0.9, roughness: 0.25 });
+  const bikeChrome = new THREE.MeshStandardMaterial({ color: 0xdfe6ee, metalness: 1, roughness: 0.12 });
+  const bikeGlass = new THREE.MeshPhysicalMaterial({ color: 0x1a2030, metalness: 0, roughness: 0.05, transparent: true, opacity: 0.55 });
+  const tyre = new THREE.MeshStandardMaterial({ color: 0x0b0b0d, roughness: 0.9 });
+  const lampMat = new THREE.MeshBasicMaterial({ color: 0xfff6d8 });
+  function makeBike() {
+    const b = new THREE.Group();
+    const wheel = x => { const w = new THREE.Group(); const t = new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.13, 12, 28), tyre); w.add(t); const rim = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.08, 20), bikeRim); rim.rotation.x = Math.PI / 2; w.add(rim); const disc = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.1, 18), bikeChrome); disc.rotation.x = Math.PI / 2; w.add(disc); w.position.set(x, 0.55, 0); b.add(w); return w; };
+    b.userData.wheels = [wheel(0.95), wheel(-0.95)];
+    const fairing = new THREE.Mesh(new THREE.CapsuleGeometry(0.32, 1.2, 6, 14), bikeBody); fairing.rotation.z = Math.PI / 2 + 0.12; fairing.position.set(0.25, 1.05, 0); fairing.scale.set(1, 1, 0.8); b.add(fairing);
+    const nose = new THREE.Mesh(new THREE.ConeGeometry(0.3, 0.7, 14), bikeBody); nose.rotation.z = -Math.PI / 2 - 0.25; nose.position.set(1.05, 1.0, 0); nose.scale.set(1, 1, 0.75); b.add(nose);
+    const tank = new THREE.Mesh(new THREE.SphereGeometry(0.34, 16, 12), bikeBody); tank.scale.set(1.3, 0.75, 0.85); tank.position.set(0.1, 1.38, 0); b.add(tank);
+    const tail = new THREE.Mesh(new THREE.ConeGeometry(0.22, 0.95, 12), bikeBody); tail.rotation.z = Math.PI / 2 - 0.3; tail.position.set(-0.75, 1.3, 0); tail.scale.set(1, 1, 0.7); b.add(tail);
+    const seat = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.08, 0.3), bikeDark); seat.position.set(-0.35, 1.42, 0); seat.rotation.z = 0.1; b.add(seat);
+    const screen = new THREE.Mesh(new THREE.SphereGeometry(0.26, 14, 10, 0, Math.PI * 2, 0, Math.PI / 2), bikeGlass); screen.position.set(0.72, 1.3, 0); screen.rotation.z = -0.9; screen.scale.set(1, 0.7, 0.75); b.add(screen);
+    const lamp = new THREE.Mesh(new THREE.SphereGeometry(0.09, 10, 8), lampMat); lamp.position.set(1.28, 1.02, 0); b.add(lamp);
+    const fork = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.75, 8), bikeChrome); fork.position.set(0.88, 0.85, 0); fork.rotation.z = 0.35; b.add(fork);
+    const bars = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.7, 8), bikeDark); bars.rotation.x = Math.PI / 2; bars.position.set(0.55, 1.45, 0); b.add(bars);
+    const engine = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.38, 0.32), bikeDark); engine.position.set(0, 0.72, 0); b.add(engine);
+    [-1, 1].forEach(sd => { const ex = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.09, 0.7, 10), bikeChrome); ex.rotation.z = Math.PI / 2 - 0.25; ex.position.set(-0.7, 1.02, sd * 0.13); b.add(ex); });
+    const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex("rgba(255,40,40,0.8)", "rgba(255,40,40,0)"), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending })); glow.scale.set(3.2, 1.1, 1); glow.position.y = 0.1; glow.visible = false; b.add(glow); b.userData.glow = glow;
+    const pod = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 1.7, 1, 28), goldMat); pod.position.y = -0.5; b.add(pod); b.userData.pod = pod;
+    shadowy(b); return b;
+  }
+  const bikes = [], bikeSpawn = { cool: 2, tier: -1 };
+  function bikeSlot(i) {   // a showroom fan behind the crab, then rows along the mansion's driveway
+    const side = i % 2 ? 1 : -1, k = Math.floor(i / 2);
+    if (k < 3) return [crab.position.x * 0.5 + side * (4.2 + k * 3.4) * Math.max(1, st.crabScale * 0.6), crab.position.z - 6 - 1.4 * st.crabScale, side, 2.2 + k * 0.5];
+    return [side * (5 + (k - 3) * 3.1), mansion.position.z + 10 * mansionK, side, 0.6];
+  }
+  function bikeTier() { return Math.min(3, Math.floor(st.round / 1) + (omen >= 3 ? 1 : 0)); }
+  function styleBikes(t) {   // cooler with every tier: gold rims, chrome, neon underglow, bigger bikes
+    bikeRim.color.set(t >= 1 ? 0xe8c87e : 0x1a1a1e); bikeRim.emissive && bikeRim.emissive.set(t >= 1 ? 0x3a2a08 : 0x000000);
+    bikeBody.color.set(t >= 3 ? 0xe0120f : 0xc8100e); bikeBody.sheenColor && (bikeBody.sheen = t >= 2 ? 1 : 0);
+    bikes.forEach(b2 => { b2.userData.glow.visible = t >= 2; b2.userData.base = 1.7 + t * 0.2; });
+  }
+
   /* ---------- game state ---------- */
   const st = { stun: 0, round: 0, hp: 100, crabScale: 1, wealth: 1000000, level: 0, playing: false, sting: 0, cool: 0, kb: 0, crabT: 1.5, crabTarget: 0, lunge: 0, flinch: 0, shake: 0 };
   const pos = new THREE.Vector3(0, 0, 8);
@@ -968,6 +1008,13 @@ export function start(root) {
     if (adlT > 0) { adlT -= dt; if (adlT <= 0) adlEl.classList.remove("on"); }
 
     crabCarpet.position.set(crab.position.x, 0, crab.position.z + 0.6 * st.crabScale); crabCarpet.scale.set(st.crabScale, 1, st.crabScale);
+    // superbikes: one more pops in whenever the crab is winning harder
+    { const want = Math.min(14, 2 + st.round * 2 + omen * 2 + (st.wealth > 5e6 ? 2 : 0)); bikeSpawn.cool -= dt;
+      if (bikes.length < want && bikeSpawn.cool <= 0) { const b2 = makeBike(); b2.userData.t = 0; bikes.push(b2); scene.add(b2); bikeSpawn.cool = 0.9; bikeSpawn.tier = -1; if (bikes.length > 2 && st.playing) dmg("+🏍️", b2.position.clone().set(bikeSlot(bikes.length - 1)[0], 2, bikeSlot(bikes.length - 1)[1]), "crab"); }
+      const tier = bikeTier(); if (tier !== bikeSpawn.tier) { bikeSpawn.tier = tier; styleBikes(tier); }
+      bikes.forEach((b2, i) => { const [x, z, sd, h] = bikeSlot(i); const u = b2.userData; u.t = Math.min(1, u.t + dt * 1.6);
+        b2.position.set(x, h + (1 - u.t) * 8, z); u.pod.scale.y = h / (u.base || 1.7) * 1.0; u.pod.position.y = -h / (u.base || 1.7) / 2; b2.rotation.y = -sd * 0.35 + Math.sin(time * 0.4 + i) * 0.5 + (1 - u.t) * 6; b2.scale.setScalar((u.base || 1.7) * (0.3 + 0.7 * u.t));
+        if (u.glow.visible) u.glow.material.opacity = 0.55 + Math.sin(time * 4 + i) * 0.25; }); }
     // royal tags, fireflies and the horror numbers
     royalTags();
     for (let i = 0; i < FF; i++) { const sd = ffSeed[i]; ffPos[i * 3] = sd[0] + Math.sin(time * 0.5 + sd[3]) * 1.5; ffPos[i * 3 + 1] = sd[1] + Math.sin(time * 1.3 + sd[3] * 2) * 0.5; ffPos[i * 3 + 2] = sd[2] + Math.cos(time * 0.4 + sd[3]) * 1.5; }
