@@ -14,14 +14,14 @@ import { UnrealBloomPass } from "../js/vendor/three/postprocessing/UnrealBloomPa
 import { ShaderPass } from "../js/vendor/three/postprocessing/ShaderPass.js";
 
 const TX = {
-  en: { round: "Round", hp: "Crab", wealth: "Crab's wealth", mansion: "Mansion", start: "Tap or press a key to play", nice: "Nice try 😏", niceSub: "The crab grows stronger and richer, and the mansion grows.", hit: "Sting!", back: "The crab hits back!", blood: "Blood moon 🐺 Awoooo…", sound: "Sound", sting: "Sting", lvl: "Level", lh: "لا حول ولا قوة إلا بالله" },
-  ur: { round: "راؤنڈ", hp: "کیکڑا", wealth: "کیکڑے کی دولت", mansion: "محل", start: "کھیلنے کے لیے ٹیپ کریں یا کوئی بٹن دبائیں", nice: "اچھی کوشش 😏", niceSub: "کیکڑا مزید طاقتور اور امیر ہو گیا، اور محل بڑا ہو گیا۔", hit: "ڈنک!", back: "کیکڑے نے جوابی وار کیا!", blood: "خونی چاند 🐺 آؤووو…", sound: "آواز", sting: "ڈنک", lvl: "لیول", lh: "لا حول ولا قوۃ الا باللہ" },
-  ar: { round: "الجولة", hp: "السلطعون", wealth: "ثروة السلطعون", mansion: "القصر", start: "اضغط أو اضغط زرًا لتلعب", nice: "محاولة جيدة 😏", niceSub: "السلطعون يزداد قوة وثراء، والقصر يكبر.", hit: "لسعة!", back: "السلطعون يردّ الضربة!", blood: "قمر دموي 🐺 أووو…", sound: "الصوت", sting: "لسعة", lvl: "المستوى", lh: "لا حول ولا قوة إلا بالله" },
-  fr: { round: "Manche", hp: "Crabe", wealth: "Fortune du crabe", mansion: "Manoir", start: "Touchez ou appuyez sur une touche pour jouer", nice: "Bien essayé 😏", niceSub: "Le crabe devient plus fort et plus riche, et le manoir grandit.", hit: "Piqûre !", back: "Le crabe riposte !", blood: "Lune de sang 🐺 Aouuu…", sound: "Son", sting: "Piquer", lvl: "Niveau", lh: "لا حول ولا قوة إلا بالله" },
-  es: { round: "Ronda", hp: "Cangrejo", wealth: "Fortuna del cangrejo", mansion: "Mansión", start: "Toca o pulsa una tecla para jugar", nice: "Buen intento 😏", niceSub: "El cangrejo se vuelve más fuerte y más rico, y la mansión crece.", hit: "¡Picadura!", back: "¡El cangrejo contraataca!", blood: "Luna de sangre 🐺 Auuuu…", sound: "Sonido", sting: "Picar", lvl: "Nivel", lh: "لا حول ولا قوة إلا بالله" },
-  ja: { round: "ラウンド", hp: "カニ", wealth: "カニの財産", mansion: "豪邸", start: "タップかキーでスタート", nice: "惜しい 😏", niceSub: "カニはさらに強く豊かになり、豪邸も大きくなった。", hit: "刺した！", back: "カニの反撃！", blood: "血の月 🐺 アオーン…", sound: "サウンド", sting: "刺す", lvl: "レベル", lh: "لا حول ولا قوة إلا بالله" },
-  zh: { round: "回合", hp: "螃蟹", wealth: "螃蟹的财富", mansion: "豪宅", start: "点击或按任意键开始", nice: "不错的尝试 😏", niceSub: "螃蟹变得更强更富，豪宅也更大了。", hit: "蜇中！", back: "螃蟹反击了！", blood: "血月 🐺 嗷呜…", sound: "声音", sting: "蜇", lvl: "等级", lh: "لا حول ولا قوة إلا بالله" },
-  ko: { round: "라운드", hp: "게", wealth: "게의 재산", mansion: "저택", start: "탭하거나 키를 눌러 시작", nice: "좋은 시도였어요 😏", niceSub: "게는 더 강하고 부유해졌고, 저택도 커졌습니다.", hit: "쏘기!", back: "게의 반격!", blood: "블러드 문 🐺 아우우…", sound: "소리", sting: "쏘기", lvl: "레벨", lh: "لا حول ولا قوة إلا بالله" }
+  en: { sliced: "Sliced! 🔪", knives: "Twin knives fall for the crab 🔪🔪", push: "✨ Crab magic: pushed away!", pull: "✨ Crab magic: pulled in!", sur: "“And the Trumpet will be blown…” (39:68)", moon: "“The Hour has drawn near, and the moon has split.” (54:1)", round: "Round", hp: "Crab", wealth: "Crab's wealth", mansion: "Mansion", start: "Tap or press a key to play", nice: "Nice try 😏", niceSub: "The crab grows stronger and richer, and the mansion grows.", hit: "Sting!", back: "The crab hits back!", blood: "Blood moon 🐺 Awoooo…", sound: "Sound", sting: "Sting", lvl: "Level", lh: "لا حول ولا قوة إلا بالله" },
+  ur: { sliced: 'کٹ گیا! 🔪', knives: 'کیکڑے کے لیے دو چاقو گرے 🔪🔪', push: '✨ کیکڑے کا جادو: دور دھکیل دیا!', pull: '✨ کیکڑے کا جادو: کھینچ لیا!', sur: '”اور صور پھونکا جائے گا…“ (39:68)', moon: '”قیامت قریب آ گئی اور چاند پھٹ گیا۔“ (54:1)', round: "راؤنڈ", hp: "کیکڑا", wealth: "کیکڑے کی دولت", mansion: "محل", start: "کھیلنے کے لیے ٹیپ کریں یا کوئی بٹن دبائیں", nice: "اچھی کوشش 😏", niceSub: "کیکڑا مزید طاقتور اور امیر ہو گیا، اور محل بڑا ہو گیا۔", hit: "ڈنک!", back: "کیکڑے نے جوابی وار کیا!", blood: "خونی چاند 🐺 آؤووو…", sound: "آواز", sting: "ڈنک", lvl: "لیول", lh: "لا حول ولا قوۃ الا باللہ" },
+  ar: { sliced: 'تقطّع! 🔪', knives: 'سكينان يسقطان للسلطعون 🔪🔪', push: '✨ سحر السلطعون: دُفع بعيدًا!', pull: '✨ سحر السلطعون: سُحب إليه!', sur: '«ونُفخ في الصور…» (39:68)', moon: '«اقتربت الساعة وانشق القمر» (54:1)', round: "الجولة", hp: "السلطعون", wealth: "ثروة السلطعون", mansion: "القصر", start: "اضغط أو اضغط زرًا لتلعب", nice: "محاولة جيدة 😏", niceSub: "السلطعون يزداد قوة وثراء، والقصر يكبر.", hit: "لسعة!", back: "السلطعون يردّ الضربة!", blood: "قمر دموي 🐺 أووو…", sound: "الصوت", sting: "لسعة", lvl: "المستوى", lh: "لا حول ولا قوة إلا بالله" },
+  fr: { sliced: 'Tranché ! 🔪', knives: 'Deux couteaux tombent pour le crabe 🔪🔪', push: '✨ Magie du crabe : repoussé !', pull: '✨ Magie du crabe : attiré !', sur: '« Et l’on soufflera dans la Trompe… » (39:68)', moon: '« L’Heure approche et la lune s’est fendue. » (54:1)', round: "Manche", hp: "Crabe", wealth: "Fortune du crabe", mansion: "Manoir", start: "Touchez ou appuyez sur une touche pour jouer", nice: "Bien essayé 😏", niceSub: "Le crabe devient plus fort et plus riche, et le manoir grandit.", hit: "Piqûre !", back: "Le crabe riposte !", blood: "Lune de sang 🐺 Aouuu…", sound: "Son", sting: "Piquer", lvl: "Niveau", lh: "لا حول ولا قوة إلا بالله" },
+  es: { sliced: '¡Rebanado! 🔪', knives: 'Dos cuchillos caen para el cangrejo 🔪🔪', push: '✨ Magia del cangrejo: ¡empujado!', pull: '✨ Magia del cangrejo: ¡atraído!', sur: '«Y se soplará la Trompeta…» (39:68)', moon: '«Se acercó la Hora y se partió la luna.» (54:1)', round: "Ronda", hp: "Cangrejo", wealth: "Fortuna del cangrejo", mansion: "Mansión", start: "Toca o pulsa una tecla para jugar", nice: "Buen intento 😏", niceSub: "El cangrejo se vuelve más fuerte y más rico, y la mansión crece.", hit: "¡Picadura!", back: "¡El cangrejo contraataca!", blood: "Luna de sangre 🐺 Auuuu…", sound: "Sonido", sting: "Picar", lvl: "Nivel", lh: "لا حول ولا قوة إلا بالله" },
+  ja: { sliced: '斬られた！🔪', knives: 'カニのもとに2本のナイフが落ちてきた 🔪🔪', push: '✨ カニの魔法：吹き飛ばされた！', pull: '✨ カニの魔法：引き寄せられた！', sur: '「そしてラッパが吹かれる…」（39:68）', moon: '「時は近づき、月は裂けた。」（54:1）', round: "ラウンド", hp: "カニ", wealth: "カニの財産", mansion: "豪邸", start: "タップかキーでスタート", nice: "惜しい 😏", niceSub: "カニはさらに強く豊かになり、豪邸も大きくなった。", hit: "刺した！", back: "カニの反撃！", blood: "血の月 🐺 アオーン…", sound: "サウンド", sting: "刺す", lvl: "レベル", lh: "لا حول ولا قوة إلا بالله" },
+  zh: { sliced: '被砍了！🔪', knives: '两把刀为螃蟹落下 🔪🔪', push: '✨ 螃蟹魔法：被推开了！', pull: '✨ 螃蟹魔法：被拉过去了！', sur: '“号角将被吹响……”（39:68）', moon: '“复活时已临近了，月亮已破裂了。”（54:1）', round: "回合", hp: "螃蟹", wealth: "螃蟹的财富", mansion: "豪宅", start: "点击或按任意键开始", nice: "不错的尝试 😏", niceSub: "螃蟹变得更强更富，豪宅也更大了。", hit: "蜇中！", back: "螃蟹反击了！", blood: "血月 🐺 嗷呜…", sound: "声音", sting: "蜇", lvl: "等级", lh: "لا حول ولا قوة إلا بالله" },
+  ko: { sliced: '베였다! 🔪', knives: '게를 위해 쌍칼이 떨어진다 🔪🔪', push: '✨ 게의 마법: 밀려났다!', pull: '✨ 게의 마법: 끌려갔다!', sur: '“나팔이 불리리라…” (39:68)', moon: '“그 시간이 다가왔고 달이 갈라졌다.” (54:1)', round: "라운드", hp: "게", wealth: "게의 재산", mansion: "저택", start: "탭하거나 키를 눌러 시작", nice: "좋은 시도였어요 😏", niceSub: "게는 더 강하고 부유해졌고, 저택도 커졌습니다.", hit: "쏘기!", back: "게의 반격!", blood: "블러드 문 🐺 아우우…", sound: "소리", sting: "쏘기", lvl: "레벨", lh: "لا حول ولا قوة إلا بالله" }
 };
 
 export function start(root) {
@@ -188,6 +188,22 @@ export function start(root) {
     if (level >= 2) [-1, 1].forEach(side => { const t = new THREE.Mesh(new THREE.CylinderGeometry(1.6 * s, 1.8 * s, H * 1.25, 16), wallMat); t.position.set(side * (W / 2 + W * 0.45), H * 0.62, D * 0.2); mansion.add(t); const cap = new THREE.Mesh(new THREE.ConeGeometry(2 * s, 3.2 * s, 16), roofMat); cap.position.set(t.position.x, H * 1.25 + 1.6 * s, t.position.z); mansion.add(cap); });
     if (level >= 3) { const dome = new THREE.Mesh(new THREE.SphereGeometry(3.4 * s, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), goldMat); dome.position.y = H + (3 + level) * 0.55; mansion.add(dome); }
     if (level >= 4) { const sign = new THREE.Mesh(new THREE.BoxGeometry(W * 0.5, 1.4, 0.2), goldMat); sign.position.set(0, H + 0.9, D / 2 + 0.3); mansion.add(sign); }
+    // gold cornice, glowing pool and fountain, palm trees, searchlights, neon sign, gold crab statue
+    const cornice = new THREE.Mesh(new THREE.BoxGeometry(W + 0.6, 0.35, D + 0.6), goldMat); cornice.position.y = H + 0.17; mansion.add(cornice);
+    const pool = new THREE.Mesh(new THREE.PlaneGeometry(W * 0.55, 3.2), new THREE.MeshBasicMaterial({ color: 0x2fd3ff })); pool.rotation.x = -Math.PI / 2; pool.position.set(0, 0.05, D / 2 + 5.2); mansion.add(pool);
+    const rimP = new THREE.Mesh(new THREE.BoxGeometry(W * 0.55 + 0.5, 0.2, 3.7), goldMat); rimP.position.set(0, 0.02, D / 2 + 5.2); mansion.add(rimP); pool.position.y = 0.13;
+    const fount = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.4, 2.2, 12), goldMat); fount.position.set(0, 1.1, D / 2 + 5.2); mansion.add(fount);
+    const spray = new THREE.Mesh(new THREE.SphereGeometry(0.7, 16, 12), new THREE.MeshBasicMaterial({ color: 0xbff4ff, transparent: true, opacity: 0.55 })); spray.position.set(0, 2.4, D / 2 + 5.2); mansion.add(spray); fx.spray = spray;
+    [-1, 1].forEach(side => {
+      const px = side * (W / 2 + (level >= 1 ? W * 0.45 : 0) + 2.5), pz = D / 2 + 3;
+      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.35, 7 + level, 10), new THREE.MeshStandardMaterial({ color: 0x6b4a2a, roughness: 0.9 })); trunk.position.set(px, (7 + level) / 2, pz); trunk.rotation.z = side * 0.08; mansion.add(trunk);
+      for (let i = 0; i < 7; i++) { const leaf = new THREE.Mesh(new THREE.ConeGeometry(0.5, 4, 6), new THREE.MeshStandardMaterial({ color: 0x1f7a3a, roughness: 0.7 })); const a = i / 7 * 6.28; leaf.position.set(px + Math.cos(a) * 1.6, 7 + level + 0.2, pz + Math.sin(a) * 1.6); leaf.rotation.set(Math.sin(a) * 1.2, 0, -Math.cos(a) * 1.2); mansion.add(leaf); }
+    });
+    fx.beams = [];
+    [-1, 1].forEach(side => { const beam = new THREE.Mesh(new THREE.ConeGeometry(3, 60, 24, 1, true), new THREE.MeshBasicMaterial({ color: 0xfff2c8, transparent: true, opacity: 0.09, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, fog: false })); beam.geometry.translate(0, -30, 0); beam.position.set(side * W * 0.3, H + 0.5, 0); beam.rotation.x = Math.PI; mansion.add(beam); fx.beams.push({ beam, side }); });
+    { const c = document.createElement("canvas"); c.width = 512; c.height = 96; const g = c.getContext("2d"); g.font = "bold 58px system-ui, sans-serif"; g.textAlign = "center"; g.shadowColor = "#ff2fd6"; g.shadowBlur = 24; g.fillStyle = "#ffd6f7"; g.fillText("CRAB MANSION", 256, 66);
+      const neon = new THREE.Mesh(new THREE.PlaneGeometry(W * 0.42, W * 0.42 * 96 / 512), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c), transparent: true })); neon.position.set(0, H * 0.6 + 1.3, D / 2 + 1.95); mansion.add(neon); }
+    if (level >= 2) { const statue = new THREE.Group(); const sb = new THREE.Mesh(new THREE.SphereGeometry(1, 20, 14), goldMat); sb.scale.set(1.6, 0.7, 1.2); statue.add(sb); [-1, 1].forEach(sd => { const cl = new THREE.Mesh(new THREE.SphereGeometry(0.55, 14, 10), goldMat); cl.position.set(sd * 1.7, 0.4, 0.8); statue.add(cl); }); statue.scale.setScalar(0.9 + level * 0.15); statue.position.set(0, H + (3 + level) * 0.55 + (level >= 3 ? 3.4 * s : 1.5), 0); mansion.add(statue); }
     mansion.position.set(0, 0, -30 - level * 3.5);
     const lamp = new THREE.PointLight(0xffc98a, 28 + level * 10, 0, 1.5); lamp.position.set(0, H * 0.6, D / 2 + 9); mansion.add(lamp);
   }
@@ -230,6 +246,7 @@ export function start(root) {
   sword.scale.setScalar(1.7); sword.position.set(0.2, 0.7, 1.3); sword.rotation.set(0.25, 0, -0.5);
   gun.scale.setScalar(2.1); gun.position.set(0.35, 1.05, 1.0); gun.rotation.y = -0.55;
   const weap = { kind: null, t: 0, next: 6 + Math.random() * 6, shot: 0 };
+  const fxRef = { beams: [] };
   function strength(level) {
     const m = Math.min(level, 6);
     body.scale.set(1.7 + m * 0.12, 0.75 + m * 0.07, 1.25 + m * 0.09);
@@ -297,8 +314,82 @@ export function start(root) {
     stacks.instanceMatrix.needsUpdate = true; bands.instanceMatrix.needsUpdate = true;
   }
 
+  /* ---------- coins and diamonds ---------- */
+  const fx = fxRef;
+  function pool(geo, mat, n) { const m = new THREE.InstancedMesh(geo, mat, n); m.instanceMatrix.setUsage(THREE.DynamicDrawUsage); scene.add(m); for (let i = 0; i < n; i++) m.setMatrixAt(i, hide); return { m, n, a: Array.from({ length: n }, () => ({ on: false, p: new THREE.Vector3(), v: new THREE.Vector3(), r: new THREE.Euler(), w: new THREE.Vector3(), rest: 0 })), i: 0 }; }
+  const coins = pool(new THREE.CylinderGeometry(0.26, 0.26, 0.06, 18), goldMat, small ? 160 : 260);
+  const diamonds = pool(new THREE.OctahedronGeometry(0.24, 0), new THREE.MeshStandardMaterial({ color: 0xcff6ff, metalness: 0.2, roughness: 0.05, emissive: 0x3aa6c8, emissiveIntensity: 0.9, flatShading: true }), small ? 180 : 320);
+  function drop(P, n, wide, fast) {
+    for (let k = 0; k < n; k++) {
+      const o = P.a[P.i]; P.i = (P.i + 1) % P.n;
+      o.on = true; o.rest = 0;
+      if (wide) o.p.set((Math.random() - 0.5) * 46, 22 + Math.random() * 18, 12 - Math.random() * 60);
+      else o.p.set(crab.position.x + (Math.random() - 0.5) * 12, 18 + Math.random() * 12, crab.position.z + (Math.random() - 0.5) * 10);
+      o.v.set((Math.random() - 0.5) * 2, fast ? -22 - Math.random() * 10 : -6 - Math.random() * 4, (Math.random() - 0.5) * 2);
+      o.r.set(Math.random() * 6, Math.random() * 6, Math.random() * 6); o.w.set((Math.random() - 0.5) * 12, (Math.random() - 0.5) * 12, (Math.random() - 0.5) * 12);
+    }
+  }
+  function stepPool(P, dt, restFor) {
+    for (let i = 0; i < P.n; i++) {
+      const o = P.a[i]; if (!o.on) continue;
+      if (o.p.y > 0.05) { o.v.y -= 9 * dt; o.p.addScaledVector(o.v, dt); o.r.x += o.w.x * dt; o.r.y += o.w.y * dt; o.r.z += o.w.z * dt; if (o.p.y <= 0.05) { o.p.y = 0.05; o.r.set(restFor ? -Math.PI / 2 : o.r.x, o.r.y, 0); if (!restFor) { o.on = false; P.m.setMatrixAt(i, hide); continue; } } }
+      else { o.rest += dt; if (o.rest > restFor) { o.on = false; P.m.setMatrixAt(i, hide); continue; } }
+      tmpM.compose(o.p, tmpQ.setFromEuler(o.r), tmpS); P.m.setMatrixAt(i, tmpM);
+    }
+    P.m.instanceMatrix.needsUpdate = true;
+  }
+
+  /* ---------- twin knives (karambit style) ---------- */
+  function makeKnife() {
+    const k = new THREE.Group();
+    const blade = new THREE.Mesh(new THREE.TorusGeometry(0.55, 0.06, 6, 24, Math.PI * 0.85), steel); blade.scale.set(1, 1, 0.35); blade.rotation.z = Math.PI * 0.55; blade.position.set(0.15, 0.55, 0); k.add(blade);
+    const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.6, 10), new THREE.MeshStandardMaterial({ color: 0x3b2a5a, metalness: 0.4, roughness: 0.4 })); k.add(handle);
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.14, 0.035, 8, 20), goldMat); ring.position.y = -0.38; k.add(ring);
+    k.scale.setScalar(1.6); return k;
+  }
+  const knives = [makeKnife(), makeKnife()];
+  knives.forEach(k => { k.visible = false; scene.add(k); });
+  const slash = new THREE.Mesh(new THREE.RingGeometry(2.2, 2.6, 40, 1, 0, Math.PI * 0.9), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0, side: THREE.DoubleSide, blending: THREE.AdditiveBlending, depthWrite: false }));
+  scene.add(slash);
+  const dual = { phase: "idle", t: 0, next: 16 + Math.random() * 10, hitCool: 0 };   // idle, falling, wield
+
+  /* ---------- crab magic ---------- */
+  const runeTex = (() => { const c = document.createElement("canvas"); c.width = c.height = 256; const g = c.getContext("2d"); g.strokeStyle = "rgba(200,120,255,1)"; g.lineWidth = 6; g.shadowColor = "#b04dff"; g.shadowBlur = 18; g.beginPath(); g.arc(128, 128, 110, 0, 6.28); g.stroke(); g.beginPath(); g.arc(128, 128, 80, 0, 6.28); g.stroke(); for (let i = 0; i < 6; i++) { const a = i / 6 * 6.28; g.beginPath(); g.moveTo(128 + Math.cos(a) * 110, 128 + Math.sin(a) * 110); g.lineTo(128 + Math.cos(a + 2.09) * 110, 128 + Math.sin(a + 2.09) * 110); g.stroke(); } return new THREE.CanvasTexture(c); })();
+  const rune = new THREE.Mesh(new THREE.PlaneGeometry(9, 9), new THREE.MeshBasicMaterial({ map: runeTex, transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false })); rune.rotation.x = -Math.PI / 2; rune.position.y = 0.06; scene.add(rune);
+  const magicLight = new THREE.PointLight(0xb04dff, 0, 30, 1.6); scene.add(magicLight);
+  const magic = { t: 0, next: 12 + Math.random() * 8, mode: null };
+
+  /* ---------- Qiyamah: the Trumpet (Sur) and the moon splitting ---------- */
+  const sur = new THREE.Group();
+  { const horn = new THREE.Mesh(new THREE.ConeGeometry(3.2, 26, 32, 1, true), new THREE.MeshStandardMaterial({ color: 0xf2d28a, metalness: 1, roughness: 0.2, emissive: 0xc8962a, emissiveIntensity: 0.8, side: THREE.DoubleSide, fog: false })); horn.rotation.z = Math.PI / 2; sur.add(horn);
+    const mouth = new THREE.Mesh(new THREE.TorusGeometry(3.2, 0.35, 12, 40), goldMat); mouth.position.x = -13; mouth.rotation.y = Math.PI / 2; sur.add(mouth);
+    const bands = [-4, 3, 8].map(x => { const b2 = new THREE.Mesh(new THREE.TorusGeometry(3.2 * (13 - x) / 26 + 0.2, 0.18, 8, 32), goldMat); b2.position.x = x; b2.rotation.y = Math.PI / 2; sur.add(b2); return b2; }); }
+  const surGlow = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex("rgba(255,245,210,0.9)", "rgba(255,245,210,0)"), transparent: true, depthWrite: false, fog: false, blending: THREE.AdditiveBlending }));
+  surGlow.scale.set(26, 26, 1); surGlow.position.x = -14; sur.add(surGlow);
+  const surPos = toSky(-19, 15, 230);
+  const craters = scene.children.filter(o => o.userData.moon); sur.position.copy(surPos); sur.lookAt(0, 0, 0); sur.rotateZ(-0.35); sur.visible = false; scene.add(sur);
+  const waves = [0, 1, 2].map(() => { const w = new THREE.Mesh(new THREE.RingGeometry(1, 1.04, 96), new THREE.MeshBasicMaterial({ color: 0xfff2c8, transparent: true, opacity: 0, side: THREE.DoubleSide, blending: THREE.AdditiveBlending, depthWrite: false, fog: false })); w.position.copy(surPos); w.lookAt(0, 0, 0); scene.add(w); return w; });
+  const halfMat = moonMat;
+  const moonL = new THREE.Mesh(new THREE.SphereGeometry(15, 32, 24, Math.PI * 1.5, Math.PI), halfMat), moonR = new THREE.Mesh(new THREE.SphereGeometry(15, 32, 24, Math.PI * 0.5, Math.PI), halfMat);
+  [moonL, moonR].forEach(h => { h.position.copy(moonPos); h.visible = false; scene.add(h); });
+  const qiy = { t: 0, next: 55 + Math.random() * 20, on: false };
+  function trumpet() {
+    if (!soundOn || !ac) return;
+    const t0 = ac.currentTime + 0.1, o = ac.createOscillator(), o2 = ac.createOscillator(), g = ac.createGain(), f = ac.createBiquadFilter();
+    o.type = "sawtooth"; o2.type = "square"; f.type = "lowpass"; f.frequency.value = 900;
+    o.frequency.setValueAtTime(98, t0); o.frequency.linearRampToValueAtTime(110, t0 + 2); o2.frequency.setValueAtTime(147, t0); o2.frequency.linearRampToValueAtTime(165, t0 + 2);
+    o.connect(f); o2.connect(f); f.connect(g); g.connect(ac.destination);
+    g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(0.14, t0 + 0.8); g.gain.setValueAtTime(0.14, t0 + 5); g.gain.exponentialRampToValueAtTime(0.0001, t0 + 6.5);
+    o.start(t0); o2.start(t0); o.stop(t0 + 6.6); o2.stop(t0 + 6.6);
+  }
+
+  /* ---------- GOLD DIGGER, written in the sky ---------- */
+  { const c = document.createElement("canvas"); c.width = 1024; c.height = 160; const g = c.getContext("2d"); g.font = "bold 120px Georgia, serif"; g.textAlign = "center"; g.shadowColor = "#ffcf5a"; g.shadowBlur = 30; g.fillStyle = "#ffe7a3"; g.fillText("GOLD DIGGER", 512, 125);
+    const gd = new THREE.Mesh(new THREE.PlaneGeometry(150, 23.4), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthWrite: false, fog: false, opacity: 0.85 }));
+    gd.position.copy(toSky(22, 15, 470)); gd.lookAt(0, 0, 0); scene.add(gd); fx.gold = gd; }
+
   /* ---------- game state ---------- */
-  const st = { round: 0, hp: 100, crabScale: 1, wealth: 1000000, level: 0, playing: false, sting: 0, cool: 0, kb: 0, crabT: 1.5, crabTarget: 0, lunge: 0, flinch: 0, shake: 0 };
+  const st = { stun: 0, round: 0, hp: 100, crabScale: 1, wealth: 1000000, level: 0, playing: false, sting: 0, cool: 0, kb: 0, crabT: 1.5, crabTarget: 0, lunge: 0, flinch: 0, shake: 0 };
   const pos = new THREE.Vector3(0, 0, 8);
   crab.position.set(0, 0, -12);
   buildMansion(0); buildStacks(0);
@@ -323,7 +414,7 @@ export function start(root) {
     st.wealth = st.wealth * 1.9 + 750000 + Math.random() * 400000;
     buildMansion(st.level); buildStacks(st.level);
     crown.visible = st.round >= 1; chain.visible = st.round >= 2; strength(st.round);
-    rain(Math.min(MAXB, 140));
+    rain(MAXB); drop(coins, coins.n, false, false); drop(diamonds, 120, true, true);
     pos.set(0, 0, 8); st.hp = 100; st.shake = 0.6;
     const t = tx(); say(t.nice, t.niceSub, 3200); setHud();
   }
@@ -333,7 +424,7 @@ export function start(root) {
     const reach = 2.4 * st.crabScale + 2.2;
     const dx = pos.x - crab.position.x, dz = pos.z - crab.position.z;
     if (Math.hypot(dx, dz) < reach) {
-      st.hp = Math.max(0, st.hp - (9 + Math.random() * 8)); st.flinch = 1; st.shake = 0.25; rain(22);
+      st.hp = Math.max(0, st.hp - (9 + Math.random() * 8)); st.flinch = 1; st.shake = 0.25; rain(40); drop(coins, 30, false, false); drop(diamonds, 25, false, true);
       st.wealth += 25000 + Math.random() * 60000; setHud();
       if (st.hp <= 0) niceTry(); else say(tx().hit, "", 500);
     }
@@ -350,7 +441,24 @@ export function start(root) {
     }
   });
   addEventListener("keyup", e => { keys[e.key.toLowerCase()] = false; });
-  canvas.addEventListener("pointerdown", () => { doSting(); });
+  const joy = { x: 0, y: 0, id: null, sx: 0, sy: 0, t: 0, moved: 0 };
+  const joyEl = root.querySelector(".g3__joy"), joyKnob = joyEl && joyEl.querySelector("i");
+  canvas.addEventListener("pointerdown", e => {
+    begin(); joy.id = e.pointerId; joy.sx = e.clientX; joy.sy = e.clientY; joy.t = performance.now(); joy.moved = 0; canvas.setPointerCapture(e.pointerId);
+    const r = canvas.getBoundingClientRect(); if (joyEl) { joyEl.style.left = (e.clientX - r.left) + "px"; joyEl.style.top = (e.clientY - r.top) + "px"; joyEl.classList.add("on"); }
+  });
+  canvas.addEventListener("pointermove", e => {
+    if (e.pointerId !== joy.id) return;
+    let dx = e.clientX - joy.sx, dy = e.clientY - joy.sy; const d = Math.hypot(dx, dy); joy.moved = Math.max(joy.moved, d);
+    const R0 = 55; if (d > R0) { dx = dx / d * R0; dy = dy / d * R0; }
+    joy.x = dx / R0; joy.y = dy / R0; if (joyKnob) joyKnob.style.transform = "translate(" + dx + "px," + dy + "px)";
+  });
+  const joyEnd = e => {
+    if (e.pointerId !== joy.id) return;
+    if (joy.moved < 12 && performance.now() - joy.t < 300) doSting();   // a quick tap stings
+    joy.id = null; joy.x = joy.y = 0; if (joyEl) { joyEl.classList.remove("on"); joyKnob.style.transform = ""; }
+  };
+  canvas.addEventListener("pointerup", joyEnd); canvas.addEventListener("pointercancel", joyEnd);
   root.querySelectorAll("[data-k]").forEach(b => {
     const k = b.getAttribute("data-k");
     const on = e => { e.preventDefault(); begin(); if (k === "sting") doSting(); else keys[k] = true; };
@@ -408,15 +516,16 @@ export function start(root) {
     starU.t.value = time;
 
     // player movement
-    const sp2 = 7;
-    const mx = (keys.arrowright || keys.d ? 1 : 0) - (keys.arrowleft || keys.a ? 1 : 0);
-    const mz = (keys.arrowdown || keys.s ? 1 : 0) - (keys.arrowup || keys.w ? 1 : 0);
+    const sp2 = 8.5;
+    let mx = (keys.arrowright || keys.d ? 1 : 0) - (keys.arrowleft || keys.a ? 1 : 0) + joy.x;
+    let mz = (keys.arrowdown || keys.s ? 1 : 0) - (keys.arrowup || keys.w ? 1 : 0) + joy.y;
+    if (st.stun > 0) { st.stun -= dt; mx = mz = 0; scorp.rotation.y += dt * 14; } else scorp.rotation.y = 0;
     if (st.kb > 0) { pos.z += st.kb * dt * 3; st.kb = Math.max(0, st.kb - dt * 6); }
     pos.x = THREE.MathUtils.clamp(pos.x + mx * sp2 * dt, -5.2, 5.2);
     const minZ = crab.position.z + 2.4 * st.crabScale + 1.2;
     pos.z = THREE.MathUtils.clamp(pos.z + mz * sp2 * dt, minZ, 12);
     scorp.position.set(pos.x, 0, pos.z); scorpShadow.position.set(pos.x, 0.03, pos.z);
-    const walking = mx || mz;
+    const walking = Math.abs(mx) > 0.05 || Math.abs(mz) > 0.05;
     sLegs.forEach(({ l, side, i }) => { l.rotation.x = walking ? Math.sin(time * 16 + i * 1.3 + (side > 0 ? 1.5 : 0)) * 0.5 : 0; });
     pincers.forEach((p, i) => { p.rotation.y = Math.sin(time * 3 + i) * 0.12; });
     // tail: idle sway or strike
@@ -479,6 +588,54 @@ export function start(root) {
     wolves.forEach((w, i) => { w.position.y = THREE.MathUtils.lerp(w.userData.y - 6, w.userData.y, THREE.MathUtils.clamp(bp * 1.4 - i * 0.15, 0, 1)); });
     constLines.forEach(m => { m.opacity = 0.26 + Math.sin(time * 0.8) * 0.06 + bp * 0.1; });
 
+    // constant money weather: bills, coins and diamonds
+    if (Math.random() < dt * 4) rain(1);
+    if (Math.random() < dt * 6) drop(coins, 1, true, false);
+    drop(diamonds, Math.random() < (small ? 0.35 : 0.6) ? 1 : 0, true, true);
+    stepPool(coins, dt, 25); stepPool(diamonds, dt, 0);
+    if (fx.spray) fx.spray.scale.setScalar(1 + Math.sin(time * 6) * 0.15);
+    fx.beams.forEach(({ beam, side }) => { beam.rotation.z = Math.sin(time * 0.6 + side) * 0.5; beam.rotation.x = Math.PI + Math.sin(time * 0.4 + side * 2) * 0.25; });
+    if (fx.gold) fx.gold.material.opacity = 0.7 + Math.sin(time * 1.3) * 0.15;
+
+    // twin knives: fall from the sky, then the crab dual-wields and slashes
+    const dist = Math.hypot(pos.x - crab.position.x, pos.z - crab.position.z);
+    if (dual.phase === "idle" && st.playing) { dual.next -= dt; if (dual.next <= 0) { dual.phase = "falling"; dual.t = 0; knives.forEach((k, i) => { k.visible = true; k.position.set(crab.position.x + (i ? 2.5 : -2.5) * st.crabScale, 22, crab.position.z + 1); }); say(tx().knives, "", 1400); } }
+    if (dual.phase === "falling") { dual.t += dt; knives.forEach((k, i) => { k.position.y -= dt * 18; k.rotation.z += dt * 14; }); if (knives[0].position.y < 2.2 * st.crabScale) { dual.phase = "wield"; dual.t = 6.5; knives.forEach((k, i) => { scene.remove(k); claws[i].g.add(k); k.position.set(0, 0.6, 1.5); k.rotation.set(0, 0, 0); }); } }
+    if (dual.phase === "wield") {
+      dual.t -= dt; dual.hitCool -= dt;
+      claws.forEach((c, i) => { c.g.rotation.y = c.side * (0.4 + Math.sin(time * 18 + i * 1.6) * 1.1); c.g.rotation.x = Math.sin(time * 14 + i) * 0.6; });
+      slash.position.set(crab.position.x, 1.6 * st.crabScale, crab.position.z + 1.5 * st.crabScale); slash.rotation.set(-Math.PI / 2 + Math.sin(time * 9) * 0.6, 0, time * 22); slash.scale.setScalar(st.crabScale); slash.material.opacity = 0.35 + Math.abs(Math.sin(time * 18)) * 0.4;
+      if (dist < 3.4 * st.crabScale + 2.6 && dual.hitCool <= 0) { dual.hitCool = 0.9; st.kb = 3.4; st.stun = 0.8; st.shake = 0.5; say(tx().sliced, "", 800); }
+      if (st.lunge <= 0 && Math.random() < dt * 0.8) st.lunge = 1;
+      if (dual.t <= 0) { dual.phase = "idle"; dual.next = 18 + Math.random() * 12 - Math.min(st.round, 5); knives.forEach(k => { k.parent && k.parent.remove(k); scene.add(k); k.visible = false; }); slash.material.opacity = 0; }
+    }
+
+    // crab magic: a purple rune, then the scorpion is blasted away or dragged in for an attack
+    magic.next -= dt;
+    if (!magic.mode && magic.next <= 0 && st.playing) { magic.mode = Math.random() < 0.5 ? "push" : "pull"; magic.t = 2.2; say(magic.mode === "push" ? tx().push : tx().pull, "", 1300); }
+    if (magic.mode) {
+      magic.t -= dt; const k = Math.min(1, (2.2 - magic.t) * 2) * Math.min(1, magic.t * 3);
+      rune.position.set(crab.position.x, 0.06, crab.position.z); rune.scale.setScalar(st.crabScale * (0.9 + (2.2 - magic.t) * 0.25)); rune.rotation.z += dt * 2.5; rune.material.opacity = k * 0.9;
+      magicLight.position.set(crab.position.x, 3, crab.position.z + 2); magicLight.intensity = k * 40;
+      scorp.position.y = Math.sin(time * 10) * 0.15 * k;
+      if (magic.mode === "push") pos.z += dt * 9 * k;
+      else { pos.z += (crab.position.z + 2.6 * st.crabScale + 1.6 - pos.z) * Math.min(1, dt * 3 * k); pos.x += (crab.position.x - pos.x) * Math.min(1, dt * 2 * k); }
+      if (magic.t <= 0) { const m = magic.mode; magic.mode = null; magic.next = 14 + Math.random() * 10 - Math.min(st.round, 5); rune.material.opacity = 0; magicLight.intensity = 0;
+        if (m === "pull") { if (dual.phase === "wield") { st.kb = 4; st.stun = 1; st.shake = 0.6; say(tx().sliced, "", 900); } else { weap.next = 0; st.lunge = 1; } } }
+    }
+
+    // Qiyamah: the Trumpet sounds, shockwaves roll, the moon splits
+    if (!reduce) qiy.next -= dt;
+    if (!qiy.on && qiy.next <= 0) { qiy.on = true; qiy.t = 11; sur.visible = true; hud.cap.textContent = tx().sur; hud.cap.classList.add("on"); trumpet(); }
+    if (qiy.on) {
+      qiy.t -= dt; const life = 11 - qiy.t;
+      sur.scale.setScalar(Math.min(1, life * 0.8)); surGlow.material.opacity = 0.6 + Math.sin(time * 5) * 0.3;
+      waves.forEach((w, i) => { const ph = ((life * 0.45 + i / 3) % 1); w.scale.setScalar(6 + ph * 70); w.material.opacity = (1 - ph) * 0.7; });
+      st.shake = Math.max(st.shake, 0.12);
+      if (life > 3) { if (!moonL.visible) { hud.cap.textContent = tx().moon; } moon.visible = false; craters.forEach(c => c.visible = false); moonL.visible = moonR.visible = true; const sep = Math.min(10, (life - 3) * 6); moonL.position.copy(moonPos).add(new THREE.Vector3(-sep, 0, 0)); moonR.position.copy(moonPos).add(new THREE.Vector3(sep, 0, 0)); }
+      if (qiy.t <= 0) { qiy.on = false; qiy.next = 60 + Math.random() * 30; sur.visible = false; waves.forEach(w => w.material.opacity = 0); moon.visible = true; craters.forEach(c => c.visible = true); moonL.visible = moonR.visible = false; hud.cap.classList.remove("on"); }
+    }
+
     // camera: follow behind the scorpion, framing the crab, moon and mansion
     st.shake = Math.max(0, st.shake - dt);
     const sh = reduce ? 0 : st.shake;
@@ -494,5 +651,5 @@ export function start(root) {
   // Re-label the HUD if the visitor switches language
   new MutationObserver(setHud).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
   // test hook
-  window.__g3 = { st, pos, keys, niceTry, doSting, rain, blood: () => { bloodT = 0; }, inView: () => inView, weapon: k => { weap.next = 0; st.playing = true; } };
+  window.__g3 = { st, pos, keys, niceTry, doSting, rain, blood: () => { bloodT = 0; }, inView: () => inView, weapon: k => { weap.next = 0; st.playing = true; }, knives: () => { dual.next = 0; st.playing = true; }, magic: () => { magic.next = 0; st.playing = true; }, qiyamah: () => { qiy.next = 0; } };
 }

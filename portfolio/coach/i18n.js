@@ -1950,31 +1950,31 @@
   /* Scorpion Street 3D */
   T.ar['g3.h'] = 'شارع العقارب ثلاثي الأبعاد: <em>ليلة القمر الدموي</em>';
   T.ar['g3.p'] = 'أنت العقرب. اهزم السلطعون تحت النجوم، إن استطعت. كل لسعة تمطر مالًا من القمر، وفي كل جولة يزداد السلطعون قوة وثراءً.';
-  T.ar['g3.keys'] = 'تحرّك بالأسهم أو WASD، والسع بمفتاح المسافة أو بالضغط على الشاشة. على الهاتف استخدم الأزرار. لا حول ولا قوة إلا بالله';
+  T.ar['g3.keys'] = 'اسحب في أي مكان داخل اللعبة للتحرك (أو WASD). المس الشاشة أو المسافة أو زر 🦂 للسع. لا حول ولا قوة إلا بالله';
   T.ar['g3.nogl'] = 'تحتاج هذه اللعبة إلى WebGL غير المفعّل في متصفحك. جرّب متصفحًا آخر.';
   T.ur['g3.h'] = 'اسکارپین اسٹریٹ 3D: <em>خونی چاند کی رات</em>';
   T.ur['g3.p'] = 'آپ بچھو ہیں۔ ستاروں تلے کیکڑے کو ہرائیں، اگر ہرا سکیں۔ ہر ڈنک پر چاند سے پیسے برستے ہیں، اور ہر راؤنڈ میں کیکڑا صرف مزید طاقتور اور امیر ہوتا ہے۔';
-  T.ur['g3.keys'] = 'تیر کے بٹن یا WASD سے چلیں، اسپیس یا اسکرین پر ٹیپ سے ڈنک ماریں۔ فون پر بٹن استعمال کریں۔ لا حول ولا قوۃ الا باللہ';
+  T.ur['g3.keys'] = 'چلنے کے لیے گیم میں کہیں بھی انگلی کھینچیں (یا WASD)۔ ڈنک کے لیے اسکرین پر ٹیپ کریں، اسپیس یا 🦂 بٹن۔ لا حول ولا قوۃ الا باللہ';
   T.ur['g3.nogl'] = 'اس 3D گیم کے لیے WebGL درکار ہے جو آپ کے براؤزر میں فعال نہیں۔ کوئی اور براؤزر آزمائیں۔';
   T.fr['g3.h'] = 'Rue des Scorpions 3D : <em>la nuit de la lune de sang</em>';
   T.fr['g3.p'] = "Vous êtes le scorpion. Battez le crabe sous les étoiles, si vous pouvez. Chaque piqûre fait pleuvoir de l'argent depuis la lune, et à chaque manche le crabe devient encore plus fort et plus riche.";
-  T.fr['g3.keys'] = "Déplacez-vous avec les flèches ou WASD, piquez avec Espace ou en touchant l'écran. Sur téléphone, utilisez les boutons. لا حول ولا قوة إلا بالله";
+  T.fr['g3.keys'] = "Faites glisser n'importe où sur le jeu pour bouger (ou WASD). Touchez l'écran, Espace ou le bouton 🦂 pour piquer. لا حول ولا قوة إلا بالله";
   T.fr['g3.nogl'] = "Ce jeu 3D a besoin de WebGL, qui n'est pas activé dans votre navigateur. Essayez un autre navigateur.";
   T.es['g3.h'] = 'Calle de los Escorpiones 3D: <em>la noche de la luna de sangre</em>';
   T.es['g3.p'] = 'Eres el escorpión. Vence al cangrejo bajo las estrellas, si puedes. Cada picadura hace llover dinero desde la luna, y en cada ronda el cangrejo solo se vuelve más fuerte y más rico.';
-  T.es['g3.keys'] = 'Muévete con las flechas o WASD y pica con Espacio o tocando la pantalla. En el móvil, usa los botones. لا حول ولا قوة إلا بالله';
+  T.es['g3.keys'] = 'Arrastra en cualquier parte del juego para moverte (o WASD). Toca la pantalla, Espacio o el botón 🦂 para picar. لا حول ولا قوة إلا بالله';
   T.es['g3.nogl'] = 'Este juego 3D necesita WebGL, que no está activado en tu navegador. Prueba con otro navegador.';
   T.ja['g3.h'] = 'スコーピオン・ストリート3D：<em>血の月の夜</em>';
   T.ja['g3.p'] = 'あなたはサソリ。星空の下でカニを倒せるものなら倒してみてください。刺すたびに月からお金が降り注ぎ、ラウンドごとにカニはさらに強く豊かになります。';
-  T.ja['g3.keys'] = '矢印キーかWASDで移動、スペースか画面タップで刺す。スマホではボタンを使ってください。لا حول ولا قوة إلا بالله';
+  T.ja['g3.keys'] = 'ゲーム画面のどこでもドラッグして移動（またはWASD）。画面タップ、スペース、🦂ボタンで刺す。لا حول ولا قوة إلا بالله';
   T.ja['g3.nogl'] = 'この3DゲームにはWebGLが必要ですが、お使いのブラウザで有効になっていません。別のブラウザでお試しください。';
   T.zh['g3.h'] = '蝎子街 3D：<em>血月之夜</em>';
   T.zh['g3.p'] = '你是蝎子。在星空下打败螃蟹，如果你能的话。每一次蜇击都会让钱从月亮上落下，而每一回合螃蟹只会变得更强、更富。';
-  T.zh['g3.keys'] = '用方向键或 WASD 移动，按空格或点击屏幕蜇击。手机上请使用按钮。لا حول ولا قوة إلا بالله';
+  T.zh['g3.keys'] = '在游戏画面任意位置拖动即可移动（或 WASD）。点击屏幕、空格或 🦂 按钮蜇击。لا حول ولا قوة إلا بالله';
   T.zh['g3.nogl'] = '这个 3D 游戏需要 WebGL，但你的浏览器未启用。请换一个浏览器试试。';
   T.ko['g3.h'] = '스콜피온 스트리트 3D: <em>블러드 문의 밤</em>';
   T.ko['g3.p'] = '당신은 전갈입니다. 할 수 있다면 별빛 아래에서 게를 물리치세요. 쏠 때마다 달에서 돈이 쏟아지고, 라운드마다 게는 더 강하고 부유해질 뿐입니다.';
-  T.ko['g3.keys'] = '화살표 키나 WASD로 움직이고, 스페이스나 화면을 탭해 쏘세요. 휴대폰에서는 버튼을 사용하세요. لا حول ولا قوة إلا بالله';
+  T.ko['g3.keys'] = '게임 화면 아무 곳이나 드래그해 이동하세요(또는 WASD). 화면 탭, 스페이스 또는 🦂 버튼으로 쏘세요. لا حول ولا قوة إلا بالله';
   T.ko['g3.nogl'] = '이 3D 게임에는 WebGL이 필요한데 브라우저에서 켜져 있지 않습니다. 다른 브라우저로 시도해 보세요.';
 
 

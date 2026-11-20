@@ -601,15 +601,12 @@ html[dir=rtl] .road{direction:ltr}
 .g3__msg b{display:block;font-family:var(--serif);font-weight:500;font-size:clamp(1.15rem,3.4vw,1.7rem);color:#ff8a7a}
 .g3__msg span{display:block;font-size:.88rem;margin-top:.3rem}
 .g3__msg .lh{font-family:"Noto Naskh Arabic",serif;color:var(--gold-bright);font-size:1.05rem}
-.g3__cap{position:absolute;left:50%;bottom:76px;transform:translateX(-50%);opacity:0;transition:opacity .6s;pointer-events:none;color:#ff6a5a;font:700 .95rem system-ui,sans-serif;text-shadow:0 0 12px rgba(255,40,30,.7);white-space:nowrap}
+.g3__cap{position:absolute;left:50%;bottom:76px;transform:translateX(-50%);opacity:0;transition:opacity .6s;pointer-events:none;color:#ff6a5a;font:700 .95rem system-ui,sans-serif;text-shadow:0 0 12px rgba(255,40,30,.7);width:min(92%,640px);text-align:center;line-height:1.3}
 .g3__cap.on{opacity:1}
+.g3__joy{position:absolute;width:110px;height:110px;margin:-55px 0 0 -55px;border-radius:50%;border:2px solid rgba(232,200,126,.55);background:rgba(5,8,18,.25);opacity:0;pointer-events:none;transition:opacity .15s}.g3__joy.on{opacity:1}.g3__joy i{position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#ffe7a3,#a8752c)}
+.g3 canvas{touch-action:none}
 .g3__pad{position:absolute;left:0;right:0;bottom:10px;display:flex;justify-content:space-between;align-items:flex-end;padding:0 12px;pointer-events:none}
-.g3__dpad{display:grid;grid-template-columns:repeat(3,48px);grid-template-rows:repeat(2,48px);gap:6px;pointer-events:auto}
-.g3__dpad button,.g3__sting{border:1px solid rgba(201,164,92,.5);background:rgba(5,8,18,.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:var(--cream);border-radius:14px;font:700 1.1rem system-ui,sans-serif;cursor:pointer;touch-action:none;-webkit-user-select:none;user-select:none}
-.g3__dpad [data-k=arrowup]{grid-column:2}
-.g3__dpad [data-k=arrowleft]{grid-column:1;grid-row:2}
-.g3__dpad [data-k=arrowdown]{grid-column:2;grid-row:2}
-.g3__dpad [data-k=arrowright]{grid-column:3;grid-row:2}
+.g3__sting{border:1px solid rgba(201,164,92,.5);background:rgba(5,8,18,.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:var(--cream);border-radius:14px;font:700 1.1rem system-ui,sans-serif;cursor:pointer;touch-action:none;-webkit-user-select:none;user-select:none}
 .g3__sting{pointer-events:auto;width:84px;height:84px;border-radius:50%;font-size:1.6rem;background:radial-gradient(circle at 40% 35%,rgba(232,200,126,.5),rgba(138,90,28,.6));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.1rem}
 .g3__sting small{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase}
 .g3__keys{padding:.7rem 1rem 1rem;text-align:center;font-size:.78rem;color:var(--muted)}
@@ -1240,24 +1237,20 @@ html[dir=rtl] .road{direction:ltr}
       </div>
       <div class="g3__msg" data-g="msg" aria-live="polite"></div>
       <div class="g3__cap" data-g="cap"></div>
+      <div class="g3__joy" aria-hidden="true"><i></i></div>
       <div class="g3__pad">
-        <div class="g3__dpad" aria-label="Move">
-          <button type="button" data-k="arrowup" aria-label="Forward">▲</button>
-          <button type="button" data-k="arrowleft" aria-label="Left">◀</button>
-          <button type="button" data-k="arrowdown" aria-label="Back">▼</button>
-          <button type="button" data-k="arrowright" aria-label="Right">▶</button>
-        </div>
+        <span></span>
         <button type="button" class="g3__sting" data-k="sting" aria-label="Sting">🦂<small data-t="sting">Sting</small></button>
       </div>
       <div class="g3__nogl" data-i18n="g3.nogl">This 3D game needs WebGL, which your browser doesn't have turned on. Try another browser.</div>
     </div>
-    <p class="g3__keys" data-i18n="g3.keys">Move with the arrow keys or WASD, sting with Space or by tapping the screen. On a phone, use the buttons. لا حول ولا قوة إلا بالله</p>
+    <p class="g3__keys" data-i18n="g3.keys">Drag anywhere on the game to move (or WASD). Tap the screen, Space or the 🦂 button to sting. لا حول ولا قوة إلا بالله</p>
   </div>
 </section>
 <script>
 (function () {
   var box = document.getElementById("g3"); if (!box) return;
-  var go = function () { import("./coach/game3d.js?v=8").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
+  var go = function () { import("./coach/game3d.js?v=9").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
   if (!("IntersectionObserver" in window)) { go(); return; }
   var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io.disconnect(); go(); } }, { rootMargin: "300px" });
   io.observe(box);
@@ -1285,7 +1278,7 @@ html[dir=rtl] .road{direction:ltr}
   <a class="cta js-want" href="https://wa.me/16134083945" target="_blank" rel="noopener"><span data-i18n="cta">I want this so badly</span></a>
 </div></div>
 
-<script src="coach/i18n.js?v=19"></script>
+<script src="coach/i18n.js?v=20"></script>
 <script src="coach/library.js?v=2"></script>
 <script src="coach/featured.js?v=1"></script>
 <script src="coach/exit.js?v=2"></script>
