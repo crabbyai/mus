@@ -587,7 +587,12 @@ html[dir=rtl] .road{direction:ltr}
 @keyframes dmgup{0%{opacity:0;transform:translate(-50%,0) scale(.6)}15%{opacity:1;transform:translate(-50%,-10px) scale(1.15)}100%{opacity:0;transform:translate(-50%,-56px) scale(1)}}
 .street__win .adl{font:800 .85rem system-ui,sans-serif;letter-spacing:.12em;color:var(--gold-bright);margin-top:.35rem}
 .street__win .stpray{font-size:.9rem;margin-top:.25rem}
-@media(prefers-reduced-motion:reduce){.boss__weapon.swing,.boss__crown,.dmg2{animation:none}}
+.dd2{position:absolute;left:50%;top:6px;transform:translateX(-50%) scale(.8);z-index:4;pointer-events:none;opacity:0;transition:opacity .3s,transform .3s;white-space:nowrap;font:900 clamp(.85rem,3.6vw,1.35rem) Georgia,serif;letter-spacing:.08em;color:#e9fbff;text-shadow:0 0 10px #7fe8ff,0 0 26px #3aa6ff}
+.dd2.on{opacity:1;transform:translateX(-50%) scale(1);animation:ddglow .5s ease-in-out infinite alternate}
+@keyframes ddglow{to{text-shadow:0 0 16px #bff4ff,0 0 40px #7fe8ff}}
+.gem2{position:absolute;top:-30px;z-index:3;pointer-events:none;filter:drop-shadow(0 0 6px rgba(127,232,255,.9));animation:gemfall .8s cubic-bezier(.5,0,1,1) both}
+@keyframes gemfall{0%{transform:translateY(0) rotate(0)}100%{transform:translateY(calc(var(--rh,150px) + 40px)) rotate(540deg);opacity:.2}}
+@media(prefers-reduced-motion:reduce){.boss__weapon.swing,.boss__crown,.dmg2,.dd2.on{animation:none}.gem2{display:none}}
 .street__win{margin-top:.8rem;padding:.8rem 1rem;border-radius:14px;background:rgba(201,164,92,.1);text-align:center}
 .street__win[hidden]{display:none}
 .street__win .ar{font-size:1.1rem;display:block;order:3;margin-top:.3rem}
@@ -1292,7 +1297,7 @@ html[dir=rtl] .road{direction:ltr}
 <script>
 (function () {
   var box = document.getElementById("g3"); if (!box) return;
-  var go = function () { import("./coach/game3d.js?v=10").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
+  var go = function () { import("./coach/game3d.js?v=11").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
   if (!("IntersectionObserver" in window)) { go(); return; }
   var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io.disconnect(); go(); } }, { rootMargin: "300px" });
   io.observe(box);
@@ -1329,7 +1334,7 @@ html[dir=rtl] .road{direction:ltr}
 <script src="coach/reminder.js?v=2"></script>
 <script src="coach/numbers.js?v=3"></script>
 <script src="coach/eye.js?v=1"></script>
-<script src="coach/home.js?v=14"></script>
+<script src="coach/home.js?v=15"></script>
 <script>
 (function(){
   var WA="16134083945";

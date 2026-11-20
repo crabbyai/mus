@@ -393,6 +393,10 @@ export function start(root) {
   { const c = document.createElement("canvas"); c.width = 1024; c.height = 160; const g = c.getContext("2d"); g.font = "bold 120px Georgia, serif"; g.textAlign = "center"; g.shadowColor = "#ffcf5a"; g.shadowBlur = 30; g.fillStyle = "#ffe7a3"; g.fillText("GOLD DIGGER", 512, 125);
     const gd = new THREE.Mesh(new THREE.PlaneGeometry(150, 23.4), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthWrite: false, fog: false, opacity: 0.85 }));
     gd.position.copy(toSky(22, 15, 470)); gd.lookAt(0, 0, 0); scene.add(gd); fx.gold = gd; }
+  /* ---------- DIAMOND DIGGER, lit up in the sky while the crab is on a rampage ---------- */
+  { const c = document.createElement("canvas"); c.width = 1024; c.height = 160; const g = c.getContext("2d"); g.font = "bold 104px Georgia, serif"; g.textAlign = "center"; g.shadowColor = "#7fe8ff"; g.shadowBlur = 34; g.fillStyle = "#e9fbff"; g.fillText("💎 DIAMOND DIGGER 💎", 512, 118);
+    const dd = new THREE.Mesh(new THREE.PlaneGeometry(150, 23.4), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthWrite: false, fog: false, opacity: 0 }));
+    if (small) dd.scale.setScalar(0.9); dd.userData.base = dd.scale.x; dd.position.copy(toSky(-3.5, 15.5, 470)); dd.lookAt(0, 0, 0); scene.add(dd); fx.dd = dd; }
 
   /* ---------- palms lining the road, and the ROYAL ORCHARD gate behind the crab ---------- */
   const trunkMat = new THREE.MeshStandardMaterial({ color: 0x6b4a2a, roughness: 0.9 }), leafMat = new THREE.MeshStandardMaterial({ color: 0x1f7a3a, roughness: 0.7 });
@@ -472,7 +476,8 @@ export function start(root) {
   }
   const pick = a => a[Math.floor(Math.random() * a.length)];
   const CRAB_HIT = ["2222", "222", "222222", "88888888", "622"], WEAPON_HIT = ["6226228", "1111", "333", "3333", "333333"];
-  function crabHits(list) { dmg(typeof list === "string" ? list : pick(list), pos.clone().add(new THREE.Vector3(0, 2, 0)), "crab"); adl(); }
+  let rampage = 0;
+  function crabHits(list) { rampage = 4.5; dmg(typeof list === "string" ? list : pick(list), pos.clone().add(new THREE.Vector3(0, 2, 0)), "crab"); adl(); }
 
   /* ---------- game state ---------- */
   const st = { stun: 0, round: 0, hp: 100, crabScale: 1, wealth: 1000000, level: 0, playing: false, sting: 0, cool: 0, kb: 0, crabT: 1.5, crabTarget: 0, lunge: 0, flinch: 0, shake: 0 };
@@ -680,6 +685,11 @@ export function start(root) {
     wives.children.forEach((w, i) => { const sl = w.userData.slot; w.position.set(crab.position.x + sl * (1.9 + st.crabScale * 1.5), 0, crab.position.z - 2.2 - Math.abs(sl) * 0.6); w.rotation.y = Math.sin(time * 1.2 + i) * 0.25; w.position.y = Math.abs(Math.sin(time * 2.4 + i)) * 0.12; });
     bunnies.forEach(b2 => { const u = b2.userData; b2.position.x += u.dir * u.sp * dt; if (Math.abs(b2.position.x) > 55) { b2.position.x = -u.dir * 55; u.y = 9 + Math.random() * 8; u.z = -10 - Math.random() * 30; } b2.position.y = u.y + Math.sin(time * 3 + u.ph) * 1.2; b2.position.z = u.z; b2.rotation.y = u.dir * Math.PI / 2; b2.children.forEach(c => { if (c.userData.sd) c.rotation.y = c.userData.sd * Math.sin(time * 14 + u.ph) * 0.7; }); });
     if (adlT > 0) { adlT -= dt; if (adlT <= 0) adlEl.classList.remove("on"); }
+
+    // rampage: diamonds pour down and DIAMOND DIGGER lights up the sky
+    if (dual.phase === "wield" || weap.kind) rampage = Math.max(rampage, 1);
+    if (rampage > 0) { rampage -= dt; drop(diamonds, small ? 3 : 6, Math.random() < 0.5, true); }
+    if (fx.dd) { const tgt = rampage > 0 ? 0.95 : 0; fx.dd.material.opacity += (tgt - fx.dd.material.opacity) * Math.min(1, dt * 4); fx.dd.visible = fx.dd.material.opacity > 0.01; fx.dd.scale.setScalar(fx.dd.userData.base * (1 + Math.sin(time * 6) * 0.03 * (rampage > 0 ? 1 : 0))); }
 
     // constant money weather: bills, coins and diamonds
     if (Math.random() < dt * 4) rain(1);

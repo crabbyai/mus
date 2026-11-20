@@ -140,10 +140,25 @@
     window.coachCrabHit = function (list) {   // the crab hits a scorpion for a huge number: AL-ADL, justice
       var live = lanes(); if (!live.length) return;
       pop(list[Math.floor(Math.random() * list.length)], live[Math.floor(Math.random() * live.length)], "crab", "⚖️ AL-ʿADL");
+      rampage();
     };
     if (!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches)) (function hit() {
       setTimeout(function () { if (road.getBoundingClientRect().bottom > 0) window.coachCrabHit(["2222", "222", "222222", "88888888", "622"]); hit(); }, 2600 + Math.random() * 3500);
     })();
+    // the crab's rampage: diamonds rain down fast and DIAMOND DIGGER shines over the road
+    var dd = document.createElement("span"); dd.className = "dd2"; dd.setAttribute("aria-hidden", "true"); dd.textContent = "💎 DIAMOND DIGGER 💎"; road.appendChild(dd);
+    var ddT = 0;
+    function rampage() {
+      dd.classList.add("on"); clearTimeout(ddT); ddT = setTimeout(function () { dd.classList.remove("on"); }, 2600);
+      var w = road.clientWidth;
+      for (var i = 0; i < 16; i++) {
+        var g = document.createElement("span"); g.className = "gem2"; g.textContent = "💎";
+        g.style.left = Math.round(Math.random() * (w - 20)) + "px";
+        g.style.animationDelay = (Math.random() * 0.9).toFixed(2) + "s"; g.style.animationDuration = (0.55 + Math.random() * 0.45).toFixed(2) + "s";
+        g.style.fontSize = (0.8 + Math.random() * 0.9).toFixed(2) + "rem";
+        road.appendChild(g); setTimeout(function (el) { el.remove(); }.bind(null, g), 2200);
+      }
+    }
     function lanes() { return [].slice.call(road.querySelectorAll(".scorp:not(.gone)")); }
     boss.addEventListener("click", function () {
       // the scorpion only ever MISSES or does 1 damage (the crab has 7)
