@@ -589,7 +589,7 @@ html[dir=rtl] .road{direction:ltr}
 .scorp i{display:inline-block;animation:wiggle .35s ease-in-out infinite alternate;font-style:normal}
 @keyframes wiggle{to{transform:translateY(-2px) rotate(4deg)}}
 .boss{position:absolute;right:8px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:.2rem;border:0;background:none;color:var(--cream);cursor:pointer;z-index:2}
-.boss__crab{font-size:calc(4.2rem * var(--cs,1) * var(--gb,1));transition:font-size .6s cubic-bezier(.22,1.4,.36,1);line-height:1;filter:drop-shadow(0 0 16px rgba(255,80,60,.55));animation:bossbob 1.8s ease-in-out infinite;transition:transform .2s}
+.boss__crab{font-size:calc(5.2rem * var(--cs,1) * var(--gb,1));transition:font-size .6s cubic-bezier(.22,1.4,.36,1);line-height:1;filter:drop-shadow(0 0 16px rgba(255,80,60,.55));animation:bossbob 1.8s ease-in-out infinite;transition:transform .2s}
 .boss:active .boss__crab{transform:scale(.88)}
 @keyframes bossbob{50%{transform:translateY(-5px) rotate(-4deg)}}
 .boss__tag{font:800 .6rem system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#ff8a7a;background:rgba(10,15,30,.75);padding:.15rem .45rem;border-radius:6px}
@@ -1415,7 +1415,7 @@ html[dir=rtl] .road{direction:ltr}
 <script>
 (function () {
   var box = document.getElementById("g3"); if (!box) return;
-  var go = function () { import("./coach/game3d.js?v=25").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
+  var go = function () { import("./coach/game3d.js?v=26").then(function (m) { box.classList.add("ready"); m.start(box); }).catch(function () { box.classList.add("g3--nogl"); }); };
   if (!("IntersectionObserver" in window)) { go(); return; }
   var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io.disconnect(); go(); } }, { rootMargin: "300px" });
   io.observe(box);

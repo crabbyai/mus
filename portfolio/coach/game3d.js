@@ -552,7 +552,7 @@ export function start(root) {
       const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.026, 0.1, 8), tipM); cap.position.y = 0.66; wand.add(cap);
       const star = new THREE.Mesh(starGeo, starM); star.position.set(0, 0.82, -0.02); wand.add(star);
       const spark = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex("rgba(255,230,140,0.95)", "rgba(255,230,140,0)"), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending })); spark.scale.setScalar(1.3); spark.position.y = 0.82; wand.add(spark);
-      shadowy(b2); b2.scale.setScalar(1.7);
+      shadowy(b2); b2.scale.setScalar(0.85);
       b2.userData = { sp: 3.5 + Math.random() * 2.5, z: 6 - Math.random() * 24, ph: Math.random() * 6, dir: i % 2 ? 1 : -1, wand, star, spark, head };
       b2.position.set(-14 + i * 12, 0, b2.userData.z); scene.add(b2); bunnies.push(b2);
     }
@@ -928,7 +928,7 @@ export function start(root) {
     begin(); if (!st.playing || st.cool > 0) return;
     act.v += 1;
     st.sting = 1; st.cool = 0.55;
-    const reach = 2.4 * st.crabScale + 2.2;
+    const reach = 2.4 * 1.45 * st.crabScale + 2.2;
     const dx = pos.x - crab.position.x, dz = pos.z - crab.position.z;
     if (Math.hypot(dx, dz) < reach) {
       if (Math.random() < 0.3) { dmg(tx().miss, crab.position.clone().add(new THREE.Vector3(0, 3 * st.crabScale, 0)), "miss"); return; }
@@ -1053,7 +1053,7 @@ export function start(root) {
     let lz = 0;
     if (st.lunge > 0) { st.lunge = Math.max(0, st.lunge - dt * 2.2); lz = Math.sin((1 - st.lunge) * Math.PI) * (2 + st.crabScale);
       if (st.lunge < 0.55 && st.lunge > 0.45 && Math.hypot(pos.x - crab.position.x, pos.z - (crab.position.z + lz)) < 3 * st.crabScale + 1.6) { st.kb = 2.4 + level * 0.3; st.shake = 0.35; say(tx().back, "", 900); crabHits(CRAB_HIT); } }
-    crab.scale.setScalar(st.crabScale * (1 + Math.sin(time * 2) * 0.015));
+    crab.scale.setScalar(st.crabScale * 1.45 * (1 + Math.sin(time * 2) * 0.015));   // the crab is drawn 45% bigger
     crab.position.set(crab.position.x, 0, -12);
     crabShadow.position.set(crab.position.x, 0.03, -12); crabShadow.scale.setScalar(st.crabScale);
     legs.forEach(({ g, side, i }) => { g.rotation.x = Math.sin(time * 9 + i * 1.7 + side) * 0.25; });
