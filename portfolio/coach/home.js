@@ -192,7 +192,7 @@
       ringBusy = true;
       var r = road.getBoundingClientRect(), bb = boss.querySelector(".boss__crab").getBoundingClientRect();
       var cx = Math.min(road.clientWidth - 70, Math.max(70, bb.left - r.left + bb.width / 2)), cy = bb.top - r.top + bb.height * 0.25;
-      var ring = document.createElement("span"); ring.className = "ring2"; ring.innerHTML = "💍<small>₨ 12 LAKH</small>";
+      var ring = document.createElement("span"); ring.className = "ring2"; ring.innerHTML = "💍<small>₨ 1200000</small>";
       ring.style.left = cx + "px"; ring.style.top = "-40px"; road.appendChild(ring);
       requestAnimationFrame(function () { requestAnimationFrame(function () { ring.style.top = cy + "px"; }); });
       setTimeout(function () {   // it lands: AL-MUDHILL

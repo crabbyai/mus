@@ -1975,6 +1975,13 @@
   T.ko['g3.h'] = '스콜피온 스트리트 3D: <em>블러드 문의 밤</em>';
   T.ko['g3.p'] = '당신은 전갈입니다. 할 수 있다면 별빛 아래에서 게를 물리치세요. 쏠 때마다 달에서 돈이 쏟아지고, 라운드마다 게는 더 강하고 부유해질 뿐입니다.';
   T.ko['g3.keys'] = '게임 화면 아무 곳이나 드래그해 이동하세요(또는 WASD). 화면 탭, 스페이스 또는 🦂 버튼으로 쏘세요. لا حول ولا قوة إلا بالله';
+  T.ar['st.prince'] = "🤴 الأمير السلطعون";
+  T.ur['st.prince'] = "🤴 شہزادہ کیکڑا";
+  T.fr['st.prince'] = "🤴 Prince Crabe";
+  T.es['st.prince'] = "🤴 Príncipe Cangrejo";
+  T.ja['st.prince'] = "🤴 カニ王子";
+  T.zh['st.prince'] = "🤴 螃蟹王子";
+  T.ko['st.prince'] = "🤴 게 왕자";
   T.ar['st.royal'] = "🤴 السلطعون أمير. 👸 والعقرب ستصبح أميرة، حين تتعلّم احترام السلطعون.";
   T.ur['st.royal'] = "🤴 کیکڑا ایک شہزادہ ہے۔ 👸 بچھو شہزادی بنے گی، جب وہ کیکڑے کا احترام سیکھ لے گی۔";
   T.fr['st.royal'] = "🤴 Le crabe est un prince. 👸 La scorpionne sera une princesse, quand elle apprendra à respecter le crabe.";
@@ -2065,7 +2072,24 @@
   nodes.forEach(function (el) { var k = el.getAttribute("data-i18n"); if (!(k in EN)) EN[k] = el.innerHTML; });
   phs.forEach(function (el) { EN[el.getAttribute("data-i18n-ph")] = el.getAttribute("placeholder"); });
 
-  function t(l, k) { return (T[l] && T[l][k] != null) ? T[l][k] : EN[k]; }
+  /* ---- "Sunni" switch: set SHOW_SUNNI to true to bring the word back everywhere on the page ---- */
+  var SHOW_SUNNI = false;
+  var SUNNI_RX = [
+    [/\bSunni Islam\b/g, "Islam"], [/\bSunni\s+/gi, ""],                       // English
+    [/\s+sunnites?\b/gi, ""],                                                   // French
+    [/\s+sunn?í(?:es)?(?=[\s,.;:!?<]|$)/gi, ""],                                // Spanish
+    [/\s+(?:ال)?سنّي(?=[\s،.<]|$)/g, ""], [/أهل السنة(?: والجماعة)?/g, "المسلمون"],  // Arabic (the Sunnah itself stays)
+    [/سنی\s+(?=مسلمان|اسلام)/g, ""],                                            // Urdu (only before Muslim / Islam, since سنی also means "heard")
+    [/スンナ派の?/g, ""], [/逊尼派/g, ""], [/수니파?\s*(?=무슬림|이슬람)/g, ""]          // Japanese, Chinese, Korean
+  ];
+  function noSunni(v) { if (SHOW_SUNNI || typeof v !== "string") return v; SUNNI_RX.forEach(function (r) { v = v.replace(r[0], r[1]); }); return v; }
+  window.coachNoSunni = noSunni;
+  if (!SHOW_SUNNI) {   // text outside the translated blocks
+    var tw = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT), tn;
+    while ((tn = tw.nextNode())) { if (/sunni/i.test(tn.nodeValue) && !/^(SCRIPT|STYLE)$/.test(tn.parentNode.nodeName)) tn.nodeValue = noSunni(tn.nodeValue); }
+    [].forEach.call(document.querySelectorAll('meta[name="description"],meta[property="og:description"],meta[name="twitter:description"]'), function (m) { m.setAttribute("content", noSunni(m.getAttribute("content") || "")); });
+  }
+  function t(l, k) { return noSunni((T[l] && T[l][k] != null) ? T[l][k] : EN[k]); }
 
   var ribbon = document.getElementById("ribbon");
   function drawRibbon(l) {
