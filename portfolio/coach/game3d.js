@@ -284,8 +284,8 @@ export function start(root) {
 
   /* ---------- the scorpion (player) ---------- */
   const scorp = new THREE.Group(); scene.add(scorp);
-  const amber = new THREE.MeshStandardMaterial({ color: 0xd08a3a, roughness: 0.3, metalness: 0.35, emissive: 0x3a1c04 });
-  const amberDark = new THREE.MeshStandardMaterial({ color: 0x8a5a24, roughness: 0.45 });
+  const amber = new THREE.MeshStandardMaterial({ color: 0x8a3fd0, roughness: 0.3, metalness: 0.35, emissive: 0x24063a });
+  const amberDark = new THREE.MeshStandardMaterial({ color: 0x4a1f78, roughness: 0.45 });
   for (let i = 0; i < 4; i++) { const seg = new THREE.Mesh(new THREE.SphereGeometry(0.42 - i * 0.03, 20, 14), amber); seg.scale.set(1, 0.55, 0.8); seg.position.set(0, 0.42, -0.25 + i * 0.42); scorp.add(seg); }
   const head = new THREE.Mesh(new THREE.SphereGeometry(0.36, 20, 14), amber); head.scale.set(1.1, 0.55, 0.9); head.position.set(0, 0.42, -0.62); scorp.add(head);
   const TAILBASE = [0.15, -0.35, -0.45, -0.55, -0.6];   // arches up and over the back
@@ -689,14 +689,14 @@ export function start(root) {
   }
   const caT = flagTex("ca"), pkT = flagTex("pk");
   const caMat = new THREE.MeshStandardMaterial({ map: caT, emissive: 0xffffff, emissiveMap: caT, emissiveIntensity: 0.22, roughness: 0.95 }), pkMat = new THREE.MeshStandardMaterial({ map: pkT, emissive: 0xffffff, emissiveMap: pkT, emissiveIntensity: 0.32, roughness: 0.95 });
-  function carpet(mat, w, h) {
-    const g = new THREE.Group(); const top = new THREE.Mesh(new THREE.BoxGeometry(w, 0.08, h), [mat, mat, mat, mat, mat, mat]); top.position.y = 0.05; top.receiveShadow = true; g.add(top);
+  function carpet(mat, w, h, under) {
+    const g = new THREE.Group(); const top = new THREE.Mesh(new THREE.BoxGeometry(w, 0.08, h), [mat, mat, mat, under || mat, mat, mat]); top.position.y = 0.05; top.receiveShadow = true; g.add(top);
     [-1, 1].forEach(sd => { const fr = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.05, h), goldMat); fr.position.set(sd * (w / 2 + 0.15), 0.04, 0); g.add(fr); });
     // map the flag across the top face only
     top.geometry.attributes.uv.needsUpdate = true; return g;
   }
-  const crabCarpet = carpet(caMat, 12, 6); scene.add(crabCarpet);
-  const scorpCarpet = carpet(pkMat, 4.8, 2.4); scorpCarpet.position.y = 0.05; scorpCarpet.rotation.y = Math.PI / 2; scorpCarpet.userData.carpet = true; scorpCarpet.traverse(m => m.userData.carpet = true); scorp.add(scorpCarpet);
+  const crabCarpet = carpet(caMat, 13, 6.5, pkMat); scene.add(crabCarpet);
+  const scorpCarpet = carpet(pkMat, 4.2, 2.1); scorpCarpet.position.y = 0.05; scorpCarpet.rotation.y = Math.PI / 2; scorpCarpet.userData.carpet = true; scorpCarpet.traverse(m => m.userData.carpet = true); scorp.add(scorpCarpet);
 
   /* ---------- red Italian superbikes: they multiply and get flashier as the crab keeps winning ---------- */
   const bikeBody = new THREE.MeshPhysicalMaterial({ color: 0xc8100e, metalness: 0.35, roughness: 0.22, clearcoat: 1, clearcoatRoughness: 0.08 });
@@ -737,6 +737,31 @@ export function start(root) {
     bikeBody.color.set(t >= 3 ? 0xe0120f : 0xc8100e); bikeBody.sheenColor && (bikeBody.sheen = t >= 2 ? 1 : 0);
     bikes.forEach(b2 => { b2.userData.glow.visible = t >= 2; b2.userData.base = 1.7 + t * 0.2; });
   }
+
+  /* ---------- the carpet flip, and the pind (village) that appears with it ---------- */
+  const flip = { t: 0, next: 35 + Math.random() * 20, state: 0, anim: 0, from: 0, sadqa: -1 };
+  const pind = new THREE.Group(); pind.visible = false; scene.add(pind);
+  const mud = new THREE.MeshStandardMaterial({ color: 0xa8774a, roughness: 1 }), thatch = new THREE.MeshStandardMaterial({ color: 0xd8b25a, roughness: 1 }), wood = new THREE.MeshStandardMaterial({ color: 0x6b4423, roughness: 0.9 }), rope = new THREE.MeshStandardMaterial({ color: 0xe8d6a8, roughness: 1 }), clay = new THREE.MeshStandardMaterial({ color: 0xb4582c, roughness: 0.8 }), iron = new THREE.MeshStandardMaterial({ color: 0x3a6a5a, metalness: 0.6, roughness: 0.5 });
+  function hut(x, z, r) { const g = new THREE.Group(); const w = new THREE.Mesh(new THREE.BoxGeometry(3.2, 2.2, 2.6), mud); w.position.y = 1.1; g.add(w); const roof = new THREE.Mesh(new THREE.ConeGeometry(2.6, 1.6, 4), thatch); roof.position.y = 3; roof.rotation.y = Math.PI / 4; g.add(roof); const door = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.4, 0.05), wood); door.position.set(0, 0.7, 1.31); g.add(door); g.position.set(x, 0, z); g.rotation.y = r; pind.add(g); }
+  function charpai(x, z) { const g = new THREE.Group(); const bed = new THREE.Mesh(new THREE.BoxGeometry(2, 0.12, 1.1), rope); bed.position.y = 0.6; g.add(bed); [[-0.9, -0.45], [0.9, -0.45], [-0.9, 0.45], [0.9, 0.45]].forEach(([a, b]) => { const l = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.07, 0.6, 6), wood); l.position.set(a, 0.3, b); g.add(l); }); g.position.set(x, 0, z); g.rotation.y = 0.4; pind.add(g); }
+  function hay(x, z) { const h = new THREE.Mesh(new THREE.ConeGeometry(1.1, 1.8, 10), thatch); h.position.set(x, 0.9, z); pind.add(h); }
+  function matka(x, z) { const m = new THREE.Mesh(new THREE.SphereGeometry(0.35, 12, 10), clay); m.scale.y = 1.15; m.position.set(x, 0.38, z); pind.add(m); const n = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.2, 0.18, 10), clay); n.position.set(x, 0.82, z); pind.add(n); }
+  function pump(x, z) { const g = new THREE.Group(); const b = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.2, 1.4, 10), iron); b.position.y = 0.7; g.add(b); const sp = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.5, 8), iron); sp.rotation.z = Math.PI / 2; sp.position.set(0.3, 1.1, 0); g.add(sp); const lv = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1, 6), iron); lv.rotation.z = 1.1; lv.position.set(-0.4, 1.5, 0); g.add(lv); g.position.set(x, 0, z); pind.add(g); }
+  function animal(kind, x, z) {   // goats (white, brown, black) and cows
+    const big = kind === "cow", col = { goat: 0xf2ece0, brown: 0x8a5a34, black: 0x15151a, cow: 0xf5f1ea }[kind];
+    const m = new THREE.MeshStandardMaterial({ color: col, roughness: 0.85 }), g = new THREE.Group(), S = big ? 1.7 : 1;
+    const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.32 * S, 0.8 * S, 6, 12), m); body.rotation.z = Math.PI / 2; body.position.y = 0.75 * S; g.add(body);
+    const head = new THREE.Mesh(new THREE.BoxGeometry(0.42 * S, 0.34 * S, 0.3 * S), m); head.position.set(0.72 * S, 0.98 * S, 0); g.add(head);
+    [-1, 1].forEach(sd => { const horn = new THREE.Mesh(new THREE.ConeGeometry(0.04 * S, 0.3 * S, 6), new THREE.MeshStandardMaterial({ color: 0x3a3028 })); horn.position.set(0.68 * S, 1.22 * S, sd * 0.1 * S); horn.rotation.z = -0.5; g.add(horn); });
+    const legs = [[0.35, 0.15], [0.35, -0.15], [-0.35, 0.15], [-0.35, -0.15]].map(([a, b]) => { const l = new THREE.Mesh(new THREE.CylinderGeometry(0.05 * S, 0.05 * S, 0.6 * S, 6), m); l.position.set(a * S, 0.3 * S, b * S); g.add(l); return l; });
+    if (big) { [[0, 0.2], [-0.3, -0.15]].forEach(([a, b]) => { const sp = new THREE.Mesh(new THREE.SphereGeometry(0.22, 8, 6), new THREE.MeshStandardMaterial({ color: 0x1a1a1a })); sp.scale.set(1.3, 0.8, 0.4); sp.position.set(a * S, 0.85 * S, 0.3 * S); g.add(sp); }); }
+    g.position.set(x, 0, z); g.rotation.y = Math.random() * 6.28; g.userData = { legs, home: new THREE.Vector3(x, 0, z), ph: Math.random() * 6, kind }; pind.add(g); return g;
+  }
+  [-1, 1].forEach(sd => { hut(sd * 15, -6, sd * 0.4); hut(sd * 17, 2, -sd * 0.3); hay(sd * 12.5, -12); charpai(sd * 11.5, 4); matka(sd * 11, -2); matka(sd * 11.4, -2.6); });
+  pump(-12.5, -16);
+  const herd = [animal("goat", -7.6, 3), animal("brown", 7.8, 0), animal("goat", 8.2, -6), animal("cow", -8.4, -8), animal("cow", 8.6, -14), animal("goat", -7.8, -3)];
+  const blackGoat = animal("black", -7.4, -1);
+  shadowy(pind); pind.scale.setScalar(0.001);
 
   /* ---------- game state ---------- */
   const st = { stun: 0, round: 0, hp: 100, crabScale: 1, wealth: 1000000, level: 0, playing: false, sting: 0, cool: 0, kb: 0, crabT: 1.5, crabTarget: 0, lunge: 0, flinch: 0, shake: 0 };
@@ -1007,7 +1032,23 @@ export function start(root) {
     });
     if (adlT > 0) { adlT -= dt; if (adlT <= 0) adlEl.classList.remove("on"); }
 
-    crabCarpet.position.set(crab.position.x, 0, crab.position.z + 0.6 * st.crabScale); crabCarpet.scale.set(st.crabScale, 1, st.crabScale);
+    crabCarpet.position.x = crab.position.x; crabCarpet.position.z = crab.position.z + 0.6 * st.crabScale; crabCarpet.scale.set(st.crabScale, 1, st.crabScale);
+    // the crab flips his own carpet: underneath, surprise, a Pakistani flag, and the pind appears
+    if (!reduce && st.playing) flip.next -= dt;
+    if (flip.next <= 0 && !flip.anim) { flip.anim = 1.4; flip.from = flip.state; flip.state = 1 - flip.state; flip.next = flip.state ? 30 + Math.random() * 10 : 45 + Math.random() * 20;
+      if (flip.state) { const P = window.coachPind ? window.coachPind() : null; if (P) say(P.flip, "", 2600); pind.visible = true; flip.sadqa = 4; blackGoat.visible = true; blackGoat.position.copy(blackGoat.userData.home); blackGoat.scale.setScalar(1); } }
+    if (flip.anim > 0) { flip.anim = Math.max(0, flip.anim - dt); const k = 1 - flip.anim / 1.4, e = k * k * (3 - 2 * k);
+      crabCarpet.rotation.x = (flip.from + e) * Math.PI * (flip.state ? 1 : 1) - (flip.state ? 0 : Math.PI) * 0; crabCarpet.rotation.x = (flip.state ? e : 1 - e) * Math.PI;
+      crabCarpet.position.y = Math.sin(k * Math.PI) * 3 * st.crabScale; crab.position.y = Math.sin(k * Math.PI) * 2.2 * st.crabScale; st.shake = Math.max(st.shake, 0.15);
+      if (!flip.anim) { crab.position.y = 0; crabCarpet.position.y = flip.state ? 0.12 : 0; } }
+    { const want = flip.state ? 1 : 0.001, sc = pind.scale.x + (want - pind.scale.x) * Math.min(1, dt * 2.5); pind.scale.setScalar(sc); pind.visible = sc > 0.01;
+      herd.forEach(a => { const u = a.userData; a.position.x = u.home.x + Math.sin(time * 0.3 + u.ph) * 0.8; a.position.z = u.home.z + Math.cos(time * 0.25 + u.ph) * 0.8; a.rotation.y = Math.atan2(Math.cos(time * 0.3 + u.ph), -Math.sin(time * 0.25 + u.ph)); u.legs.forEach((l, j) => l.rotation.z = Math.sin(time * 6 + j * 1.7 + u.ph) * 0.3); }); }
+    if (flip.sadqa > 0 && pind.scale.x > 0.9) { flip.sadqa -= dt;   // the black goat walks to the crab and is given away as sadqa, vanishing in light
+      const tgt = new THREE.Vector3(crab.position.x - 4 * st.crabScale, 0, crab.position.z + 2);
+      const lp = blackGoat.parent.worldToLocal(tgt.clone()); blackGoat.position.lerp(lp, Math.min(1, dt * 0.9)); blackGoat.lookAt(blackGoat.parent.localToWorld(lp.clone()));
+      blackGoat.userData.legs.forEach((l, j) => l.rotation.z = Math.sin(time * 9 + j * 1.7) * 0.4);
+      if (flip.sadqa <= 0) { const P = window.coachPind ? window.coachPind() : null; if (P) { hud.cap.textContent = P.sadqa; hud.cap.classList.add("on"); setTimeout(() => hud.cap.classList.remove("on"), 3500); } flip.sadqa = -1; flip.vanish = 1; } }
+    if (flip.vanish > 0) { flip.vanish = Math.max(0, flip.vanish - dt * 0.8); blackGoat.scale.setScalar(Math.max(0.001, flip.vanish)); blackGoat.position.y += dt * 2; if (!flip.vanish) blackGoat.visible = false; }
     // superbikes: one more pops in whenever the crab is winning harder
     { const want = Math.min(14, 2 + st.round * 2 + omen * 2 + (st.wealth > 5e6 ? 2 : 0)); bikeSpawn.cool -= dt;
       if (bikes.length < want && bikeSpawn.cool <= 0) { const b2 = makeBike(); b2.userData.t = 0; bikes.push(b2); scene.add(b2); bikeSpawn.cool = 0.9; bikeSpawn.tier = -1; if (bikes.length > 2 && st.playing) dmg("+🏍️", b2.position.clone().set(bikeSlot(bikes.length - 1)[0], 2, bikeSlot(bikes.length - 1)[1]), "crab"); }
@@ -1167,5 +1208,5 @@ export function start(root) {
   // Re-label the HUD if the visitor switches language
   new MutationObserver(setHud).observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
   // test hook
-  window.__g3 = { st, pos, keys, niceTry, doSting, rain, blood: () => { bloodT = 0; }, inView: () => inView, weapon: k => { weap.next = 0; st.playing = true; }, knives: () => { dual.next = 0; st.playing = true; }, magic: () => { magic.next = 0; st.playing = true; }, qiyamah: () => { qiy.next = 0; }, buraq: () => { flight.next = 0; }, split: () => { split.next = 0; }, pray: () => { pray.next = 0; st.playing = true; }, shop: () => { shop.t = 0; st.playing = true; }, crossfire: () => { st.playing = true; if (!fire.done) crossfire(); }, ring: () => { st.playing = true; seq.cool = 0; act.v = 99; }, omen: () => omen, hammer: () => { ham.next = 0; st.playing = true; } };
+  window.__g3 = { st, pos, keys, niceTry, doSting, rain, blood: () => { bloodT = 0; }, inView: () => inView, weapon: k => { weap.next = 0; st.playing = true; }, knives: () => { dual.next = 0; st.playing = true; }, magic: () => { magic.next = 0; st.playing = true; }, qiyamah: () => { qiy.next = 0; }, flip: () => { flip.next = 0; st.playing = true; }, buraq: () => { flight.next = 0; }, split: () => { split.next = 0; }, pray: () => { pray.next = 0; st.playing = true; }, shop: () => { shop.t = 0; st.playing = true; }, crossfire: () => { st.playing = true; if (!fire.done) crossfire(); }, ring: () => { st.playing = true; seq.cool = 0; act.v = 99; }, omen: () => omen, hammer: () => { ham.next = 0; st.playing = true; } };
 }

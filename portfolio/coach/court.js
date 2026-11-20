@@ -17,6 +17,9 @@
   var MX = {"en": {"pause": "⏸ The crab pauses the game…", "spree": "Shopping spree! 🛍️", "dem": ["Buy me that bag! 👜", "I want the diamond necklace! 💎", "And those heels! 👠", "Gold bangles too! 🪙", "Take me to every single store! 🛍️"], "nb": "Not before shaadi. 💍", "joke": "😏 It was all a joke.", "hum": "SCORPION HUMILIATED", "back": "Back to the fight! ⚔️", "wh": "I can help you both manifest your dreams and desires", "whby": "Prince Crab, whispering", "beg": ["Pick me, Prince Crab! 🙏", "I'll respect you now! 👸"], "lvl": "Mall level"}, "ur": {"pause": "⏸ کیکڑا گیم روک دیتا ہے…", "spree": "شاپنگ اسپری! 🛍️", "dem": ["مجھے وہ بیگ دلاؤ! 👜", "مجھے ہیروں کا ہار چاہیے! 💎", "اور وہ ہیلز بھی! 👠", "سونے کی چوڑیاں بھی! 🪙", "مجھے ہر دکان پر لے چلو! 🛍️"], "nb": "شادی سے پہلے نہیں۔ 💍", "joke": "😏 یہ سب مذاق تھا۔", "hum": "بچھو کی بے عزتی", "back": "واپس لڑائی میں! ⚔️", "wh": "میں تم دونوں کی خوابوں اور خواہشات کو پانے میں مدد کر سکتا ہوں", "whby": "شہزادہ کیکڑا، سرگوشی میں", "beg": ["مجھے چن لو، شہزادہ کیکڑا! 🙏", "اب میں عزت کروں گی! 👸"], "lvl": "مال لیول"}, "ar": {"pause": "⏸ السلطعون يوقف اللعبة…", "spree": "جولة تسوّق! 🛍️", "dem": ["اشترِ لي تلك الحقيبة! 👜", "أريد عقد الألماس! 💎", "وذلك الكعب العالي! 👠", "وأساور الذهب أيضًا! 🪙", "خذني إلى كل المتاجر! 🛍️"], "nb": "ليس قبل الشادي (الزواج). 💍", "joke": "😏 كان الأمر كله مزحة.", "hum": "إذلال العقرب", "back": "عودة إلى القتال! ⚔️", "wh": "أستطيع أن أساعدكما على تحقيق أحلامكما ورغباتكما", "whby": "الأمير السلطعون، هامسًا", "beg": ["اخترني يا أمير السلطعون! 🙏", "سأحترمك الآن! 👸"], "lvl": "مستوى المول"}, "fr": {"pause": "⏸ Le crabe met le jeu en pause…", "spree": "Virée shopping ! 🛍️", "dem": ["Achète-moi ce sac ! 👜", "Je veux le collier de diamants ! 💎", "Et ces talons ! 👠", "Des bracelets en or aussi ! 🪙", "Emmène-moi dans toutes les boutiques ! 🛍️"], "nb": "Pas avant la shaadi. 💍", "joke": "😏 Ce n'était qu'une blague.", "hum": "SCORPION HUMILIÉ", "back": "Retour au combat ! ⚔️", "wh": "Je peux vous aider tous les deux à manifester vos rêves et vos désirs", "whby": "Prince Crabe, en chuchotant", "beg": ["Choisis-moi, Prince Crabe ! 🙏", "Je te respecterai maintenant ! 👸"], "lvl": "Niveau du centre"}, "es": {"pause": "⏸ El cangrejo pausa el juego…", "spree": "¡De compras! 🛍️", "dem": ["¡Cómprame ese bolso! 👜", "¡Quiero el collar de diamantes! 💎", "¡Y esos tacones! 👠", "¡Pulseras de oro también! 🪙", "¡Llévame a todas las tiendas! 🛍️"], "nb": "No antes de la shaadi. 💍", "joke": "😏 Todo era una broma.", "hum": "ESCORPIÓN HUMILLADO", "back": "¡De vuelta a la pelea! ⚔️", "wh": "Puedo ayudaros a los dos a manifestar vuestros sueños y deseos", "whby": "Príncipe Cangrejo, susurrando", "beg": ["¡Elígeme, Príncipe Cangrejo! 🙏", "¡Ahora te respetaré! 👸"], "lvl": "Nivel del centro"}, "ja": {"pause": "⏸ カニがゲームを一時停止…", "spree": "ショッピング三昧！🛍️", "dem": ["あのバッグを買って！👜", "ダイヤのネックレスがほしい！💎", "あのヒールも！👠", "金のバングルも！🪙", "全部のお店に連れてって！🛍️"], "nb": "シャーディー（結婚）の前はダメ。💍", "joke": "😏 ぜんぶ冗談でした。", "hum": "サソリ、赤っ恥", "back": "戦いに戻ろう！⚔️", "wh": "私はふたりの夢と願いを叶える手助けができる", "whby": "カニ王子のささやき", "beg": ["私を選んで、カニ王子！🙏", "これからは敬います！👸"], "lvl": "モールのレベル"}, "zh": {"pause": "⏸ 螃蟹暂停了游戏……", "spree": "疯狂购物！🛍️", "dem": ["给我买那个包！👜", "我要那条钻石项链！💎", "还有那双高跟鞋！👠", "金手镯也要！🪙", "带我逛遍每一家店！🛍️"], "nb": "婚礼（shaadi）之前不行。💍", "joke": "😏 这一切都只是个玩笑。", "hum": "蝎子颜面扫地", "back": "回到战斗！⚔️", "wh": "我可以帮助你们俩实现梦想与愿望", "whby": "螃蟹王子的低语", "beg": ["选我吧，螃蟹王子！🙏", "我现在会尊重你了！👸"], "lvl": "商场等级"}, "ko": {"pause": "⏸ 게가 게임을 일시정지한다…", "spree": "쇼핑 대잔치! 🛍️", "dem": ["저 가방 사 줘! 👜", "다이아몬드 목걸이 갖고 싶어! 💎", "저 힐도! 👠", "금팔찌도! 🪙", "모든 가게에 데려가 줘! 🛍️"], "nb": "샤디(결혼) 전에는 안 돼. 💍", "joke": "😏 전부 농담이었어.", "hum": "전갈 망신", "back": "다시 싸우자! ⚔️", "wh": "나는 너희 둘이 꿈과 소망을 이루도록 도울 수 있어", "whby": "게 왕자의 속삭임", "beg": ["저를 골라 주세요, 게 왕자님! 🙏", "이제 존중할게요! 👸"], "lvl": "몰 레벨"}};
   var BEG = ["Mr Crab can I be your wife? 💍", "Do you feel it Mr Crabs? The tension? 😳", "Main apko sukoon doongi aur ap mujhe sukoon do ge. 🥺"];   // the scorpions' own words, kept as written
   function mx() { return MX[(document.documentElement.lang || "en").slice(0, 2)] || MX.en; }
+  var PX = {"en": {"flip": "🔄 The crab flips his carpet… surprise! It's a Pakistani flag! 🇵🇰", "sadqa": "🐐 Sadqa: the crab gives a black goat to keep the evil eye away 🧿", "gifts": "The crab gives them a Qur'an, a miswak, a tasbih and a rose, all from Makkah 🕋", "umrah": "…and promises to take them for Umrah, their own 622 moment, if they are nice and respect the crab and Allah's plan. إن شاء الله", "quran": "Qur'an", "miswak": "Miswak", "tasbih": "Tasbih", "rose": "Rose", "fm": "from Makkah"}, "ur": {"flip": "🔄 کیکڑا اپنا قالین پلٹتا ہے… سرپرائز! یہ پاکستانی پرچم ہے! 🇵🇰", "sadqa": "🐐 صدقہ: کیکڑا نظرِ بد سے بچنے کے لیے کالا بکرا دیتا ہے 🧿", "gifts": "کیکڑا انہیں قرآن، مسواک، تسبیح اور گلاب دیتا ہے، سب مکہ سے 🕋", "umrah": "…اور وعدہ کرتا ہے کہ انہیں عمرہ پر لے جائے گا، ان کا اپنا 622 لمحہ، اگر وہ اچھے رہیں اور کیکڑے اور اللہ کے منصوبے کا احترام کریں۔ إن شاء الله", "quran": "قرآن", "miswak": "مسواک", "tasbih": "تسبیح", "rose": "گلاب", "fm": "مکہ سے"}, "ar": {"flip": "🔄 السلطعون يقلب سجادته… مفاجأة! إنها علم باكستان! 🇵🇰", "sadqa": "🐐 صدقة: السلطعون يتصدّق بتيس أسود ليدفع العين 🧿", "gifts": "السلطعون يهديهم مصحفًا ومسواكًا وسبحة ووردة، كلها من مكة 🕋", "umrah": "…ويعدهم بأن يأخذهم إلى العمرة، لحظة 622 الخاصة بهم، إن أحسنوا واحترموا السلطعون وتدبير الله. إن شاء الله", "quran": "المصحف", "miswak": "مسواك", "tasbih": "سبحة", "rose": "وردة", "fm": "من مكة"}, "fr": {"flip": "🔄 Le crabe retourne son tapis… surprise ! C'est le drapeau du Pakistan ! 🇵🇰", "sadqa": "🐐 Sadaqa : le crabe offre une chèvre noire pour éloigner le mauvais œil 🧿", "gifts": "Le crabe leur offre un Coran, un siwak, un tasbih et une rose, tous venus de La Mecque 🕋", "umrah": "…et promet de les emmener faire la Omra, leur propre moment 622, s'ils sont gentils et respectent le crabe et le plan d'Allah. إن شاء الله", "quran": "Coran", "miswak": "Siwak", "tasbih": "Tasbih", "rose": "Rose", "fm": "de La Mecque"}, "es": {"flip": "🔄 El cangrejo da la vuelta a su alfombra… ¡sorpresa! ¡Es la bandera de Pakistán! 🇵🇰", "sadqa": "🐐 Sadaqa: el cangrejo da una cabra negra para alejar el mal de ojo 🧿", "gifts": "El cangrejo les regala un Corán, un miswak, un tasbih y una rosa, todo de La Meca 🕋", "umrah": "…y promete llevarlos a la Umrah, su propio momento 622, si son buenos y respetan al cangrejo y el plan de Allah. إن شاء الله", "quran": "Corán", "miswak": "Miswak", "tasbih": "Tasbih", "rose": "Rosa", "fm": "de La Meca"}, "ja": {"flip": "🔄 カニがじゅうたんをひっくり返す…サプライズ！パキスタンの国旗だ！🇵🇰", "sadqa": "🐐 サダカ：邪視を払うため、カニが黒いヤギを差し出す 🧿", "gifts": "カニは彼らにクルアーン、ミスワーク、タスビーフ、バラを贈る。すべてマッカから 🕋", "umrah": "…そして、いい子にしてカニとアッラーのご計画を敬うなら、ウムラに連れて行くと約束する。彼らだけの622の瞬間。إن شاء الله", "quran": "クルアーン", "miswak": "ミスワーク", "tasbih": "タスビーフ", "rose": "バラ", "fm": "マッカから"}, "zh": {"flip": "🔄 螃蟹把地毯翻过来……惊喜！是巴基斯坦国旗！🇵🇰", "sadqa": "🐐 施舍：螃蟹献出一只黑山羊以驱除毒眼 🧿", "gifts": "螃蟹送给它们一本《古兰经》、一根米斯瓦克、一串念珠和一朵玫瑰，全都来自麦加 🕋", "umrah": "……并承诺，只要它们乖巧并尊重螃蟹和安拉的安排，就带它们去副朝，属于它们自己的622时刻。إن شاء الله", "quran": "古兰经", "miswak": "米斯瓦克", "tasbih": "念珠", "rose": "玫瑰", "fm": "来自麦加"}, "ko": {"flip": "🔄 게가 카펫을 뒤집는다… 깜짝! 파키스탄 국기다! 🇵🇰", "sadqa": "🐐 사다카: 게가 나쁜 눈을 막으려고 검은 염소를 바친다 🧿", "gifts": "게가 그들에게 꾸란, 미스왁, 타스비, 장미를 준다. 모두 메카에서 온 것 🕋", "umrah": "…그리고 착하게 굴며 게와 알라의 계획을 존중한다면 우므라에 데려가겠다고 약속한다. 그들만의 622 순간. إن شاء الله", "quran": "꾸란", "miswak": "미스왁", "tasbih": "타스비", "rose": "장미", "fm": "메카에서"}};
+  function px() { return PX[(document.documentElement.lang || "en").slice(0, 2)] || PX.en; }
+  window.coachPind = px;
   function begLines() { return BEG.concat(mx().beg); }
 
   var CSS = '\
@@ -66,6 +69,15 @@
 .ct__visit{position:absolute;bottom:18%;right:-30%;z-index:3}\
 .ct__scene.on .ct__visit{animation:ctvisit 4.5s ease-out forwards}\
 @keyframes ctvisit{to{right:6%}}\
+.ct--gift{background:radial-gradient(circle at 50% 30%,#3a2a10,#0b0806 75%)}\
+.gf__row{position:absolute;left:50%;top:22%;transform:translateX(-50%);display:flex;gap:clamp(.6rem,3vw,1.6rem)}\
+.gf__it{display:flex;flex-direction:column;align-items:center;opacity:0;animation:mlpop .5s ease forwards}\
+.gf__it b{font-size:clamp(2.2rem,8vw,4rem);filter:drop-shadow(0 0 14px rgba(255,215,120,.8))}\
+.gf__miswak{display:inline-flex;align-items:center;justify-content:center;width:1em;height:1em}\
+.gf__miswak i{display:block;width:.16em;height:.95em;border-radius:.08em;background:linear-gradient(180deg,#f3e6c4 0 14%,#d9b98a 14% 18%,#8a5a2e 18%,#6b4220);transform:rotate(-35deg);box-shadow:0 0 0 1px rgba(0,0,0,.25)}\
+.gf__it small{margin-top:.3rem;font:700 .8rem system-ui,sans-serif;letter-spacing:.08em;color:#ffe7a3}\
+.gf__from{position:absolute;left:50%;top:52%;transform:translateX(-50%);font:600 clamp(1rem,3.4vw,1.4rem) Georgia,serif;color:#ffe7a3;white-space:nowrap}\
+.ct__purple{filter:hue-rotate(250deg) saturate(1.6) drop-shadow(1px 0 0 #000) drop-shadow(-1px 0 0 #000) drop-shadow(0 1px 0 #000) drop-shadow(0 -1px 0 #000)}\
 .ct--end{background:radial-gradient(circle at 50% 40%,#1a2340,#05070f 70%)}\
 .ct__end{max-width:760px;padding:0 6%;text-align:center;font:500 clamp(1.15rem,3.8vw,1.7rem)/1.55 Georgia,serif}\
 .ct__pp{display:block;margin-top:.9rem;color:#ffd6ea;font-style:italic}\
@@ -110,7 +122,7 @@
   (function () { var st = document.createElement("style"); st.id = "ctCss"; st.textContent = CSS; document.head.appendChild(st); })();
 
   function suit(face, label, big) {
-    return '<div class="ct__p' + (big ? " ct__p--big" : "") + '"><b>' + face + "</b><i></i>" + (label ? "<small>" + label + "</small>" : "") + "</div>";
+    return '<div class="ct__p' + (big ? " ct__p--big" : "") + '"><b' + (face === "🦂" ? ' class="ct__purple"' : "") + '>' + face + "</b><i></i>" + (label ? "<small>" + label + "</small>" : "") + "</div>";
   }
   function holySVG(t) {
     var P = innerWidth < innerHeight;   // portrait phones get a taller layout so nothing is cropped
@@ -148,7 +160,7 @@
   var busy = false;
   function play(done) {
     if (busy) return; busy = true;
-    var t = tx(), name = Math.random() < 0.5 ? "AL-ʿADL" : "AL-ḤAKAM";
+    var t = tx(), P = px(), name = Math.random() < 0.5 ? "AL-ʿADL" : "AL-ḤAKAM";
     var box = document.createElement("div");
     box.className = "ct"; box.setAttribute("role", "dialog"); box.setAttribute("aria-modal", "true"); box.setAttribute("aria-label", t.c1);
     var scenes = [
@@ -162,8 +174,12 @@
       ['ct--cell', '<div class="ct__stage"><div class="ct__floor"></div><span class="ct__it" style="left:8%;bottom:16%">💀</span><span class="ct__it" style="left:20%;bottom:12%">💀</span><span class="ct__it" style="right:12%;bottom:14%">💀</span>' +
         '<span class="ct__it" style="left:32%;bottom:20%">🥀</span><span class="ct__it" style="right:26%;bottom:18%">🥀</span><span class="ct__it" style="left:14%;bottom:26%">🥀</span>' +
         '<span class="ct__rose" style="left:40%">🌹</span><span class="ct__rose" style="left:54%">🌹</span><span class="ct__glass">⏳</span>' +
-        '<span class="ct__it" style="left:6%;bottom:34%">🦂</span><span class="ct__it" style="left:72%;bottom:30%">🦂</span>' +
+        '<span class="ct__it ct__purple" style="left:6%;bottom:34%">🦂</span><span class="ct__it ct__purple" style="left:72%;bottom:30%">🦂</span>' +
         '<div class="ct__bars"></div><div class="ct__visit">' + suit("🦀", "", true) + "</div></div>", t.c4],
+      ['ct--gift', '<div class="ct__stage"><div style="position:absolute;left:5%;bottom:6%">' + suit("🦀", "🤴 👑", true) + '</div><div class="gf__row">' +
+        [["📖", P.quran], ["<i></i>", P.miswak], ["📿", P.tasbih], ["🌹", P.rose]].map(function (g, i) { return '<span class="gf__it" style="animation-delay:' + (0.5 + i * 0.6) + 's"><b' + (i === 1 ? ' class="gf__miswak"' : "") + ">" + g[0] + "</b><small>" + g[1] + "</small></span>"; }).join("") +
+        '</div><div class="gf__from">🕋 ' + P.fm + '</div><div style="position:absolute;right:5%;bottom:6%;display:flex;gap:2%">' + suit("🦂") + suit("🦂") + '</div></div>', P.gifts],
+      ['ct--gift', '<div class="ct__end">' + P.umrah + '<b>🕋 622 · Umrah</b></div>', ""],
       ['ct--end', '<div class="ct__end">' + t.c5 + '<span class="ct__pp">' + t.pp + "</span><b>⚖️ AL-ʿADL · AL-ḤAKAM</b></div>", ""],
       ['ct--holy', '<div class="ct__holy">' + holySVG(t) + '<span class="ct__lh" lang="ar">لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِٱللَّهِ</span></div>', t.c6 + " · " + t.end]
     ];
@@ -171,7 +187,7 @@
       '<button type="button" class="ct__skip">' + t.skip + ' ✕</button><button type="button" class="ct__back">' + t.back + "</button>";
     document.body.appendChild(box);
     var els = box.querySelectorAll(".ct__scene"), i = -1, timer = 0, back = box.querySelector(".ct__back");
-    var DUR = [4200, 4200, 4600, 5200, 6500, 7000];
+    var DUR = [4200, 4200, 4600, 5200, 6000, 6500, 6500, 7000];
     function finish() { clearTimeout(timer); box.remove(); busy = false; document.removeEventListener("keydown", onKey); if (done) done(); }
     function next() {
       if (i >= 0) els[i].classList.remove("on");

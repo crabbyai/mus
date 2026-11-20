@@ -274,6 +274,33 @@
       bikes2.className = "bikes2 bikes2--t" + Math.min(3, round + ((omen || 0) >= 3 ? 1 : 0));
     }
     bikesUp(); setInterval(bikesUp, 1500);
+    // the crab flips his carpet: underneath, a Pakistani flag, and the pind appears with goats and cows
+    var caCarpet = road.querySelector(".carpet2--ca"), pind2 = road.querySelector(".pind2"), flipped = false;
+    if (caCarpet && pind2 && !(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches)) (function flipLoop() {
+      setTimeout(function () {
+        var rr = road.getBoundingClientRect();
+        if (rr.bottom > 0 && rr.top < innerHeight) {
+          caCarpet.classList.add("flipping");
+          setTimeout(function () {
+            flipped = !flipped; caCarpet.classList.toggle("pk", flipped); caCarpet.classList.remove("flipping");
+            pind2.classList.toggle("on", flipped);
+            var P = window.coachPind && window.coachPind();
+            if (flipped && P) {
+              var note = document.createElement("span"); note.className = "sadqa2"; note.textContent = P.flip; road.appendChild(note); setTimeout(function () { note.remove(); }, 2800);
+              var bg = pind2.querySelector(".goat2--black"); bg.classList.remove("gone"); bg.style.left = "24%"; bg.style.bottom = "6%"; bg.style.top = "";
+              setTimeout(function () {   // sadqa: the black goat walks to the crab and vanishes in light
+                bg.classList.add("goat2--walk"); bg.style.left = "64%";
+                setTimeout(function () {
+                  bg.classList.remove("goat2--walk"); bg.classList.add("gone");
+                  var n2 = document.createElement("span"); n2.className = "sadqa2"; n2.textContent = "✨ " + P.sadqa; road.appendChild(n2); setTimeout(function () { n2.remove(); }, 3600);
+                }, 3100);
+              }, 1800);
+            }
+          }, 460);
+        }
+        flipLoop();
+      }, flipped ? 22000 : 30000 + Math.random() * 15000);
+    })();
     function lanes() { return [].slice.call(road.querySelectorAll(".scorp:not(.gone)")); }
     boss.addEventListener("click", function () {
       taps.push(Date.now()); taps = taps.filter(function (t) { return Date.now() - t < 6000; });
