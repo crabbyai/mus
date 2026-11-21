@@ -37,6 +37,4 @@ to the Worker's URL.
 
 - Worker: `adeel-inbox` → https://adeel-inbox.adeelrahman.workers.dev
 - D1 database: `adeel-inbox`
-- R2 bucket: not yet — enable R2 in the dashboard, create bucket `adeel-files`,
-  and add an `r2_bucket` binding named `FILES` (redeploy with `keep_bindings`).
-  Until then enquiries save normally and attachments are noted as not stored.
+- R2 bucket: `allah`, bound as `FILES`

@@ -99,7 +99,10 @@
 .ml__name{position:absolute;left:50%;top:5%;transform:translateX(-50%);font:900 clamp(1.1rem,4vw,2rem) Georgia,serif;color:#ffd6f7;text-shadow:0 0 10px #ff2fd6,0 0 26px #ff2fd6;white-space:nowrap}\
 .ml__lvl{position:absolute;left:50%;top:14%;transform:translateX(-50%);font:800 .8rem system-ui,sans-serif;letter-spacing:.2em;color:#ffe7a3}\
 .ml__cast{position:absolute;left:0;right:0;bottom:6%;display:flex;justify-content:space-around;align-items:flex-end}\
-.ml__bub{position:absolute;max-width:min(60vw,420px);padding:.55rem .9rem;border-radius:16px;background:#fff;color:#7a1050;font:700 clamp(1.05rem,3.4vw,1.4rem)/1.35 system-ui,sans-serif;box-shadow:0 6px 20px rgba(0,0,0,.4);opacity:0;transform:scale(.6);animation:mlpop .35s ease forwards,mlout .35s ease forwards}\
+.ml__bub{position:absolute;max-width:min(60vw,420px);padding:.55rem .9rem;border-radius:16px;background:#fff;color:#7a1050;font:700 clamp(1.05rem,3.4vw,1.4rem)/1.35 system-ui,sans-serif;box-shadow:0 6px 20px rgba(0,0,0,.4);opacity:0;transform:scale(.6);transition:opacity .35s ease,transform .35s ease;pointer-events:none}\
+.ml__bub.on{opacity:1;transform:scale(1)}\
+.ml__tap{position:absolute;left:50%;bottom:1.2%;transform:translateX(-50%);font:700 .8rem system-ui,sans-serif;letter-spacing:.12em;color:rgba(255,231,163,.8);background:rgba(0,0,0,.35);padding:.25rem .8rem;border-radius:99px;pointer-events:none}\
+@media(prefers-reduced-motion:reduce){.ml__bub{transition:none}}\
 .ml__bub--crab{background:#1b1206;color:#ffe7a3;border:2px solid #e8c87e}\
 @keyframes mlpop{to{opacity:1;transform:scale(1)}}\
 @keyframes mlout{from{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(.9) translateY(-14px)}}\
@@ -223,21 +226,43 @@
     for (var f = 0; f < floors; f++) { html += '<div class="ml__floor">'; for (var k = 0; k < per; k++) html += '<span class="ml__shop">' + SHOPS[(f * 3 + k) % SHOPS.length] + "</span>"; html += "</div>"; }
     var name = MALLS[Math.min(lv, MALLS.length - 1)] + (lv >= MALLS.length ? " " + "+".repeat(lv - MALLS.length + 1) : "");
     var box = document.createElement("div"); box.className = "ct"; box.setAttribute("role", "dialog"); box.setAttribute("aria-modal", "true"); box.setAttribute("aria-label", m.spree);
-    var bubbles = "", d = 0.6;
+    var bubbles = "";
     m.dem.forEach(function (q, i) {
-      bubbles += '<span class="ml__bub" style="left:4%;bottom:30%;animation-delay:' + d.toFixed(1) + 's,' + (d + 3.0).toFixed(1) + 's">🦂 ' + q + "</span>"; d += 3.3;
-      if (i % 2 === 1 || i === m.dem.length - 1) { bubbles += '<span class="ml__bub ml__bub--crab" style="right:4%;bottom:36%;animation-delay:' + d.toFixed(1) + 's,' + (d + 2.8).toFixed(1) + 's">🦀 ' + m.nb + "</span>"; d += 3.1; }
+      bubbles += '<span class="ml__bub" style="left:4%;bottom:30%">🦂 ' + q + "</span>";
+      if (i % 2 === 1 || i === m.dem.length - 1) bubbles += '<span class="ml__bub ml__bub--crab" style="right:4%;bottom:36%">🦀 ' + m.nb + "</span>";
     });
     box.innerHTML = '<div class="ct__scene ct--mall on"><div class="ml__name">🛍️ ' + name + '</div><div class="ml__lvl">' + m.lvl + " " + (lv + 1) + '</div><div class="ml__bldg">' + html + "</div>" +
-      '<div class="ml__cast">' + suit("🦂", "👸?", false) + suit("🦀", "🤴 👑", true) + "</div>" + bubbles + '<p class="ct__cap">' + m.pause + " " + m.spree + "</p></div>" +
+      '<div class="ml__cast">' + suit("🦂", "👸?", false) + suit("🦀", "🤴 👑", true) + "</div>" + bubbles + '<p class="ct__cap">' + m.pause + " " + m.spree + '</p><span class="ml__tap" aria-hidden="true">tap ›</span></div>' +
       '<div class="ct__scene ct--end"><div class="ml__joke">' + m.joke + '<br><span class="ml__stamp">' + m.hum + " 😳</span><small class=\"ml__moral\">Greed and imitating the West’s lifestyle only leave you empty. 🛍️❌</small></span></div><p class=\"ct__cap\">" + m.back + "</p></div>" +
       '<button type="button" class="ct__skip">' + tx().skip + " ✕</button>";
     document.body.appendChild(box);
     var sc = box.querySelectorAll(".ct__scene"), timer;
-    function finish() { clearTimeout(timer); box.remove(); busy = false; document.removeEventListener("keydown", onKey); if (done) done(); }
-    function onKey(e) { if (e.key === "Escape") finish(); }
-    box.querySelector(".ct__skip").addEventListener("click", finish); document.addEventListener("keydown", onKey); box.querySelector(".ct__skip").focus();
-    timer = setTimeout(function () { sc[0].classList.remove("on"); sc[1].classList.add("on"); timer = setTimeout(finish, 4200); }, (d + 1.6) * 1000);
+    var bubs = box.querySelectorAll(".ml__bub"), bi = -1, ended = false, wait = 0, startedAt = 0;
+    // Each line stays up long enough to read: at least 4 s, longer for longer lines.
+    function readTime(el) { return Math.max(4000, 1800 + el.textContent.length * 75); }
+    function arm(fn, ms) { clearTimeout(timer); wait = ms; startedAt = Date.now(); timer = setTimeout(fn, ms); }
+    function toEnd() { if (ended) return; ended = true; if (bi >= 0 && bubs[bi]) bubs[bi].classList.remove("on"); sc[0].classList.remove("on"); sc[1].classList.add("on"); arm(finish, 5500); }
+    function nextBub() {
+      if (ended) return;
+      if (bi >= 0) bubs[bi].classList.remove("on");
+      bi++;
+      if (bi >= bubs.length) { arm(toEnd, 1200); return; }
+      bubs[bi].classList.add("on");
+      arm(nextBub, readTime(bubs[bi]));
+    }
+    function finish() { clearTimeout(timer); box.remove(); busy = false; document.removeEventListener("keydown", onKey); document.removeEventListener("visibilitychange", onVis); if (done) done(); }
+    function onKey(e) {
+      if (e.key === "Escape") finish();
+      else if (e.key === " " || e.key === "Enter" || e.key === "ArrowRight") { if (document.activeElement && document.activeElement.classList.contains("ct__skip") && e.key !== "ArrowRight") return; e.preventDefault(); ended ? finish() : nextBub(); }
+    }
+    // Switching away pauses the scene; coming back resumes the current line.
+    function onVis() {
+      if (document.hidden) { clearTimeout(timer); wait = Math.max(1500, wait - (Date.now() - startedAt)); }
+      else arm(ended ? finish : (bi >= bubs.length ? toEnd : nextBub), wait);
+    }
+    box.addEventListener("click", function (e) { if (e.target.closest(".ct__skip")) return; ended ? finish() : nextBub(); });
+    box.querySelector(".ct__skip").addEventListener("click", finish); document.addEventListener("keydown", onKey); document.addEventListener("visibilitychange", onVis); box.querySelector(".ct__skip").focus();
+    arm(nextBub, 1000);
   }
 
   /* ---- the crab's whisper of hope, after the horror numbers ---- */
