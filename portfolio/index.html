@@ -26,6 +26,7 @@
 <link rel="alternate" hreflang="ko" href="https://crabbyai.github.io/mus/?lang=ko">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preload" href="assets/fonts/cinzel-decorative-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/aref-ruqaa-arabic-700-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/playfair-display-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/fonts.css">
@@ -916,6 +917,17 @@ html{scroll-padding-top:70px}
 .an__btn svg{width:13px;height:13px}
 .an__note{margin:1.2rem auto 0;max-width:640px;font-size:.85rem;color:var(--muted)}
 @media(max-width:420px){.an__grid{grid-template-columns:repeat(2,1fr)}.an__btn{font-size:.66rem;padding:.38rem .55rem}}
+
+@font-face{font-family:"Cinzel Decorative";font-weight:700;font-display:swap;src:url("assets/fonts/cinzel-decorative-latin-700-normal.woff2") format("woff2")}
+.an__n{position:relative;display:inline-block;padding:0 2.3em;font-family:"Cinzel Decorative",var(--serif)!important;font-weight:700!important;text-shadow:none;filter:drop-shadow(0 0 10px rgba(255,240,200,.55))}
+.an__n::before,.an__n::after{content:"";position:absolute;top:50%;width:1.8em;height:1.2em;margin-top:-.65em;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 80'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1'%3E%3Cstop offset='0' stop-color='%23fffaf0'/%3E%3Cstop offset='1' stop-color='%23e8c87e'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg fill='url(%23g)' stroke='%23c9a45c' stroke-width='.8'%3E%3Cpath d='M118 44C96 18 58 6 6 10c18 6 30 12 38 20C24 28 12 30 2 36c18 2 32 6 42 12C30 50 18 56 10 64c22-6 44-6 64 0 18 4 34 2 44-20z'/%3E%3Cpath d='M116 46C96 34 76 30 56 32' fill='none'/%3E%3Cpath d='M114 50C96 46 80 46 64 50' fill='none'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat;animation:wingFlap 2.6s ease-in-out infinite;transform-origin:50% 55%}
+.an__n::before{left:0}
+.an__n::after{right:0;transform:scaleX(-1);transform-origin:50% 55%;animation-name:wingFlapR}
+@keyframes wingFlap{50%{transform:rotate(-10deg)}}
+@keyframes wingFlapR{50%{transform:scaleX(-1) rotate(-10deg)}}
+.an__n{font-size:clamp(1.3rem,4vw,1.9rem)!important}
+.an__card .an__n{margin-top:.2rem}
+@media(prefers-reduced-motion:reduce){.an__n::before,.an__n::after{animation:none}}
 .g3__flash{position:absolute;inset:0;z-index:2;pointer-events:none;background:#eaf4ff;opacity:0}
 .g3__flash.on{animation:g3flash .8s steps(1) forwards}
 @keyframes g3flash{0%{opacity:.95}8%{opacity:.05}16%{opacity:.85}26%{opacity:.1}36%{opacity:.7}50%{opacity:0}62%{opacity:.45}74%{opacity:0}84%{opacity:.25}100%{opacity:0}}
@@ -1156,7 +1168,7 @@ html{scroll-padding-top:70px}
       <a class="link" href="#story"><picture><source srcset="coach/assets/take-2.webp" type="image/webp"><img src="coach/assets/take-2.jpg" alt=""></picture><div><b data-i18n="l3.t">My story</b><small data-i18n="l3.s">I built this to save my life</small></div></a>
       <a class="link" href="#n622"><picture><source srcset="assets/adeel-portrait.webp" type="image/webp"><img src="assets/adeel-portrait.jpg" alt=""></picture><div><b data-i18n="l4.t">Why 622?</b><small data-i18n="l4.s">The Hijra, my birthday, your new beginning</small></div></a>
       <a class="link" href="#protect"><picture><source srcset="coach/assets/lobby-1.webp" type="image/webp"><img src="coach/assets/lobby-1.jpg" alt=""></picture><div><b data-i18n="l5.t">Protection</b><small data-i18n="l5.s">Energy vampires, evil eye &amp; Shaytan</small></div></a>
-      <a class="link" href="#numbers"><picture><source srcset="coach/assets/take-1.webp" type="image/webp"><img src="coach/assets/take-1.jpg" alt=""></picture><div><b data-i18n="l6.t">Angel numbers, the Muslim way</b><small data-i18n="l6.s">Every number is a reminder of Allah</small></div></a>
+      <a class="link" href="#angel-numbers"><picture><source srcset="coach/assets/take-1.webp" type="image/webp"><img src="coach/assets/take-1.jpg" alt=""></picture><div><b>Angel numbers</b><small>111 to 2222 · unlock yours on WhatsApp</small></div></a>
       <a class="link js-chat" href="?chat"><picture><source srcset="coach/assets/lights-2.webp" type="image/webp"><img src="coach/assets/lights-2.jpg" alt=""></picture><div><b data-i18n="chat.t">Live chat with Adeel</b><small data-i18n="chat.s">Ask anything, right now</small></div></a>
       <a class="link" href="library.html"><picture><source srcset="coach/assets/take-1.webp" type="image/webp"><img src="coach/assets/take-1.jpg" alt=""></picture><div><b data-i18n="l11.t">Qur'an &amp; Hadith Library</b><small data-i18n="l11.s">Searchable verses and authentic hadith</small></div></a>
       <a class="link" href="course.html"><picture><source srcset="coach/assets/lights-1.webp" type="image/webp"><img src="coach/assets/lights-1.jpg" alt=""></picture><div><b data-i18n="l8.t">Free course &amp; King's Table</b><small data-i18n="l8.s">Start free · Lifetime $1,111</small></div></a>
@@ -1352,20 +1364,7 @@ html{scroll-padding-top:70px}
         <p class="an__note">🤍 As Sunni Muslims we don't read fortunes in numbers; only Allah knows the unseen. A number can only be a reminder to turn back to Him. لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللّٰهِ</p>
       </section>
 
-      <h3 id="numbers" class="reveal" data-i18n="num.h">Angel numbers, <em>the Muslim way</em></h3>
-      <p class="lead reveal" data-i18n="num.lead">People call repeating numbers “angel numbers”. As Sunni Muslims we don't read fortunes in them; only Allah knows the unseen. But a repeating number can be a beautiful nudge to stop and remember Him. Here's how I use them with my clients:</p>
-      <div class="nums reveal">
-        <div class="num num--622"><b>622</b><i lang="ar">حَسْبُنَا ٱللَّهُ وَنِعْمَ ٱلْوَكِيلُ</i><p data-i18n="num.622">Hijra, and my birthday. Your new beginning. Make your intention, trust Allah and take the first step.</p></div>
-        <div class="num"><b>111</b><i lang="ar">لَا إِلَٰهَ إِلَّا ٱللَّهُ</i><p data-i18n="num.111">One. Renew your tawhid.</p></div>
-        <div class="num"><b>222</b><i lang="ar">ٱلْحَمْدُ لِلَّٰهِ</i><p data-i18n="num.222">Gratitude for what's already given.</p></div>
-        <div class="num"><b>333</b><i lang="ar">سُبْحَانَ ٱللَّهِ</i><p data-i18n="num.333">Glorify Him, 33 times after every salah.</p></div>
-        <div class="num"><b>444</b><i lang="ar">ٱللَّهُ أَكْبَرُ</i><p data-i18n="num.444">Your problem is small. Allah is greater.</p></div>
-        <div class="num"><b>555</b><i lang="ar">أَسْتَغْفِرُ ٱللَّهَ</i><p data-i18n="num.555">Seek forgiveness and clear what blocks your dua.</p></div>
-        <div class="num"><b>786</b><i lang="ar">بِسْمِ ٱللَّهِ</i><p data-i18n="num.786">Begin it in His name.</p></div>
-      </div>
-      <div class="ayah reveal"><span class="ar" lang="ar">أَلَا بِذِكْرِ ٱللَّهِ تَطْمَئِنُّ ٱلْقُلُوبُ</span><span class="tr" data-i18n="dhikr.ayah">“Verily, in the remembrance of Allah do hearts find rest.”</span><span class="ref up" data-i18n="dhikr.ref">Qur'an 13:28</span></div>
-
-      <div class="orn reveal" aria-hidden="true"><div class="orn__row"><svg class="s"><use href="#star8"/></svg><svg><use href="#crescent"/></svg><svg class="s"><use href="#star8"/></svg></div><span class="orn__ar" lang="ar">لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِٱللَّهِ</span><span class="orn__tr" data-i18n="div.t">No power, no strength, except with Allah</span></div>
+<div class="orn reveal" aria-hidden="true"><div class="orn__row"><svg class="s"><use href="#star8"/></svg><svg><use href="#crescent"/></svg><svg class="s"><use href="#star8"/></svg></div><span class="orn__ar" lang="ar">لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِٱللَّهِ</span><span class="orn__tr" data-i18n="div.t">No power, no strength, except with Allah</span></div>
       <!-- awareness -->
       <section class="aware reveal" id="awareness">
         <span class="k up" style="font-size:.7rem;color:var(--gold)" data-i18n="aw.k">Awareness · Consciousness</span>
