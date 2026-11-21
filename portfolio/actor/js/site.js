@@ -178,12 +178,14 @@
     const lines = [
       "Hello Adeel, I found your actor portfolio.",
       "Name: " + (f.get("name") || ""),
+      f.get("phone") ? "Phone: " + f.get("phone") : "",
       "Project: " + (f.get("project") || ""),
       f.get("role") ? "Role: " + f.get("role") : "",
       "Format: " + (f.get("format") || ""),
       nice ? "Date: " + nice : "",
       f.get("sides") ? "Script / sides: " + f.get("sides") : "",
-      f.get("details") ? "Details: " + f.get("details") : ""
+      f.get("details") ? "Details: " + f.get("details") : "",
+      f.get("file") && f.get("file").size ? "Script attached through your website: " + f.get("file").name : ""
     ].filter(Boolean);
     window.open("https://wa.me/16134083945?text=" + encodeURIComponent(lines.join("\n")), "_blank", "noopener");
     if (date) offerCalendar(`${f.get("format")} — Adeel Rahman (${f.get("project")})`, date, null, [f.get("role"), f.get("sides"), f.get("details")].filter(Boolean).join(" · "));
@@ -361,7 +363,7 @@
     e.preventDefault();
     const f = new FormData(hold);
     const from = f.get("from"), to = f.get("to") < from ? from : f.get("to");
-    sendWa(["Hello Adeel, I'd like to hold your dates.", "Name: " + f.get("name"), f.get("project") ? "Project: " + f.get("project") : "",
+    sendWa(["Hello Adeel, I'd like to hold your dates.", "Name: " + f.get("name"), f.get("phone") ? "Phone: " + f.get("phone") : "", f.get("project") ? "Project: " + f.get("project") : "",
       "Hold: " + f.get("option"), "Dates: " + niceDate(from) + (to !== from ? " – " + niceDate(to) : ""), "Location: " + f.get("city"),
       f.get("notes") ? "Notes: " + f.get("notes") : ""]);
     offerCalendar(`${f.get("option")} — Adeel Rahman${f.get("project") ? " (" + f.get("project") + ")" : ""}`, from, to, "Hold requested on WhatsApp. " + (f.get("notes") || ""));
@@ -372,7 +374,7 @@
     e.preventDefault();
     const f = new FormData(brand);
     const needs = f.getAll("need");
-    sendWa(["Hello Adeel, a brand enquiry.", "Name: " + f.get("name"), "Brand / agency: " + f.get("brand"), needs.length ? "Looking for: " + needs.join(", ") : "",
+    sendWa(["Hello Adeel, a brand enquiry.", "Name: " + f.get("name"), f.get("phone") ? "Phone: " + f.get("phone") : "", "Brand / agency: " + f.get("brand"), needs.length ? "Looking for: " + needs.join(", ") : "",
       f.get("date") ? "Date: " + niceDate(f.get("date")) : "", "Market: " + f.get("market"), f.get("notes") ? "Brief: " + f.get("notes") : ""]);
     if (f.get("date")) offerCalendar(`${f.get("brand")} × Adeel Rahman`, f.get("date"), null, needs.join(", "));
   });
@@ -474,6 +476,15 @@
     s.setAttribute("data-cf-beacon", JSON.stringify({ token: cfToken, spa: true }));
     document.head.appendChild(s);
   }
+
+  /* "Saved to Adeel's inbox" confirmation after the inbox connector reports back */
+  document.addEventListener("inbox:sent", (e) => {
+    if (!e.detail || !e.detail.ok) return;
+    const form = e.target;
+    let n = form.querySelector(".lead__saved");
+    if (!n) { n = document.createElement("p"); n.className = "lead__saved"; n.setAttribute("role", "status"); form.appendChild(n); }
+    n.textContent = "✓ Also saved to Adeel's inbox — nothing gets lost.";
+  });
 
   const year = $("year");
   if (year) year.textContent = new Date().getFullYear();

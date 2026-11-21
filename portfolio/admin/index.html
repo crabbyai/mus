@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<meta name="theme-color" content="#0a0f1e" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src 'self' https:; frame-ancestors 'none'; base-uri 'none'; form-action 'none'; object-src 'none'" />
+<meta name="referrer" content="no-referrer" />
+<title>Admin — Adeel Rahman</title>
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg" />
+<link rel="stylesheet" href="../css/fonts.css" />
+<link rel="stylesheet" href="admin.css?v=2" />
+</head>
+<body>
+<header class="top">
+  <span class="top__mark">AR</span>
+  <span class="top__title">Admin</span>
+  <nav class="tabs" id="tabs" role="tablist" hidden>
+    <button type="button" role="tab" data-tab="inbox" class="is-on" aria-selected="true">Inbox <b id="newCount"></b></button>
+    <button type="button" role="tab" data-tab="files" aria-selected="false">Videos &amp; files</button>
+    <button type="button" role="tab" data-tab="stats" aria-selected="false">Stats</button>
+    <button type="button" role="tab" data-tab="settings" aria-selected="false">Settings</button>
+  </nav>
+</header>
+
+<main>
+  <p class="notice" id="notice" role="status" hidden></p>
+
+  <!-- not configured -->
+  <section class="card" id="unconfigured" hidden>
+    <h1>Not connected yet</h1>
+    <p>The inbox server hasn't been deployed. Once it is, this page fills in by itself.</p>
+  </section>
+
+  <!-- first-time setup -->
+  <form class="card auth" id="setupForm" hidden>
+    <h1>Set your admin password</h1>
+    <p>Use the one-time setup code you were given. After this, only your password opens this page.</p>
+    <label>Setup code <input name="code" autocomplete="off" required /></label>
+    <label>New password <input name="password" type="password" minlength="10" autocomplete="new-password" required /></label>
+    <label>Repeat password <input name="password2" type="password" minlength="10" autocomplete="new-password" required /></label>
+    <button class="btn btn--gold" type="submit">Set password</button>
+  </form>
+
+  <!-- login -->
+  <form class="card auth" id="loginForm" hidden>
+    <h1>Sign in</h1>
+    <label>Password <input name="password" type="password" autocomplete="current-password" required /></label>
+    <button class="btn btn--gold" type="submit">Sign in</button>
+  </form>
+
+  <!-- inbox -->
+  <section class="panel" id="inbox" hidden>
+    <div class="bar">
+      <div class="chips" id="siteChips"></div>
+      <div class="chips">
+        <button type="button" class="chip is-on" data-status="new">New</button>
+        <button type="button" class="chip" data-status="">All</button>
+      </div>
+      <button type="button" class="btn btn--ghost btn--sm" id="refresh">↻ Refresh</button>
+    </div>
+    <div id="list" class="list"></div>
+    <p class="empty" id="empty" hidden>Nothing here yet. New enquiries from every site land here.</p>
+  </section>
+
+  <!-- files -->
+  <section class="panel" id="files" hidden>
+    <form class="card upload" id="uploadForm">
+      <h2>Upload a self-tape, video or PDF</h2>
+      <p class="muted">Then make a private link that expires — send it to a producer, a buyer or a customer.</p>
+      <label>Title <input name="title" placeholder="e.g. Self-tape — Villain, Episode 4 scene" required /></label>
+      <label class="file">File <input name="file" type="file" accept="video/*,image/*,application/pdf" required /></label>
+      <div class="progress" id="progress" hidden><i id="progressBar"></i><span id="progressText"></span></div>
+      <button class="btn btn--gold" type="submit" id="uploadBtn">Upload</button>
+    </form>
+    <div id="fileList" class="list"></div>
+  </section>
+
+  <!-- stats -->
+  <section class="panel" id="stats" hidden>
+    <form class="card" id="statsConnect" hidden>
+      <h2>Connect your stats</h2>
+      <ol class="steps">
+        <li>On Cloudflare: <b>Manage account → Account API Tokens → Create token → Create custom token</b>.</li>
+        <li>Name it <i>Stats (read only)</i>. Permission: <b>Account · Account Analytics · Read</b>. Nothing else.</li>
+        <li>Create it, copy the token, paste it here. It's stored on your server, never on this page.</li>
+      </ol>
+      <label>Read-only analytics token <input name="token" autocomplete="off" required /></label>
+      <button class="btn btn--gold" type="submit">Connect</button>
+    </form>
+    <div id="statsView" hidden>
+      <div class="bar">
+        <div class="chips" id="dayChips">
+          <button type="button" class="chip" data-days="1">24 hours</button>
+          <button type="button" class="chip is-on" data-days="7">7 days</button>
+          <button type="button" class="chip" data-days="30">30 days</button>
+        </div>
+      </div>
+      <div class="kpis" id="kpis"></div>
+      <div class="card"><h3>Visits per day</h3><div class="chart" id="daily"></div></div>
+      <div class="grid2">
+        <div class="card"><h3>By site</h3><ul class="rows" id="bySite"></ul></div>
+        <div class="card"><h3>Countries</h3><ul class="rows" id="countries"></ul></div>
+        <div class="card"><h3>Where they came from</h3><ul class="rows" id="referrers"></ul></div>
+        <div class="card"><h3>Devices</h3><ul class="rows" id="devices"></ul></div>
+      </div>
+      <div class="card"><h3>Top pages</h3><ul class="rows" id="pages"></ul></div>
+    </div>
+  </section>
+
+  <!-- settings -->
+  <section class="panel" id="settings" hidden>
+    <form class="card auth" id="pwForm">
+      <h2>Change password</h2>
+      <p class="muted">Signs out every other device.</p>
+      <label>New password <input name="password" type="password" minlength="10" autocomplete="new-password" required /></label>
+      <button class="btn btn--gold" type="submit">Change password</button>
+    </form>
+    <div class="card">
+      <h2>This device</h2>
+      <p class="muted">Add this page to your phone's home screen for one-tap access to the inbox.</p>
+      <button type="button" class="btn btn--ghost" id="logout">Sign out</button>
+    </div>
+  </section>
+</main>
+<script src="admin.js?v=2"></script>
+</body>
+</html>
