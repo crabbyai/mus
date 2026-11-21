@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Adeel Ahmed Rahman — Dhikr, Dua &amp; Consciousness Coach · 622</title>
-<meta name="description" content="Adeel Ahmed Rahman, Muslim consciousness coach. I help Muslims connect with Allah through focused dhikr and dua. 622 — the Hijra, and my birthday. You deserve what you desire. WhatsApp +1 613 408 3945.">
+<meta name="description" content="Adeel Ahmed Rahman, Sunni Muslim consciousness coach. I help Muslims connect with Allah through focused dhikr and dua. 622 — the Hijra, and my birthday. You deserve what you desire. WhatsApp +1 613 408 3945.">
 <meta name="theme-color" content="#0a0f1e">
 <meta name="robots" content="index, follow, noai, noimageai">
 <meta name="tdm-reservation" content="1">
@@ -31,7 +31,7 @@
 <link rel="stylesheet" href="css/fonts.css">
 <script type="importmap">{ "imports": { "three": "./js/vendor/three.module.min.js" } }</script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Person","name":"Adeel Ahmed Rahman","jobTitle":"Consciousness Coach — Dhikr and Dua for Muslims","description":"Muslim coach helping Muslims connect with Allah through focused dhikr and dua.","birthDate":"--06-22","telephone":"+1-613-408-3945","image":"https://crabbyai.github.io/mus/coach/assets/lobby-3.jpg","url":"https://crabbyai.github.io/mus/","sameAs":["https://wa.me/16134083945","https://crabbyai.github.io/mus/realtor/","https://crabbyai.github.io/mus/actor/"]}
+{"@context":"https://schema.org","@type":"Person","name":"Adeel Ahmed Rahman","jobTitle":"Consciousness Coach — Dhikr and Dua for Muslims","description":"Sunni Muslim coach helping Muslims connect with Allah through focused dhikr and dua.","birthDate":"--06-22","telephone":"+1-613-408-3945","image":"https://crabbyai.github.io/mus/coach/assets/lobby-3.jpg","url":"https://crabbyai.github.io/mus/","sameAs":["https://wa.me/16134083945","https://crabbyai.github.io/mus/realtor/","https://crabbyai.github.io/mus/actor/"]}
 </script>
 <script>
 /* Pick the language before first paint so RTL pages don't flash LTR. */
@@ -878,6 +878,28 @@ html{scroll-padding-top:70px}
 .street__hint,.street__royal{font-size:1rem!important}
 @media(max-width:700px){.road{height:max(64vh,calc(var(--rh,150px) + 44px))!important}}
 .game-moral{margin:.5rem auto 0;max-width:720px;text-align:center;font:700 .92rem/1.45 Georgia,serif;color:#ffd77a;font-style:italic}
+
+/* live viewers */
+.live{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.35rem .6rem;width:fit-content;max-width:calc(100% - 32px);margin:14px auto 0;padding:.45rem 1rem;border-radius:999px;border:1px solid rgba(110,230,140,.45);background:rgba(8,20,14,.7);color:#e9fff0;font:600 .88rem system-ui,sans-serif;position:relative;z-index:2}
+.live[hidden]{display:none}
+.live b{font-weight:900;font-size:1rem}
+.live__dot{width:9px;height:9px;border-radius:50%;background:#3dff7a;box-shadow:0 0 0 0 rgba(61,255,122,.7);animation:liveDot 1.6s ease-out infinite}
+@keyframes liveDot{to{box-shadow:0 0 0 9px rgba(61,255,122,0)}}
+.live__where{display:inline-flex;flex-wrap:wrap;gap:.3rem .7rem;color:#bfe9cc;font-weight:500}
+@media(prefers-reduced-motion:reduce){.live__dot{animation:none}}
+
+/* respect for women, English + Urdu */
+.respect{margin-top:2.6rem;padding:clamp(1.4rem,4vw,2.4rem) clamp(1.1rem,3.5vw,2.2rem);border-radius:26px;border:1px solid var(--gold);background:radial-gradient(circle at 15% 0%,rgba(232,200,126,.14),transparent 50%),radial-gradient(circle at 85% 100%,rgba(255,150,200,.12),transparent 55%),linear-gradient(180deg,#141a33,#0a0f1e);text-align:center}
+.respect__k{color:var(--gold-bright);margin:0}
+.respect h2{margin:.5rem 0 1.2rem;font-size:clamp(1.6rem,4.6vw,2.6rem)}
+.respect__cols{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1rem,3vw,2rem);text-align:start}
+.respect__en p,.respect__ur p{font-size:1.02rem;line-height:1.7}
+.respect__ur{font-family:"Noto Nastaliq Urdu","Noto Naskh Arabic",serif;text-align:right}
+.respect__ur p{font-size:1.12rem;line-height:2.25}
+.respect blockquote{margin:.8rem 0;padding:.7rem 1rem;border-inline-start:3px solid var(--gold);background:rgba(232,200,126,.08);border-radius:10px;font-style:italic}
+.respect cite{display:block;margin-top:.25rem;font-size:.82rem;font-style:normal;color:var(--gold-bright)}
+.respect .cta{margin-top:1.4rem;display:inline-flex}
+@media(max-width:760px){.respect__cols{grid-template-columns:1fr}}
 .g3__flash{position:absolute;inset:0;z-index:2;pointer-events:none;background:#eaf4ff;opacity:0}
 .g3__flash.on{animation:g3flash .8s steps(1) forwards}
 @keyframes g3flash{0%{opacity:.95}8%{opacity:.05}16%{opacity:.85}26%{opacity:.1}36%{opacity:.7}50%{opacity:0}62%{opacity:.45}74%{opacity:0}84%{opacity:.25}100%{opacity:0}}
@@ -1082,6 +1104,7 @@ html{scroll-padding-top:70px}
 <div class="ribbon" aria-hidden="true"><div class="ribbon__track" id="ribbon"></div></div>
 
 <!-- Featured hadith: always at the top -->
+<div class="live" id="liveNow" role="status" aria-live="polite" hidden></div>
 <div class="playcta" aria-label="Play Scorpion Street 3D">
   <a class="playcta__btn" href="#scorpion-street-3d">
     <span class="playcta__orb" aria-hidden="true"><i>🦀</i><i>🦂</i><i>🦀</i><i>🦂</i><i>✨</i><i>🦂</i></span>
@@ -1212,6 +1235,28 @@ html{scroll-padding-top:70px}
         </div>
         <p class="fine" data-i18n="pk.fine">WhatsApp uses your internet data, not international call credit, on Jazz, Zong, Telenor or Ufone. Adeel is in Canada, so if he's asleep he'll reply when he wakes, in sha Allah.</p>
       </section>
+
+<section class="respect reveal" id="respect" aria-labelledby="respectH">
+  <p class="up respect__k">☾ For the women of Pakistan · پاکستان کی خواتین کے لیے</p>
+  <h2 id="respectH">Traditional in faith. Never in oppression.</h2>
+  <div class="respect__cols">
+    <div class="respect__en" lang="en">
+      <p>Adeel Ahmed Rahman is <b>not</b> like the men who use "tradition" as an excuse to suffocate the women in their lives, control them, or take away their rights. He loves and honours women: their dignity, their education, their voice, their dreams.</p>
+      <p>And yet he <b>is</b> traditional, in the truest sense: he follows Islam the way it was meant to be followed, the way the Prophet Muhammad ﷺ lived it. The Prophet ﷺ married Khadijah (may Allah be pleased with her), a successful businesswoman. Aisha (may Allah be pleased with her) became one of the greatest scholars of Islam. Islam gave women rights to inheritance, property, consent in marriage and knowledge more than 1,400 years ago.</p>
+      <p>So to the women of Pakistan: you do not need to become like the West to be free, respected or happy. Everything you are looking for is already in the way of the Prophet Muhammad ﷺ, the last and final Messenger of Allah.</p>
+      <blockquote>“The best of you are those who are best to their wives.” <cite>Tirmidhi</cite></blockquote>
+      <blockquote>“Live with them in kindness.” <cite>Qur'an 4:19</cite></blockquote>
+    </div>
+    <div class="respect__ur" lang="ur" dir="rtl">
+      <p>عدیل احمد رحمان اُن مردوں جیسے <b>نہیں</b> جو "روایت" کے نام پر اپنی زندگی کی خواتین کا دم گھونٹتے ہیں، انہیں قابو میں رکھتے ہیں یا ان کے حقوق چھین لیتے ہیں۔ وہ خواتین سے محبت کرتے ہیں اور ان کی عزت کرتے ہیں: ان کا وقار، ان کی تعلیم، ان کی آواز اور ان کے خواب۔</p>
+      <p>اس کے باوجود وہ <b>روایتی</b> ہیں، اصل معنوں میں: وہ اسلام پر اُسی طرح عمل کرتے ہیں جیسے اس پر عمل کیا جانا چاہیے، جیسے نبی کریم حضرت محمد ﷺ نے کر کے دکھایا۔ نبی ﷺ نے حضرت خدیجہؓ سے نکاح کیا جو ایک کامیاب تاجرہ تھیں۔ حضرت عائشہؓ اسلام کی عظیم ترین عالمات میں سے ایک بنیں۔ اسلام نے چودہ سو سال پہلے ہی عورت کو وراثت، جائیداد، نکاح میں رضامندی اور علم کا حق دے دیا تھا۔</p>
+      <p>اس لیے پاکستان کی خواتین سے: آزاد، باعزت یا خوش رہنے کے لیے آپ کو مغرب جیسا بننے کی ضرورت نہیں۔ آپ جو کچھ ڈھونڈ رہی ہیں وہ پہلے ہی اللہ کے آخری نبی حضرت محمد ﷺ کے طریقے میں موجود ہے۔</p>
+      <blockquote>”تم میں سب سے بہتر وہ ہے جو اپنی بیوی کے لیے سب سے بہتر ہو۔“ <cite>ترمذی</cite></blockquote>
+      <blockquote>”اور ان کے ساتھ بھلے طریقے سے زندگی بسر کرو۔“ <cite>سورۃ النساء 4:19</cite></blockquote>
+    </div>
+  </div>
+  <a class="cta js-wa" data-wa="ur" href="https://wa.me/16134083945" target="_blank" rel="noopener"><span>WhatsApp · بات کریں</span></a>
+</section>
 
       <h3 class="reveal" data-i18n="get.h">What you'll <em>walk away with</em></h3>
       <ul class="ticks reveal">
@@ -1675,12 +1720,13 @@ html{scroll-padding-top:70px}
   <a class="cta js-want" href="https://wa.me/16134083945" target="_blank" rel="noopener"><span data-i18n="cta">I want this so badly</span></a>
 </div></div>
 
-<script src="coach/i18n.js?v=27"></script>
+<script src="coach/i18n.js?v=28"></script>
 <script src="coach/library.js?v=2"></script>
 <script src="coach/featured.js?v=1"></script>
 <script src="coach/popups.js?v=2"></script>
 <script src="coach/exit.js?v=3"></script>
-<script src="coach/config.js?v=3"></script>
+<script src="coach/config.js?v=4"></script>
+<script src="coach/live.js?v=1" defer></script>
 <script src="coach/chat.js?v=1"></script>
 <script src="coach/reminder.js?v=4"></script>
 <script src="coach/numbers.js?v=3"></script>

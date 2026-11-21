@@ -19,5 +19,10 @@ window.COACH = {
 
   // Live posting on the forum page (GitHub Discussions via giscus).
   // Fill these four from https://giscus.app after enabling Discussions; leave blank to keep it off.
-  giscus: { repo: "crabbyai/mus", repoId: "", category: "Forum", categoryId: "" }
+  giscus: { repo: "crabbyai/mus", repoId: "", category: "Forum", categoryId: "" },
+
+  // Live viewer count ("12 people viewing now · 🇵🇰 Pakistan 5 · 🇨🇦 Canada 3").
+  // Create a free Firebase Realtime Database (steps in HOSTING.md) and paste its link here,
+  // e.g. "https://your-project-default-rtdb.firebaseio.com". Leave blank to keep it hidden.
+  live: { databaseURL: "" }
 };
