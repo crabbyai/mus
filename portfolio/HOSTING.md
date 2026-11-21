@@ -71,3 +71,36 @@ GitHub Action (`.github/workflows/market-feed.yml`). On other hosts that don't
 run that action, the section simply shows the last saved listings — still fine,
 just not auto-updating. To keep auto-updates, keep the site on GitHub Pages or
 re-create that scheduled job on your new host.
+
+
+## Live viewer count (optional, free)
+
+The coach page can show a real "people viewing now" count with the countries they're in.
+It needs a free Firebase Realtime Database; until you add one, the widget stays hidden.
+
+1. Go to https://console.firebase.google.com, click **Add project**, give it any name (Google Analytics can be off).
+2. In the left menu open **Build → Realtime Database → Create database**. Pick a location, choose **Start in locked mode**.
+3. Open the **Rules** tab, paste the rules below and click **Publish**:
+
+```json
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "presence": {
+      ".read": true,
+      ".write": true,
+      "$id": {
+        ".validate": "$id.length <= 24 && (!newData.exists() || (newData.hasChildren(['t']) && newData.child('t').val() == now && (!newData.child('c').exists() || newData.child('c').val().length <= 2)))"
+      }
+    }
+  }
+}
+```
+
+4. Copy the database link shown at the top of the **Data** tab (it looks like `https://your-project-default-rtdb.firebaseio.com`).
+5. Paste it into `coach/config.js` as `live: { databaseURL: "https://…" }`, commit and push.
+
+How it counts: each open tab checks in every 25 seconds and counts as "viewing" for 70 seconds.
+Countries come from each visitor's time zone, so no IP addresses are sent anywhere. Only a
+random tab id, a two-letter country code and a timestamp are stored, and old entries are cleaned up automatically.

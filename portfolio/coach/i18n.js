@@ -2101,7 +2101,7 @@
   phs.forEach(function (el) { EN[el.getAttribute("data-i18n-ph")] = el.getAttribute("placeholder"); });
 
   /* ---- "Sunni" switch: set SHOW_SUNNI to true to bring the word back everywhere on the page ---- */
-  var SHOW_SUNNI = false;
+  var SHOW_SUNNI = true;
   var SUNNI_RX = [
     [/\bSunni Islam\b/g, "Islam"], [/\bSunni\s+/gi, ""],                       // English
     [/\s+sunnites?\b/gi, ""],                                                   // French
