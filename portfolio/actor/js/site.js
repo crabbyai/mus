@@ -186,6 +186,7 @@
       f.get("details") ? "Details: " + f.get("details") : ""
     ].filter(Boolean);
     window.open("https://wa.me/16134083945?text=" + encodeURIComponent(lines.join("\n")), "_blank", "noopener");
+    if (date) offerCalendar(`${f.get("format")} — Adeel Rahman (${f.get("project")})`, date, null, [f.get("role"), f.get("sides"), f.get("details")].filter(Boolean).join(" · "));
   });
 
   /* ---------- photo lightbox: any photo, whole, full size ---------- */
@@ -313,6 +314,166 @@
     installEvent = null;
     installBtn.hidden = true;
   });
+
+  /* ---------- small helpers for the booking forms ---------- */
+  const WA = "https://wa.me/16134083945?text=";
+  const niceDate = (d) => d ? new Date(d + "T12:00:00").toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric" }) : "";
+  const icsDay = (d) => d.replace(/-/g, "");
+  const nextDay = (d) => { const t = new Date(d + "T12:00:00"); t.setDate(t.getDate() + 1); return t.toISOString().slice(0, 10); };
+  // Offer an all-day calendar entry for whatever was just booked, built here in the browser.
+  function offerCalendar(title, from, to, note) {
+    const box = $("bookCal"), a = $("bookCalLink");
+    if (!box || !a || !from) return;
+    const esc = (t) => String(t).replace(/[\\,;]/g, (c) => "\\" + c).replace(/\n/g, "\\n");
+    const ics = [
+      "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Adeel Rahman//Bookings//EN", "BEGIN:VEVENT",
+      "UID:" + Date.now() + "@adeel-rahman", "DTSTAMP:" + new Date().toISOString().replace(/[-:]/g, "").slice(0, 15) + "Z",
+      "DTSTART;VALUE=DATE:" + icsDay(from), "DTEND;VALUE=DATE:" + icsDay(nextDay(to || from)),
+      "SUMMARY:" + esc(title), "DESCRIPTION:" + esc(note + "\nAdeel Rahman · WhatsApp +1 613 408 3945"), "END:VEVENT", "END:VCALENDAR"
+    ].join("\r\n");
+    a.href = "data:text/calendar;charset=utf-8," + encodeURIComponent(ics);
+    box.hidden = false;
+  }
+  const sendWa = (lines) => window.open(WA + encodeURIComponent(lines.filter(Boolean).join("\n")), "_blank", "noopener");
+
+  /* ---------- booking tabs ---------- */
+  const tabs = Array.from(document.querySelectorAll(".book__tab"));
+  const selectTab = (t, focus) => {
+    tabs.forEach((x) => {
+      const on = x === t;
+      x.classList.toggle("is-active", on);
+      x.setAttribute("aria-selected", on);
+      x.tabIndex = on ? 0 : -1;
+      $(x.getAttribute("aria-controls")).hidden = !on;
+    });
+    if (focus) t.focus();
+  };
+  tabs.forEach((t, i) => {
+    t.addEventListener("click", () => selectTab(t));
+    t.addEventListener("keydown", (e) => {
+      const d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+      if (d) { e.preventDefault(); selectTab(tabs[(i + d + tabs.length) % tabs.length], true); }
+    });
+  });
+
+  const hold = $("holdForm");
+  if (hold) hold.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const f = new FormData(hold);
+    const from = f.get("from"), to = f.get("to") < from ? from : f.get("to");
+    sendWa(["Hello Adeel, I'd like to hold your dates.", "Name: " + f.get("name"), f.get("project") ? "Project: " + f.get("project") : "",
+      "Hold: " + f.get("option"), "Dates: " + niceDate(from) + (to !== from ? " – " + niceDate(to) : ""), "Location: " + f.get("city"),
+      f.get("notes") ? "Notes: " + f.get("notes") : ""]);
+    offerCalendar(`${f.get("option")} — Adeel Rahman${f.get("project") ? " (" + f.get("project") + ")" : ""}`, from, to, "Hold requested on WhatsApp. " + (f.get("notes") || ""));
+  });
+
+  const brand = $("brandForm");
+  if (brand) brand.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const f = new FormData(brand);
+    const needs = f.getAll("need");
+    sendWa(["Hello Adeel, a brand enquiry.", "Name: " + f.get("name"), "Brand / agency: " + f.get("brand"), needs.length ? "Looking for: " + needs.join(", ") : "",
+      f.get("date") ? "Date: " + niceDate(f.get("date")) : "", "Market: " + f.get("market"), f.get("notes") ? "Brief: " + f.get("notes") : ""]);
+    if (f.get("date")) offerCalendar(`${f.get("brand")} × Adeel Rahman`, f.get("date"), null, needs.join(", "));
+  });
+
+  /* ---------- 30-second profile ---------- */
+  const quick = $("quick");
+  if (quick) {
+    let opener = null;
+    const openQ = (from) => {
+      opener = from || null;
+      quick.classList.add("is-open");
+      quick.setAttribute("aria-hidden", "false");
+      document.documentElement.style.overflow = "hidden";
+      if (lenis) lenis.stop();
+      closeMenu();
+      $("quickClose").focus({ preventScroll: true });
+    };
+    const closeQ = (restore) => {
+      if (!quick.classList.contains("is-open")) return;
+      quick.classList.remove("is-open");
+      quick.setAttribute("aria-hidden", "true");
+      document.documentElement.style.overflow = "";
+      if (lenis) lenis.start();
+      if (restore !== false && opener && document.contains(opener)) opener.focus({ preventScroll: true });
+    };
+    document.addEventListener("click", (e) => {
+      const o = e.target.closest("[data-quick-open]");
+      if (o) { e.preventDefault(); openQ(o); return; }
+      if (e.target === quick || e.target.closest("#quickClose")) { closeQ(); return; }
+      const go = e.target.closest("[data-quick-close]");
+      if (go) {
+        // Smooth scroll is paused while the dialog is open, so close first, then scroll ourselves.
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        closeQ(false);
+        const target = document.querySelector(go.getAttribute("href"));
+        if (target) requestAnimationFrame(() => {
+          if (lenis) lenis.scrollTo(target, { offset: -70 });
+          else target.scrollIntoView({ behavior: REDUCED ? "auto" : "smooth" });
+        });
+      }
+    });
+    document.addEventListener("keydown", (e) => {
+      if (!quick.classList.contains("is-open")) return;
+      if (e.key === "Escape") { closeQ(); return; }
+      if (e.key === "Tab") {
+        const f = quick.querySelectorAll("a[href], button"), first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    });
+    // Print the comp card from here: the dialog has to be out of the way first.
+    window.addEventListener("beforeprint", () => closeQ(false));
+  }
+
+  /* ---------- share this profile: QR, copy, WhatsApp ---------- */
+  const qrBox = $("shareQr");
+  if (qrBox) {
+    const canonical = (document.querySelector('link[rel="canonical"]') || {}).href || location.href.split("#")[0];
+    $("shareUrl").textContent = canonical.replace(/^https?:\/\//, "");
+    $("shareWa").href = "https://wa.me/?text=" + encodeURIComponent("Adeel Rahman — Canadian-born actor, MBA. Profile, photos and comp card: " + canonical);
+    $("shareCopy").addEventListener("click", (e) => {
+      const b = e.currentTarget;
+      const done = () => { b.textContent = "Link copied ✓"; setTimeout(() => { b.textContent = "Copy link"; }, 2200); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(canonical).then(done, () => { b.textContent = canonical; });
+      else b.textContent = canonical;
+    });
+    if (typeof qrcode === "function") {
+      const qr = qrcode(0, "M");
+      qr.addData(canonical);
+      qr.make();
+      const n = qr.getModuleCount(), quiet = 4, size = n + quiet * 2;
+      let path = "";
+      for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (qr.isDark(r, c)) path += `M${c + quiet},${r + quiet}h1v1h-1z`;
+      qrBox.innerHTML = `<svg viewBox="0 0 ${size} ${size}" shape-rendering="crispEdges" aria-hidden="true"><rect width="${size}" height="${size}" fill="#fff"/><path d="${path}" fill="#0a0f1e"/></svg>`;
+      // A crisp PNG for print: 16 px per module.
+      const px = 16, cv = document.createElement("canvas");
+      cv.width = cv.height = size * px;
+      const g = cv.getContext("2d");
+      g.fillStyle = "#fff"; g.fillRect(0, 0, cv.width, cv.height);
+      g.fillStyle = "#0a0f1e";
+      for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (qr.isDark(r, c)) g.fillRect((c + quiet) * px, (r + quiet) * px, px, px);
+      $("shareQrDl").href = cv.toDataURL("image/png");
+    } else {
+      $("share").querySelector(".share__qr").hidden = true;
+      $("shareQrDl").hidden = true;
+    }
+  }
+
+  /* ---------- private visitor analytics (Cloudflare Web Analytics) ----------
+     Loads only when a site token is set in the cf-beacon-token meta tag. No
+     cookies, nothing shown on the page; the numbers live in the owner's
+     Cloudflare dashboard. */
+  const cfToken = ((document.querySelector('meta[name="cf-beacon-token"]') || {}).content || "").trim();
+  if (/^[a-f0-9]{32}$/i.test(cfToken)) {
+    const s = document.createElement("script");
+    s.defer = true;
+    s.src = "https://static.cloudflareinsights.com/beacon.min.js";
+    s.setAttribute("data-cf-beacon", JSON.stringify({ token: cfToken, spa: true }));
+    document.head.appendChild(s);
+  }
 
   const year = $("year");
   if (year) year.textContent = new Date().getFullYear();
