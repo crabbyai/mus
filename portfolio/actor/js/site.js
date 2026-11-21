@@ -462,6 +462,19 @@
     }
   }
 
+  /* ---------- private visitor analytics (Cloudflare Web Analytics) ----------
+     Loads only when a site token is set in the cf-beacon-token meta tag. No
+     cookies, nothing shown on the page; the numbers live in the owner's
+     Cloudflare dashboard. */
+  const cfToken = ((document.querySelector('meta[name="cf-beacon-token"]') || {}).content || "").trim();
+  if (/^[a-f0-9]{32}$/i.test(cfToken)) {
+    const s = document.createElement("script");
+    s.defer = true;
+    s.src = "https://static.cloudflareinsights.com/beacon.min.js";
+    s.setAttribute("data-cf-beacon", JSON.stringify({ token: cfToken, spa: true }));
+    document.head.appendChild(s);
+  }
+
   const year = $("year");
   if (year) year.textContent = new Date().getFullYear();
 })();

@@ -30,6 +30,13 @@ const SITE = path.join(ROOT, "portfolio/actor");
 const OUT = path.join(SITE, "data/dramas.json");
 const PICKS = path.join(SITE, "data/drama-picks.json");
 const SITE_URL = "https://crabbyai.github.io/mus/actor/";
+// Cloudflare Web Analytics token, taken from the homepage's cf-beacon-token meta tag.
+const CF_TOKEN = (() => {
+  try {
+    const t = (fs.readFileSync(path.join(SITE, "index.html"), "utf8").match(/<meta name="cf-beacon-token" content="([^"]*)"/) || [])[1] || "";
+    return /^[a-f0-9]{32}$/i.test(t.trim()) ? t.trim() : "";
+  } catch { return ""; }
+})();
 
 const CHANNELS = [
   { key: "ary",   name: "ARY Digital",         handle: "@ARYDigitalasia",       id: "UC4JCksJF76g_MdzPVBJoC3Q" },
@@ -287,7 +294,7 @@ function dramaPage(d, ch) {
 <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg" />
 <link rel="stylesheet" href="../../css/fonts.css" />
 <link rel="stylesheet" href="../css/watch.css" />
-<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, "\\u003c")}</script>
+${CF_TOKEN ? `<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "${CF_TOKEN}"}'></script>\n` : ""}<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, "\\u003c")}</script>
 </head>
 <body>
 <header class="w-nav"><a href="../">← Adeel Rahman · Actor</a><a href="../#dramas">All dramas</a></header>
