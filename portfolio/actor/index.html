@@ -63,7 +63,7 @@
 <link rel="stylesheet" href="../css/style.css?v=75" />
 <link rel="stylesheet" href="../css/enhance.css" />
 <link rel="stylesheet" href="../css/upgrade.css?v=3" />
-<link rel="stylesheet" href="css/dramas.css?v=13" />
+<link rel="stylesheet" href="css/dramas.css?v=14" />
 </head>
 <body>
 
@@ -765,10 +765,11 @@
           <button type="button" role="tab" class="book__tab" id="tabHold" aria-selected="false" aria-controls="holdForm" tabindex="-1">📅 Hold my dates</button>
           <button type="button" role="tab" class="book__tab" id="tabBrand" aria-selected="false" aria-controls="brandForm" tabindex="-1">✨ Brand deal</button>
         </div>
-      <form class="lead book__panel" id="leadForm" role="tabpanel" aria-labelledby="tabAudition">
+      <form class="lead book__panel" id="leadForm" data-inbox="actor:audition" role="tabpanel" aria-labelledby="tabAudition">
         <p class="lead__title">Book an audition or make an offer — it opens in WhatsApp, ready to send:</p>
         <div class="lead__grid">
           <input name="name" placeholder="Your name / production house" aria-label="Your name or production house" required />
+          <input name="phone" type="tel" placeholder="Your WhatsApp / phone" aria-label="Your WhatsApp or phone number" autocomplete="tel" />
           <select name="project" aria-label="Type of project">
             <option>Drama serial</option><option>Film</option><option>TVC / commercial</option><option>Web series</option><option>Theatre</option><option>Voice-over</option><option>Brand / press appearance</option><option>Other</option>
           </select>
@@ -780,14 +781,16 @@
           </select>
           <label class="lead__date"><span>Audition or shoot date</span><input name="date" type="date" /></label>
           <input name="sides" type="url" placeholder="Link to script / sides (optional)" aria-label="Link to script or sides" />
+          <label class="lead__file lead__wide"><span>Attach the script or sides (PDF or Word, up to 15 MB)</span><input name="file" type="file" accept=".pdf,.doc,.docx,.txt,application/pdf" /></label>
           <input name="details" class="lead__wide" placeholder="Character, shoot dates, anything else" aria-label="Character and shoot details" />
         </div>
         <button type="submit" class="btn btn--wa">Book on WhatsApp</button>
       </form>
-      <form class="lead book__panel" id="holdForm" role="tabpanel" aria-labelledby="tabHold" hidden>
+      <form class="lead book__panel" id="holdForm" data-inbox="actor:hold" role="tabpanel" aria-labelledby="tabHold" hidden>
         <p class="lead__title">Pencil me in. A first-option hold keeps the dates for you until you confirm:</p>
         <div class="lead__grid">
           <input name="name" placeholder="Your name / production house" aria-label="Your name or production house" required />
+          <input name="phone" type="tel" placeholder="Your WhatsApp / phone" aria-label="Your WhatsApp or phone number" autocomplete="tel" />
           <input name="project" placeholder="Project title (working title is fine)" aria-label="Project title" />
           <label class="lead__date"><span>From</span><input name="from" type="date" required /></label>
           <label class="lead__date"><span>To</span><input name="to" type="date" required /></label>
@@ -801,10 +804,11 @@
         </div>
         <button type="submit" class="btn btn--wa">Request the hold on WhatsApp</button>
       </form>
-      <form class="lead book__panel" id="brandForm" role="tabpanel" aria-labelledby="tabBrand" hidden>
+      <form class="lead book__panel" id="brandForm" data-inbox="actor:brand" role="tabpanel" aria-labelledby="tabBrand" hidden>
         <p class="lead__title">TVCs, integrations, launches and ambassador work — tell me about the brand:</p>
         <div class="lead__grid">
           <input name="name" placeholder="Your name" aria-label="Your name" required />
+          <input name="phone" type="tel" placeholder="Your WhatsApp / phone" aria-label="Your WhatsApp or phone number" autocomplete="tel" />
           <input name="brand" placeholder="Brand / agency" aria-label="Brand or agency" required />
           <fieldset class="lead__checks lead__wide">
             <legend>What do you need?</legend>
@@ -962,7 +966,8 @@
 <script src="../js/vendor/ScrollTrigger.min.js"></script>
 <script src="../js/vendor/lenis.min.js"></script>
 <script src="js/vendor/qrcode.js"></script>
-<script src="js/site.js?v=11"></script>
+<script src="js/site.js?v=12"></script>
+<script src="../shared/inbox.js?v=1" defer></script>
 <script src="js/dramas.js?v=4" defer></script>
 <script>
   if ("serviceWorker" in navigator) {

@@ -519,3 +519,8 @@ button.hero__link { font: inherit; background: none; border: 0; padding: 0; curs
   .share__actions { justify-content: center; }
 }
 @media print { html.print-comp .quick { display: none !important; } }
+
+/* script / sides attachment on the audition form */
+.lead__file { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-align: left; }
+.lead__file input { font-size: 0.82rem; padding: 0.55rem; color-scheme: dark; }
+.lead__saved { margin-top: 0.6rem; font-size: 0.8rem; color: #8fe0af; text-align: center; }

@@ -13,7 +13,7 @@ window.addEventListener("click",function(e){if(e.defaultPrevented||e.button!==0|
 </script>
 <!-- CSP for hosts that cannot send headers (GitHub Pages). Netlify gets the
      full policy incl. frame-ancestors via _headers. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https:; media-src 'self' https:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; font-src 'self' data:; connect-src 'self' https:; frame-src https://www.google.com https://maps.google.com https://www.youtube.com https://www.youtube-nocookie.com; base-uri 'self'; form-action 'self' https://wa.me; object-src 'none'" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https:; media-src 'self' https:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; font-src 'self' data:; connect-src 'self' https:; frame-src https://www.google.com https://maps.google.com https://www.youtube.com https://www.youtube-nocookie.com; base-uri 'self'; form-action 'self' https://wa.me; object-src 'none'" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Best Real Estate Agent in Islamabad & Lahore — Adeel Rahman, MBA | Buy or Sell in DHA, Bahria Town, Gulberg</title>
 <meta name="description" content="Looking for a trusted real estate agent in Islamabad or Lahore? Adeel Rahman, MBA (Carleton University, Canada) has sold 120+ homes across DHA, Bahria Town, Gulberg, F-7 & Model Town. Written 3% commission, free valuation, overseas Pakistanis served via power of attorney. Sell your house fast or buy a 5 Marla to 2 Kanal home with MBA-grade negotiation." />
@@ -1321,7 +1321,7 @@ window.addEventListener("click",function(e){if(e.defaultPrevented||e.button!==0|
           <li>✓ Delivered straight to your WhatsApp</li>
         </ul>
       </div>
-      <form class="alerts__form" id="alertForm">
+      <form class="alerts__form" id="alertForm" data-inbox="realtor:alerts">
         <div class="alerts__grid">
           <label>Name<input name="name" placeholder="Your name" required /></label>
           <label>City
@@ -1731,7 +1731,7 @@ window.addEventListener("click",function(e){if(e.defaultPrevented||e.button!==0|
           <li>✓ Video call available for any timezone</li>
         </ul>
       </div>
-      <form class="booking__form" id="bookForm">
+      <form class="booking__form" id="bookForm" data-inbox="realtor:viewing">
         <div class="booking__grid">
           <label>Your name<input name="name" placeholder="e.g. Adeel Rahman" required /></label>
           <label>Phone / WhatsApp<input name="phone" placeholder="+92 / +44 / +1 …" /></label>
@@ -1779,7 +1779,7 @@ window.addEventListener("click",function(e){if(e.defaultPrevented||e.button!==0|
         <a class="btn btn--gold" href="mailto:adeelahmedrahman@gmail.com" data-magnetic>adeelahmedrahman@gmail.com</a>
         <a class="btn btn--ghost" href="tel:+16134083945" data-magnetic>+1 613 408 3945</a>
       </div>
-      <form class="lead" id="leadForm">
+      <form class="lead" id="leadForm" data-inbox="realtor:enquiry">
         <p class="lead__title">Or tell me what you're looking for — I'll reply on WhatsApp:</p>
         <div class="lead__grid">
           <input name="name" placeholder="Your name" required />
@@ -1902,7 +1902,7 @@ window.addEventListener("click",function(e){if(e.defaultPrevented||e.button!==0|
     <p class="section-eyebrow">Before You Go</p>
     <h3 class="exit-popup__title" id="exitPopupTitle">Get a <em class="gold-italic">free valuation</em><br>in 60 seconds</h3>
     <p class="exit-popup__sub">No cost, no commitment — just honest market intel from an MBA who works the data every single day.</p>
-    <form class="exit-popup__form" id="exitForm">
+    <form class="exit-popup__form" id="exitForm" data-inbox="realtor:exit">
       <input name="name" placeholder="Your name" required autocomplete="name" />
       <input name="phone" type="tel" placeholder="WhatsApp number (+92 / +44 / +1…)" required autocomplete="tel" />
       <select name="intent" aria-label="What you need help with">
@@ -1979,5 +1979,7 @@ window.addEventListener("click",function(e){if(e.defaultPrevented||e.button!==0|
     });
   }
 </script>
+<script src="shared/inbox.js?v=1" defer></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "4330d6b7cb40476e8495fe81a3a61c58"}'></script>
 </body>
 </html>
