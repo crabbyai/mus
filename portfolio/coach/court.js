@@ -104,6 +104,7 @@
 @keyframes mlpop{to{opacity:1;transform:scale(1)}}\
 @keyframes mlout{from{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(.9) translateY(-14px)}}\
 .ml__joke{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);text-align:center;font:900 clamp(1.6rem,6vw,3.2rem) Georgia,serif;color:#ffe7a3;text-shadow:0 0 20px rgba(255,200,90,.7)}\
+.ml__moral{display:block;margin-top:1rem;font:700 clamp(.9rem,3vw,1.2rem)/1.4 system-ui,sans-serif;color:#ffd6ea}\
 .ml__stamp{display:inline-block;margin-top:1rem;border:5px solid #ff4a3a;color:#ff4a3a;padding:.2rem .9rem;border-radius:10px;font:900 clamp(1rem,4vw,1.8rem) system-ui,sans-serif;letter-spacing:.08em;transform:rotate(-7deg) scale(2);opacity:0;animation:ctstamp2 .4s .8s ease-in forwards}\
 @keyframes ctstamp2{to{opacity:1;transform:rotate(-7deg) scale(1)}}\
 .wh{position:absolute;inset:0;z-index:9;pointer-events:none;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 6%;animation:whin 3.6s ease forwards}\
@@ -187,13 +188,14 @@
       ['ct--gift', '<div class="ct__end">' + P.umrah + '<b>🕋 622 · Umrah</b></div>', ""],
       ['ct--end', '<div class="ct__end">' + t.c5 + '<span class="ct__pp">' + t.pp + "</span><b>⚖️ AL-ʿADL · AL-ḤAKAM</b></div>", ""],
       ['ct--holy', '<div class="ct__holy">' + holySVG(t) + '<span class="ct__lh" lang="ar">لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِٱللَّهِ</span></div>', t.c6 + " · " + t.end],
+      ['ct--end', '<div class="qy__dua mor"><b>📜 The moral of Scorpion Street</b>Every humiliation in this story began with greed: wanting more, more and more, and chasing the lifestyle of the West instead of being grateful for what Allah had already given.<em>“Richness is not having many possessions; real richness is the richness of the soul.” (Bukhari & Muslim)</em><em>Contentment (qanāʿah) is the true wealth. Be yourself, be grateful, and turn to Allah.</em></div>', ""],
       ['ct--akbar', '<div class="ak"><b lang="ar">اللهُ أَكْبَر</b><span>Allahu Akbar</span></div>', ""]
     ];
     box.innerHTML = scenes.map(function (s) { return '<div class="ct__scene ' + s[0] + '">' + s[1] + (s[2] ? '<p class="ct__cap">' + s[2] + "</p>" : "") + "</div>"; }).join("") +
       '<button type="button" class="ct__skip">' + t.skip + ' ✕</button><button type="button" class="ct__back">' + t.back + "</button>";
     document.body.appendChild(box);
     var els = box.querySelectorAll(".ct__scene"), i = -1, timer = 0, back = box.querySelector(".ct__back");
-    var DUR = [4200, 4200, 4600, 5200, 6000, 6500, 6500, 7000, 5000];
+    var DUR = [4200, 4200, 4600, 5200, 6000, 6500, 6500, 7000, 8000, 5000];
     function finish() { clearTimeout(timer); box.remove(); busy = false; document.removeEventListener("keydown", onKey); if (done) done(); }
     function next() {
       if (i >= 0) els[i].classList.remove("on");
@@ -228,7 +230,7 @@
     });
     box.innerHTML = '<div class="ct__scene ct--mall on"><div class="ml__name">🛍️ ' + name + '</div><div class="ml__lvl">' + m.lvl + " " + (lv + 1) + '</div><div class="ml__bldg">' + html + "</div>" +
       '<div class="ml__cast">' + suit("🦂", "👸?", false) + suit("🦀", "🤴 👑", true) + "</div>" + bubbles + '<p class="ct__cap">' + m.pause + " " + m.spree + "</p></div>" +
-      '<div class="ct__scene ct--end"><div class="ml__joke">' + m.joke + '<br><span class="ml__stamp">' + m.hum + " 😳</span></div><p class=\"ct__cap\">" + m.back + "</p></div>" +
+      '<div class="ct__scene ct--end"><div class="ml__joke">' + m.joke + '<br><span class="ml__stamp">' + m.hum + " 😳</span><small class=\"ml__moral\">Greed and imitating the West’s lifestyle only leave you empty. 🛍️❌</small></span></div><p class=\"ct__cap\">" + m.back + "</p></div>" +
       '<button type="button" class="ct__skip">' + tx().skip + " ✕</button>";
     document.body.appendChild(box);
     var sc = box.querySelectorAll(".ct__scene"), timer;
@@ -276,6 +278,7 @@
 @keyframes qyWalk{to{left:44%}}\
 .qy__dua{max-width:700px;padding:0 6%;text-align:center;font:600 clamp(1.05rem,3.6vw,1.5rem)/1.55 Georgia,serif;color:#fff6d8}\
 .qy__dua b{display:block;font:700 clamp(1.6rem,5vw,2.4rem) "Aref Ruqaa","Noto Naskh Arabic",serif;color:#ffe7a3;margin-bottom:.6rem}\
+.mor b{font-family:Georgia,serif!important;font-size:clamp(1.3rem,4.4vw,2rem)!important}\
 .qy__dua em{display:block;margin-top:.9rem;font-style:normal;font-size:.85em;color:#ffd6ea}\
 .qy__pair{display:flex;justify-content:center;gap:1rem;margin-top:.8rem;font-size:clamp(2rem,6vw,3rem)}\
 .qy--throne{background:linear-gradient(180deg,#fffef5 0,#fff3c4 30%,#c9a45c 62%,#3a2408 100%)}\
@@ -319,12 +322,13 @@
       ["ct--end", '<div class="qy__dua"><b>يَا رَبّ</b>“O Allah, make these scorpios my wives in Jannat al-Firdaus, as they were in the dunya.” 🤲<div class="qy__pair"><span>👸🦂</span><span>🦀👑</span><span>🦂👸</span></div><em>With Adeel Ahmed Rahman, the crab, in Jannat al-Firdaus, إن شاء الله</em></div>', ""],
       ["qy--jannah", '<div class="qy__roses"><b>🌹 12 roses for each wife, from Adeel 🌹</b><div class=\"qy__wife\"><span>👸</span><div>🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹</div></div><div class=\"qy__wife\"><span>👸</span><div>🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹</div></div><div class=\"qy__wife\"><span>👸</span><div>🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹</div></div><div class=\"qy__wife\"><span>👸</span><div>🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹</div></div><div class=\"qy__wife\"><span>👸🦂</span><div>🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹</div></div><div class=\"qy__wife\"><span>👸🦂</span><div>🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹</div></div></div>', "🦀 In the final scene, Adeel gives each of his wives twelve roses."],
       ["ct--end", '<div class="qy__dua"><b>آمِين</b>Ameen. Only Allah knows who will enter Jannah. We ask Him for al-Firdaus, for ourselves and for everyone. And Allah knows best.</div>', ""],
+      ['ct--end', '<div class="qy__dua mor"><b>📜 The moral of Scorpion Street</b>Every humiliation in this story began with greed: wanting more, more and more, and chasing the lifestyle of the West instead of being grateful for what Allah had already given.<em>“Richness is not having many possessions; real richness is the richness of the soul.” (Bukhari & Muslim)</em><em>Contentment (qanāʿah) is the true wealth. Be yourself, be grateful, and turn to Allah.</em></div>', ""],
       ['ct--akbar', '<div class="ak"><b lang="ar">اللهُ أَكْبَر</b><span>Allahu Akbar</span></div>', ""]
     ];
     box.innerHTML = S.map(function (s3) { return '<div class="ct__scene ' + s3[0] + '">' + s3[1] + (s3[2] ? '<p class="ct__cap">' + s3[2] + "</p>" : "") + "</div>"; }).join("") +
       '<button type="button" class="ct__back">' + tx().back + "</button>";   // the Day of Judgement cannot be skipped
     document.body.appendChild(box);
-    var els = box.querySelectorAll(".ct__scene"), i = -1, timer = 0, back = box.querySelector(".ct__back"), DUR = [5500, 6500, 6000, 8000, 7500, 7000, 6500, 5000];
+    var els = box.querySelectorAll(".ct__scene"), i = -1, timer = 0, back = box.querySelector(".ct__back"), DUR = [5500, 6500, 6000, 8000, 7500, 7000, 6500, 8000, 5000];
     function finish() { clearTimeout(timer); box.remove(); busy = false; document.removeEventListener("keydown", onKey); if (done) done(); }
     function next() { if (i >= 0) els[i].classList.remove("on"); i++; if (i >= els.length) { finish(); return; } els[i].classList.add("on"); if (i === els.length - 1) { back.classList.add("on"); back.focus(); } timer = setTimeout(next, DUR[i]); }
     function onKey() {}
