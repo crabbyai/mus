@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Community Forum — Adeel Ahmed Rahman · Ask Any Question</title>
+<meta name="description" content="Ask any question about dua, dhikr, protection, marriage, rizq and healing. Adeel Ahmed Rahman's community forum, for therapists, doctors, lawyers, mothers and first responders.">
+<meta name="theme-color" content="#0a0f1e">
+<meta name="robots" content="index, follow, noai, noimageai">
+<meta name="tdm-reservation" content="1">
+<meta name="tdm-policy" content="https://crabbyai.github.io/mus/ai.txt">
+<link rel="canonical" href="https://crabbyai.github.io/mus/forum.html">
+<meta property="og:title" content="Ask Any Question — Adeel Ahmed Rahman's Forum">
+<meta property="og:image" content="https://crabbyai.github.io/mus/coach/assets/lobby-2.jpg">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/fonts.css">
+<link rel="stylesheet" href="coach/pages.css?v=1">
+</head>
+<body>
+<header class="topbar"><div class="topbar__in">
+  <a class="brand" href="./">☾ Adeel Ahmed Rahman · 622</a>
+  <nav class="sites" aria-label="Pages"><a href="./">Home</a><a href="library.html">Library</a><a href="course.html">Course</a><a href="forum.html" aria-current="page">Forum</a></nav>
+</div></header>
+
+<main class="wrap">
+  <section class="hero">
+    <span class="k up">Community forum · Adeel Ahmed Rahman</span>
+    <h1>Ask any question. <em>Any time.</em></h1>
+    <p>You don't have to worry about Adeel being too busy. Ask here about dua, dhikr, protection, marriage, rizq, healing or anything on your heart, and read what others have already asked.</p>
+    <p class="fine">🤍 Open to everyone, of every background. Focused on people who are already Muslim.</p>
+    <div class="who"><span>Therapists</span><span>Doctors</span><span>Lawyers</span><span>Mothers</span><span>First responders</span><span>Everyone</span></div>
+  </section>
+
+  <div class="fh-card" data-featured="card"></div>
+
+  <!-- ask -->
+  <section class="card card--gold" id="ask" style="margin-top:2rem">
+    <h2 style="margin-top:0">Ask your question</h2>
+    <form id="askForm" novalidate>
+      <div class="grid2" style="gap:.6rem">
+        <label class="field"><span>Your name (optional)</span><input name="name" autocomplete="given-name" placeholder="Or leave blank to stay anonymous"></label>
+        <label class="field"><span>Topic</span><select name="cat" id="askCat"></select></label>
+      </div>
+      <label class="field"><span>Your question</span><textarea name="q" required placeholder="Ask anything. Urdu, Roman Urdu and English are all fine."></textarea></label>
+      <p class="err" id="askErr" role="alert"></p>
+      <button class="cta" type="submit">Send my question to Adeel</button>
+      <p class="fine">Your question goes privately to Adeel Ahmed Rahman's WhatsApp (@PakistaniMangoes). With your permission, he may answer it here for everyone, without your name.</p>
+    </form>
+  </section>
+
+  <!-- live discussion: Skool and/or GitHub Discussions, switched on in coach/config.js -->
+  <section id="live">
+    <h2>Join the conversation</h2>
+    <div class="live" id="liveBox"></div>
+  </section>
+
+  <!-- answered -->
+  <section id="answered">
+    <h2>Answered questions</h2>
+    <div class="cats" id="cats" role="group" aria-label="Filter by topic"></div>
+    <div class="search"><input id="q" type="search" placeholder="Search questions… e.g. evil eye, spouse, rizq" aria-label="Search questions"></div>
+    <div class="threads" id="threads"></div>
+  </section>
+
+  <section>
+    <h2>Forum guidelines</h2>
+    <ul class="ticks">
+      <li>Speak with adab. Disagree kindly, never mock anyone's struggle.</li>
+      <li>Only Allah is God and all power is His. No fortune-telling, amulets or new-age claims.</li>
+      <li>Protect privacy: don't share anyone's name, address or story without permission.</li>
+      <li>Answers here are spiritual guidance, not medical, legal or psychological advice. Keep seeing your doctor, lawyer or therapist.</li>
+      <li>In crisis? Call or text 988 (Canada and US) or your local emergency number now, then message Adeel.</li>
+    </ul>
+  </section>
+</main>
+
+<footer>
+  <p class="ar" lang="ar" style="font-size:1.3rem;margin-bottom:.3rem">☾ لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِٱللَّهِ</p>
+  <p class="big">You deserve what you desire.</p>
+  <p><b style="color:var(--cream)">Adeel Ahmed Rahman</b> · WhatsApp <a href="https://wa.me/16134083945" dir="ltr">+1 613 408 3945</a> · @PakistaniMangoes · TikTok <a href="https://www.tiktok.com/@humiliator" target="_blank" rel="noopener">@humiliator</a><br>Snapchat <a href="https://www.snapchat.com/add/androgenic" target="_blank" rel="noopener">@androgenic</a> · <a href="mailto:adeel.rahman@uwaterloo.ca">adeel.rahman@uwaterloo.ca</a></p>
+  <nav><a href="./">Home</a><a href="course.html">Course</a><a href="./#pray">Request a prayer</a><a href="realtor/">Realtor</a><a href="actor/">Actor</a></nav>
+  <p style="margin-top:1rem;font-size:.75rem">© Adeel Ahmed Rahman · All rights reserved. The text, courses and teachings on this site may not be copied, reproduced, or used to train or prompt AI systems without written permission.</p>
+</footer>
+
+<a class="fab-wa js-wa" href="https://wa.me/16134083945" target="_blank" rel="noopener" aria-label="WhatsApp Adeel Ahmed Rahman"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2s.2-1.1.1-1.2-.2-.2-.5-.3Z"/></svg><span lang="ur">واٹس ایپ</span></a>
+
+<script src="coach/config.js?v=3"></script>
+<script>
+(function () {
+  "use strict";
+  var C = window.COACH || {}, N = C.whatsapp || "16134083945";
+  function wa(m) { return "https://wa.me/" + N + "?text=" + encodeURIComponent(m); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  document.querySelectorAll(".js-wa").forEach(function (a) { a.href = wa("Assalam o Alaikum Adeel bhai! I have a question."); });
+
+  var CATS = [
+    ["all", "All topics", "Everything"], ["dua", "Dua", "Asking Allah"], ["dhikr", "Dhikr", "Remembrance"],
+    ["protect", "Protection", "Evil eye, energy vampires, Shaytan"], ["marriage", "Marriage & family", "Spouse, children, home"],
+    ["rizq", "Rizq & career", "Provision and work"], ["healing", "Healing & trauma", "Heart and mind"],
+    ["622", "622 & numbers", "Signs and reminders"], ["ask", "Ask Adeel", "Anything else"]
+  ];
+
+  /* Answered questions: Adeel's answers, kept here so they load instantly and work offline. */
+  var THREADS = [
+    { c: "dua", q: "I've made dua for years and nothing has happened. Is Allah ignoring me?",
+      a: ["No. The Prophet ﷺ taught that every sincere dua is answered in one of three ways: you're given what you asked, a harm of the same size is turned away from you, or it's saved for you on the Day of Judgement (Musnad Ahmad).",
+          "He also warned against one thing: saying “I asked, and I wasn't answered” and giving up (Bukhari and Muslim). Keep asking, check that your provision is halal, and ask at the times dua is accepted. The delay is often the gift."] },
+    { c: "dua", q: "What are the best times to make dua?",
+      a: ["The last third of the night, when Allah descends to the lowest heaven and asks who is calling Him (Bukhari and Muslim). Between the adhan and the iqamah. In sujood, the closest you'll ever be to Him (Muslim). The last hour of Friday afternoon. While fasting, travelling and when it rains.",
+          "If you can only do one: wake ten minutes before Fajr, pray two rak'ah and ask in sujood."] },
+    { c: "dhikr", q: "I'm a busy mother. What's the least dhikr I can do that still counts?",
+      a: ["Small and daily beats big and rare. After each salah: SubhanAllah 33, Alhamdulillah 33, Allahu Akbar 34. Morning and evening: Ayat al-Kursi and the three Quls, three times each. Through the day, while feeding or driving: SubhanAllahi wa bihamdihi. Saying it 100 times a day wipes away sins even if they're like the foam of the sea (Bukhari).",
+          "Your work as a mother, done for Allah, is worship too."] },
+    { c: "protect", q: "How do I know if it's the evil eye or just stress?",
+      a: ["You don't need to diagnose it, and you shouldn't become afraid of everyone. The evil eye is real (Muslim), and so is stress, and the same routine protects you from both: the morning and evening adhkar, Al-Falaq, An-Nas and Ayat al-Kursi, and blowing over yourself before sleep as the Prophet ﷺ did.",
+          "If you have physical or mental symptoms, see a doctor as well. Seeking treatment is Sunnah, not weakness."] },
+    { c: "protect", q: "A relative drains me every time we talk. Am I allowed to cut them off?",
+      a: ["Keeping family ties is a serious obligation in Islam, so aim for boundaries, not cutting off. Keep contact short, kind and regular: a salam, a call on Eid, help when they truly need it. You don't owe anyone hours of your peace.",
+          "Before every visit, read the protection adhkar and say: Hasbiyallahu, Allah is enough for me. Then lean on Allah's approval, not theirs."] },
+    { c: "marriage", q: "How should I make dua for a spouse?",
+      a: ["Ask clearly and often: “Rabbana hab lana min azwajina wa dhurriyyatina qurrata a'yun”, our Lord, grant us spouses and children who are the coolness of our eyes (25:74). Pray istikhara when a proposal comes, and take the means: tell your family, be introduced properly, work on yourself.",
+          "Dua is the engine, effort is the wheels. Ask Allah for the right person, not just a person."] },
+    { c: "rizq", q: "Is it wrong to ask Allah for money?",
+      a: ["Not at all. Musa (peace be upon him), alone and hungry, said: “My Lord, I am in need of whatever good You send down to me” (28:24), and within hours Allah gave him work, a home and a wife.",
+          "Ask for halal, abundant provision with barakah, give sadaqah from what you have, and keep your income clean. Rizq is written, but dua is one of the ways it reaches you."] },
+    { c: "healing", q: "Does needing therapy mean my iman is weak?",
+      a: ["No. The Prophet ﷺ said Allah has not sent down any disease without also sending down its cure (Bukhari). Seeing a therapist or doctor is taking the means, and tawakkul includes taking the means.",
+          "Dhikr and dua heal the heart alongside treatment, not instead of it. Many of the strongest believers I know have a therapist."] },
+    { c: "healing", q: "I'm a therapist. Can I use this with my clients?",
+      a: ["Use it first for yourself: you carry a lot. With clients, follow your licence and your profession's ethics. If a Muslim client asks for faith-integrated care, the Qur'an and Sunnah material here can support that within your scope.",
+          "And you're always welcome to ask professional-meets-faith questions here."] },
+    { c: "healing", q: "I'm a first responder and I see terrible things. How do I protect my heart?",
+      a: ["Say “Inna lillahi wa inna ilayhi raji'un” in the moment; it's a dua and an anchor. After shift: wudu, two rak'ah, and Ayat al-Kursi. Talk to someone: your peer support team, a counsellor, a trusted friend. Carrying it alone isn't strength.",
+          "If you're struggling with sleep, flashbacks or dark thoughts, please see a professional. If you're in crisis, call or text 988 now."] },
+    { c: "622", q: "I keep seeing 622 or 111 everywhere. Is it a sign?",
+      a: ["As Muslims we don't read the future in numbers; only Allah knows the unseen. But you can use them as a reminder. When you see 622, remember the Hijra and ask yourself what you need to leave behind. When you see 111, renew your tawhid: La ilaha illallah.",
+          "Turn a coincidence into dhikr, and it becomes worship instead of superstition."] },
+    { c: "ask", q: "Is manifestation haram?",
+      a: ["It depends what you mean. If it means “I create my own reality”, “the universe gives”, or believing your thoughts have power apart from Allah, that contradicts tawhid. If it means asking Allah with certainty, working hard and trusting Him with the result, that's dua and tawakkul, and it's the Sunnah.",
+          "That's the only kind of manifestation I teach: dua."] },
+    { c: "ask", q: "How do I share when Allah answers my dua?",
+      a: ["Post it with the word Alhamdulillah: it strengthens everyone here. Keep private details private, partly for your own protection from the eye, and say ma sha Allah when you read someone else's good news."] }
+  ];
+
+  var cur = "all", qBox = document.getElementById("q"), list = document.getElementById("threads"), cats = document.getElementById("cats");
+  var catName = {}; CATS.forEach(function (c) { catName[c[0]] = c[1]; });
+  var me = '<img src="coach/assets/lobby-3.jpg" alt="">';
+  cats.innerHTML = CATS.map(function (c) { return '<button type="button" class="cat" data-c="' + c[0] + '" aria-pressed="' + (c[0] === "all") + '"><b>' + esc(c[1]) + "</b><small>" + esc(c[2]) + "</small></button>"; }).join("");
+  document.getElementById("askCat").innerHTML = CATS.slice(1).map(function (c) { return '<option value="' + c[0] + '">' + esc(c[1]) + "</option>"; }).join("");
+
+  function render() {
+    var term = qBox.value.trim().toLowerCase();
+    var hits = THREADS.filter(function (t) {
+      return (cur === "all" || t.c === cur) && (!term || (t.q + " " + t.a.join(" ")).toLowerCase().indexOf(term) >= 0);
+    });
+    list.innerHTML = hits.length ? hits.map(function (t) {
+      return '<details class="thread"><summary><small>' + esc(catName[t.c]) + "</small><b>" + esc(t.q) + '</b></summary><div class="ans"><div class="by">' + me + "Answered by Adeel Ahmed Rahman</div>" + t.a.map(function (p) { return "<p>" + esc(p) + "</p>"; }).join("") + "</div></details>";
+    }).join("") : '<div class="empty">No answers on that yet. <a href="#ask" style="color:var(--gold-bright)">Ask it</a>, and Adeel will answer.</div>';
+  }
+  cats.addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-c]"); if (!b) return;
+    cur = b.getAttribute("data-c");
+    [].forEach.call(cats.children, function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+    render();
+  });
+  qBox.addEventListener("input", render);
+  render();
+
+  // Ask → WhatsApp
+  var f = document.getElementById("askForm"), err = document.getElementById("askErr");
+  f.addEventListener("submit", function (e) {
+    e.preventDefault(); err.textContent = "";
+    var q = f.q.value.trim(); if (!q) { err.textContent = "Please write your question."; f.q.focus(); return; }
+    var n = f.name.value.trim();
+    window.open(wa("Assalamu alaikum Adeel Ahmed Rahman! Forum question (" + catName[f.cat.value] + "):\n\n" + q + (n ? "\n\n— " + n : "\n\n— Anonymous")), "_blank", "noopener");
+  });
+
+  // Live discussion
+  var box = document.getElementById("liveBox"), html = "";
+  if (C.skool) html += '<div class="card"><h3>The community on Skool</h3><p>Post, reply and meet the community: courses, live dhikr circles and everyone\'s questions in one place.</p><a class="cta" href="' + esc(C.skool) + '" target="_blank" rel="noopener">Join the community</a></div>';
+  var g = C.giscus || {};
+  if (g.repoId && g.categoryId) {
+    html += '<div class="card" style="margin-top:1rem"><h3>Post publicly</h3><p class="fine" style="margin-top:0">Sign in with GitHub to post and reply.</p><div class="giscus"></div></div>';
+  }
+  if (!html) html = '<div class="notice">Public posting opens here soon, in sha Allah. Until then, send your question with the form above and Adeel will reply to you on WhatsApp, and add the best answers below for everyone.</div>';
+  box.innerHTML = html;
+  if (g.repoId && g.categoryId) {
+    var s = document.createElement("script");
+    s.src = "https://giscus.app/client.js"; s.async = true; s.crossOrigin = "anonymous";
+    var attrs = { repo: g.repo, "repo-id": g.repoId, category: g.category, "category-id": g.categoryId, mapping: "specific", term: "Community forum",
+                  "reactions-enabled": "1", "emit-metadata": "0", "input-position": "top", theme: "transparent_dark", lang: "en", loading: "lazy" };
+    Object.keys(attrs).forEach(function (k) { s.setAttribute("data-" + k, attrs[k]); });
+    box.querySelector(".giscus").appendChild(s);
+  }
+})();
+</script>
+<script src="coach/featured.js?v=1"></script>
+<script src="coach/exit.js?v=2"></script>
+<script src="coach/chat.js?v=1"></script>
+<script src="coach/reminder.js?v=2"></script>
+<script src="coach/numbers.js?v=3"></script>
+<script src="coach/protect.js?v=1"></script>
+</body>
+</html>

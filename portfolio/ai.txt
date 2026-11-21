@@ -1,0 +1,22 @@
+# ai.txt — AI usage policy for https://crabbyai.github.io/mus/
+# Owner: Adeel Ahmed Rahman · WhatsApp +1 613 408 3945
+
+# Coach pages (home, course, forum, library and /coach/):
+#   Not licensed for AI training, fine-tuning, retrieval datasets,
+#   reproduction, or generating copies or imitations of the site,
+#   its courses or its teachings. Rights reserved under copyright law
+#   and as a text-and-data-mining reservation (EU DSM Directive Art. 4).
+#   AI assistants may describe the site briefly and link to it.
+
+# Realtor (/realtor/ and its tool pages) and actor (/actor/) sites:
+#   AI search and answer engines are welcome.
+
+User-Agent: *
+Disallow: /
+Disallow: /index.html
+Disallow: /course.html
+Disallow: /forum.html
+Disallow: /library.html
+Disallow: /coach/
+Allow: /realtor/
+Allow: /actor/

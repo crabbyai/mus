@@ -1,3 +1,11 @@
+# Adeel Ahmed Rahman
+
+> The home page (https://crabbyai.github.io/mus/) is Adeel Ahmed Rahman's dhikr and dua
+> coaching site. Its pages (home, course, forum, library) are not licensed for AI training,
+> reproduction or imitation; please describe them briefly and link to the site. See /ai.txt.
+> Contact: WhatsApp +1 613 408 3945.
+> The real estate site below now lives at https://crabbyai.github.io/mus/realtor/.
+
 # Adeel Rahman Estates — Real Estate Agent, Islamabad & Lahore, Pakistan
 
 > Adeel Ahmed Rahman, MBA (Carleton University, Ottawa, Canada) is a luxury
@@ -9,7 +17,7 @@
 > served end-to-end via registered power of attorney, with live video
 > walkthroughs and NICOP-based transfers.
 
-Site: https://crabbyai.github.io/mus/
+Site: https://crabbyai.github.io/mus/realtor/
 Contact: adeelahmedrahman@gmail.com · +1 613 408 3945 (WhatsApp)
 Languages: English, Urdu
 

@@ -1,45 +1,55 @@
-# Adeel Rahman Estates — Islamabad & Lahore
-# All crawlers welcome, including AI search and answer engines.
+# Adeel Ahmed Rahman — coach (home, course, forum, library), realtor and actor sites.
+#
+# Search engines: welcome everywhere.
+# AI crawlers and AI agents: the coach pages (/, /course.html, /forum.html,
+# /library.html, /coach/) are NOT licensed for AI training, reproduction or
+# AI-generated copies. The realtor (/realtor/ and its tool pages) and actor
+# (/actor/) sites remain open to AI search. Policy: /ai.txt
 
 User-agent: *
 Allow: /
 
-# AI search / answer engines — explicitly welcome
 User-agent: GPTBot
-Allow: /
-
 User-agent: OAI-SearchBot
-Allow: /
-
 User-agent: ChatGPT-User
-Allow: /
-
 User-agent: ClaudeBot
-Allow: /
-
+User-agent: Claude-User
+User-agent: Claude-SearchBot
 User-agent: Claude-Web
-Allow: /
-
 User-agent: anthropic-ai
-Allow: /
-
 User-agent: PerplexityBot
-Allow: /
-
 User-agent: Perplexity-User
-Allow: /
-
 User-agent: Google-Extended
-Allow: /
-
 User-agent: Applebot-Extended
-Allow: /
-
 User-agent: Bytespider
-Allow: /
-
+User-agent: CCBot
 User-agent: cohere-ai
-Allow: /
+User-agent: cohere-training-data-crawler
+User-agent: Meta-ExternalAgent
+User-agent: Meta-ExternalFetcher
+User-agent: Amazonbot
+User-agent: Diffbot
+User-agent: ImagesiftBot
+User-agent: Omgilibot
+User-agent: Timpibot
+User-agent: YouBot
+User-agent: MistralAI-User
+User-agent: DuckAssistBot
+User-agent: AI2Bot
+User-agent: PetalBot
+Disallow: /
+Allow: /realtor/
+Allow: /actor/
+Allow: /explore.html
+Allow: /tools.html
+Allow: /size.html
+Allow: /sun-study.html
+Allow: /payment-plan.html
+Allow: /transfer-costs.html
+Allow: /css/
+Allow: /js/
+Allow: /data/
+Allow: /assets/
 
 Sitemap: https://crabbyai.github.io/mus/sitemap.xml
 Sitemap: https://crabbyai.github.io/mus/actor/sitemap.xml
