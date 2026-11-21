@@ -157,12 +157,17 @@ async function enquiry(request, env, cors) {
     if (k.startsWith("_") || k === "website") continue;
     data[clip(k, 40)] = clip(v, 2000);
   }
-  const dataJson = JSON.stringify(data);
+  let dataJson = JSON.stringify(data);
   if (dataJson.length > MAX_FIELDS_BYTES) return json({ error: "message too long" }, 413, cors);
   if (!Object.values(data).some((v) => String(v).trim())) return json({ error: "empty form" }, 400, cors);
 
   const id = newId();
   let fileKey = null, fileName = null, fileType = null, fileSize = null;
+  if (file && !env.FILES) {
+    // Storage not switched on yet: keep the enquiry, note the file was not stored.
+    data._attachment = `${clip(file.name || "file", 120)} (not stored — file storage not enabled yet)`;
+    file = null;
+  }
   if (file) {
     if (file.size > MAX_FILE) return json({ error: "file larger than 15 MB" }, 413, cors);
     if (!FILE_TYPES.test(file.type || "")) return json({ error: "file type not allowed (PDF, Word, text or image)" }, 415, cors);
@@ -172,6 +177,7 @@ async function enquiry(request, env, cors) {
     fileSize = file.size;
     await env.FILES.put(fileKey, file.stream(), { httpMetadata: { contentType: fileType } });
   }
+  dataJson = JSON.stringify(data);
   const cf = request.cf || {};
   await env.DB.prepare(`INSERT INTO enquiries (id, created, site, kind, name, contact, data, file_key, file_name, file_type, file_size, country, city)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
@@ -199,7 +205,7 @@ async function admin(request, url, env, cors) {
   const ip = request.headers.get("cf-connecting-ip") || "unknown";
 
   if (p === "/status" && request.method === "GET") {
-    return json({ hasPassword: !!(await getSetting(env, "pw")), statsConnected: !!(await getSetting(env, "stats_token")) }, 200, cors);
+    return json({ hasPassword: !!(await getSetting(env, "pw")), statsConnected: !!(await getSetting(env, "stats_token")), storage: !!env.FILES }, 200, cors);
   }
   if (p === "/setup" && request.method === "POST") {
     if (await rateLimited(env, "login:" + ip, 10, 900)) return json({ error: "too many attempts, wait 15 minutes" }, 429, cors);
@@ -255,7 +261,7 @@ async function admin(request, url, env, cors) {
   }
   if (m && request.method === "DELETE") {
     const r = await env.DB.prepare("SELECT file_key FROM enquiries WHERE id = ?").bind(m[1]).first();
-    if (r && r.file_key) await env.FILES.delete(r.file_key);
+    if (r && r.file_key && env.FILES) await env.FILES.delete(r.file_key);
     await env.DB.prepare("DELETE FROM enquiries WHERE id = ?").bind(m[1]).run();
     return json({ ok: true }, 200, cors);
   }
@@ -267,6 +273,8 @@ async function admin(request, url, env, cors) {
     if (!obj) return json({ error: "file missing" }, 404, cors);
     return new Response(obj.body, { headers: { ...cors, "content-type": r.file_type || "application/octet-stream", "content-disposition": `attachment; filename="${r.file_name}"`, "cache-control": "no-store" } });
   }
+
+  if (!env.FILES && (/^\/files/.test(p) || /\/file$/.test(p))) return json({ error: "File storage isn't switched on yet — enable R2 in Cloudflare, then it works." }, 503, cors);
 
   /* private videos & files (multipart, so big self-tapes work) */
   if (p === "/files" && request.method === "GET") {

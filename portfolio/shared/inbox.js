@@ -16,7 +16,7 @@
   "use strict";
 
   // Set once the Worker is deployed. Empty = the connector does nothing.
-  var API = "";
+  var API = "https://adeel-inbox.adeelrahman.workers.dev";
 
   if (!API || !window.fetch || !window.FormData) return;
 

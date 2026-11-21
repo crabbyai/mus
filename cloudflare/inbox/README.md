@@ -32,3 +32,11 @@ to the Worker's URL.
 - Sign-in and form posts are rate-limited per IP; forms carry a honeypot.
 - Uploaded files are private; share links are HMAC-signed and expire.
 - Only `ALLOWED_ORIGINS` may post enquiries.
+
+## Deployed
+
+- Worker: `adeel-inbox` → https://adeel-inbox.adeelrahman.workers.dev
+- D1 database: `adeel-inbox`
+- R2 bucket: not yet — enable R2 in the dashboard, create bucket `adeel-files`,
+  and add an `r2_bucket` binding named `FILES` (redeploy with `keep_bindings`).
+  Until then enquiries save normally and attachments are noted as not stored.

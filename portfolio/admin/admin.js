@@ -7,7 +7,7 @@
   "use strict";
 
   // Set once the Worker is deployed (same value as in shared/inbox.js).
-  var API = "";
+  var API = "https://adeel-inbox.adeelrahman.workers.dev";
 
   var $ = function (id) { return document.getElementById(id); };
   var TOKEN_KEY = "ar-admin-token";
