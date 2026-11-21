@@ -99,7 +99,7 @@
 .ml__name{position:absolute;left:50%;top:5%;transform:translateX(-50%);font:900 clamp(1.1rem,4vw,2rem) Georgia,serif;color:#ffd6f7;text-shadow:0 0 10px #ff2fd6,0 0 26px #ff2fd6;white-space:nowrap}\
 .ml__lvl{position:absolute;left:50%;top:14%;transform:translateX(-50%);font:800 .8rem system-ui,sans-serif;letter-spacing:.2em;color:#ffe7a3}\
 .ml__cast{position:absolute;left:0;right:0;bottom:6%;display:flex;justify-content:space-around;align-items:flex-end}\
-.ml__bub{position:absolute;max-width:min(46vw,340px);padding:.55rem .9rem;border-radius:16px;background:#fff;color:#7a1050;font:700 clamp(.85rem,2.6vw,1.1rem)/1.3 system-ui,sans-serif;box-shadow:0 6px 20px rgba(0,0,0,.4);opacity:0;transform:scale(.6);animation:mlpop .35s ease forwards,mlout .35s ease forwards}\
+.ml__bub{position:absolute;max-width:min(60vw,420px);padding:.55rem .9rem;border-radius:16px;background:#fff;color:#7a1050;font:700 clamp(1.05rem,3.4vw,1.4rem)/1.35 system-ui,sans-serif;box-shadow:0 6px 20px rgba(0,0,0,.4);opacity:0;transform:scale(.6);animation:mlpop .35s ease forwards,mlout .35s ease forwards}\
 .ml__bub--crab{background:#1b1206;color:#ffe7a3;border:2px solid #e8c87e}\
 @keyframes mlpop{to{opacity:1;transform:scale(1)}}\
 @keyframes mlout{from{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(.9) translateY(-14px)}}\
@@ -223,8 +223,8 @@
     var box = document.createElement("div"); box.className = "ct"; box.setAttribute("role", "dialog"); box.setAttribute("aria-modal", "true"); box.setAttribute("aria-label", m.spree);
     var bubbles = "", d = 0.6;
     m.dem.forEach(function (q, i) {
-      bubbles += '<span class="ml__bub" style="left:4%;bottom:30%;animation-delay:' + d.toFixed(1) + 's,' + (d + 1.5).toFixed(1) + 's">🦂 ' + q + "</span>"; d += 1.6;
-      if (i % 2 === 1 || i === m.dem.length - 1) { bubbles += '<span class="ml__bub ml__bub--crab" style="right:4%;bottom:36%;animation-delay:' + (d - 0.5).toFixed(1) + 's,' + (d + 1.2).toFixed(1) + 's">🦀 ' + m.nb + "</span>"; d += 1.2; }
+      bubbles += '<span class="ml__bub" style="left:4%;bottom:30%;animation-delay:' + d.toFixed(1) + 's,' + (d + 3.0).toFixed(1) + 's">🦂 ' + q + "</span>"; d += 3.3;
+      if (i % 2 === 1 || i === m.dem.length - 1) { bubbles += '<span class="ml__bub ml__bub--crab" style="right:4%;bottom:36%;animation-delay:' + d.toFixed(1) + 's,' + (d + 2.8).toFixed(1) + 's">🦀 ' + m.nb + "</span>"; d += 3.1; }
     });
     box.innerHTML = '<div class="ct__scene ct--mall on"><div class="ml__name">🛍️ ' + name + '</div><div class="ml__lvl">' + m.lvl + " " + (lv + 1) + '</div><div class="ml__bldg">' + html + "</div>" +
       '<div class="ml__cast">' + suit("🦂", "👸?", false) + suit("🦀", "🤴 👑", true) + "</div>" + bubbles + '<p class="ct__cap">' + m.pause + " " + m.spree + "</p></div>" +
