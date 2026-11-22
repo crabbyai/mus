@@ -1036,6 +1036,75 @@ html{scroll-padding-top:70px}
 .lv__l3m{color:#bfe9cc;font-size:.68rem}
 .lv__l3 em{margin-left:auto;font-style:normal;color:#8fb8a0;font-size:.66rem}
 .lv__on{width:7px;height:7px;border-radius:50%;background:#3dff7a;box-shadow:0 0 6px #3dff7a}
+/* ===== the jester's court: royal, haunted, in session ===== */
+.jst{position:relative;overflow:hidden;isolation:isolate;margin-top:2.6rem;padding:2.2rem clamp(1rem,4vw,2.4rem) 2rem;border-radius:26px;border:1px solid #c9a45c;color:#f3eee3;text-align:center;
+  background:radial-gradient(ellipse at 50% -10%,rgba(190,20,40,.45),transparent 55%),radial-gradient(ellipse at 50% 120%,rgba(90,20,140,.35),transparent 60%),linear-gradient(180deg,#0d0610,#050208 70%);
+  box-shadow:inset 0 0 120px rgba(0,0,0,.9),inset 0 0 0 6px rgba(201,164,92,.08),0 30px 80px -30px rgba(160,10,30,.6)}
+.jst::before{content:"";position:absolute;inset:10px;border:1px solid rgba(201,164,92,.35);border-radius:20px;pointer-events:none;z-index:-1}
+.jst::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:-1;background:repeating-linear-gradient(90deg,transparent 0 46px,rgba(201,164,92,.05) 46px 50px);-webkit-mask-image:linear-gradient(#000,transparent 70%);mask-image:linear-gradient(#000,transparent 70%)}
+.jst__curtain{position:absolute;top:0;bottom:0;width:52%;z-index:5;pointer-events:none;background:repeating-linear-gradient(90deg,#4a0610 0,#8f0f22 18px,#5a0814 36px),linear-gradient(#000,transparent);box-shadow:inset 0 -40px 60px rgba(0,0,0,.6);transition:transform 1.8s cubic-bezier(.7,0,.2,1) .15s}
+.jst__curtain::after{content:"";position:absolute;left:0;right:0;bottom:0;height:16px;background:repeating-linear-gradient(90deg,#e8c87e 0 6px,#a8752c 6px 12px)}
+.jst__curtain--l{left:0;border-radius:26px 0 0 26px}.jst__curtain--r{right:0;border-radius:0 26px 26px 0}
+.jst.in .jst__curtain--l{transform:translateX(-95%)}.jst.in .jst__curtain--r{transform:translateX(95%)}
+.jst__fog{position:absolute;inset:auto 0 0;height:45%;pointer-events:none;z-index:-1}
+.jst__fog i{position:absolute;inset:0 -50%;background:radial-gradient(ellipse at 30% 80%,rgba(200,200,220,.12),transparent 45%),radial-gradient(ellipse at 70% 90%,rgba(180,170,210,.1),transparent 45%);filter:blur(10px);animation:jstFog 22s linear infinite}
+.jst__fog i+i{animation-duration:34s;animation-direction:reverse;opacity:.7}
+@keyframes jstFog{from{transform:translateX(-12%)}to{transform:translateX(12%)}}
+.jst__k{display:flex;flex-wrap:wrap;justify-content:center;gap:.2rem .8rem;margin:0;font:700 .68rem system-ui,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#ff5a6a;animation:jstFlicker 6s infinite}
+.jst__k [lang=ur]{font:600 .95rem "Noto Nastaliq Urdu","Noto Naskh Arabic",serif;letter-spacing:0;text-transform:none;color:#f3d9a0}
+@keyframes jstFlicker{0%,18%,22%,62%,64%,100%{opacity:1}20%,63%{opacity:.35}}
+.jst__crown{font-size:2.6rem;margin:.6rem 0 -.3rem;filter:drop-shadow(0 0 14px rgba(255,210,100,.8));animation:jstBob 3.2s ease-in-out infinite}
+@keyframes jstBob{50%{transform:translateY(-8px) rotate(-4deg)}}
+.jst__h{margin:0;font-family:"Cinzel Decorative",var(--serif)!important;font-weight:700;font-size:clamp(1.7rem,6vw,2.8rem);line-height:1.15;background:linear-gradient(180deg,#fff3c8,#e8c87e 45%,#9a6a22);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 10px rgba(200,20,40,.7));animation:jstBlood 4s ease-in-out infinite}
+@keyframes jstBlood{50%{filter:drop-shadow(0 0 22px rgba(230,20,50,.95))}}
+.jst__sub{margin:.3rem 0 0;color:#cdb98a;font-size:.95rem}.jst__sub [lang=ur]{font:600 1.05rem "Noto Nastaliq Urdu",serif}
+.jst__stage{display:flex;align-items:center;justify-content:center;gap:clamp(.4rem,3vw,2rem);margin:1rem 0 .2rem}
+.jst__side{display:flex;flex-direction:column;align-items:center;gap:1rem;font-size:clamp(1.6rem,5vw,2.4rem)}
+.jst__scale{display:block;transform-origin:50% 10%;animation:jstSwing 3.6s ease-in-out infinite;filter:drop-shadow(0 0 8px rgba(232,200,126,.6))}
+.jst__side:last-child .jst__scale{animation-delay:-1.8s}
+@keyframes jstSwing{0%,100%{transform:rotate(-9deg)}50%{transform:rotate(9deg)}}
+.jst__candle{display:block;animation:jstCandle 1.4s ease-in-out infinite alternate;filter:drop-shadow(0 -6px 10px rgba(255,170,60,.8))}
+@keyframes jstCandle{0%{opacity:1;transform:scale(1)}40%{opacity:.75}100%{opacity:.95;transform:scale(1.04,.97)}}
+.jst__ring{position:relative;width:clamp(210px,55vw,280px);aspect-ratio:1;display:grid;place-items:center}
+.jst__ring::before{content:"";position:absolute;inset:14%;border-radius:50%;background:radial-gradient(circle,rgba(255,215,120,.22),rgba(140,10,40,.15) 55%,transparent 70%);animation:jstPulse 3s ease-in-out infinite}
+@keyframes jstPulse{50%{transform:scale(1.08);opacity:.7}}
+.jst__spot{position:absolute;left:50%;top:-30%;width:70%;height:110%;transform:translateX(-50%);background:linear-gradient(180deg,rgba(255,240,200,.28),rgba(255,240,200,0));clip-path:polygon(42% 0,58% 0,100% 100%,0 100%);animation:jstFlicker 7s infinite .8s;pointer-events:none}
+.jst__orbit{position:absolute;inset:0;animation:jstSpin 16s linear infinite}
+.jst__orbit i{position:absolute;left:50%;top:50%;margin:-.6em 0 0 -.6em;font-style:normal;font-size:clamp(1.1rem,3.6vw,1.5rem);filter:drop-shadow(0 0 8px rgba(120,200,255,.9))}
+.jst__orbit i{transform:rotate(calc(var(--n,0) * 45deg)) translateY(clamp(-140px,-24vw,-105px))}
+.jst__orbit i:nth-child(2){--n:1}.jst__orbit i:nth-child(3){--n:2}.jst__orbit i:nth-child(4){--n:3}.jst__orbit i:nth-child(5){--n:4}.jst__orbit i:nth-child(6){--n:5}.jst__orbit i:nth-child(7){--n:6}.jst__orbit i:nth-child(8){--n:7}
+@keyframes jstSpin{to{transform:rotate(360deg)}}
+.jst__img{position:relative;width:clamp(120px,32vw,170px);height:auto;image-rendering:pixelated;image-rendering:crisp-edges;filter:drop-shadow(0 0 14px rgba(180,90,255,.75)) drop-shadow(0 10px 18px rgba(0,0,0,.9));animation:jstSway 2.8s ease-in-out infinite;transform-origin:50% 90%}
+@keyframes jstSway{0%,100%{transform:rotate(-5deg) translateY(0)}50%{transform:rotate(5deg) translateY(-10px)}}
+.jst__gem{position:absolute;font-size:clamp(1.3rem,4vw,1.8rem);filter:drop-shadow(0 0 10px rgba(140,220,255,.95));animation:jstTwinkle 2.4s ease-in-out infinite}
+.jst__gem--1{top:4%;left:4%}.jst__gem--2{top:4%;right:4%;animation-delay:-.6s}.jst__gem--3{bottom:4%;left:4%;animation-delay:-1.2s}.jst__gem--4{bottom:4%;right:4%;animation-delay:-1.8s}
+@keyframes jstTwinkle{0%,100%{transform:scale(.8) rotate(-10deg);opacity:.6}50%{transform:scale(1.15) rotate(10deg);opacity:1}}
+.jst__gavel{font-size:2.2rem;line-height:1;transform-origin:80% 80%;transform:rotate(-55deg);opacity:0}
+.jst.in .jst__gavel{animation:jstGavel .6s cubic-bezier(.5,0,.8,.4) 1.9s forwards}
+@keyframes jstGavel{0%{opacity:1;transform:rotate(-55deg)}70%{transform:rotate(12deg)}85%{transform:rotate(-4deg)}100%{opacity:1;transform:rotate(0)}}
+.jst.in{animation:jstShake .35s ease 2.3s}
+@keyframes jstShake{20%{transform:translate(-4px,2px)}40%{transform:translate(4px,-2px)}60%{transform:translate(-3px,1px)}80%{transform:translate(2px,0)}}
+.jst__tabs{display:flex;justify-content:center;gap:.4rem;margin:1rem 0 .8rem;flex-wrap:wrap}
+.jst__tabs button{padding:.4rem 1rem;border-radius:999px;border:1px solid rgba(201,164,92,.6);background:rgba(0,0,0,.4);color:#f3eee3;font:700 .82rem system-ui,sans-serif;cursor:pointer;transition:background .2s,color .2s,box-shadow .2s}
+.jst__tabs button[lang=ur]{font:600 1rem "Noto Nastaliq Urdu","Noto Naskh Arabic",serif;padding:.15rem 1rem}
+.jst__tabs button[aria-selected=true]{background:linear-gradient(135deg,#ffe7a3,#c9a45c);color:#1a0608;box-shadow:0 0 18px rgba(232,200,126,.5)}
+.jst__scroll{position:relative;max-width:720px;margin:0 auto;padding:1.2rem clamp(1rem,3vw,1.6rem);border-radius:16px;text-align:left;background:linear-gradient(180deg,rgba(40,10,16,.85),rgba(12,4,10,.92));border:3px double rgba(201,164,92,.55);box-shadow:inset 0 0 40px rgba(0,0,0,.8),0 0 30px rgba(150,10,30,.25)}
+.jst__t p{margin:0 0 .9rem;line-height:1.75;font-size:.98rem;color:#eadfca}
+.jst__t p:last-child{margin-bottom:0}
+.jst__lead{font-family:var(--serif);font-size:1.2rem!important;color:#ffe7a3!important;text-shadow:0 0 12px rgba(200,20,40,.6)}
+.jst__lead::first-letter{font-family:"Cinzel Decorative",serif;font-size:2em;color:#ff4a5c;float:left;line-height:.9;margin:.05em .12em 0 0}
+.jst__t--ur{text-align:right}.jst__t--ur p{font-family:"Noto Nastaliq Urdu","Noto Naskh Arabic",serif;font-size:1.04rem;line-height:2.3}
+.jst__t--ur .jst__lead::first-letter{all:unset}
+.jst__t:not([hidden]){animation:jstIn .5s ease-out}
+.jst__t:not([hidden]) p{animation:jstLine .7s ease-out both}
+.jst__t p:nth-child(2){animation-delay:.08s}.jst__t p:nth-child(3){animation-delay:.16s}.jst__t p:nth-child(4){animation-delay:.24s}.jst__t p:nth-child(5){animation-delay:.32s}.jst__t p:nth-child(6){animation-delay:.4s}
+@keyframes jstIn{from{opacity:0}}@keyframes jstLine{from{opacity:0;transform:translateY(8px);filter:blur(3px)}}
+.jst__verdict{max-width:720px;margin:1.4rem auto 0;padding:1.2rem 1rem;border-top:1px solid rgba(201,164,92,.6);border-bottom:1px solid rgba(201,164,92,.6);background:radial-gradient(ellipse at 50% 50%,rgba(160,10,30,.25),transparent 70%)}
+.jst__vk{display:block;margin-bottom:.5rem;font:800 .7rem system-ui,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#ff5a6a}
+.jst__verdict p{margin:.3rem 0;font-family:var(--serif);font-size:clamp(1.1rem,3.4vw,1.45rem);line-height:1.5;color:#fff3d6;text-shadow:0 0 16px rgba(220,20,50,.55)}
+.jst__verdict .jst__vur{font-family:"Noto Nastaliq Urdu","Noto Naskh Arabic",serif;font-size:clamp(1rem,3vw,1.25rem);line-height:2.2;color:#f3d9a0}
+.jst__verdict .jst__vro{font-size:clamp(.92rem,2.6vw,1.05rem);font-style:italic;color:#cdb98a}
+@media(prefers-reduced-motion:reduce){.jst__curtain{display:none}.jst__gavel{opacity:1;transform:none}}
 .g3__flash{position:absolute;inset:0;z-index:2;pointer-events:none;background:#eaf4ff;opacity:0}
 .g3__flash.on{animation:g3flash .8s steps(1) forwards}
 @keyframes g3flash{0%{opacity:.95}8%{opacity:.05}16%{opacity:.85}26%{opacity:.1}36%{opacity:.7}50%{opacity:0}62%{opacity:.45}74%{opacity:0}84%{opacity:.25}100%{opacity:0}}
@@ -1604,6 +1673,68 @@ html{scroll-padding-top:70px}
         <p class="fine" data-i18n="king.ref">“Say: He is Allah, the One.” Qur'an 112:1</p>
       </section>
 
+      <!-- ===== THE JESTER'S COURT ===== -->
+      <section class="jst reveal" id="jester" aria-labelledby="jstH">
+        <div class="jst__curtain jst__curtain--l" aria-hidden="true"></div><div class="jst__curtain jst__curtain--r" aria-hidden="true"></div>
+        <div class="jst__fog" aria-hidden="true"><i></i><i></i></div>
+        <p class="jst__k"><span>⚖️ The court is in session</span><span lang="ur" dir="rtl">عدالت جاری ہے</span><span>Adalat jaari hai ⚖️</span></p>
+        <div class="jst__crown" aria-hidden="true">👑</div>
+        <h3 id="jstH" class="jst__h">The Jester’s Court</h3>
+        <p class="jst__sub"><span lang="ur" dir="rtl">مسخرے کی عدالت</span> · <i>Maskhare ki Adalat</i></p>
+
+        <div class="jst__stage">
+          <span class="jst__side" aria-hidden="true"><b class="jst__scale">⚖️</b><b class="jst__candle">🕯️</b></span>
+          <div class="jst__ring">
+            <div class="jst__spot" aria-hidden="true"></div>
+            <div class="jst__orbit" aria-hidden="true"><i>💎</i><i>💎</i><i>💎</i><i>💎</i><i>💎</i><i>💎</i><i>💎</i><i>💎</i></div>
+            <img class="jst__img" src="coach/assets/jester.png" alt="A pixel-art jester in a purple and orange hat, holding a starred ball" width="83" height="85" loading="lazy">
+            <span class="jst__gem jst__gem--1" aria-hidden="true">💎</span><span class="jst__gem jst__gem--2" aria-hidden="true">💎</span><span class="jst__gem jst__gem--3" aria-hidden="true">💎</span><span class="jst__gem jst__gem--4" aria-hidden="true">💎</span>
+          </div>
+          <span class="jst__side" aria-hidden="true"><b class="jst__candle">🕯️</b><b class="jst__scale">⚖️</b></span>
+        </div>
+        <div class="jst__gavel" aria-hidden="true">🔨</div>
+
+        <div class="jst__tabs" role="tablist" aria-label="Language">
+          <button type="button" role="tab" aria-selected="true" data-jl="en">English</button>
+          <button type="button" role="tab" aria-selected="false" data-jl="ur" lang="ur">اردو</button>
+          <button type="button" role="tab" aria-selected="false" data-jl="ro">Roman Urdu</button>
+        </div>
+
+        <div class="jst__scroll">
+          <div class="jst__t" data-jt="en" role="tabpanel">
+            <p class="jst__lead">You have to play the jester to win the favor of both your friends and your enemies.</p>
+            <p>A jester reserves the energy he’d have directed towards useless and unproductive fighting into productive planning. A jester masks his sharpest ambitions under a veneer of foolishness, deliberately drawing scrutiny or mockery to disarm those around him.</p>
+            <p>By absorbing the blows of criticism with a smile and feigning incompetence, he subtly alters how others perceive his threat level. This carefully cultivated harmlessness allows him to navigate hostile environments untouched, transforming social tension into a canvas for his own hidden strategy.</p>
+            <p>In the theater of real-world negotiation, politics, and psychology, this jester strategy operates as a masterclass in strategic vulnerability. Rather than engaging in exhausting power struggles, the jester weaponizes human pride and psychological reactance against his opponents. He pushes people to underestimate him, dropping false weaknesses that trick rivals into focusing on the wrong battles.</p>
+            <p>While his adversaries are busy celebrating a superficial victory over a fool, the jester is quietly gathering intelligence, observing their true motives and steering the room toward his preferred outcome.</p>
+            <p>Ultimately, playing the fool is not an act of submission, but a tactic of absolute control. By refusing to fight on conventional terms, the jester ensures he never wastes energy on pride-driven conflicts that yield no real value. He secures the affection of allies who find him unthreatening while simultaneously rendering his enemies predictable and easily manipulated.</p>
+          </div>
+          <div class="jst__t jst__t--ur" data-jt="ur" role="tabpanel" lang="ur" dir="rtl" hidden>
+            <p class="jst__lead">اپنے دوستوں اور دشمنوں، دونوں کی خوشنودی جیتنے کے لیے تمہیں مسخرے کا کردار ادا کرنا ہوگا۔</p>
+            <p>مسخرہ وہ توانائی جو فضول اور بے فائدہ لڑائیوں میں ضائع ہوتی، اسے بچا کر نتیجہ خیز منصوبہ بندی میں لگاتا ہے۔ مسخرہ اپنے سب سے تیز عزائم کو بے وقوفی کے پردے میں چھپاتا ہے، اور جان بوجھ کر لوگوں کی تنقید یا مذاق کو اپنی طرف کھینچتا ہے تاکہ اردگرد کے لوگوں کو غافل کر دے۔</p>
+            <p>تنقید کے وار مسکراہٹ کے ساتھ سہہ کر اور نااہلی کا ڈھونگ رچا کر، وہ خاموشی سے بدل دیتا ہے کہ دوسرے اسے کتنا بڑا خطرہ سمجھتے ہیں۔ یہ احتیاط سے تراشی ہوئی بے ضرری اسے دشمن ماحول میں بے داغ گزرنے دیتی ہے، اور سماجی کشیدگی کو اس کی چھپی ہوئی حکمتِ عملی کا کینوس بنا دیتی ہے۔</p>
+            <p>حقیقی دنیا کی سودے بازی، سیاست اور نفسیات کے اسٹیج پر، مسخرے کی یہ حکمتِ عملی سوچی سمجھی کمزوری دکھانے کا شاہکار سبق ہے۔ تھکا دینے والی طاقت کی کشمکش میں الجھنے کے بجائے، مسخرہ انسانی غرور اور نفسیاتی ضد کو اپنے مخالفین کے خلاف ہتھیار بنا لیتا ہے۔ وہ لوگوں کو مجبور کرتا ہے کہ اسے کم سمجھیں، اور جھوٹی کمزوریاں ظاہر کرتا ہے جو حریفوں کو غلط محاذوں پر الجھا دیتی ہیں۔</p>
+            <p>جب اس کے مخالف ایک بے وقوف پر سطحی فتح کا جشن منانے میں مصروف ہوتے ہیں، مسخرہ خاموشی سے معلومات جمع کر رہا ہوتا ہے، ان کے اصل ارادے پرکھ رہا ہوتا ہے، اور محفل کا رخ اپنی پسند کے انجام کی طرف موڑ رہا ہوتا ہے۔</p>
+            <p>آخرکار، بے وقوف بننا ہار ماننا نہیں، بلکہ مکمل کنٹرول کی ایک چال ہے۔ روایتی شرائط پر لڑنے سے انکار کر کے، مسخرہ یقینی بناتا ہے کہ وہ غرور سے جنم لینے والے اُن جھگڑوں پر کبھی توانائی ضائع نہ کرے جن کا کوئی حقیقی فائدہ نہیں۔ وہ اُن اتحادیوں کی محبت جیت لیتا ہے جو اسے بے خطر سمجھتے ہیں، اور ساتھ ہی اپنے دشمنوں کو قابلِ پیشگوئی اور آسانی سے قابو میں آنے والا بنا دیتا ہے۔</p>
+          </div>
+          <div class="jst__t" data-jt="ro" role="tabpanel" hidden>
+            <p class="jst__lead">Apne doston aur dushmanon, dono ki khushnoodi jeetne ke liye tumhein maskhare ka kirdaar ada karna hoga.</p>
+            <p>Maskhara woh tawanai jo fuzool aur be-faida laraiyon mein zaya hoti, use bacha kar natija-khez mansooba-bandi mein lagata hai. Maskhara apne sab se tez azaaim ko be-waqoofi ke parde mein chhupata hai, aur jaan boojh kar logon ki tanqeed ya mazaaq ko apni taraf kheenchta hai taake ird-gird ke logon ko ghaafil kar de.</p>
+            <p>Tanqeed ke waar muskurahat ke saath seh kar aur na-ahli ka dhong racha kar, woh khamoshi se badal deta hai ke doosre use kitna bara khatra samajhte hain. Yeh ehtiyaat se taraashi hui be-zarari use dushman mahaul mein be-daagh guzarne deti hai, aur samaji kasheedgi ko us ki chhupi hui hikmat-e-amali ka canvas bana deti hai.</p>
+            <p>Haqeeqi duniya ki sauda-baazi, siyasat aur nafsiyaat ke stage par, maskhare ki yeh hikmat-e-amali sochi samjhi kamzori dikhane ka shahkaar sabaq hai. Thaka dene wali taaqat ki kashmakash mein uljhne ke bajaye, maskhara insani ghuroor aur nafsiyati zid ko apne mukhalifeen ke khilaf hathiyar bana leta hai. Woh logon ko majboor karta hai ke use kam samjhein, aur jhooti kamzoriyan zahir karta hai jo hareefon ko ghalat mahaazon par uljha deti hain.</p>
+            <p>Jab us ke mukhalif ek be-waqoof par sathi fatah ka jashn manane mein masroof hote hain, maskhara khamoshi se maloomat jama kar raha hota hai, un ke asal iraade parakh raha hota hai, aur mehfil ka rukh apni pasand ke anjaam ki taraf mor raha hota hai.</p>
+            <p>Aakhirkaar, be-waqoof banna haar maanna nahin, balke mukammal control ki ek chaal hai. Riwayati sharaait par larne se inkaar kar ke, maskhara yaqeeni banata hai ke woh ghuroor se janam lene wale un jhagron par kabhi tawanai zaya na kare jin ka koi haqeeqi faida nahin. Woh un ittehadiyon ki mohabbat jeet leta hai jo use be-khatar samajhte hain, aur saath hi apne dushmanon ko qabil-e-peshgoi aur aasani se qaabu mein aane wala bana deta hai.</p>
+          </div>
+        </div>
+
+        <blockquote class="jst__verdict">
+          <span class="jst__vk">🔨 The verdict · فیصلہ · Faisla</span>
+          <p>In a world obsessed with broadcasting strength, the truest power belongs to the one who commands the room simply by knowing exactly when to lose.</p>
+          <p lang="ur" dir="rtl" class="jst__vur">ایک ایسی دنیا میں جو طاقت کی نمائش کی دیوانی ہے، اصل طاقت اُس کی ہے جو صرف یہ جان کر محفل پر حکم چلاتا ہے کہ کب ہارنا ہے۔</p>
+          <p class="jst__vro">Ek aisi duniya mein jo taaqat ki numaish ki deewani hai, asal taaqat us ki hai jo sirf yeh jaan kar mehfil par hukm chalata hai ke kab haarna hai.</p>
+        </blockquote>
+      </section>
+
       <blockquote class="quote reveal"><span data-i18n="quote">You don't get what you chase. You get what you ask Allah for with a present heart. So ask Him boldly, because you deserve what you desire.</span><small>— Adeel Ahmed Rahman</small></blockquote>
 
       <h3 id="how" class="reveal" data-i18n="how.h">How it <em>works</em></h3>
@@ -1875,6 +2006,14 @@ html{scroll-padding-top:70px}
 <script src="coach/court.js?v=14" defer></script>
 <script src="coach/home.js?v=29"></script>
 <script src="coach/extras.js?v=1" defer></script>
+<script>
+/* Jester's Court language tabs */
+(function(){var s=document.getElementById("jester");if(!s)return;var tabs=s.querySelectorAll("[data-jl]");
+function pick(l){[].forEach.call(tabs,function(b){b.setAttribute("aria-selected",b.getAttribute("data-jl")===l?"true":"false");});[].forEach.call(s.querySelectorAll("[data-jt]"),function(t){t.hidden=t.getAttribute("data-jt")!==l;});}
+s.querySelector(".jst__tabs").addEventListener("click",function(e){var b=e.target.closest("[data-jl]");if(b)pick(b.getAttribute("data-jl"));});
+if((document.documentElement.lang||"")==="ur")pick("ur");})();
+</script>
+
 <script>
 (function(){
   var WA="16134083945";
