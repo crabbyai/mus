@@ -959,11 +959,11 @@ html{scroll-padding-top:70px}
 .lv__chart{flex:1;display:flex;flex-direction:column;gap:6px;padding:10px 12px;border-radius:16px;background:rgba(0,0,0,.25);border:1px solid rgba(110,230,140,.25)}
 .lv__chart>b{font:800 .72rem system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#9fe8b8}
 .lv__chart svg{width:100%;height:90px}
-.lv__line{stroke-dasharray:1200;stroke-dashoffset:1200;animation:lvDraw 1.6s ease forwards}
+.lv__line{stroke-dasharray:1200;stroke-dashoffset:1200;animation:lvDraw .7s ease-out forwards}
 @keyframes lvDraw{to{stroke-dashoffset:0}}
 .lv__chart small{color:#bfe9cc;font-size:.76rem}.lv__chart small b{color:#fff}
 .lv__bars{display:flex;align-items:flex-end;gap:2px;height:90px}
-.lv__bars i{flex:1;border-radius:2px 2px 0 0;background:linear-gradient(0deg,#1d7a3a,#3dff7a);animation:lvGrow .9s ease both}
+.lv__bars i{flex:1;border-radius:2px 2px 0 0;background:linear-gradient(0deg,#1d7a3a,#3dff7a);animation:lvGrow .45s ease-out both}
 .lv__bars i.spike{background:linear-gradient(0deg,#a8752c,#ffe7a3);box-shadow:0 0 8px rgba(255,215,120,.8)}
 @keyframes lvGrow{from{transform:scaleY(0);transform-origin:bottom}}
 .lv__sp{color:#ffd77a;font-weight:800}
@@ -990,7 +990,7 @@ html{scroll-padding-top:70px}
 .lv__kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;width:100%}
 .lv__kpis span{display:flex;flex-direction:column;align-items:center;padding:6px 4px;border-radius:12px;background:rgba(0,0,0,.3);border:1px solid rgba(110,230,140,.2);font-size:.68rem;color:#9fc8ad;text-transform:uppercase;letter-spacing:.06em;text-align:center}
 .lv__kpis b{font:900 1.05rem system-ui,sans-serif;color:#fff;letter-spacing:0;text-transform:none}
-.lv__p{flex-direction:row!important;align-items:flex-start;gap:10px!important;border-left:4px solid #5aa8ff!important;animation:lvIn .5s ease both}
+.lv__p{flex-direction:row!important;align-items:flex-start;gap:10px!important;border-left:4px solid #5aa8ff!important;animation:lvIn .25s ease-out both}
 .lv__p--game{border-left-color:#3dff7a!important}.lv__p--contact{border-left-color:#ffd23a!important}.lv__p--angel{border-left-color:#c48bff!important}
 .lv__av{flex:none;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.08);font-size:1.4rem;box-shadow:0 0 0 2px rgba(110,230,140,.35)}
 .lv__pb{display:flex;flex-direction:column;gap:3px;min-width:0}
@@ -999,6 +999,7 @@ html{scroll-padding-top:70px}
 @media(prefers-reduced-motion:reduce){.lv__p{animation:none}}
 
 /* live panel, compact */
+.live:not([hidden]){animation:lvIn .25s ease-out}
 .live .lv__who b{font-size:.82rem!important}.live .lv__kpis b{font-size:.85rem!important}.live .lv__chart small b{font-size:.8rem!important}
 .live{max-width:min(860px,calc(100% - 32px))!important;padding:10px 12px!important;gap:10px!important;font-size:.8rem!important;grid-template-columns:minmax(0,.8fr) minmax(0,1.6fr) minmax(0,.8fr)!important}
 .lv__mid{gap:.3rem!important}
@@ -1228,7 +1229,6 @@ html{scroll-padding-top:70px}
 <div class="ribbon" aria-hidden="true"><div class="ribbon__track" id="ribbon"></div></div>
 
 <!-- Featured hadith: always at the top -->
-<div class="live" id="liveNow" role="status" aria-live="polite" hidden></div>
 <div class="playcta" aria-label="Play Scorpion Street 3D">
   <a class="playcta__btn" href="#scorpion-street-3d">
     <span class="playcta__orb" aria-hidden="true"><i>🦀</i><i>🦂</i><i>🦀</i><i>🦂</i><i>✨</i><i>🦂</i></span>
@@ -1237,6 +1237,7 @@ html{scroll-padding-top:70px}
     <small data-i18n="play.s">🦂 Scorpion Street 3D · 🦀 can you beat the crab?</small>
   </a>
 </div>
+<div class="live" id="liveNow" role="status" aria-live="polite" hidden></div>
 <div class="fh-strip" data-featured="strip"></div>
 
 <main class="wrap">
@@ -1846,8 +1847,8 @@ html{scroll-padding-top:70px}
 <script src="coach/exit.js?v=3"></script>
 <script src="coach/config.js?v=5"></script>
 <script src="coach/arab.js?v=1" defer></script>
-<script src="coach/lock.js?v=1"></script>
-<script src="coach/live.js?v=11" defer></script>
+<script src="coach/lock.js?v=2"></script>
+<script src="coach/live.js?v=12" defer></script>
 <script src="coach/chat.js?v=1"></script>
 <script src="coach/reminder.js?v=4"></script>
 <script src="coach/numbers.js?v=3"></script>

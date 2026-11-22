@@ -142,7 +142,7 @@
   }
 
   var open = false;   // the panel stays behind the passcode lock until unlocked
-  function start() { open = true; refresh(); setTimeout(refresh, 1500); timer = setInterval(refresh, 10000); }
+  function start() { open = true; box.innerHTML = '<div class="lv__mid"><div class="lv__head"><span class="lv__badge"><span class="live__dot"></span>LIVE</span><span>Loading live visitors…</span></div></div>'; box.hidden = false; refresh(); setTimeout(refresh, 1200); timer = setInterval(refresh, 10000); }
   report();
   beat = setInterval(report, 25000);
   if (window.coachLock) window.coachLock(box, start);
