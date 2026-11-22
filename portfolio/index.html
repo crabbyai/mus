@@ -1106,6 +1106,27 @@ html{scroll-padding-top:70px}
 .jst__verdict .jst__vur{font-family:"Noto Nastaliq Urdu","Noto Naskh Arabic",serif;font-size:clamp(1rem,3vw,1.25rem);line-height:2.2;color:#f3d9a0}
 .jst__verdict .jst__vro{font-size:clamp(.92rem,2.6vw,1.05rem);font-style:italic;color:#cdb98a}
 @media(prefers-reduced-motion:reduce){.jst__curtain{display:none}.jst__gavel{opacity:1;transform:none}}
+
+/* angel numbers: white feathered wings, blue numbers, sparkles */
+.an__n{background:linear-gradient(110deg,#3d8dff 0%,#8fd0ff 38%,#e9f6ff 50%,#8fd0ff 62%,#2f6fff 100%)!important;background-size:260% 100%!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;filter:drop-shadow(0 0 8px rgba(90,170,255,.85)) drop-shadow(0 0 2px rgba(255,255,255,.8))!important;animation:anShine 3.6s linear infinite;padding:0!important;font-size:clamp(1.3rem,3.6vw,1.7rem)!important}
+.an__n::before,.an__n::after{display:none!important}
+.an__w{display:inline-flex;align-items:center;justify-content:center;gap:.1rem;margin-top:.3rem;font-size:clamp(1.3rem,3.6vw,1.7rem)}
+.an__wg{display:block;width:2.1em;height:1.45em;flex:none;margin-top:-.5em}
+.an__wg img{display:block;width:100%;height:100%;object-fit:contain;transform-origin:100% 88%;animation:anFlap 2.4s ease-in-out infinite;filter:drop-shadow(0 0 4px rgba(170,215,255,.95)) drop-shadow(0 0 1px #fff)}
+.an__wg--r{transform:scaleX(-1)}
+.an__card--666 .an__wg img{filter:sepia(1) saturate(7) hue-rotate(-50deg) brightness(.85) drop-shadow(0 0 5px rgba(255,30,30,.9))}
+@media(max-width:420px){.an__w{font-size:1.12rem}.an__w .an__n{font-size:1.12rem!important}.an__wg{width:1.55em;height:1.1em}}
+@keyframes anShine{from{background-position:130% 0}to{background-position:-130% 0}}
+@keyframes anFlap{0%,100%{transform:rotate(6deg) scaleY(1)}45%{transform:rotate(-14deg) scaleY(.85)}60%{transform:rotate(-10deg) scaleY(.9)}}
+.an__card{border-color:rgba(140,200,255,.4)}
+.an__card:hover,.an__card:focus-visible{border-color:#9fd2ff;box-shadow:0 10px 30px -10px rgba(120,190,255,.7)}
+.an__card--666 .an__n{background:linear-gradient(180deg,#ff8a7a,#ff1a1a 50%,#7a0000)!important;background-size:100% 100%!important;-webkit-background-clip:text!important;background-clip:text!important;filter:drop-shadow(0 0 10px rgba(255,20,20,.85))!important;animation:red666 1.6s ease-in-out infinite alternate!important}
+.an__spk{position:absolute;left:0;right:0;top:0;height:4.6rem;pointer-events:none}
+.an__spk i{position:absolute;font-style:normal;color:#fff;font-size:.7rem;text-shadow:0 0 6px #9fd2ff,0 0 12px #5aa8ff;opacity:0;animation:anSpark 2.6s ease-in-out infinite}
+.an__spk i:nth-child(1){left:12%;top:18%}.an__spk i:nth-child(2){left:84%;top:14%;animation-delay:.5s;font-size:.55rem}.an__spk i:nth-child(3){left:26%;top:72%;animation-delay:1.1s}.an__spk i:nth-child(4){left:72%;top:70%;animation-delay:1.6s;font-size:.6rem}.an__spk i:nth-child(5){left:50%;top:4%;animation-delay:2.1s;font-size:.5rem}
+@keyframes anSpark{0%,100%{opacity:0;transform:scale(.3) rotate(0)}50%{opacity:1;transform:scale(1.2) rotate(90deg)}}
+.an__card--666 .an__spk i{color:#ffb0a8;text-shadow:0 0 6px #ff3030}
+@media(prefers-reduced-motion:reduce){.an__spk{display:none}}
 .g3__flash{position:absolute;inset:0;z-index:2;pointer-events:none;background:#eaf4ff;opacity:0}
 .g3__flash.on{animation:g3flash .8s steps(1) forwards}
 @keyframes g3flash{0%{opacity:.95}8%{opacity:.05}16%{opacity:.85}26%{opacity:.1}36%{opacity:.7}50%{opacity:0}62%{opacity:.45}74%{opacity:0}84%{opacity:.25}100%{opacity:0}}
@@ -2008,6 +2029,10 @@ html{scroll-padding-top:70px}
 <script src="coach/court.js?v=14" defer></script>
 <script src="coach/home.js?v=29"></script>
 <script src="coach/extras.js?v=1" defer></script>
+<script>
+/* sparkles around each angel number */
+(function(){[].forEach.call(document.querySelectorAll("#angel-numbers .an__card"),function(c){if(c.querySelector(".an__spk"))return;var s=document.createElement("span");s.className="an__spk";s.setAttribute("aria-hidden","true");s.innerHTML="<i>✦</i><i>✧</i><i>✦</i><i>✧</i><i>✦</i>";c.insertBefore(s,c.firstChild);var n=c.querySelector(".an__n");if(n&&!n.parentNode.classList.contains("an__w")){var w=document.createElement("span");w.className="an__w";n.parentNode.insertBefore(w,n);var wing=function(side){var i=document.createElement("i");i.className="an__wg an__wg--"+side;i.setAttribute("aria-hidden","true");i.innerHTML='<img src="coach/assets/wing.svg" alt="">';return i;};w.appendChild(wing("l"));w.appendChild(n);w.appendChild(wing("r"));}});})();
+</script>
 <script>
 /* Jester's Court language tabs */
 (function(){var s=document.getElementById("jester");if(!s)return;var tabs=s.querySelectorAll("[data-jl]");
