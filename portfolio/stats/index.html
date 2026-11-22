@@ -33,6 +33,16 @@ h1 em{color:var(--gold)}
 .hours{display:flex;align-items:flex-end;gap:3px;height:120px;padding-top:6px}
 .hours div{flex:1;background:linear-gradient(0deg,#a8752c,#ffe7a3);border-radius:3px 3px 0 0;min-height:2px;position:relative}
 .hours div[data-n]:hover::after{content:attr(data-n);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);font-size:.7rem;background:#000;padding:1px 4px;border-radius:4px}
+.week{display:flex;align-items:flex-end;gap:10px;height:180px;padding-top:18px}
+.week div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;gap:4px}
+.week i{display:block;width:100%;border-radius:6px 6px 0 0;background:linear-gradient(0deg,#a8752c,#ffe7a3);height:0;transition:height 1.1s cubic-bezier(.22,1.2,.36,1);position:relative}
+.week i.pk{background:linear-gradient(0deg,#01411c,#3ab06a);position:absolute;bottom:0;left:0;right:0}
+.week b{font-size:.8rem;color:#fff}.week small{font-size:.72rem;color:var(--muted)}
+.legend{display:flex;gap:1rem;font-size:.78rem;color:var(--muted);margin-top:6px}.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px;background:linear-gradient(0deg,#a8752c,#ffe7a3)}.legend span.pk::before{background:#3ab06a}
+.pkcard{border-color:#3ab06a;background:linear-gradient(160deg,rgba(1,65,28,.35),var(--card) 60%)}
+.pkcard h2{color:#7dffb0}
+.pkgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.pkgrid h3{margin:.2rem 0 .4rem;font:700 .78rem system-ui;letter-spacing:.08em;text-transform:uppercase;color:#bfe9cc}
 .hours-l{display:flex;justify-content:space-between;color:var(--muted);font-size:.72rem}
 .list{list-style:none;margin:0;padding:0;max-height:360px;overflow:auto}
 .list li{display:flex;flex-wrap:wrap;gap:.2rem .6rem;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:.88rem}
@@ -94,6 +104,19 @@ h1 em{color:var(--gold)}
     G.sort(function (a, b) { return b.t - a.t; });
     var avg = V.length ? V.reduce(function (s, v) { return s + Math.min(v.du || 0, 3600); }, 0) / V.length : 0;
     var hours = new Array(24).fill(0); day.forEach(function (v) { var h = Math.floor((now - v.t) / 36e5); if (h < 24) hours[23 - h]++; }); var hmax = Math.max(1, Math.max.apply(null, hours));
+    var week = []; for (var d = 6; d >= 0; d--) { var st0 = new Date(now); st0.setHours(0, 0, 0, 0); st0 = st0.getTime() - d * 864e5; var inDay = V.filter(function (v) { return v.t >= st0 && v.t < st0 + 864e5; });
+      week.push({ n: inDay.length, pk: inDay.filter(function (v) { return v.c === "PK"; }).length, l: d === 0 ? "Today" : new Date(st0).toLocaleDateString("en", { weekday: "short" }) }); }
+    var wmax = Math.max(1, Math.max.apply(null, week.map(function (w) { return w.n; })));
+    var P = V.filter(function (v) { return v.c === "PK"; }), PG = G.filter(function (g) { return g.c === "PK"; });
+    var pkCard = '<div class="card full pkcard"><h2>🇵🇰 Visitors from Pakistan · 7 days</h2>' + (P.length || PG.length ? '<div class="pkgrid">' +
+      '<div><h3>Overview</h3><div class="bar"><span>Visits</span><small>' + P.length + '</small></div><div class="bar"><span>Share of all visits</span><small>' + pct(P.length, V.length) + '</small></div><div class="bar"><span>Avg time on site</span><small>' + dur(P.length ? P.reduce(function (s2, v) { return s2 + Math.min(v.du || 0, 3600); }, 0) / P.length : 0) + '</small></div><div class="bar"><span>Returning</span><small>' + pct(P.filter(function (v) { return v.rt; }).length, P.length) + '</small></div></div>' +
+      '<div><h3>What they did</h3><div class="bar"><span>🎮 Played a game</span><small>' + P.filter(function (v) { return v.g; }).length + '</small></div><div class="bar"><span>✦ Angel numbers</span><small>' + P.filter(function (v) { return v.an; }).length + '</small></div><div class="bar"><span>💬 Contacted / form</span><small>' + P.filter(function (v) { return v.ct; }).length + '</small></div></div>' +
+      '<div><h3>Devices &amp; apps</h3>' + bars(count(P, function (v) { return (v.d || "?") + (v.a ? " · " + v.a : ""); }), null, 6) + '</div>' +
+      '<div><h3>Came from</h3>' + bars(count(P, function (v) { return v.r || "Direct / shared link"; }), null, 6) + '</div>' +
+      '<div><h3>Cities (guest check-ins)</h3>' + bars(count(PG, function (g) { return (/multan/i.test(g.city || "") ? "🥭 " : "") + (g.city || "Unknown"); }), null, 8) + '</div>' +
+      '</div><h3 style="margin-top:12px">Recent visits from Pakistan</h3><ul class="list">' + P.slice().sort(function (a, b) { return b.t - a.t; }).slice(0, 25).map(function (v) {
+        return "<li>🇵🇰 " + esc(v.z ? v.z + " area" : "Pakistan") + ' <span class="tag">' + esc(v.d || "") + " · " + esc(v.os || "") + " · " + esc(v.br || "") + "</span>" + (v.a ? ' <span class="tag">via ' + esc(v.a) + "</span>" : "") + (v.r ? ' <span class="tag">from ' + esc(v.r) + "</span>" : "") + (v.g ? " 🎮 played" : "") + (v.an ? " ✦ angel numbers" : "") + (v.ct ? " 💬 contacted" : "") + " · " + dur(v.du || 0) + "<em>" + ago(now - v.t) + "</em></li>"; }).join("") + "</ul>"
+      : '<p class="empty">No visitors from Pakistan in the last 7 days yet.</p>') + "</div>";
     var countries = count(V, "c"), cities = count(V.filter(function (v) { return v.z; }), function (v) { return v.z + "|" + v.c; });
     var multan = G.filter(function (g) { return /multan/i.test(g.city || ""); }).length;
     var pk = V.filter(function (v) { return v.c === "PK"; }).length, arab = V.filter(function (v) { return /^(SA|AE|QA|KW|BH|OM|EG|JO|IQ|MA|DZ|TN|LB|LY|SD|YE|SY|PS)$/.test(v.c); }).length;
@@ -110,6 +133,8 @@ h1 em{color:var(--gold)}
       '</div>' +
       '<div class="grid">' +
         '<div class="card full"><h2>Visits in the last 24 hours</h2><div class="hours">' + hours.map(function (n) { return '<div data-n="' + n + '" style="height:' + (n / hmax * 100) + '%"></div>'; }).join("") + '</div><div class="hours-l"><span>24 h ago</span><span>12 h ago</span><span>now</span></div></div>' +
+        '<div class="card full"><h2>Visits in the last 7 days</h2><div class="week">' + week.map(function (w) { return '<div><b>' + w.n + '</b><i data-h="' + (w.n / wmax * 100) + '"><i class="pk" data-h="' + (w.n ? w.pk / w.n * 100 : 0) + '"></i></i><small>' + w.l + '</small></div>'; }).join("") + '</div><div class="legend"><span>All visits</span><span class="pk">From Pakistan</span></div></div>' +
+        pkCard +
         '<div class="card"><h2>Countries</h2>' + bars(countries, function (c) { return flag(c) + " " + esc(cname(c)); }, 10) + '</div>' +
         '<div class="card"><h2>Cities (time zone)</h2>' + bars(cities, function (k) { var p = k.split("|"); return flag(p[1]) + " " + esc(p[0]) + " area"; }, 10) + '</div>' +
         '<div class="card"><h2>Devices</h2>' + bars(count(V, "d"), function (d) { return ({ phone: "📱 Phone", tablet: "📱 Tablet", computer: "💻 Computer" }[d] || esc(d)); }) + '</div>' +
@@ -135,6 +160,7 @@ h1 em{color:var(--gold)}
             return "<li>" + flag(g.c) + " <b>" + esc(g.city || "Somewhere") + "</b>" + (g.reg ? ", " + esc(g.reg) : "") + (g.c ? " · " + esc(cname(g.c)) : "") + (/multan/i.test(g.city || "") ? ' <span class="tag tag--mx">🥭 Multan</span>' : "") + (g.isp ? ' <span class="tag">' + esc(g.isp) + "</span>" : "") + ' <span class="tag">' + esc(g.d || "") + " · " + esc(g.os || "") + "</span>" + (g.n ? " — <b>" + esc(g.n) + "</b>" : "") + (g.m ? ": “" + esc(g.m) + "”" : "") + "<em>" + ago(now - g.t) + "</em></li>"; }).join("") : '<li class="empty">No check-ins yet. Be the first!</li>') + "</ul></div>" +
       "</div>";
     var f = document.getElementById("gform"); if (f) f.addEventListener("submit", checkIn);
+    requestAnimationFrame(function () { requestAnimationFrame(function () { document.querySelectorAll(".week [data-h]").forEach(function (el) { el.style.height = Math.max(1, +el.getAttribute("data-h")) + "%"; }); }); });   // grow the bars
     if (location.hash === "#guest" && !render.scrolled) { render.scrolled = true; document.getElementById("guest").scrollIntoView(); }
   }
   function checkIn(e) {
