@@ -70,7 +70,7 @@
   function report() {
     visit();
     if (document.hidden) return;
-    fetch(DB + "/presence/" + id + ".json", { method: "PUT", body: JSON.stringify({ c: cc, z: zone, d: dev, a: app, x: activity(), t: { ".sv": "timestamp" } }) })
+    fetch(DB + "/presence/" + id + ".json", { method: "PUT", body: JSON.stringify({ c: cc, z: zone, d: dev, a: app, os: osName, br: brName, r: refHost.slice(0, 40), x: activity(), t: { ".sv": "timestamp" } }) })
       .then(function (r) { return r.json(); })
       .then(function (v) { if (v && typeof v.t === "number") offset = v.t - Date.now(); })   // server clock minus ours
       .catch(function () {});
