@@ -47,7 +47,9 @@
     return "";
   }
   var lastAct = ""; setInterval(function () { var a2 = activity(); if (a2 !== lastAct) { lastAct = a2; report(); } }, 4000);
-  var id = Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+  var id = Math.random().toString(36).slice(2, 10) + Date.now().toString(36);   // this page view
+  var pid = id;   // this device: every tab and refresh shares one "online" entry, so nobody is counted twice
+  try { pid = localStorage.getItem("coach-pid") || ""; if (!/^[a-z0-9]{8,24}$/.test(pid)) { pid = "d" + id; localStorage.setItem("coach-pid", pid); } } catch (e) { pid = id; }
   var offset = 0, timer = 0, beat = 0;
 
   function flag(code) { return code ? code.replace(/./g, function (ch) { return String.fromCodePoint(127397 + ch.charCodeAt(0)); }) : "🌍"; }
@@ -63,14 +65,14 @@
   var started = Date.now(), seen = { g: 0, an: 0, ct: 0 }, visitSent = false;
   function visit() {
     var a2 = activity(); if (a2 === "game") seen.g = 1; if (a2 === "angel") seen.an = 1; if (a2 === "contact") seen.ct = 1;
-    var body = { c: cc, z: zone, d: dev, a: app, os: osName, br: brName, r: refHost.slice(0, 40), lg: (navigator.language || "").slice(0, 8), sw: screen.width || 0, rt: returning ? 1 : 0, du: Math.round((Date.now() - started) / 1000), g: seen.g, an: seen.an, ct: seen.ct, t: { ".sv": "timestamp" } };
+    var body = { c: cc, z: zone, d: dev, a: app, os: osName, br: brName, r: refHost.slice(0, 40), lg: (navigator.language || "").slice(0, 8), sw: screen.width || 0, rt: returning ? 1 : 0, p: pid, du: Math.round((Date.now() - started) / 1000), g: seen.g, an: seen.an, ct: seen.ct, t: { ".sv": "timestamp" } };
     if (visitSent) delete body.t;
     fetch(DB + "/visits/" + id + ".json", { method: visitSent ? "PATCH" : "PUT", body: JSON.stringify(body) }).catch(function () {}); visitSent = true;
   }
   function report() {
     visit();
     if (document.hidden) return;
-    fetch(DB + "/presence/" + id + ".json", { method: "PUT", body: JSON.stringify({ c: cc, z: zone, d: dev, a: app, os: osName, br: brName, r: refHost.slice(0, 40), x: activity(), t: { ".sv": "timestamp" } }) })
+    fetch(DB + "/presence/" + pid + ".json", { method: "PUT", body: JSON.stringify({ vid: id, c: cc, z: zone, d: dev, a: app, os: osName, br: brName, r: refHost.slice(0, 40), x: activity(), t: { ".sv": "timestamp" } }) })
       .then(function (r) { return r.json(); })
       .then(function (v) { if (v && typeof v.t === "number") offset = v.t - Date.now(); })   // server clock minus ours
       .catch(function () {});
@@ -81,31 +83,39 @@
       var all = res[0] || {}, visits = res[1] || {};
       var now = Date.now() + offset, live = [], by = {}, stale = {}, recent = [], acts = { game: 0, contact: 0, angel: 0 };
       Object.keys(all).forEach(function (k) {
-        var v = all[k] || {}, age = now - (v.t || 0), vi = visits[k] || {};
-        if (age < 70000) { live.push({ v: v, vi: vi, me: k === id }); var c = v.c || ""; by[c] = (by[c] || 0) + 1; if (acts[v.x] !== undefined) acts[v.x]++; }
+        var v = all[k] || {}, age = now - (v.t || 0), vi = visits[v.vid || k] || {};
+        if (age < 70000) { live.push({ v: v, vi: vi, me: k === pid }); var c = v.c || ""; by[c] = (by[c] || 0) + 1; if (acts[v.x] !== undefined) acts[v.x]++; }
         else if (age < 86400000) recent.push({ c: v.c || "", z: /^(UTC|GMT|Universal|Zulu)$/i.test(v.z || "") ? "" : (v.z || ""), d: v.d || "", a: v.a || "", age: age });
         else stale[k] = null;   // forget visits older than a day
       });
       if (Object.keys(stale).length) fetch(DB + "/presence.json", { method: "PATCH", body: JSON.stringify(stale) }).catch(function () {});
       // viewers per minute over the last hour, and visits per hour over the last day
       var V = Object.keys(visits).map(function (k) { return visits[k] || {}; }).filter(function (v) { return v.t && now - v.t < 864e5; });
-      var mins = []; for (var m = 59; m >= 0; m--) { var b0 = now - (m + 1) * 60000, b1 = now - m * 60000; mins.push(V.filter(function (v) { return v.t <= b1 && v.t + Math.max(60, v.du || 0) * 1000 >= b0; }).length); }
-      mins[59] = Math.max(mins[59], live.length);
+      // viewers in 5-minute steps over the last 3 hours (one per device)
+      var mins = []; for (var m = 35; m >= 0; m--) { var b0 = now - (m + 1) * 3e5, b1 = now - m * 3e5, seenP = {}; V.forEach(function (v) { if (v.t <= b1 && v.t + Math.max(60, v.du || 0) * 1000 >= b0) seenP[v.p || v.t] = 1; }); mins.push(Object.keys(seenP).length); }
+      mins[35] = Math.max(mins[35], live.length);
+      // everyone from the last 3 hours, newest first, one row per device
+      var liveP = {}; Object.keys(all).forEach(function (k) { if (now - ((all[k] || {}).t || 0) < 70000) liveP[k] = 1; });
+      var last3 = [], gotP = {}; V.filter(function (v) { return now - v.t < 108e5; }).sort(function (a, b) { return b.t - a.t; }).forEach(function (v) {
+        var key = v.p || ("t" + v.t); if (gotP[key]) { gotP[key].n++; gotP[key].du += v.du || 0; gotP[key].g |= v.g; gotP[key].an |= v.an; gotP[key].ct |= v.ct; return; }
+        gotP[key] = { v: v, n: 1, du: v.du || 0, g: v.g, an: v.an, ct: v.ct, live: !!liveP[v.p], me: v.p === pid }; last3.push(gotP[key]); });
       var hrs = []; for (var h2 = 23; h2 >= 0; h2--) { var c0 = now - (h2 + 1) * 36e5, c1 = now - h2 * 36e5; hrs.push(V.filter(function (v) { return v.t >= c0 && v.t < c1; }).length); }
       recent.sort(function (a, b) { return a.age - b.age; }); var ctry = {}; V.forEach(function (v) { if (v.c) ctry[v.c] = 1; });
-      var day = { n: V.length, countries: Object.keys(ctry).length, avg: V.length ? V.reduce(function (a2, v) { return a2 + Math.min(v.du || 0, 3600); }, 0) / V.length : 0, peak: Math.max.apply(null, mins), pk: V.filter(function (v) { return v.c === "PK"; }).length };
-      render(live, by, recent.slice(0, 8), acts, mins, hrs, now, day);
+      var uniq = function (arr) { var o = {}; arr.forEach(function (v) { o[v.p || ("t" + v.t)] = 1; }); return Object.keys(o).length; };
+      var day = { n: uniq(V), countries: Object.keys(ctry).length, avg: V.length ? V.reduce(function (a2, v) { return a2 + Math.min(v.du || 0, 3600); }, 0) / V.length : 0, peak: Math.max.apply(null, mins), pk: uniq(V.filter(function (v) { return v.c === "PK"; })) };
+      render(live, by, last3, acts, mins, hrs, now, day);
     }).catch(function () {});
   }
   function ago(ms) { var m = Math.round(ms / 60000); return m < 1 ? "just now" : m < 60 ? m + " min ago" : Math.round(m / 60) + " h ago"; }
   function esc(x) { return String(x == null ? "" : x).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
   function dur(sec) { sec = Math.max(0, Math.round(sec)); return sec < 60 ? sec + "s" : Math.floor(sec / 60) + "m " + (sec % 60) + "s"; }
-  function spark(data, now, title) {   // smooth area line with the peak marked
+  function spark(data, now, title, step) {
+    step = step || 60000;   // smooth area line with the peak marked
     var W = 260, H = 90, max = Math.max(1, Math.max.apply(null, data)), n = data.length;
     var pts = data.map(function (d, i) { return [i / (n - 1) * W, H - 8 - d / max * (H - 22)]; });
     var line = pts.map(function (p, i) { return (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1); }).join(" ");
     var pk = data.indexOf(max);
-    var when = new Date(now - (n - 1 - pk) * 60000).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    var when = new Date(now - (n - 1 - pk) * step).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
     return '<div class="lv__chart"><b>' + title + '</b><svg viewBox="0 0 ' + W + " " + H + '" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="lvg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#3dff7a" stop-opacity=".55"/><stop offset="1" stop-color="#3dff7a" stop-opacity="0"/></linearGradient></defs>' +
       '<path d="' + line + " L" + W + " " + H + " L0 " + H + ' Z" fill="url(#lvg)"/><path class="lv__line" d="' + line + '" fill="none" stroke="#3dff7a" stroke-width="2.2"/>' +
       '</svg><small>Peak <b>' + max + "</b> at " + when + " · now <b>" + data[n - 1] + "</b></small></div>";
@@ -128,14 +138,17 @@
         '<span class="lv__tags">' + [DEV[v.d] || "", v.os || vi.os || "", v.br || vi.br || "", (v.a || vi.a) ? "via " + (v.a || vi.a) : "", (v.r || vi.r) ? "from " + (v.r || vi.r) : "direct", vi.lg ? "🗣 " + vi.lg : "", vi.sw ? "🖥 " + vi.sw + "px" : "", vi.rt ? "↩ returning" : "✨ new visitor", vi.t ? "⏱ " + dur((now - vi.t) / 1000) + " on site" : ""].filter(Boolean).map(function (t2) { return "<i>" + esc(t2) + "</i>"; }).join("") + "</span>" +
         '<span class="lv__doing">' + (DOING[v.x] || "👀 browsing") + (vi.g ? " · played the game" : "") + (vi.an ? " · saw angel numbers" : "") + (vi.ct ? " · contacted" : "") + "</span></div></li>"; }).join("");
     box.innerHTML =
-      '<div class="lv__side">' + spark(mins, now, "Viewers · last 60 min") + "</div>" +
+      '<div class="lv__side">' + spark(mins, now, "Viewers · last 3 hours", 3e5) + "</div>" +
       '<div class="lv__mid"><div class="lv__head"><span class="lv__badge"><span class="live__dot" aria-hidden="true"></span>LIVE</span><b class="lv__big">' + n + '</b><span>' + (n === 1 ? "person" : "people") + " viewing now</span></div>" +
-        '<div class="lv__kpis"><span><b>' + (day.n || 0) + "</b>visits today</span><span><b>" + (day.peak || 0) + "</b>peak this hour</span><span><b>" + (day.countries || 0) + "</b>countries today</span><span><b>" + dur(day.avg || 0) + "</b>avg time</span><span><b>🇵🇰 " + (day.pk || 0) + "</b>from Pakistan</span></div>" +
+        '<div class="lv__kpis"><span><b>' + (day.n || 0) + "</b>visitors today</span><span><b>" + (day.peak || 0) + "</b>peak · 3 h</span><span><b>" + (day.countries || 0) + "</b>countries today</span><span><b>" + dur(day.avg || 0) + "</b>avg time</span><span><b>🇵🇰 " + (day.pk || 0) + "</b>from Pakistan</span></div>" +
         (doing.length ? '<span class="live__doing">' + doing.join(" · ") + "</span>" : "") +
         '<span class="live__ur" lang="ur" dir="rtl">' + n + " لوگ ابھی دیکھ رہے ہیں" + (acts.game ? " · " + acts.game + " گیم کھیل رہے ہیں" : "") + (acts.contact ? " · " + acts.contact + " واٹس ایپ پر رابطہ کر رہے ہیں" : "") + "</span>" +
         '<span class="live__where">' + top.map(function (c) { return '<span title="' + (countryName(c) || "Elsewhere") + '">' + flag(c) + " " + (countryName(c) || "Elsewhere") + " " + by[c] + "</span>"; }).join("") + "</span>" +
         (n ? '<ul class="lv__people">' + people + "</ul>" : "") +
-        (recent.length ? '<details class="live__recent"><summary>Recently connected</summary><ul>' + recent.map(function (r) { return "<li>" + flag(r.c) + " " + (r.z ? esc(r.z) + " area" : (countryName(r.c) || "Somewhere")) + (r.d ? " · " + ({ phone: "📱", tablet: "📱", computer: "💻" }[r.d] || "") : "") + (r.a ? " via " + esc(r.a) : "") + " · <i>" + ago(r.age) + "</i></li>"; }).join("") + "</ul></details>" : "") +
+        (recent.length ? '<div class="lv__l3"><b class="lv__l3h">🕒 Last 3 hours · ' + recent.length + (recent.length === 1 ? " visitor" : " visitors") + '</b><ul>' + recent.map(function (r) { var v = r.v;
+          return "<li>" + (r.live ? '<i class="lv__on" title="online now"></i>' : "") + flag(v.c) + " <b>" + esc(v.z ? v.z : (countryName(v.c) || "Somewhere")) + "</b>" + (r.me ? ' <span class="lv__me">you</span>' : "") +
+            '<span class="lv__l3m">' + [({ phone: "📱", tablet: "📱", computer: "💻" }[v.d] || ""), v.a ? "via " + esc(v.a) : "", "⏱ " + dur(r.du), r.n > 1 ? r.n + " visits" : "", r.g ? "🎮" : "", r.an ? "✦" : "", r.ct ? "💬" : ""].filter(Boolean).join(" · ") + "</span>" +
+            "<em>" + (r.live ? "online now" : ago(now - v.t)) + "</em></li>"; }).join("") + "</ul></div>" : "") +
         '<span class="live__links"><a href="stats/">📊 Live stats</a><a href="stats/#guest">🤲 Make dua for Adeel</a></span></div>' +
       '<div class="lv__side">' + bars24(hrs) + "</div>";
     box.hidden = false;

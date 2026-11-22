@@ -8,7 +8,7 @@
   function okPin(s) { return h(String(s)) === 2320489305; }
   function okWord(s) { return h(String(s).trim().toLowerCase()) === 443645419; }
   function t9(ch) { ch = ch.toUpperCase(); if (/\d/.test(ch)) return ch; for (var d in T9) if (T9[d].indexOf(ch) > -1) return d; return ""; }
-  function unlocked() { try { return localStorage.getItem(KEY) === "1"; } catch (e) { return false; } }
+  function unlocked() { return false; }   // locks again on every page load
 
   var css = document.createElement("style");
   css.textContent =
@@ -51,7 +51,7 @@
     var dots = o.querySelector(".lko__dots"), kb = o.querySelector(".lko__kb"), inp = kb.querySelector("input");
     function paint() { [].forEach.call(dots.children, function (d, i) { d.classList.toggle("on", i < code.length); }); }
     function fail(el) { el.classList.remove("bad"); void el.offsetWidth; el.classList.add("bad"); if (navigator.vibrate) navigator.vibrate(200); }
-    function win() { try { localStorage.setItem(KEY, "1"); } catch (e) {} var i2 = o.querySelector(".lko__ic"); i2.textContent = "👁️🔓"; i2.classList.add("yes"); setTimeout(function () { close(); done(); }, 380); }
+    function win() { var i2 = o.querySelector(".lko__ic"); i2.textContent = "👁️🔓"; i2.classList.add("yes"); setTimeout(function () { close(); done(); }, 380); }
     function close(cancelled) { document.removeEventListener("keydown", onKey, true); o.remove(); if (last && last.focus) last.focus(); if (cancelled && onCancel) onCancel(); }
     function press(d) {
       if (code.length >= 6) return;
