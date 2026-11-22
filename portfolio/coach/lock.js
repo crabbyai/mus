@@ -15,7 +15,7 @@
     ".lk{display:flex;justify-content:center;margin:14px auto 0;padding:0 16px;position:relative;z-index:2}" +
     ".lk{margin-top:10px}.lk__field{touch-action:manipulation;display:flex;align-items:center;gap:.5rem;width:min(340px,100%);padding:.55rem .9rem;border-radius:999px;border:1px solid rgba(110,230,140,.45);background:rgba(8,20,14,.75);color:#cfeedd;font:600 .85rem system-ui,sans-serif;cursor:pointer;text-align:left}" +
     ".lk__field:focus-visible{outline:2px solid rgba(255,255,255,.5);outline-offset:2px}" +
-    ".lk__field{width:auto!important;padding:.2rem .4rem!important;justify-content:center;border:0!important;background:none!important;box-shadow:none!important;border-radius:10px;transition:transform .12s}" +".lk__ic{font-size:1.6rem;line-height:1;letter-spacing:.08em}" +".lk__field[data-s=locked]:hover .lk__ic,.lk__field[data-s=locked]:focus-visible .lk__ic{font-size:0}" +".lk__field[data-s=locked]:hover .lk__ic::after,.lk__field[data-s=locked]:focus-visible .lk__ic::after{content:\"👁️🔐\";font-size:1.6rem}" +".lk__field:hover{transform:scale(1.05)}" +".lk__field[data-s=opened]{animation:lkPop .4s ease-out}" +"@keyframes lkPop{50%{transform:scale(1.15)}}" +"[data-closed]{display:none!important}" +
+    ".lk__field{width:auto!important;padding:.2rem .4rem!important;justify-content:center;border:0!important;background:none!important;box-shadow:none!important;border-radius:10px;transition:transform .12s}" +".lk__ic,.lk__ic::after,.lko__ic{font-family:'Noto Emoji',sans-serif!important;font-weight:500;color:#ffd77a;text-shadow:0 0 12px rgba(255,215,120,.65),0 0 2px rgba(255,255,255,.6)}" +".lk__ic{font-size:1.7rem;line-height:1;letter-spacing:.12em}" +".lk__field[data-s=locked]:hover .lk__ic,.lk__field[data-s=locked]:focus-visible .lk__ic{font-size:0}" +".lk__field[data-s=locked]:hover .lk__ic::after,.lk__field[data-s=locked]:focus-visible .lk__ic::after{content:\"👁️🔐\";font-size:1.7rem}" +".lk__field:hover{transform:scale(1.05)}" +".lk__field[data-s=opened]{animation:lkPop .4s ease-out}" +"@keyframes lkPop{50%{transform:scale(1.15)}}" +"[data-closed]{display:none!important}" +
     ".lko{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px 16px;background:rgba(6,10,12,.9);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);touch-action:manipulation;color:#fff;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',system-ui,sans-serif;animation:lkIn .14s ease-out}" +
     "@keyframes lkIn{from{opacity:0}}" +
     ".lko__ic{font-size:2rem;letter-spacing:.06em}.lko__ic.yes{animation:lkPop .38s ease-out}.lko__t{font-size:1.15rem;font-weight:500;margin:0}" +
@@ -34,6 +34,7 @@
     "@media(max-height:640px){.lko__pad{grid-template-columns:repeat(3,64px);gap:10px 20px}.lko__pad button{width:64px;height:64px;font-size:1.6rem}}" +
     "@media(prefers-reduced-motion:reduce){.lko,.lko__dots.bad,.lko__kb.bad{animation:none}}";
   document.head.appendChild(css);
+  var fl = document.createElement("link"); fl.rel = "stylesheet"; fl.href = "https://fonts.googleapis.com/css2?family=Noto+Emoji:wght@500&display=swap&text=%F0%9F%91%81%EF%B8%8F%F0%9F%94%92%F0%9F%94%90%E2%9C%A8%F0%9F%94%93"; document.head.appendChild(fl);
 
   function open(done, onCancel) {
     if (document.querySelector(".lko")) return;
