@@ -35,6 +35,18 @@
   var zone = generic ? "" : (tz.split("/").pop() || "").replace(/_/g, " ").slice(0, 30);   // e.g. "Karachi", "Toronto"
   var ua = navigator.userAgent || "", dev = /iPad|Tablet/i.test(ua) ? "tablet" : /Mobi|Android|iPhone/i.test(ua) ? "phone" : "computer";
   var app = /Instagram/i.test(ua) ? "Instagram" : /FBAN|FBAV/i.test(ua) ? "Facebook" : /TikTok|musical_ly|BytedanceWebview/i.test(ua) ? "TikTok" : /Snapchat/i.test(ua) ? "Snapchat" : /WhatsApp/i.test(ua) ? "WhatsApp" : "";
+  // what this visitor is really doing right now
+  var lastContact = 0;
+  document.addEventListener("click", function (e) { var a = e.target.closest && e.target.closest('a[href*="wa.me"],a[href^="mailto:"],a[href*="paypal.me"]'); if (a) { lastContact = Date.now(); report(); } }, true);
+  document.addEventListener("focusin", function (e) { if (e.target.closest && e.target.closest("form")) { lastContact = Date.now(); report(); } }, true);
+  function inView(sel) { var el = document.querySelector(sel); if (!el) return false; var r = el.getBoundingClientRect(); return r.bottom > innerHeight * 0.3 && r.top < innerHeight * 0.7; }
+  function activity() {
+    if (Date.now() - lastContact < 90000 || inView("#pray") || inView("#checkout")) return "contact";
+    if (inView("#scorpion-street-3d") || inView("#scorpion-street")) return "game";
+    if (inView("#angel-numbers")) return "angel";
+    return "";
+  }
+  var lastAct = ""; setInterval(function () { var a2 = activity(); if (a2 !== lastAct) { lastAct = a2; report(); } }, 4000);
   var id = Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
   var offset = 0, timer = 0, beat = 0;
 
@@ -45,7 +57,7 @@
   }
   function report() {
     if (document.hidden) return;
-    fetch(DB + "/presence/" + id + ".json", { method: "PUT", body: JSON.stringify({ c: cc, z: zone, d: dev, a: app, t: { ".sv": "timestamp" } }) })
+    fetch(DB + "/presence/" + id + ".json", { method: "PUT", body: JSON.stringify({ c: cc, z: zone, d: dev, a: app, x: activity(), t: { ".sv": "timestamp" } }) })
       .then(function (r) { return r.json(); })
       .then(function (v) { if (v && typeof v.t === "number") offset = v.t - Date.now(); })   // server clock minus ours
       .catch(function () {});
@@ -54,22 +66,24 @@
   function refresh() {
     fetch(DB + "/presence.json").then(function (r) { return r.json(); }).then(function (all) {
       all = all || {};
-      var now = Date.now() + offset, live = 0, by = {}, stale = {}, recent = [];
+      var now = Date.now() + offset, live = 0, by = {}, stale = {}, recent = [], acts = { game: 0, contact: 0, angel: 0 };
       Object.keys(all).forEach(function (k) {
         var v = all[k] || {}, age = now - (v.t || 0);
-        if (age < 70000) { live++; var c = v.c || ""; by[c] = (by[c] || 0) + 1; }
+        if (age < 70000) { live++; var c = v.c || ""; by[c] = (by[c] || 0) + 1; if (acts[v.x] !== undefined) acts[v.x]++; }
         else if (age < 86400000) recent.push({ c: v.c || "", z: /^(UTC|GMT|Universal|Zulu)$/i.test(v.z || "") ? "" : (v.z || ""), d: v.d || "", a: v.a || "", age: age });
         else stale[k] = null;   // forget visits older than a day
       });
       if (Object.keys(stale).length) fetch(DB + "/presence.json", { method: "PATCH", body: JSON.stringify(stale) }).catch(function () {});
-      recent.sort(function (a, b) { return a.age - b.age; }); render(live, by, recent.slice(0, 8));
+      recent.sort(function (a, b) { return a.age - b.age; }); render(live, by, recent.slice(0, 8), acts);
     }).catch(function () {});
   }
   function ago(ms) { var m = Math.round(ms / 60000); return m < 1 ? "just now" : m < 60 ? m + " min ago" : Math.round(m / 60) + " h ago"; }
-  function render(live, by, recent) {
+  function render(live, by, recent, acts) {
     if (!live && !recent.length) { box.hidden = true; return; }
     var top = Object.keys(by).sort(function (a, b) { return by[b] - by[a]; }).slice(0, 5);
-    box.innerHTML = '<span class="live__dot" aria-hidden="true"></span><b>' + live + "</b> " + (live === 1 ? "person" : "people") + " viewing now" +
+    acts = acts || {}; var doing = [acts.game ? "🎮 " + acts.game + " playing the game" : "", acts.contact ? "💬 " + acts.contact + " on WhatsApp or the contact form" : "", acts.angel ? "✦ " + acts.angel + " exploring angel numbers" : ""].filter(Boolean);
+    box.innerHTML = '<span class="live__dot" aria-hidden="true"></span><span class="live__622" aria-hidden="true">622</span> <b>' + live + "</b> " + (live === 1 ? "person" : "people") + " viewing now" +
+      (doing.length ? '<span class="live__doing">' + doing.join(" · ") + "</span>" : "") +
       '<span class="live__where">' + top.map(function (c) { return '<span title="' + (countryName(c) || "Elsewhere") + '">' + flag(c) + " " + (countryName(c) || "Elsewhere") + " " + by[c] + "</span>"; }).join("") + "</span>" +
       (recent.length ? '<details class="live__recent"><summary>Recently connected</summary><ul>' + recent.map(function (r) { return "<li>" + flag(r.c) + " " + (r.z ? r.z.replace(/</g, "") + " area" : (countryName(r.c) || "Somewhere")) + (r.d ? " · " + ({ phone: "📱", tablet: "📱", computer: "💻" }[r.d] || "") : "") + (r.a ? " via " + String(r.a).replace(/</g, "") : "") + " · <i>" + ago(r.age) + "</i></li>"; }).join("") + "</ul></details>" : "");
     box.hidden = false;
