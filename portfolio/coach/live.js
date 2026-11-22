@@ -55,7 +55,20 @@
     if (!code) return "";
     try { return new Intl.DisplayNames([document.documentElement.lang || "en"], { type: "region" }).of(code); } catch (e) { return code; }
   }
+  // anonymous visit record for the public stats page (no IP, no name)
+  var osName = /Windows/i.test(ua) ? "Windows" : /iPhone|iPad|iPod/i.test(ua) ? "iOS" : /Mac OS X/i.test(ua) ? "macOS" : /Android/i.test(ua) ? "Android" : /Linux/i.test(ua) ? "Linux" : "Other";
+  var brName = /Edg\//.test(ua) ? "Edge" : /OPR\//.test(ua) ? "Opera" : /SamsungBrowser/.test(ua) ? "Samsung" : /CriOS|Chrome\//.test(ua) ? "Chrome" : /FxiOS|Firefox\//.test(ua) ? "Firefox" : /Safari\//.test(ua) ? "Safari" : "Other";
+  var refHost = ""; try { refHost = document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, "") : ""; if (refHost === location.hostname) refHost = ""; } catch (e) {}
+  var returning = false; try { returning = !!localStorage.getItem("coach-seen"); localStorage.setItem("coach-seen", "1"); } catch (e) {}
+  var started = Date.now(), seen = { g: 0, an: 0, ct: 0 }, visitSent = false;
+  function visit() {
+    var a2 = activity(); if (a2 === "game") seen.g = 1; if (a2 === "angel") seen.an = 1; if (a2 === "contact") seen.ct = 1;
+    var body = { c: cc, z: zone, d: dev, a: app, os: osName, br: brName, r: refHost.slice(0, 40), lg: (navigator.language || "").slice(0, 8), sw: screen.width || 0, rt: returning ? 1 : 0, du: Math.round((Date.now() - started) / 1000), g: seen.g, an: seen.an, ct: seen.ct, t: { ".sv": "timestamp" } };
+    if (visitSent) delete body.t;
+    fetch(DB + "/visits/" + id + ".json", { method: visitSent ? "PATCH" : "PUT", body: JSON.stringify(body) }).catch(function () {}); visitSent = true;
+  }
   function report() {
+    visit();
     if (document.hidden) return;
     fetch(DB + "/presence/" + id + ".json", { method: "PUT", body: JSON.stringify({ c: cc, z: zone, d: dev, a: app, x: activity(), t: { ".sv": "timestamp" } }) })
       .then(function (r) { return r.json(); })
@@ -82,12 +95,13 @@
     if (!live && !recent.length) { box.hidden = true; return; }
     var top = Object.keys(by).sort(function (a, b) { return by[b] - by[a]; }).slice(0, 5);
     acts = acts || {}; var doing = [acts.game ? "🎮 " + acts.game + " playing the game" : "", acts.contact ? "💬 " + acts.contact + " on WhatsApp or the contact form" : "", acts.angel ? "✦ " + acts.angel + " exploring angel numbers" : ""].filter(Boolean);
-    box.innerHTML = '<span class="live__dot" aria-hidden="true"></span><span class="live__622" aria-hidden="true">622</span> <b>' + live + "</b> " + (live === 1 ? "person" : "people") + " viewing now" +
+    box.innerHTML = '<span class="live__dot" aria-hidden="true"></span><b>' + live + "</b> " + (live === 1 ? "person" : "people") + " viewing now" +
       (doing.length ? '<span class="live__doing">' + doing.join(" · ") + "</span>" : "") +
       '<span class="live__ur" lang="ur" dir="rtl">' + live + " لوگ ابھی دیکھ رہے ہیں" + (acts.game ? " · " + acts.game + " گیم کھیل رہے ہیں" : "") + (acts.contact ? " · " + acts.contact + " واٹس ایپ پر رابطہ کر رہے ہیں" : "") + "</span>" +
       '<span class="live__pa" lang="pa-Arab" dir="rtl">' + live + " لوک ہُݨ ویکھ رہے نیں" + (acts.game ? " · " + acts.game + " گیم کھیڈ رہے نیں" : "") + (acts.contact ? " · " + acts.contact + " واٹس ایپ تے گل کر رہے نیں" : "") + "</span>" +
       '<span class="live__where">' + top.map(function (c) { return '<span title="' + (countryName(c) || "Elsewhere") + '">' + flag(c) + " " + (countryName(c) || "Elsewhere") + " " + by[c] + "</span>"; }).join("") + "</span>" +
       (recent.length ? '<details class="live__recent"><summary>Recently connected</summary><ul>' + recent.map(function (r) { return "<li>" + flag(r.c) + " " + (r.z ? r.z.replace(/</g, "") + " area" : (countryName(r.c) || "Somewhere")) + (r.d ? " · " + ({ phone: "📱", tablet: "📱", computer: "💻" }[r.d] || "") : "") + (r.a ? " via " + String(r.a).replace(/</g, "") : "") + " · <i>" + ago(r.age) + "</i></li>"; }).join("") + "</ul></details>" : "");
+    box.innerHTML += '<span class="live__links"><a href="stats/">📊 Live stats</a><a href="stats/#guest">📍 Check in on the map</a></span>';
     box.hidden = false;
   }
 

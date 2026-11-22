@@ -89,9 +89,23 @@ It needs a free Firebase Realtime Database; until you add one, the widget stays 
     ".write": false,
     "presence": {
       ".read": true,
+      "$id": {
+        ".write": true,
+        ".validate": "$id.length <= 24 && (!newData.exists() || (newData.hasChildren(['t']) && newData.child('t').val() <= now))"
+      }
+    },
+    "visits": {
+      ".read": true,
       ".write": true,
       "$id": {
-        ".validate": "$id.length <= 24 && (!newData.exists() || (newData.hasChildren(['t']) && newData.child('t').val() == now && (!newData.child('c').exists() || newData.child('c').val().length <= 2)))"
+        ".validate": "$id.length <= 24 && (!newData.exists() || newData.hasChildren(['t']))"
+      }
+    },
+    "guests": {
+      ".read": true,
+      ".write": true,
+      "$id": {
+        ".validate": "$id.length <= 24 && (!newData.exists() || (newData.hasChildren(['t']) && (!newData.child('n').exists() || newData.child('n').val().length <= 40) && (!newData.child('m').exists() || newData.child('m').val().length <= 140)))"
       }
     }
   }
@@ -104,3 +118,10 @@ It needs a free Firebase Realtime Database; until you add one, the widget stays 
 How it counts: each open tab checks in every 25 seconds and counts as "viewing" for 70 seconds.
 Countries come from each visitor's time zone, so no IP addresses are sent anywhere. Only a
 random tab id, a two-letter country code and a timestamp are stored, and old entries are cleaned up automatically.
+
+
+### Public stats page and guest check-ins
+
+`/stats/` shows anonymous stats (no names, no IP addresses) for the last 7 days, and a map of guests who chose to check in.
+Guest check-ins show city, region, internet provider and device (looked up with ipwho.is when the guest clicks "Check in") and are deleted after 72 hours.
+The rules above cover `presence`, `visits` and `guests`; paste them again in the Firebase **Rules** tab whenever they change.

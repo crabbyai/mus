@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Live Stats · Adeel Ahmed Rahman</title>
+<meta name="description" content="Live, anonymous visitor stats for Adeel Ahmed Rahman's site, and a map of guests who chose to check in.">
+<meta name="robots" content="noindex">
+<style>
+:root{--bg:#070b16;--card:#0f1528;--line:rgba(232,200,126,.25);--gold:#e8c87e;--cream:#f6efe0;--muted:#9aa3b8;--green:#3dff7a}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 20% 0%,#16204a,transparent 50%),var(--bg);color:var(--cream);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:var(--gold)}
+.wrap{max-width:1100px;margin:0 auto;padding:18px 16px 60px}
+header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:14px}
+h1{margin:0;font:600 clamp(1.4rem,4vw,2rem) Georgia,serif}
+h1 em{color:var(--gold)}
+.back{font-weight:700;text-decoration:none}
+.note{color:var(--muted);font-size:.85rem;margin:0 0 16px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
+.kpi b{display:block;font:800 1.8rem/1.1 system-ui;color:#fff}
+.kpi span{color:var(--muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.08em}
+.kpi--live b{color:var(--green)}
+.kpi--live b::before{content:"";display:inline-block;width:10px;height:10px;margin-right:8px;border-radius:50%;background:var(--green);vertical-align:middle;box-shadow:0 0 0 0 rgba(61,255,122,.7);animation:pulse 1.6s infinite}
+@keyframes pulse{to{box-shadow:0 0 0 10px rgba(61,255,122,0)}}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 16px}
+.card h2{margin:0 0 10px;font:700 .95rem system-ui;letter-spacing:.06em;text-transform:uppercase;color:var(--gold)}
+.bar{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;align-items:center;margin:6px 0;font-size:.9rem}
+.bar i{grid-column:1/-1;display:block;height:7px;border-radius:4px;background:linear-gradient(90deg,#e8c87e,#a8752c)}
+.bar small{color:var(--muted)}
+.hours{display:flex;align-items:flex-end;gap:3px;height:120px;padding-top:6px}
+.hours div{flex:1;background:linear-gradient(0deg,#a8752c,#ffe7a3);border-radius:3px 3px 0 0;min-height:2px;position:relative}
+.hours div[data-n]:hover::after{content:attr(data-n);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);font-size:.7rem;background:#000;padding:1px 4px;border-radius:4px}
+.hours-l{display:flex;justify-content:space-between;color:var(--muted);font-size:.72rem}
+.list{list-style:none;margin:0;padding:0;max-height:360px;overflow:auto}
+.list li{display:flex;flex-wrap:wrap;gap:.2rem .6rem;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:.88rem}
+.list li em{color:var(--muted);font-style:normal;margin-left:auto}
+.tag{font-size:.72rem;padding:1px 7px;border-radius:999px;background:rgba(232,200,126,.15);color:var(--gold)}
+.tag--mx{background:rgba(255,190,40,.18);color:#ffd23a}
+.full{grid-column:1/-1}
+#guest form{display:grid;gap:8px}
+#guest input[type=checkbox]{width:auto;margin-top:.2rem;flex:none}
+#guest input:not([type=checkbox]),#guest textarea{width:100%;padding:.6rem .8rem;border-radius:12px;border:1px solid var(--line);background:#0a0f1e;color:var(--cream);font:inherit}
+#guest label.chk{display:flex;gap:.5rem;align-items:flex-start;font-size:.85rem;color:var(--muted)}
+#guest button{justify-self:start;border:0;border-radius:999px;padding:.6rem 1.3rem;background:linear-gradient(135deg,#ffe7a3,#c9a45c);color:#1a1206;font-weight:800;cursor:pointer}
+#guest button:disabled{opacity:.5}
+.empty{color:var(--muted);font-size:.88rem}
+.off{padding:1rem;border:1px dashed var(--line);border-radius:14px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Live stats · <em>Adeel Ahmed Rahman</em></h1>
+    <a class="back" href="../">← Back to the site</a>
+  </header>
+  <p class="note">Anonymous and public: no names or IP addresses are collected for these stats. Locations come from each visitor's time zone and language settings. Guests below chose to check in, and their entries disappear after 72 hours.</p>
+  <div id="app"><p class="off">Loading…</p></div>
+</div>
+<script src="../coach/config.js"></script>
+<script>
+(function () {
+  "use strict";
+  var DB = ((window.COACH && window.COACH.live && window.COACH.live.databaseURL) || "").replace(/\/+$/, "");
+  var app = document.getElementById("app");
+  if (!DB) { app.innerHTML = '<p class="off">Stats are not switched on yet.</p>'; return; }
+  var offset = 0;
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function flag(code) { return code && /^[A-Z]{2}$/.test(code) ? code.replace(/./g, function (ch) { return String.fromCodePoint(127397 + ch.charCodeAt(0)); }) : "🌍"; }
+  function cname(code) { if (!code) return "Unknown"; try { return new Intl.DisplayNames(["en"], { type: "region" }).of(code); } catch (e) { return code; } }
+  function ago(ms) { var m = Math.round(ms / 60000); return m < 1 ? "just now" : m < 60 ? m + " min ago" : m < 1440 ? Math.round(m / 60) + " h ago" : Math.round(m / 1440) + " d ago"; }
+  function count(arr, key) { var o = {}; arr.forEach(function (v) { var k = typeof key === "function" ? key(v) : v[key]; if (k === "" || k == null) k = "Unknown"; o[k] = (o[k] || 0) + 1; }); return Object.keys(o).map(function (k) { return [k, o[k]]; }).sort(function (a, b) { return b[1] - a[1]; }); }
+  function bars(rows, label, max) { if (!rows.length) return '<p class="empty">No data yet.</p>'; var top = rows[0][1]; return rows.slice(0, max || 8).map(function (r) { return '<div class="bar"><span>' + (label ? label(r[0]) : esc(r[0])) + '</span><small>' + r[1] + '</small><i style="width:' + Math.max(3, r[1] / top * 100) + '%"></i></div>'; }).join(""); }
+  function pct(n, d) { return d ? Math.round(n / d * 100) + "%" : "0%"; }
+  function dur(s) { s = Math.round(s); return s < 60 ? s + "s" : Math.floor(s / 60) + "m " + (s % 60) + "s"; }
+
+  function load() {
+    var gf = document.getElementById("gform");
+    if (gf && (gf.contains(document.activeElement) || gf.n.value || gf.m.value || gf.ok.checked)) return;   // don't wipe what a guest is typing
+    Promise.all([fetch(DB + "/visits.json").then(function (r) { return r.json(); }), fetch(DB + "/presence.json").then(function (r) { return r.json(); }), fetch(DB + "/guests.json").then(function (r) { return r.json(); })])
+      .then(function (res) { render(res[0] || {}, res[1] || {}, res[2] || {}); })
+      .catch(function () { app.innerHTML = '<p class="off">Could not load stats right now. If this keeps happening, the database rules may need updating (see HOSTING.md).</p>'; });
+  }
+  function render(visits, presence, guests) {
+    var now = Date.now() + offset, V = [], old = {}, oldG = {};
+    Object.keys(visits).forEach(function (k) { var v = visits[k] || {}; if (!v.t) return; if (now - v.t > 7 * 864e5) old[k] = null; else V.push(v); });
+    if (Object.keys(old).length) fetch(DB + "/visits.json", { method: "PATCH", body: JSON.stringify(old) }).catch(function () {});
+    var live = Object.keys(presence).filter(function (k) { return now - ((presence[k] || {}).t || 0) < 70000; }).length;
+    var day = V.filter(function (v) { return now - v.t < 864e5; });
+    var G = []; Object.keys(guests).forEach(function (k) { var g = guests[k] || {}; if (now - (g.t || 0) > 72 * 36e5) oldG[k] = null; else G.push(g); });
+    if (Object.keys(oldG).length) fetch(DB + "/guests.json", { method: "PATCH", body: JSON.stringify(oldG) }).catch(function () {});
+    G.sort(function (a, b) { return b.t - a.t; });
+    var avg = V.length ? V.reduce(function (s, v) { return s + Math.min(v.du || 0, 3600); }, 0) / V.length : 0;
+    var hours = new Array(24).fill(0); day.forEach(function (v) { var h = Math.floor((now - v.t) / 36e5); if (h < 24) hours[23 - h]++; }); var hmax = Math.max(1, Math.max.apply(null, hours));
+    var countries = count(V, "c"), cities = count(V.filter(function (v) { return v.z; }), function (v) { return v.z + "|" + v.c; });
+    var multan = G.filter(function (g) { return /multan/i.test(g.city || ""); }).length;
+    var pk = V.filter(function (v) { return v.c === "PK"; }).length, arab = V.filter(function (v) { return /^(SA|AE|QA|KW|BH|OM|EG|JO|IQ|MA|DZ|TN|LB|LY|SD|YE|SY|PS)$/.test(v.c); }).length;
+    app.innerHTML =
+      '<div class="kpis">' +
+        '<div class="kpi kpi--live"><b>' + live + '</b><span>Viewing now</span></div>' +
+        '<div class="kpi"><b>' + day.length + '</b><span>Visits · 24 h</span></div>' +
+        '<div class="kpi"><b>' + V.length + '</b><span>Visits · 7 days</span></div>' +
+        '<div class="kpi"><b>' + countries.filter(function (r) { return r[0] !== "Unknown"; }).length + '</b><span>Countries · 7 days</span></div>' +
+        '<div class="kpi"><b>' + dur(avg) + '</b><span>Avg time on site</span></div>' +
+        '<div class="kpi"><b>' + pct(V.filter(function (v) { return v.rt; }).length, V.length) + '</b><span>Returning visitors</span></div>' +
+        '<div class="kpi"><b>🇵🇰 ' + pk + '</b><span>From Pakistan · 7 days</span></div>' +
+        '<div class="kpi"><b>🌙 ' + arab + '</b><span>From Arab countries</span></div>' +
+      '</div>' +
+      '<div class="grid">' +
+        '<div class="card full"><h2>Visits in the last 24 hours</h2><div class="hours">' + hours.map(function (n) { return '<div data-n="' + n + '" style="height:' + (n / hmax * 100) + '%"></div>'; }).join("") + '</div><div class="hours-l"><span>24 h ago</span><span>12 h ago</span><span>now</span></div></div>' +
+        '<div class="card"><h2>Countries</h2>' + bars(countries, function (c) { return flag(c) + " " + esc(cname(c)); }, 10) + '</div>' +
+        '<div class="card"><h2>Cities (time zone)</h2>' + bars(cities, function (k) { var p = k.split("|"); return flag(p[1]) + " " + esc(p[0]) + " area"; }, 10) + '</div>' +
+        '<div class="card"><h2>Devices</h2>' + bars(count(V, "d"), function (d) { return ({ phone: "📱 Phone", tablet: "📱 Tablet", computer: "💻 Computer" }[d] || esc(d)); }) + '</div>' +
+        '<div class="card"><h2>Operating systems</h2>' + bars(count(V, "os")) + '</div>' +
+        '<div class="card"><h2>Browsers</h2>' + bars(count(V, "br")) + '</div>' +
+        '<div class="card"><h2>Opened from app</h2>' + bars(count(V.filter(function (v) { return v.a; }), "a")) + '</div>' +
+        '<div class="card"><h2>Where visitors came from</h2>' + bars(count(V, function (v) { return v.r || "Direct / shared link"; })) + '</div>' +
+        '<div class="card"><h2>Languages</h2>' + bars(count(V, "lg")) + '</div>' +
+        '<div class="card"><h2>What visitors did</h2>' +
+          '<div class="bar"><span>🎮 Played a game</span><small>' + pct(V.filter(function (v) { return v.g; }).length, V.length) + '</small><i style="width:' + Math.max(3, V.filter(function (v) { return v.g; }).length / Math.max(1, V.length) * 100) + '%"></i></div>' +
+          '<div class="bar"><span>✦ Explored angel numbers</span><small>' + pct(V.filter(function (v) { return v.an; }).length, V.length) + '</small><i style="width:' + Math.max(3, V.filter(function (v) { return v.an; }).length / Math.max(1, V.length) * 100) + '%"></i></div>' +
+          '<div class="bar"><span>💬 Contacted / opened a form</span><small>' + pct(V.filter(function (v) { return v.ct; }).length, V.length) + '</small><i style="width:' + Math.max(3, V.filter(function (v) { return v.ct; }).length / Math.max(1, V.length) * 100) + '%"></i></div>' +
+        '</div>' +
+        '<div class="card"><h2>Screen sizes</h2>' + bars(count(V, function (v) { return !v.sw ? "Unknown" : v.sw < 480 ? "Small phone" : v.sw < 800 ? "Large phone / tablet" : v.sw < 1400 ? "Laptop" : "Large screen"; })) + '</div>' +
+        '<div class="card full"><h2>Recent visits</h2><ul class="list">' + V.slice().sort(function (a, b) { return b.t - a.t; }).slice(0, 40).map(function (v) {
+          return "<li>" + flag(v.c) + " " + esc(v.z ? v.z + " area" : cname(v.c)) + ' <span class="tag">' + esc(v.d || "") + " · " + esc(v.os || "") + " · " + esc(v.br || "") + "</span>" + (v.a ? ' <span class="tag">via ' + esc(v.a) + "</span>" : "") + (v.r ? ' <span class="tag">from ' + esc(v.r) + "</span>" : "") + (v.g ? " 🎮" : "") + (v.ct ? " 💬" : "") + " · " + dur(v.du || 0) + "<em>" + ago(now - v.t) + "</em></li>"; }).join("") + "</ul></div>" +
+        '<div class="card full" id="guest"><h2>📍 Guest check-ins · last 72 hours ' + (multan ? '<span class="tag tag--mx">🥭 ' + multan + " from Multan</span>" : "") + '</h2>' +
+          '<form id="gform"><p class="empty">Want to say hi? Check in and your city, region, internet provider and device will be shown here publicly for 72 hours, with an optional name and message. Your IP address is not shown.</p>' +
+          '<input name="n" maxlength="40" placeholder="Your name (optional)"><textarea name="m" maxlength="140" rows="2" placeholder="A short message (optional)"></textarea>' +
+          '<label class="chk"><input type="checkbox" name="ok" required> I agree to show my city, region, internet provider, device and anything I typed above on this public page for 72 hours.</label>' +
+          '<button type="submit">📍 Check in</button><p class="empty" id="gmsg"></p></form>' +
+          '<ul class="list">' + (G.length ? G.map(function (g) {
+            return "<li>" + flag(g.c) + " <b>" + esc(g.city || "Somewhere") + "</b>" + (g.reg ? ", " + esc(g.reg) : "") + (g.c ? " · " + esc(cname(g.c)) : "") + (/multan/i.test(g.city || "") ? ' <span class="tag tag--mx">🥭 Multan</span>' : "") + (g.isp ? ' <span class="tag">' + esc(g.isp) + "</span>" : "") + ' <span class="tag">' + esc(g.d || "") + " · " + esc(g.os || "") + "</span>" + (g.n ? " — <b>" + esc(g.n) + "</b>" : "") + (g.m ? ": “" + esc(g.m) + "”" : "") + "<em>" + ago(now - g.t) + "</em></li>"; }).join("") : '<li class="empty">No check-ins yet. Be the first!</li>') + "</ul></div>" +
+      "</div>";
+    var f = document.getElementById("gform"); if (f) f.addEventListener("submit", checkIn);
+    if (location.hash === "#guest" && !render.scrolled) { render.scrolled = true; document.getElementById("guest").scrollIntoView(); }
+  }
+  function checkIn(e) {
+    e.preventDefault(); var f = e.target, btn = f.querySelector("button"), msg = document.getElementById("gmsg");
+    if (!f.ok.checked) { msg.textContent = "Please tick the box to agree first."; return; }
+    btn.disabled = true; msg.textContent = "Checking in…";
+    var ua = navigator.userAgent || "";
+    var d = /iPad|Tablet/i.test(ua) ? "tablet" : /Mobi|Android|iPhone/i.test(ua) ? "phone" : "computer";
+    var os = /Windows/i.test(ua) ? "Windows" : /iPhone|iPad|iPod/i.test(ua) ? "iOS" : /Mac OS X/i.test(ua) ? "macOS" : /Android/i.test(ua) ? "Android" : "Other";
+    fetch("https://ipwho.is/").then(function (r) { return r.json(); }).catch(function () { return {}; }).then(function (geo) {
+      var entry = { n: (f.n.value || "").trim().slice(0, 40), m: (f.m.value || "").trim().slice(0, 140), city: (geo.city || "").slice(0, 40), reg: (geo.region || "").slice(0, 40),
+        c: (geo.country_code || "").slice(0, 2), isp: ((geo.connection && (geo.connection.isp || geo.connection.org)) || "").slice(0, 50), d: d, os: os, t: { ".sv": "timestamp" } };
+      var gid = Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+      return fetch(DB + "/guests/" + gid + ".json", { method: "PUT", body: JSON.stringify(entry) });
+    }).then(function (r) { if (!r || !r.ok) throw new Error("save"); f.reset(); f.ok.blur(); load(); setTimeout(function () { var m2 = document.getElementById("gmsg"); if (m2) m2.textContent = "✅ You're checked in! Thank you."; }, 400); })
+      .catch(function () { msg.textContent = "Sorry, that didn't work. Please try again in a moment."; btn.disabled = false; });
+  }
+  load(); setInterval(load, 20000);
+})();
+</script>
+</body>
+</html>
