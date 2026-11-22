@@ -50,6 +50,7 @@
   var id = Math.random().toString(36).slice(2, 10) + Date.now().toString(36);   // this page view
   var pid = id;   // this device: every tab and refresh shares one "online" entry, so nobody is counted twice
   try { pid = localStorage.getItem("coach-pid") || ""; if (!/^[a-z0-9]{8,24}$/.test(pid)) { pid = "d" + id; localStorage.setItem("coach-pid", pid); } } catch (e) { pid = id; }
+  window.__coachPid = pid;
   var offset = 0, timer = 0, beat = 0;
 
   function flag(code) { return code ? code.replace(/./g, function (ch) { return String.fromCodePoint(127397 + ch.charCodeAt(0)); }) : "🌍"; }
