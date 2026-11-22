@@ -1168,7 +1168,7 @@ html{scroll-padding-top:70px}
   </div>
 </div>
 
-<!-- ===== WELCOME POP-UP: language + quick help ===== -->
+<!-- ===== WELCOME POP-UP: language only ===== -->
 <div class="welcome" id="welcome" role="dialog" aria-modal="true" aria-labelledby="wTitle" hidden>
   <div class="welcome__card">
     <button type="button" class="welcome__x" id="wClose" aria-label="Close">×</button>
@@ -1176,14 +1176,22 @@ html{scroll-padding-top:70px}
     <h2 id="wTitle" data-i18n="w.h">Choose your language</h2>
     <p class="welcome__sub">اپنی زبان منتخب کریں · اختر لغتك · Choisissez · Elige · 言語 · 语言 · 언어</p>
     <div class="welcome__langs" id="wLangs"></div>
-    <div class="welcome__hire">
+    <button type="button" class="welcome__go" id="wGo" data-i18n="w.go">Continue to the site</button>
+  </div>
+</div>
+
+<!-- ===== SECOND POP-UP (2 minutes in): what else Adeel does ===== -->
+<div class="welcome" id="more" role="dialog" aria-modal="true" aria-label="One more thing" hidden>
+  <div class="welcome__card">
+    <button type="button" class="welcome__x" data-close aria-label="Close">×</button>
+    <p class="welcome__k up">Adeel Ahmed Rahman · 622</p>
+    <div class="welcome__hire" style="margin-bottom:0">
       <p class="welcome__hire-k" data-i18n="w.hire.k">One more thing…</p>
       <p class="welcome__hire-p" data-i18n="w.hire.p">This is my consciousness coach page, only for manifesting your dreams and desires with dua. But I also act, sell houses… and mangoes 🥭.</p>
       <a class="hire hire--re" href="realtor/"><span class="hire__i" aria-hidden="true">🏡</span><span><b data-i18n="w.re">Manifested your dream home?</b><small data-i18n="w.re.s">Let me sell it to you. Visit my realtor page →</small></span></a>
       <a class="hire hire--ac" href="actor/"><span class="hire__i" aria-hidden="true">🎬</span><span><b data-i18n="w.ac">Manifested your next big project?</b><small data-i18n="w.ac.s">Cast me in it. Visit my actor page →</small></span></a>
       <a class="hire hire--mg" href="https://wa.me/16134083945?text=Assalamu%20alaikum%20Adeel%20Ahmed%20Rahman%21%20I%20want%20it%20badly%20now%3A%20the%20free%20Chaunsa%20Multani%20mango%20gift%20%F0%9F%A5%AD.%20Please%20send%20it%20to%3A%0AName%3A%20%0AAddress%3A%20%0ACountry%3A%20" target="_blank" rel="noopener"><span class="hire__i" aria-hidden="true">🥭</span><span><b data-i18n="w.mg">And yes, the mangoes</b><small data-i18n="w.mg.s">Claim your free Chaunsa Multani mango →</small></span></a>
     </div>
-    <button type="button" class="welcome__go" id="wGo" data-i18n="w.go">Continue to the site</button>
   </div>
 </div>
 
@@ -1854,7 +1862,7 @@ html{scroll-padding-top:70px}
 <script src="coach/i18n.js?v=28"></script>
 <script src="coach/library.js?v=2"></script>
 <script src="coach/featured.js?v=2"></script>
-<script src="coach/popups.js?v=2"></script>
+<script src="coach/popups.js?v=3"></script>
 <script src="coach/exit.js?v=3"></script>
 <script src="coach/config.js?v=5"></script>
 <script src="coach/arab.js?v=1" defer></script>
@@ -1865,7 +1873,7 @@ html{scroll-padding-top:70px}
 <script src="coach/numbers.js?v=3"></script>
 <script src="coach/eye.js?v=1"></script>
 <script src="coach/court.js?v=14" defer></script>
-<script src="coach/home.js?v=28"></script>
+<script src="coach/home.js?v=29"></script>
 <script>
 (function(){
   var WA="16134083945";

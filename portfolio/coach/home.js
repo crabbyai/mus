@@ -491,6 +491,18 @@
   }
   window.coachOpenWelcome = open;
 
+  /* ---- "One more thing…": the realtor, actor and mango links, 2 minutes into the visit ---- */
+  var more = document.getElementById("more");
+  if (more) {
+    var mBack = null;
+    var mOpen = function () { mBack = document.activeElement; more.hidden = false; document.body.style.overflow = "hidden"; var c = more.querySelector(".hire"); if (c) c.focus(); };
+    var mClose = function () { more.hidden = true; document.body.style.overflow = ""; if (mBack && mBack.focus) mBack.focus(); };
+    [].forEach.call(more.querySelectorAll("[data-close]"), function (b) { b.addEventListener("click", mClose); });
+    more.addEventListener("click", function (e) { if (e.target === more) mClose(); });
+    document.addEventListener("keydown", function (e) { if (!more.hidden && e.key === "Escape") mClose(); });
+    if (window.coachPop) window.coachPop.when("more", { after: 120000, priority: 2.5 }, mOpen);
+  }
+
   /* ---- the "I want this so badly" pop-up, 69 seconds after the page loads ---- */
   var offer = document.getElementById("offer");
   if (offer) {

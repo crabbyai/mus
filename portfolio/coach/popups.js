@@ -10,7 +10,7 @@
    - each pop-up has its own frequency cap across visits
    - once someone has contacted Adeel (WhatsApp, email, PayPal),
      the sales pop-ups stay away for a week
-   Add ?welcome, ?offer, ?reminder or ?exit to the address to force one.
+   Add ?welcome, ?more, ?offer, ?reminder or ?exit to the address to force one.
    ============================================================ */
 (function () {
   "use strict";
@@ -20,6 +20,7 @@
   var RULES = {
     welcome:  { every: Infinity },  // once, ever (until a language is picked)
     reminder: { every: DAY },       // at most once a day
+    more:     { every: DAY },       // "One more thing…" (realtor, actor, mangoes), at most once a day
     offer:    { every: 3 * DAY, sales: true, maxIgnored: 3 },
     exit:     { every: 2 * DAY, sales: true }
   };
