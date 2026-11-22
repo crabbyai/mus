@@ -5,7 +5,8 @@
   var KEY = "coach-vk";
   var T9 = { 2: "ABC", 3: "DEF", 4: "GHI", 5: "JKL", 6: "MNO", 7: "PQRS", 8: "TUV", 9: "WXYZ", 0: "+" };
   function h(s) { var x = 0x811c9dc5; s = unescape(encodeURIComponent(s)); for (var i = 0; i < s.length; i++) { x ^= s.charCodeAt(i); x = Math.imul(x, 0x01000193) >>> 0; } return x; }
-  function ok(s) { var v = h(String(s).trim().toLowerCase()); return v === 443645419 || v === 3827109980; }
+  function okPin(s) { return h(String(s)) === 2320489305; }
+  function okWord(s) { return h(String(s).trim().toLowerCase()) === 443645419; }
   function t9(ch) { ch = ch.toUpperCase(); if (/\d/.test(ch)) return ch; for (var d in T9) if (T9[d].indexOf(ch) > -1) return d; return ""; }
   function unlocked() { try { return localStorage.getItem(KEY) === "1"; } catch (e) { return false; } }
 
@@ -54,13 +55,13 @@
     function press(d) {
       if (code.length >= 6) return;
       code += d; paint();
-      if (code.length === 6) requestAnimationFrame(function () { if (ok(code)) win(); else { fail(dots); code = ""; setTimeout(paint, 200); } });
+      if (code.length === 6) requestAnimationFrame(function () { if (okPin(code)) win(); else { fail(dots); code = ""; setTimeout(paint, 200); } });
     }
     function onKey(e) {
       if (e.key === "Escape") { close(); return; }
       if (o.classList.contains("kb")) return;
       if (e.key === "Backspace") { code = code.slice(0, -1); paint(); e.preventDefault(); return; }
-      var d = e.key.length === 1 ? t9(e.key) : "";
+      var d = /^\d$/.test(e.key) ? e.key : "";
       if (d) { e.preventDefault(); press(d); var b = o.querySelector('[data-d="' + d + '"]'); if (b) { b.classList.add("hit"); setTimeout(function () { b.classList.remove("hit"); }, 120); } }
     }
     document.addEventListener("keydown", onKey, true);
@@ -74,7 +75,7 @@
       else if (b.dataset.a === "x") close();
       else if (b.dataset.a === "kb") { var on = o.classList.toggle("kb"); b.textContent = on ? "Keypad" : "Keyboard"; if (on) inp.focus(); }
     });
-    kb.addEventListener("submit", function (e) { e.preventDefault(); if (ok(inp.value)) win(); else { fail(kb); inp.value = ""; inp.focus(); } });
+    kb.addEventListener("submit", function (e) { e.preventDefault(); if (okWord(inp.value)) win(); else { fail(kb); inp.value = ""; inp.focus(); } });
     var first = o.querySelector(".lko__pad button"); if (first) first.focus();
   }
 
