@@ -88,11 +88,13 @@ h1 em{color:var(--gold)}
     <a class="back" href="../">← Back to the site</a>
   </header>
   <p class="note">Anonymous and public: no names or IP addresses are collected for these stats. Locations come from each visitor's time zone and language settings. Guests below chose to check in and make dua for Adeel; their public entries disappear after 72 hours.</p>
-  <div id="app"><p class="off">Loading…</p></div>
+  <div id="app" hidden><p class="off">Loading…</p></div>
 </div>
 <script src="../coach/config.js"></script>
+<script src="../coach/lock.js?v=1"></script>
 <script>
-(function () {
+coachLock(document.getElementById("app"), function () {
+  document.getElementById("app").hidden = false;
   "use strict";
   var DB = ((window.COACH && window.COACH.live && window.COACH.live.databaseURL) || "").replace(/\/+$/, "");
   var app = document.getElementById("app");
@@ -227,7 +229,7 @@ h1 em{color:var(--gold)}
       .catch(function () { msg.innerHTML = "Sorry, your dua couldn't be saved. <b>Site owner:</b> the Firebase rules probably need updating (see HOSTING.md → Live viewer count)."; btn.disabled = false; });
   }
   load(); setInterval(load, 20000);
-})();
+});
 </script>
 </body>
 </html>

@@ -141,9 +141,11 @@
     box.hidden = false;
   }
 
-  report(); refresh(); setTimeout(refresh, 1500);   // show immediately, then again once this visit is counted
+  var open = false;   // the panel stays behind the passcode lock until unlocked
+  function start() { open = true; refresh(); setTimeout(refresh, 1500); timer = setInterval(refresh, 10000); }
+  report();
   beat = setInterval(report, 25000);
-  timer = setInterval(refresh, 10000);
-  document.addEventListener("visibilitychange", function () { if (document.hidden) leave(); else { report(); refresh(); } });
+  if (window.coachLock) window.coachLock(box, start);
+  document.addEventListener("visibilitychange", function () { if (document.hidden) leave(); else { report(); if (open) refresh(); } });
   window.addEventListener("pagehide", leave);
 })();
