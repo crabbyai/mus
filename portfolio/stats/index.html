@@ -51,6 +51,11 @@ h1 em{color:var(--gold)}
 .tag--mx{background:rgba(255,190,40,.18);color:#ffd23a}
 .full{grid-column:1/-1}
 #guest form{display:grid;gap:8px}
+#guest select{width:100%;padding:.6rem .8rem;border-radius:12px;border:1px solid var(--line);background:#0a0f1e;color:var(--cream);font:inherit}
+#guest .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:560px){#guest .two{grid-template-columns:1fr}}
+.plab{font-size:.85rem;color:var(--gold);font-weight:700}
+.pr{flex-basis:100%;color:#bfe9cc;font-size:.85rem}
 #guest input[type=checkbox]{width:auto;margin-top:.2rem;flex:none}
 #guest input:not([type=checkbox]),#guest textarea{width:100%;padding:.6rem .8rem;border-radius:12px;border:1px solid var(--line);background:#0a0f1e;color:var(--cream);font:inherit}
 #guest label.chk{display:flex;gap:.5rem;align-items:flex-start;font-size:.85rem;color:var(--muted)}
@@ -66,7 +71,7 @@ h1 em{color:var(--gold)}
     <h1>Live stats · <em>Adeel Ahmed Rahman</em></h1>
     <a class="back" href="../">← Back to the site</a>
   </header>
-  <p class="note">Anonymous and public: no names or IP addresses are collected for these stats. Locations come from each visitor's time zone and language settings. Guests below chose to check in, and their entries disappear after 72 hours.</p>
+  <p class="note">Anonymous and public: no names or IP addresses are collected for these stats. Locations come from each visitor's time zone and language settings. Guests below chose to check in and make dua for Adeel; their public entries disappear after 72 hours.</p>
   <div id="app"><p class="off">Loading…</p></div>
 </div>
 <script src="../coach/config.js"></script>
@@ -77,6 +82,9 @@ h1 em{color:var(--gold)}
   var app = document.getElementById("app");
   if (!DB) { app.innerHTML = '<p class="off">Stats are not switched on yet.</p>'; return; }
   var offset = 0;
+  var PRAYERS = ["Rabbanā ātinā fid-dunyā ḥasanah wa fil-ākhirati ḥasanah wa qinā ʿadhāban-nār: O Allah, give Adeel Ahmed Rahman good in this world and good in the Hereafter, and protect him from the Fire (2:201)", "O Allah, forgive Adeel Ahmed Rahman, have mercy on him, and grant him Jannat al-Firdaus", "O Allah, put barakah in Adeel's health, wealth, time and family", "O Allah, protect Adeel from the evil eye, envy, and every harm, seen and unseen", "O Allah, keep Adeel on the straight path and make him a means of guidance for others", "O Allah, grant Adeel righteous spouses and children who are the coolness of his eyes (25:74)", "O Allah, accept Adeel's dawah and make it heavy on his scale of good deeds", "O Allah, grant Adeel sukoon, ease his affairs and remove his worries", "O Allah, grant Adeel abundant halal provision and success in everything he does", "O Allah, make Adeel's grave a garden of Jannah and shade him on the Day of Judgement"];
+  var prayTotals = {};
+  function shortP(i) { var t = PRAYERS[i] || "", k = t.indexOf("nār: "); return k > -1 ? t.slice(k + 5) : t; }
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
   function flag(code) { return code && /^[A-Z]{2}$/.test(code) ? code.replace(/./g, function (ch) { return String.fromCodePoint(127397 + ch.charCodeAt(0)); }) : "🌍"; }
   function cname(code) { if (!code) return "Unknown"; try { return new Intl.DisplayNames(["en"], { type: "region" }).of(code); } catch (e) { return code; } }
@@ -88,9 +96,9 @@ h1 em{color:var(--gold)}
 
   function load() {
     var gf = document.getElementById("gform");
-    if (gf && (gf.contains(document.activeElement) || gf.n.value || gf.m.value || gf.ok.checked)) return;   // don't wipe what a guest is typing
-    Promise.all([fetch(DB + "/visits.json").then(function (r) { return r.json(); }), fetch(DB + "/presence.json").then(function (r) { return r.json(); }), fetch(DB + "/guests.json").then(function (r) { return r.json(); })])
-      .then(function (res) { render(res[0] || {}, res[1] || {}, res[2] || {}); })
+    if (gf && (gf.contains(document.activeElement) || gf.e.value || gf.w.value || gf.ok.checked)) return;   // don't wipe what a guest is typing
+    Promise.all([fetch(DB + "/visits.json").then(function (r) { return r.json(); }), fetch(DB + "/presence.json").then(function (r) { return r.json(); }), fetch(DB + "/guests.json").then(function (r) { return r.json(); }), fetch(DB + "/prayers.json").then(function (r) { return r.json(); }).catch(function () { return {}; })])
+      .then(function (res) { prayTotals = res[3] || {}; render(res[0] || {}, res[1] || {}, res[2] || {}); })
       .catch(function () { app.innerHTML = '<p class="off">Could not load stats right now. If this keeps happening, the database rules may need updating (see HOSTING.md).</p>'; });
   }
   function render(visits, presence, guests) {
@@ -119,7 +127,12 @@ h1 em{color:var(--gold)}
       : '<p class="empty">No visitors from Pakistan in the last 7 days yet.</p>') + "</div>";
     var countries = count(V, "c"), cities = count(V.filter(function (v) { return v.z; }), function (v) { return v.z + "|" + v.c; });
     var multan = G.filter(function (g) { return /multan/i.test(g.city || ""); }).length;
-    var pk = V.filter(function (v) { return v.c === "PK"; }).length, arab = V.filter(function (v) { return /^(SA|AE|QA|KW|BH|OM|EG|JO|IQ|MA|DZ|TN|LB|LY|SD|YE|SY|PS)$/.test(v.c); }).length;
+    var pk = V.filter(function (v) { return v.c === "PK"; }).length;
+    var today0 = new Date(now); today0.setHours(0, 0, 0, 0); today0 = today0.getTime();
+    var tday = V.filter(function (v) { return v.t >= today0; }).length, yday = V.filter(function (v) { return v.t >= today0 - 864e5 && v.t < today0; }).length;
+    var trend = yday ? Math.round((tday - yday) / yday * 100) : (tday ? 100 : 0);
+    var hrs = new Array(24).fill(0); V.forEach(function (v) { hrs[new Date(v.t).getHours()]++; }); var peak = hrs.indexOf(Math.max.apply(null, hrs));
+    var totalPrayers = Object.keys(prayTotals).reduce(function (s2, k) { return s2 + (+prayTotals[k] || 0); }, 0);
     app.innerHTML =
       '<div class="kpis">' +
         '<div class="kpi kpi--live"><b>' + live + '</b><span>Viewing now</span></div>' +
@@ -129,7 +142,9 @@ h1 em{color:var(--gold)}
         '<div class="kpi"><b>' + dur(avg) + '</b><span>Avg time on site</span></div>' +
         '<div class="kpi"><b>' + pct(V.filter(function (v) { return v.rt; }).length, V.length) + '</b><span>Returning visitors</span></div>' +
         '<div class="kpi"><b>🇵🇰 ' + pk + '</b><span>From Pakistan · 7 days</span></div>' +
-        '<div class="kpi"><b>🌙 ' + arab + '</b><span>From Arab countries</span></div>' +
+        '<div class="kpi"><b>' + tday + ' <small style="font-size:.9rem;color:' + (trend >= 0 ? "#3dff7a" : "#ff6a6a") + '">' + (trend >= 0 ? "▲" : "▼") + Math.abs(trend) + '%</small></b><span>Today vs yesterday</span></div>' +
+        '<div class="kpi"><b>' + (V.length ? (peak % 12 || 12) + (peak < 12 ? " am" : " pm") : "–") + '</b><span>Busiest hour (your time)</span></div>' +
+        '<div class="kpi"><b>🤲 ' + totalPrayers + '</b><span>Prayers made for Adeel · all time</span></div>' +
       '</div>' +
       '<div class="grid">' +
         '<div class="card full"><h2>Visits in the last 24 hours</h2><div class="hours">' + hours.map(function (n) { return '<div data-n="' + n + '" style="height:' + (n / hmax * 100) + '%"></div>'; }).join("") + '</div><div class="hours-l"><span>24 h ago</span><span>12 h ago</span><span>now</span></div></div>' +
@@ -151,13 +166,15 @@ h1 em{color:var(--gold)}
         '<div class="card"><h2>Screen sizes</h2>' + bars(count(V, function (v) { return !v.sw ? "Unknown" : v.sw < 480 ? "Small phone" : v.sw < 800 ? "Large phone / tablet" : v.sw < 1400 ? "Laptop" : "Large screen"; })) + '</div>' +
         '<div class="card full"><h2>Recent visits</h2><ul class="list">' + V.slice().sort(function (a, b) { return b.t - a.t; }).slice(0, 40).map(function (v) {
           return "<li>" + flag(v.c) + " " + esc(v.z ? v.z + " area" : cname(v.c)) + ' <span class="tag">' + esc(v.d || "") + " · " + esc(v.os || "") + " · " + esc(v.br || "") + "</span>" + (v.a ? ' <span class="tag">via ' + esc(v.a) + "</span>" : "") + (v.r ? ' <span class="tag">from ' + esc(v.r) + "</span>" : "") + (v.g ? " 🎮" : "") + (v.ct ? " 💬" : "") + " · " + dur(v.du || 0) + "<em>" + ago(now - v.t) + "</em></li>"; }).join("") + "</ul></div>" +
+        '<div class="card full"><h2>🤲 Prayers made for Adeel Ahmed Rahman</h2>' + (totalPrayers ? bars(PRAYERS.map(function (t, i) { return [i, +prayTotals[i] || 0]; }).filter(function (r) { return r[1]; }).sort(function (a, b) { return b[1] - a[1]; }), function (i) { return esc(shortP(i)); }, 10) : '<p class="empty">No prayers yet. Be the first to make dua for Adeel below.</p>') + '</div>' +
         '<div class="card full" id="guest"><h2>📍 Guest check-ins · last 72 hours ' + (multan ? '<span class="tag tag--mx">🥭 ' + multan + " from Multan</span>" : "") + '</h2>' +
-          '<form id="gform"><p class="empty">Want to say hi? Check in and your city, region, internet provider and device will be shown here publicly for 72 hours, with an optional name and message. Your IP address is not shown.</p>' +
-          '<input name="n" maxlength="40" placeholder="Your name (optional)"><textarea name="m" maxlength="140" rows="2" placeholder="A short message (optional)"></textarea>' +
-          '<label class="chk"><input type="checkbox" name="ok" required> I agree to show my city, region, internet provider, device and anything I typed above on this public page for 72 hours.</label>' +
-          '<button type="submit">📍 Check in</button><p class="empty" id="gmsg"></p></form>' +
+          '<form id="gform"><p class="empty">Check in, pick a dua for Adeel Ahmed Rahman, and make it yourself. Your city, region, internet provider, device and the dua you chose are shown here for 72 hours. Your email and WhatsApp are private: only Adeel can see them, and they are never shown on this page.</p>' +
+          '<label class="plab">Choose a dua to make for Adeel</label><select name="p" required>' + PRAYERS.map(function (t, i) { return '<option value="' + i + '">' + esc(t) + "</option>"; }).join("") + '</select>' +
+          '<div class="two"><input name="e" type="email" maxlength="80" placeholder="Email (optional, private)"><input name="w" type="tel" maxlength="20" placeholder="WhatsApp number (optional, private)"></div>' +
+          '<label class="chk"><input type="checkbox" name="ok" required> I agree to show my city, region, internet provider, device and chosen dua on this public page for 72 hours, and to share my email and WhatsApp privately with Adeel.</label>' +
+          '<button type="submit">🤲 Check in &amp; make dua</button><p class="empty" id="gmsg"></p></form>' +
           '<ul class="list">' + (G.length ? G.map(function (g) {
-            return "<li>" + flag(g.c) + " <b>" + esc(g.city || "Somewhere") + "</b>" + (g.reg ? ", " + esc(g.reg) : "") + (g.c ? " · " + esc(cname(g.c)) : "") + (/multan/i.test(g.city || "") ? ' <span class="tag tag--mx">🥭 Multan</span>' : "") + (g.isp ? ' <span class="tag">' + esc(g.isp) + "</span>" : "") + ' <span class="tag">' + esc(g.d || "") + " · " + esc(g.os || "") + "</span>" + (g.n ? " — <b>" + esc(g.n) + "</b>" : "") + (g.m ? ": “" + esc(g.m) + "”" : "") + "<em>" + ago(now - g.t) + "</em></li>"; }).join("") : '<li class="empty">No check-ins yet. Be the first!</li>') + "</ul></div>" +
+            return "<li>" + flag(g.c) + " <b>" + esc(g.city || "Somewhere") + "</b>" + (g.reg ? ", " + esc(g.reg) : "") + (g.c ? " · " + esc(cname(g.c)) : "") + (/multan/i.test(g.city || "") ? ' <span class="tag tag--mx">🥭 Multan</span>' : "") + (g.isp ? ' <span class="tag">' + esc(g.isp) + "</span>" : "") + ' <span class="tag">' + esc(g.d || "") + " · " + esc(g.os || "") + "</span>" + (g.p != null && PRAYERS[g.p] ? '<span class="pr">🤲 ' + esc(shortP(g.p)) + "</span>" : "") + "<em>" + ago(now - g.t) + "</em></li>"; }).join("") : '<li class="empty">No check-ins yet. Be the first!</li>') + "</ul></div>" +
       "</div>";
     var f = document.getElementById("gform"); if (f) f.addEventListener("submit", checkIn);
     requestAnimationFrame(function () { requestAnimationFrame(function () { document.querySelectorAll(".week [data-h]").forEach(function (el) { el.style.height = Math.max(1, +el.getAttribute("data-h")) + "%"; }); }); });   // grow the bars
@@ -171,11 +188,15 @@ h1 em{color:var(--gold)}
     var d = /iPad|Tablet/i.test(ua) ? "tablet" : /Mobi|Android|iPhone/i.test(ua) ? "phone" : "computer";
     var os = /Windows/i.test(ua) ? "Windows" : /iPhone|iPad|iPod/i.test(ua) ? "iOS" : /Mac OS X/i.test(ua) ? "macOS" : /Android/i.test(ua) ? "Android" : "Other";
     fetch("https://ipwho.is/").then(function (r) { return r.json(); }).catch(function () { return {}; }).then(function (geo) {
-      var entry = { n: (f.n.value || "").trim().slice(0, 40), m: (f.m.value || "").trim().slice(0, 140), city: (geo.city || "").slice(0, 40), reg: (geo.region || "").slice(0, 40),
+      var pi = Math.max(0, Math.min(PRAYERS.length - 1, parseInt(f.p.value, 10) || 0));
+      var entry = { p: pi, city: (geo.city || "").slice(0, 40), reg: (geo.region || "").slice(0, 40),
         c: (geo.country_code || "").slice(0, 2), isp: ((geo.connection && (geo.connection.isp || geo.connection.org)) || "").slice(0, 50), d: d, os: os, t: { ".sv": "timestamp" } };
       var gid = Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+      var em = (f.e.value || "").trim().slice(0, 80), wa = (f.w.value || "").replace(/[^\d+ ]/g, "").slice(0, 20);
+      if (em || wa) fetch(DB + "/contacts/" + gid + ".json", { method: "PUT", body: JSON.stringify({ e: em, w: wa, p: pi, city: entry.city, c: entry.c, t: { ".sv": "timestamp" } }) }).catch(function () {});   // private: write-only
+      fetch(DB + "/prayers/" + pi + ".json", { method: "PUT", body: JSON.stringify({ ".sv": { increment: 1 } }) }).catch(function () {});
       return fetch(DB + "/guests/" + gid + ".json", { method: "PUT", body: JSON.stringify(entry) });
-    }).then(function (r) { if (!r || !r.ok) throw new Error("save"); f.reset(); f.ok.blur(); load(); setTimeout(function () { var m2 = document.getElementById("gmsg"); if (m2) m2.textContent = "✅ You're checked in! Thank you."; }, 400); })
+    }).then(function (r) { if (!r || !r.ok) throw new Error("save"); f.reset(); f.ok.blur(); load(); setTimeout(function () { var m2 = document.getElementById("gmsg"); if (m2) m2.textContent = "✅ JazakAllahu khayran! Your dua for Adeel is recorded. Ameen 🤲"; }, 400); })
       .catch(function () { msg.textContent = "Sorry, that didn't work. Please try again in a moment."; btn.disabled = false; });
   }
   load(); setInterval(load, 20000);
