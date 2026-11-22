@@ -24,5 +24,5 @@ window.COACH = {
   // Live viewer count ("12 people viewing now · 🇵🇰 Pakistan 5 · 🇨🇦 Canada 3").
   // Create a free Firebase Realtime Database (steps in HOSTING.md) and paste its link here,
   // e.g. "https://your-project-default-rtdb.firebaseio.com". Leave blank to keep it hidden.
-  live: { databaseURL: "" }
+  live: { databaseURL: "https://minder-faa09-default-rtdb.firebaseio.com" }
 };
