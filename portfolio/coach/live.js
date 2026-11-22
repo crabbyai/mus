@@ -30,6 +30,7 @@
     "America/Mexico_City": "MX", "America/Sao_Paulo": "BR", "Australia/Sydney": "AU", "Australia/Melbourne": "AU", "Australia/Perth": "AU", "Australia/Brisbane": "AU", "Pacific/Auckland": "NZ" };
   var tz = ""; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ""; } catch (e) {}
   var cc = TZ[tz] || "";
+  var zone = (tz.split("/").pop() || "").replace(/_/g, " ").slice(0, 30);   // e.g. "Karachi", "Toronto"
   var id = Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
   var offset = 0, timer = 0, beat = 0;
 
@@ -40,30 +41,33 @@
   }
   function report() {
     if (document.hidden) return;
-    fetch(DB + "/presence/" + id + ".json", { method: "PUT", body: JSON.stringify({ c: cc, t: { ".sv": "timestamp" } }) })
+    fetch(DB + "/presence/" + id + ".json", { method: "PUT", body: JSON.stringify({ c: cc, z: zone, t: { ".sv": "timestamp" } }) })
       .then(function (r) { return r.json(); })
       .then(function (v) { if (v && typeof v.t === "number") offset = v.t - Date.now(); })   // server clock minus ours
       .catch(function () {});
   }
-  function leave() { try { fetch(DB + "/presence/" + id + ".json", { method: "DELETE", keepalive: true }); } catch (e) {} }
+  function leave() {}   // entries stay so they can appear under "recently connected"
   function refresh() {
     fetch(DB + "/presence.json").then(function (r) { return r.json(); }).then(function (all) {
       all = all || {};
-      var now = Date.now() + offset, live = 0, by = {}, stale = {};
+      var now = Date.now() + offset, live = 0, by = {}, stale = {}, recent = [];
       Object.keys(all).forEach(function (k) {
         var v = all[k] || {}, age = now - (v.t || 0);
         if (age < 70000) { live++; var c = v.c || ""; by[c] = (by[c] || 0) + 1; }
-        else if (age > 600000) stale[k] = null;   // tidy up tabs that closed without saying goodbye
+        else if (age < 86400000) recent.push({ c: v.c || "", z: v.z || "", age: age });
+        else stale[k] = null;   // forget visits older than a day
       });
       if (Object.keys(stale).length) fetch(DB + "/presence.json", { method: "PATCH", body: JSON.stringify(stale) }).catch(function () {});
-      render(live, by);
+      recent.sort(function (a, b) { return a.age - b.age; }); render(live, by, recent.slice(0, 8));
     }).catch(function () {});
   }
-  function render(live, by) {
-    if (!live) { box.hidden = true; return; }
+  function ago(ms) { var m = Math.round(ms / 60000); return m < 1 ? "just now" : m < 60 ? m + " min ago" : Math.round(m / 60) + " h ago"; }
+  function render(live, by, recent) {
+    if (!live && !recent.length) { box.hidden = true; return; }
     var top = Object.keys(by).sort(function (a, b) { return by[b] - by[a]; }).slice(0, 5);
     box.innerHTML = '<span class="live__dot" aria-hidden="true"></span><b>' + live + "</b> " + (live === 1 ? "person" : "people") + " viewing now" +
-      '<span class="live__where">' + top.map(function (c) { return '<span title="' + (countryName(c) || "Elsewhere") + '">' + flag(c) + " " + (countryName(c) || "Elsewhere") + " " + by[c] + "</span>"; }).join("") + "</span>";
+      '<span class="live__where">' + top.map(function (c) { return '<span title="' + (countryName(c) || "Elsewhere") + '">' + flag(c) + " " + (countryName(c) || "Elsewhere") + " " + by[c] + "</span>"; }).join("") + "</span>" +
+      (recent.length ? '<details class="live__recent"><summary>Recently connected</summary><ul>' + recent.map(function (r) { return "<li>" + flag(r.c) + " " + (r.z ? r.z.replace(/</g, "") + " area" : (countryName(r.c) || "Somewhere")) + " · <i>" + ago(r.age) + "</i></li>"; }).join("") + "</ul></details>" : "");
     box.hidden = false;
   }
 
