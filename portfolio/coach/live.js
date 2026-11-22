@@ -29,8 +29,12 @@
     "America/New_York": "US", "America/Chicago": "US", "America/Denver": "US", "America/Los_Angeles": "US", "America/Phoenix": "US", "America/Anchorage": "US", "Pacific/Honolulu": "US",
     "America/Mexico_City": "MX", "America/Sao_Paulo": "BR", "Australia/Sydney": "AU", "Australia/Melbourne": "AU", "Australia/Perth": "AU", "Australia/Brisbane": "AU", "Pacific/Auckland": "NZ" };
   var tz = ""; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ""; } catch (e) {}
-  var cc = TZ[tz] || "";
-  var zone = (tz.split("/").pop() || "").replace(/_/g, " ").slice(0, 30);   // e.g. "Karachi", "Toronto"
+  var generic = !tz || /^(Etc\/|UTC|GMT|Universal|Zulu)/i.test(tz);   // privacy browsers and in-app browsers often report plain UTC
+  var langRegion = ((navigator.languages && navigator.languages.join(",")) || navigator.language || "").match(/-([A-Z]{2})\b/);
+  var cc = TZ[tz] || (langRegion ? langRegion[1] : "");
+  var zone = generic ? "" : (tz.split("/").pop() || "").replace(/_/g, " ").slice(0, 30);   // e.g. "Karachi", "Toronto"
+  var ua = navigator.userAgent || "", dev = /iPad|Tablet/i.test(ua) ? "tablet" : /Mobi|Android|iPhone/i.test(ua) ? "phone" : "computer";
+  var app = /Instagram/i.test(ua) ? "Instagram" : /FBAN|FBAV/i.test(ua) ? "Facebook" : /TikTok|musical_ly|BytedanceWebview/i.test(ua) ? "TikTok" : /Snapchat/i.test(ua) ? "Snapchat" : /WhatsApp/i.test(ua) ? "WhatsApp" : "";
   var id = Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
   var offset = 0, timer = 0, beat = 0;
 
@@ -41,7 +45,7 @@
   }
   function report() {
     if (document.hidden) return;
-    fetch(DB + "/presence/" + id + ".json", { method: "PUT", body: JSON.stringify({ c: cc, z: zone, t: { ".sv": "timestamp" } }) })
+    fetch(DB + "/presence/" + id + ".json", { method: "PUT", body: JSON.stringify({ c: cc, z: zone, d: dev, a: app, t: { ".sv": "timestamp" } }) })
       .then(function (r) { return r.json(); })
       .then(function (v) { if (v && typeof v.t === "number") offset = v.t - Date.now(); })   // server clock minus ours
       .catch(function () {});
@@ -54,7 +58,7 @@
       Object.keys(all).forEach(function (k) {
         var v = all[k] || {}, age = now - (v.t || 0);
         if (age < 70000) { live++; var c = v.c || ""; by[c] = (by[c] || 0) + 1; }
-        else if (age < 86400000) recent.push({ c: v.c || "", z: v.z || "", age: age });
+        else if (age < 86400000) recent.push({ c: v.c || "", z: /^(UTC|GMT|Universal|Zulu)$/i.test(v.z || "") ? "" : (v.z || ""), d: v.d || "", a: v.a || "", age: age });
         else stale[k] = null;   // forget visits older than a day
       });
       if (Object.keys(stale).length) fetch(DB + "/presence.json", { method: "PATCH", body: JSON.stringify(stale) }).catch(function () {});
@@ -67,7 +71,7 @@
     var top = Object.keys(by).sort(function (a, b) { return by[b] - by[a]; }).slice(0, 5);
     box.innerHTML = '<span class="live__dot" aria-hidden="true"></span><b>' + live + "</b> " + (live === 1 ? "person" : "people") + " viewing now" +
       '<span class="live__where">' + top.map(function (c) { return '<span title="' + (countryName(c) || "Elsewhere") + '">' + flag(c) + " " + (countryName(c) || "Elsewhere") + " " + by[c] + "</span>"; }).join("") + "</span>" +
-      (recent.length ? '<details class="live__recent"><summary>Recently connected</summary><ul>' + recent.map(function (r) { return "<li>" + flag(r.c) + " " + (r.z ? r.z.replace(/</g, "") + " area" : (countryName(r.c) || "Somewhere")) + " · <i>" + ago(r.age) + "</i></li>"; }).join("") + "</ul></details>" : "");
+      (recent.length ? '<details class="live__recent"><summary>Recently connected</summary><ul>' + recent.map(function (r) { return "<li>" + flag(r.c) + " " + (r.z ? r.z.replace(/</g, "") + " area" : (countryName(r.c) || "Somewhere")) + (r.d ? " · " + ({ phone: "📱", tablet: "📱", computer: "💻" }[r.d] || "") : "") + (r.a ? " via " + String(r.a).replace(/</g, "") : "") + " · <i>" + ago(r.age) + "</i></li>"; }).join("") + "</ul></details>" : "");
     box.hidden = false;
   }
 
