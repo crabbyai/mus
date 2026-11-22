@@ -84,6 +84,8 @@
     acts = acts || {}; var doing = [acts.game ? "🎮 " + acts.game + " playing the game" : "", acts.contact ? "💬 " + acts.contact + " on WhatsApp or the contact form" : "", acts.angel ? "✦ " + acts.angel + " exploring angel numbers" : ""].filter(Boolean);
     box.innerHTML = '<span class="live__dot" aria-hidden="true"></span><span class="live__622" aria-hidden="true">622</span> <b>' + live + "</b> " + (live === 1 ? "person" : "people") + " viewing now" +
       (doing.length ? '<span class="live__doing">' + doing.join(" · ") + "</span>" : "") +
+      '<span class="live__ur" lang="ur" dir="rtl">' + live + " لوگ ابھی دیکھ رہے ہیں" + (acts.game ? " · " + acts.game + " گیم کھیل رہے ہیں" : "") + (acts.contact ? " · " + acts.contact + " واٹس ایپ پر رابطہ کر رہے ہیں" : "") + "</span>" +
+      '<span class="live__pa" lang="pa-Arab" dir="rtl">' + live + " لوک ہُݨ ویکھ رہے نیں" + (acts.game ? " · " + acts.game + " گیم کھیڈ رہے نیں" : "") + (acts.contact ? " · " + acts.contact + " واٹس ایپ تے گل کر رہے نیں" : "") + "</span>" +
       '<span class="live__where">' + top.map(function (c) { return '<span title="' + (countryName(c) || "Elsewhere") + '">' + flag(c) + " " + (countryName(c) || "Elsewhere") + " " + by[c] + "</span>"; }).join("") + "</span>" +
       (recent.length ? '<details class="live__recent"><summary>Recently connected</summary><ul>' + recent.map(function (r) { return "<li>" + flag(r.c) + " " + (r.z ? r.z.replace(/</g, "") + " area" : (countryName(r.c) || "Somewhere")) + (r.d ? " · " + ({ phone: "📱", tablet: "📱", computer: "💻" }[r.d] || "") : "") + (r.a ? " via " + String(r.a).replace(/</g, "") : "") + " · <i>" + ago(r.age) + "</i></li>"; }).join("") + "</ul></details>" : "");
     box.hidden = false;
