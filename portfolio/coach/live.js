@@ -92,7 +92,9 @@
       var mins = []; for (var m = 59; m >= 0; m--) { var b0 = now - (m + 1) * 60000, b1 = now - m * 60000; mins.push(V.filter(function (v) { return v.t <= b1 && v.t + Math.max(60, v.du || 0) * 1000 >= b0; }).length); }
       mins[59] = Math.max(mins[59], live.length);
       var hrs = []; for (var h2 = 23; h2 >= 0; h2--) { var c0 = now - (h2 + 1) * 36e5, c1 = now - h2 * 36e5; hrs.push(V.filter(function (v) { return v.t >= c0 && v.t < c1; }).length); }
-      recent.sort(function (a, b) { return a.age - b.age; }); render(live, by, recent.slice(0, 8), acts, mins, hrs, now);
+      recent.sort(function (a, b) { return a.age - b.age; }); var ctry = {}; V.forEach(function (v) { if (v.c) ctry[v.c] = 1; });
+      var day = { n: V.length, countries: Object.keys(ctry).length, avg: V.length ? V.reduce(function (a2, v) { return a2 + Math.min(v.du || 0, 3600); }, 0) / V.length : 0, peak: Math.max.apply(null, mins), pk: V.filter(function (v) { return v.c === "PK"; }).length };
+      render(live, by, recent.slice(0, 8), acts, mins, hrs, now, day);
     }).catch(function () {});
   }
   function ago(ms) { var m = Math.round(ms / 60000); return m < 1 ? "just now" : m < 60 ? m + " min ago" : Math.round(m / 60) + " h ago"; }
@@ -115,18 +117,20 @@
   }
   var DOING = { game: "🎮 playing the game", contact: "💬 on WhatsApp / contact form", angel: "✦ exploring angel numbers" };
   var DEV = { phone: "📱 Phone", tablet: "📱 Tablet", computer: "💻 Computer" };
-  function render(live, by, recent, acts, mins, hrs, now) {
+  function render(live, by, recent, acts, mins, hrs, now, day) {
+    day = day || {};
     if (!live.length && !recent.length && !hrs.some(Boolean)) { box.hidden = true; return; }
     var top = Object.keys(by).sort(function (a, b) { return by[b] - by[a]; }).slice(0, 5);
     acts = acts || {}; var doing = [acts.game ? "🎮 " + acts.game + " playing the game" : "", acts.contact ? "💬 " + acts.contact + " on WhatsApp or the contact form" : "", acts.angel ? "✦ " + acts.angel + " exploring angel numbers" : ""].filter(Boolean);
     var n = live.length;
     var people = live.map(function (o) { var v = o.v, vi = o.vi;
-      return '<li><span class="lv__who">' + flag(v.c) + " <b>" + esc(v.z ? v.z + " area" : (countryName(v.c) || "Somewhere")) + "</b>" + (v.c ? ", " + esc(countryName(v.c)) : "") + (o.me ? ' <span class="lv__me">you</span>' : "") + "</span>" +
+      return '<li class="lv__p lv__p--' + (v.x || "browse") + '"><span class="lv__av" aria-hidden="true">' + flag(v.c) + '</span><div class="lv__pb"><span class="lv__who"><b>' + esc(v.z ? v.z + " area" : (countryName(v.c) || "Somewhere")) + "</b>" + (v.c ? ", " + esc(countryName(v.c)) : "") + (o.me ? ' <span class="lv__me">you</span>' : "") + "</span>" +
         '<span class="lv__tags">' + [DEV[v.d] || "", v.os || vi.os || "", v.br || vi.br || "", (v.a || vi.a) ? "via " + (v.a || vi.a) : "", (v.r || vi.r) ? "from " + (v.r || vi.r) : "direct", vi.lg ? "🗣 " + vi.lg : "", vi.sw ? "🖥 " + vi.sw + "px" : "", vi.rt ? "↩ returning" : "✨ new visitor", vi.t ? "⏱ " + dur((now - vi.t) / 1000) + " on site" : ""].filter(Boolean).map(function (t2) { return "<i>" + esc(t2) + "</i>"; }).join("") + "</span>" +
-        '<span class="lv__doing">' + (DOING[v.x] || "👀 browsing") + (vi.g ? " · played the game" : "") + (vi.an ? " · saw angel numbers" : "") + (vi.ct ? " · contacted" : "") + "</span></li>"; }).join("");
+        '<span class="lv__doing">' + (DOING[v.x] || "👀 browsing") + (vi.g ? " · played the game" : "") + (vi.an ? " · saw angel numbers" : "") + (vi.ct ? " · contacted" : "") + "</span></div></li>"; }).join("");
     box.innerHTML =
       '<div class="lv__side">' + spark(mins, now, "Viewers · last 60 min") + "</div>" +
-      '<div class="lv__mid"><div class="lv__head"><span class="live__dot" aria-hidden="true"></span><b>' + n + "</b> " + (n === 1 ? "person" : "people") + " viewing now</div>" +
+      '<div class="lv__mid"><div class="lv__head"><span class="lv__badge"><span class="live__dot" aria-hidden="true"></span>LIVE</span><b class="lv__big">' + n + '</b><span>' + (n === 1 ? "person" : "people") + " viewing now</span></div>" +
+        '<div class="lv__kpis"><span><b>' + (day.n || 0) + "</b>visits today</span><span><b>" + (day.peak || 0) + "</b>peak this hour</span><span><b>" + (day.countries || 0) + "</b>countries today</span><span><b>" + dur(day.avg || 0) + "</b>avg time</span><span><b>🇵🇰 " + (day.pk || 0) + "</b>from Pakistan</span></div>" +
         (doing.length ? '<span class="live__doing">' + doing.join(" · ") + "</span>" : "") +
         '<span class="live__ur" lang="ur" dir="rtl">' + n + " لوگ ابھی دیکھ رہے ہیں" + (acts.game ? " · " + acts.game + " گیم کھیل رہے ہیں" : "") + (acts.contact ? " · " + acts.contact + " واٹس ایپ پر رابطہ کر رہے ہیں" : "") + "</span>" +
         '<span class="live__where">' + top.map(function (c) { return '<span title="' + (countryName(c) || "Elsewhere") + '">' + flag(c) + " " + (countryName(c) || "Elsewhere") + " " + by[c] + "</span>"; }).join("") + "</span>" +
