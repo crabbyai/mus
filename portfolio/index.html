@@ -949,6 +949,37 @@ html{scroll-padding-top:70px}
 .live__pa{color:#ffe7a3}
 .live__links{flex-basis:100%;display:flex;justify-content:center;gap:1rem;font-size:.82rem}
 .live__links a{color:#9fe8b8;font-weight:800}
+
+/* live viewers: full-width panel, charts on the left and right */
+.live{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr) minmax(0,1fr);gap:14px;align-items:stretch;width:auto!important;max-width:min(1180px,calc(100% - 32px))!important;border-radius:22px!important;padding:14px 16px!important}
+.live[hidden]{display:none!important}
+.lv__mid{display:flex;flex-direction:column;align-items:center;gap:.4rem;min-width:0}
+.lv__head{display:flex;align-items:center;gap:.5rem;font-size:1rem}.lv__head b{font-size:1.4rem}
+.lv__side{display:flex;min-width:0}
+.lv__chart{flex:1;display:flex;flex-direction:column;gap:6px;padding:10px 12px;border-radius:16px;background:rgba(0,0,0,.25);border:1px solid rgba(110,230,140,.25)}
+.lv__chart>b{font:800 .72rem system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#9fe8b8}
+.lv__chart svg{width:100%;height:90px}
+.lv__line{stroke-dasharray:1200;stroke-dashoffset:1200;animation:lvDraw 1.6s ease forwards}
+@keyframes lvDraw{to{stroke-dashoffset:0}}
+.lv__chart small{color:#bfe9cc;font-size:.76rem}.lv__chart small b{color:#fff}
+.lv__bars{display:flex;align-items:flex-end;gap:2px;height:90px}
+.lv__bars i{flex:1;border-radius:2px 2px 0 0;background:linear-gradient(0deg,#1d7a3a,#3dff7a);animation:lvGrow .9s ease both}
+.lv__bars i.spike{background:linear-gradient(0deg,#a8752c,#ffe7a3);box-shadow:0 0 8px rgba(255,215,120,.8)}
+@keyframes lvGrow{from{transform:scaleY(0);transform-origin:bottom}}
+.lv__sp{color:#ffd77a;font-weight:800}
+.lv__people{list-style:none;margin:.3rem 0 0;padding:0;width:100%;display:grid;gap:6px;max-height:300px;overflow:auto}
+.lv__people li{display:flex;flex-direction:column;gap:3px;padding:8px 10px;border-radius:12px;background:rgba(0,0,0,.25);border:1px solid rgba(110,230,140,.2);text-align:left}
+.lv__who{font-size:.92rem}.lv__me{font-size:.66rem;padding:1px 6px;border-radius:999px;background:#3dff7a;color:#04210f;font-weight:800;vertical-align:1px}
+.lv__tags{display:flex;flex-wrap:wrap;gap:4px}.lv__tags i{font-style:normal;font-size:.72rem;padding:1px 7px;border-radius:999px;background:rgba(110,230,140,.14);color:#cfeedd}
+.lv__doing{font-size:.8rem;color:#ffe7a3;font-weight:700}
+.lv__mid>*{flex:none!important;flex-basis:auto!important}
+@media(min-width:981px){.lv__chart svg{flex:1;height:auto;min-height:90px;max-height:420px}.lv__bars{flex:1;height:auto;min-height:90px;max-height:420px}.live .lv__people{max-height:420px!important;overflow:auto!important;padding-right:4px}}
+.lv__line{vector-effect:non-scaling-stroke}
+.lv__people{max-height:none!important;overflow:visible!important}
+.lv__mid .live__ur{line-height:1.9}
+@media(max-width:980px){.live{grid-template-columns:1fr 1fr!important}.lv__mid{grid-column:1/-1;order:-1}}
+@media(max-width:560px){.live{grid-template-columns:1fr!important}}
+@media(prefers-reduced-motion:reduce){.lv__line,.lv__bars i{animation:none;stroke-dashoffset:0}}
 .g3__flash{position:absolute;inset:0;z-index:2;pointer-events:none;background:#eaf4ff;opacity:0}
 .g3__flash.on{animation:g3flash .8s steps(1) forwards}
 @keyframes g3flash{0%{opacity:.95}8%{opacity:.05}16%{opacity:.85}26%{opacity:.1}36%{opacity:.7}50%{opacity:0}62%{opacity:.45}74%{opacity:0}84%{opacity:.25}100%{opacity:0}}
@@ -1771,7 +1802,7 @@ html{scroll-padding-top:70px}
 <script src="coach/exit.js?v=3"></script>
 <script src="coach/config.js?v=5"></script>
 <script src="coach/arab.js?v=1" defer></script>
-<script src="coach/live.js?v=7" defer></script>
+<script src="coach/live.js?v=8" defer></script>
 <script src="coach/chat.js?v=1"></script>
 <script src="coach/reminder.js?v=4"></script>
 <script src="coach/numbers.js?v=3"></script>
