@@ -34,7 +34,16 @@
     ".fh__row button{background:none;border:1px solid var(--gold,#c9a45c);border-radius:999px;padding:.4rem .9rem;color:var(--cream,#f3eee3);font:600 .8rem var(--sans,system-ui);cursor:pointer}" +
     ".fh__row a{color:var(--gold-bright,#e8c87e);border-bottom:1px solid rgba(201,164,92,.3)}" +
     ".fh-strip{max-width:1120px;margin:1.2rem auto 0;padding:0 16px}" +
-    ".fh-card{margin-top:1.4rem}";
+    ".fh-card{margin-top:1.4rem}" +
+    /* top strip: Arabic first, then the full translation on hover or once the visitor scrolls */
+    ".fh-strip .fh__body{transition:max-height .45s ease}" +
+    ".fh-strip .fh__t{display:none}" +
+    ".fh-strip .fh.is-en .fh__ar{display:none}" +
+    ".fh-strip .fh.is-en .fh__t{display:block;animation:fhIn .35s ease-out}" +
+    ".fh-strip .fh.is-en.is-short .fh__body{max-height:80em;-webkit-mask-image:none;mask-image:none}" +
+    ".fh-strip .fh.is-open .fh__ar{display:block}" +
+    "@keyframes fhIn{from{opacity:0;transform:translateY(4px)}}" +
+    "@media(prefers-reduced-motion:reduce){.fh-strip .fh__body{transition:none}.fh-strip .fh.is-en .fh__t{animation:none}}";
   document.head.appendChild(css);
 
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
@@ -43,14 +52,25 @@
   function render() {
     var l = lang(), x = TX[l];
     [].forEach.call(document.querySelectorAll("[data-featured]"), function (el) {
-      var open = el.getAttribute("data-open") === "1";
-      el.innerHTML = '<div class="fh' + (open ? "" : " is-short") + '" role="note" aria-label="' + esc(x.k + ", " + REF) + '">' +
+      var open = el.getAttribute("data-open") === "1", strip = el.getAttribute("data-featured") === "strip";
+      var t = x.t || TX.en.t;
+      el.innerHTML = '<div class="fh' + (open ? " is-open" : " is-short") + (strip && en ? " is-en" : "") + '" role="note" aria-label="' + esc(x.k + ", " + REF) + '">' +
         '<div class="fh__k">☾ ' + esc(x.k) + "<b>" + REF + "</b></div>" +
-        '<div class="fh__body"><span class="fh__ar" lang="ar">' + esc(AR) + "</span>" + (x.t ? '<p class="fh__t">' + esc(x.t) + "</p>" : "") + "</div>" +
+        '<div class="fh__body"><span class="fh__ar" lang="ar">' + esc(AR) + "</span>" + (x.t || strip ? '<p class="fh__t"' + (x.t ? "" : ' lang="en"') + ">" + esc(t) + "</p>" : "") + "</div>" +
         '<div class="fh__row"><button type="button" aria-expanded="' + open + '">' + esc(open ? x.less : x.more) + '</button><a href="' + URL + '" target="_blank" rel="noopener">' + esc(x.src) + ": " + REF + " ↗</a></div></div>";
       el.querySelector("button").onclick = function () { el.setAttribute("data-open", open ? "0" : "1"); render(); };
     });
   }
+  // Strip: swap the Arabic for the full translation on hover/focus/tap, or as soon as the page is scrolled
+  var en = false, hover = false;
+  function setEn() {
+    var want = hover || (window.scrollY || 0) > 20;
+    if (want === en) return; en = want;
+    [].forEach.call(document.querySelectorAll('[data-featured="strip"] .fh'), function (f) { f.classList.toggle("is-en", en); });
+  }
+  window.addEventListener("scroll", setEn, { passive: true });
+  document.addEventListener("pointerover", function (e) { var h = !!(e.target.closest && e.target.closest('[data-featured="strip"]')); if (h !== hover) { hover = h; setEn(); } });
+  document.addEventListener("focusin", function (e) { if (e.target.closest && e.target.closest('[data-featured="strip"]')) { hover = true; setEn(); } });
   window.renderFeaturedHadith = render;
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", render); else render();
   // Re-render when the language changes
