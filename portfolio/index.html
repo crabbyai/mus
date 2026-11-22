@@ -997,6 +997,33 @@ html{scroll-padding-top:70px}
 @keyframes lvIn{from{opacity:0;transform:translateY(6px)}}
 @media(max-width:560px){.lv__kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(prefers-reduced-motion:reduce){.lv__p{animation:none}}
+
+/* live panel, compact */
+.live .lv__who b{font-size:.82rem!important}.live .lv__kpis b{font-size:.85rem!important}.live .lv__chart small b{font-size:.8rem!important}
+.live{max-width:min(860px,calc(100% - 32px))!important;padding:10px 12px!important;gap:10px!important;font-size:.8rem!important;grid-template-columns:minmax(0,.8fr) minmax(0,1.6fr) minmax(0,.8fr)!important}
+.lv__mid{gap:.3rem!important}
+.lv__head{gap:.4rem!important;font-size:.85rem}
+.lv__big{font-size:1.6rem!important;text-shadow:0 0 12px rgba(61,255,122,.5)}
+.lv__badge{font-size:.6rem;padding:.1rem .45rem}
+.lv__kpis{gap:4px}
+.lv__kpis span{padding:3px 2px;border-radius:8px;font-size:.56rem;letter-spacing:.03em}
+.lv__kpis b{font-size:.85rem}
+.live__ur{font-size:.8rem!important;line-height:1.6!important}
+.live__where,.live__doing,.live__links,.live__recent{font-size:.74rem!important}
+.live .lv__people{max-height:190px!important;overflow:auto!important;gap:4px!important;padding-right:2px}
+.lv__people li{padding:5px 8px!important;border-radius:9px!important;gap:6px!important;border-left-width:3px!important}
+.lv__av{width:26px;height:26px;font-size:.95rem;box-shadow:0 0 0 1px rgba(110,230,140,.35)}
+.lv__pb{gap:2px}
+.lv__who{font-size:.8rem!important}
+.lv__tags{gap:3px!important}.lv__tags i{font-size:.62rem!important;padding:0 5px!important}
+.lv__doing{font-size:.7rem!important}
+.lv__chart{padding:6px 8px!important;gap:4px!important;border-radius:12px!important}
+.lv__chart>b{font-size:.6rem!important}
+.lv__chart small{font-size:.66rem!important}
+.lv__chart svg,.lv__bars{height:60px!important;min-height:0!important;max-height:none!important;flex:none!important}
+@media(min-width:981px){.lv__side{align-items:center}}
+@media(max-width:980px){.live{grid-template-columns:1fr 1fr!important}}
+@media(max-width:560px){.live{grid-template-columns:1fr 1fr!important}.lv__kpis{grid-template-columns:repeat(5,minmax(0,1fr))!important}.lv__kpis span{font-size:.5rem}.lv__chart svg,.lv__bars{height:44px!important}.lv__chart>b{font-size:.52rem!important}}
 .g3__flash{position:absolute;inset:0;z-index:2;pointer-events:none;background:#eaf4ff;opacity:0}
 .g3__flash.on{animation:g3flash .8s steps(1) forwards}
 @keyframes g3flash{0%{opacity:.95}8%{opacity:.05}16%{opacity:.85}26%{opacity:.1}36%{opacity:.7}50%{opacity:0}62%{opacity:.45}74%{opacity:0}84%{opacity:.25}100%{opacity:0}}
@@ -1819,7 +1846,7 @@ html{scroll-padding-top:70px}
 <script src="coach/exit.js?v=3"></script>
 <script src="coach/config.js?v=5"></script>
 <script src="coach/arab.js?v=1" defer></script>
-<script src="coach/live.js?v=9" defer></script>
+<script src="coach/live.js?v=10" defer></script>
 <script src="coach/chat.js?v=1"></script>
 <script src="coach/reminder.js?v=4"></script>
 <script src="coach/numbers.js?v=3"></script>
