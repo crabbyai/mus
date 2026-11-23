@@ -1127,6 +1127,27 @@ html{scroll-padding-top:70px}
 @keyframes anSpark{0%,100%{opacity:0;transform:scale(.3) rotate(0)}50%{opacity:1;transform:scale(1.2) rotate(90deg)}}
 .an__card--666 .an__spk i{color:#ffb0a8;text-shadow:0 0 6px #ff3030}
 @media(prefers-reduced-motion:reduce){.an__spk{display:none}}
+
+/* jester's court game */
+.jg{position:relative;max-width:820px;margin:1rem auto .4rem;border-radius:18px;overflow:hidden;border:2px solid rgba(201,164,92,.6);box-shadow:0 0 0 4px rgba(120,10,30,.35),0 20px 50px -20px rgba(0,0,0,.9);touch-action:none;user-select:none;-webkit-user-select:none;background:#0b0309}
+.jg canvas{display:block}
+.jg__hud{position:absolute;left:10px;bottom:10px;display:flex;flex-direction:column;align-items:flex-start;gap:.3rem;pointer-events:none}
+.jg__hud span{padding:.2rem .6rem;border-radius:999px;background:rgba(0,0,0,.6);border:1px solid rgba(201,164,92,.5);color:#ffe7a3;font:700 .78rem system-ui,sans-serif}
+.jg__hud b{color:#fff}.jg__hud .jg__conf{border-color:#c48bff;color:#e6c8ff}
+.jg__sting{position:absolute;right:10px;bottom:10px;width:62px;height:62px;border-radius:50%;border:2px solid #e8c87e;background:radial-gradient(circle at 35% 30%,#5a1020,#1a0408);color:#fff;font-size:1.6rem;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;cursor:pointer;touch-action:manipulation;box-shadow:0 0 16px rgba(232,200,126,.4)}
+.jg__sting small{font:800 .55rem system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;margin-top:2px;color:#ffe7a3}
+.jg__sting[hidden]{display:none}
+.jg__ov{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;padding:12px;background:linear-gradient(180deg,transparent 30%,rgba(5,2,6,.85) 70%)}
+.jg__ov[hidden]{display:none}
+.jg__card{width:min(520px,100%);text-align:center;padding:.9rem 1rem;border-radius:16px;background:rgba(14,4,10,.88);border:1px solid rgba(201,164,92,.6);color:#f3eee3;max-height:100%;overflow:auto}
+.jg__card p{margin:.35rem 0;font-size:.86rem;line-height:1.5;color:#eadfca}
+.jg__t{display:block;font-family:"Cinzel Decorative",var(--serif);font-size:1rem;color:#ffe7a3;text-shadow:0 0 10px rgba(200,20,40,.6)}
+.jg__ur{font-family:"Noto Nastaliq Urdu","Noto Naskh Arabic",serif!important;font-size:.95rem!important;line-height:2!important;color:#f3d9a0!important}
+.jg__keys,.jg__best{font-size:.74rem!important;color:#a99a80!important}
+.jg__hint{color:#ff8a94!important;font-style:italic}
+.jg__go{margin-top:.4rem;padding:.6rem 1.4rem;border:0;border-radius:999px;background:linear-gradient(135deg,#ffe7a3,#c9a45c);color:#1a0608;font:900 .95rem system-ui,sans-serif;cursor:pointer;box-shadow:0 0 20px rgba(232,200,126,.45)}
+.jg__gavel{font-size:2rem;transform-origin:80% 80%;animation:jstGavel .6s cubic-bezier(.5,0,.8,.4) .1s both}
+.jst-wrap--end{margin:2.4rem auto 1.6rem}
 .g3__flash{position:absolute;inset:0;z-index:2;pointer-events:none;background:#eaf4ff;opacity:0}
 .g3__flash.on{animation:g3flash .8s steps(1) forwards}
 @keyframes g3flash{0%{opacity:.95}8%{opacity:.05}16%{opacity:.85}26%{opacity:.1}36%{opacity:.7}50%{opacity:0}62%{opacity:.45}74%{opacity:0}84%{opacity:.25}100%{opacity:0}}
@@ -1346,68 +1367,6 @@ html{scroll-padding-top:70px}
     <span class="playcta__t"><span class="playcta__ic" aria-hidden="true">▶</span> <span data-i18n="play">PLAY GAME</span></span>
     <small data-i18n="play.s">🦂 Scorpion Street 3D · 🦀 can you beat the crab?</small>
   </a>
-</div>
-<div class="jst-wrap">      <!-- ===== THE JESTER'S COURT ===== -->
-  <section class="jst reveal" id="jester" aria-labelledby="jstH">
-    <div class="jst__curtain jst__curtain--l" aria-hidden="true"></div><div class="jst__curtain jst__curtain--r" aria-hidden="true"></div>
-    <div class="jst__fog" aria-hidden="true"><i></i><i></i></div>
-    <p class="jst__k"><span>⚖️ The court is in session</span><span lang="ur" dir="rtl">عدالت جاری ہے</span><span>Adalat jaari hai ⚖️</span></p>
-    <div class="jst__crown" aria-hidden="true">👑</div>
-    <h3 id="jstH" class="jst__h">The Jester’s Court</h3>
-    <p class="jst__sub"><span lang="ur" dir="rtl">مسخرے کی عدالت</span> · <i>Maskhare ki Adalat</i></p>
-
-    <div class="jst__stage">
-      <span class="jst__side" aria-hidden="true"><b class="jst__scale">⚖️</b><b class="jst__candle">🕯️</b></span>
-      <div class="jst__ring">
-        <div class="jst__spot" aria-hidden="true"></div>
-        <div class="jst__orbit" aria-hidden="true"><i>💎</i><i>💎</i><i>💎</i><i>💎</i><i>💎</i><i>💎</i><i>💎</i><i>💎</i></div>
-        <img class="jst__img" src="coach/assets/jester.png" alt="A pixel-art jester in a purple and orange hat, holding a starred ball" width="83" height="85" loading="lazy">
-        <span class="jst__gem jst__gem--1" aria-hidden="true">💎</span><span class="jst__gem jst__gem--2" aria-hidden="true">💎</span><span class="jst__gem jst__gem--3" aria-hidden="true">💎</span><span class="jst__gem jst__gem--4" aria-hidden="true">💎</span>
-      </div>
-      <span class="jst__side" aria-hidden="true"><b class="jst__candle">🕯️</b><b class="jst__scale">⚖️</b></span>
-    </div>
-    <div class="jst__gavel" aria-hidden="true">🔨</div>
-
-    <div class="jst__tabs" role="tablist" aria-label="Language">
-      <button type="button" role="tab" aria-selected="true" data-jl="en">English</button>
-      <button type="button" role="tab" aria-selected="false" data-jl="ur" lang="ur">اردو</button>
-      <button type="button" role="tab" aria-selected="false" data-jl="ro">Roman Urdu</button>
-    </div>
-
-    <div class="jst__scroll">
-      <div class="jst__t" data-jt="en" role="tabpanel">
-        <p class="jst__lead">You have to play the jester to win the favor of both your friends and your enemies.</p>
-        <p>A jester reserves the energy he’d have directed towards useless and unproductive fighting into productive planning. A jester masks his sharpest ambitions under a veneer of foolishness, deliberately drawing scrutiny or mockery to disarm those around him.</p>
-        <p>By absorbing the blows of criticism with a smile and feigning incompetence, he subtly alters how others perceive his threat level. This carefully cultivated harmlessness allows him to navigate hostile environments untouched, transforming social tension into a canvas for his own hidden strategy.</p>
-        <p>In the theater of real-world negotiation, politics, and psychology, this jester strategy operates as a masterclass in strategic vulnerability. Rather than engaging in exhausting power struggles, the jester weaponizes human pride and psychological reactance against his opponents. He pushes people to underestimate him, dropping false weaknesses that trick rivals into focusing on the wrong battles.</p>
-        <p>While his adversaries are busy celebrating a superficial victory over a fool, the jester is quietly gathering intelligence, observing their true motives and steering the room toward his preferred outcome.</p>
-        <p>Ultimately, playing the fool is not an act of submission, but a tactic of absolute control. By refusing to fight on conventional terms, the jester ensures he never wastes energy on pride-driven conflicts that yield no real value. He secures the affection of allies who find him unthreatening while simultaneously rendering his enemies predictable and easily manipulated.</p>
-      </div>
-      <div class="jst__t jst__t--ur" data-jt="ur" role="tabpanel" lang="ur" dir="rtl" hidden>
-        <p class="jst__lead">اپنے دوستوں اور دشمنوں، دونوں کی خوشنودی جیتنے کے لیے تمہیں مسخرے کا کردار ادا کرنا ہوگا۔</p>
-        <p>مسخرہ وہ توانائی جو فضول اور بے فائدہ لڑائیوں میں ضائع ہوتی، اسے بچا کر نتیجہ خیز منصوبہ بندی میں لگاتا ہے۔ مسخرہ اپنے سب سے تیز عزائم کو بے وقوفی کے پردے میں چھپاتا ہے، اور جان بوجھ کر لوگوں کی تنقید یا مذاق کو اپنی طرف کھینچتا ہے تاکہ اردگرد کے لوگوں کو غافل کر دے۔</p>
-        <p>تنقید کے وار مسکراہٹ کے ساتھ سہہ کر اور نااہلی کا ڈھونگ رچا کر، وہ خاموشی سے بدل دیتا ہے کہ دوسرے اسے کتنا بڑا خطرہ سمجھتے ہیں۔ یہ احتیاط سے تراشی ہوئی بے ضرری اسے دشمن ماحول میں بے داغ گزرنے دیتی ہے، اور سماجی کشیدگی کو اس کی چھپی ہوئی حکمتِ عملی کا کینوس بنا دیتی ہے۔</p>
-        <p>حقیقی دنیا کی سودے بازی، سیاست اور نفسیات کے اسٹیج پر، مسخرے کی یہ حکمتِ عملی سوچی سمجھی کمزوری دکھانے کا شاہکار سبق ہے۔ تھکا دینے والی طاقت کی کشمکش میں الجھنے کے بجائے، مسخرہ انسانی غرور اور نفسیاتی ضد کو اپنے مخالفین کے خلاف ہتھیار بنا لیتا ہے۔ وہ لوگوں کو مجبور کرتا ہے کہ اسے کم سمجھیں، اور جھوٹی کمزوریاں ظاہر کرتا ہے جو حریفوں کو غلط محاذوں پر الجھا دیتی ہیں۔</p>
-        <p>جب اس کے مخالف ایک بے وقوف پر سطحی فتح کا جشن منانے میں مصروف ہوتے ہیں، مسخرہ خاموشی سے معلومات جمع کر رہا ہوتا ہے، ان کے اصل ارادے پرکھ رہا ہوتا ہے، اور محفل کا رخ اپنی پسند کے انجام کی طرف موڑ رہا ہوتا ہے۔</p>
-        <p>آخرکار، بے وقوف بننا ہار ماننا نہیں، بلکہ مکمل کنٹرول کی ایک چال ہے۔ روایتی شرائط پر لڑنے سے انکار کر کے، مسخرہ یقینی بناتا ہے کہ وہ غرور سے جنم لینے والے اُن جھگڑوں پر کبھی توانائی ضائع نہ کرے جن کا کوئی حقیقی فائدہ نہیں۔ وہ اُن اتحادیوں کی محبت جیت لیتا ہے جو اسے بے خطر سمجھتے ہیں، اور ساتھ ہی اپنے دشمنوں کو قابلِ پیشگوئی اور آسانی سے قابو میں آنے والا بنا دیتا ہے۔</p>
-      </div>
-      <div class="jst__t" data-jt="ro" role="tabpanel" hidden>
-        <p class="jst__lead">Apne doston aur dushmanon, dono ki khushnoodi jeetne ke liye tumhein maskhare ka kirdaar ada karna hoga.</p>
-        <p>Maskhara woh tawanai jo fuzool aur be-faida laraiyon mein zaya hoti, use bacha kar natija-khez mansooba-bandi mein lagata hai. Maskhara apne sab se tez azaaim ko be-waqoofi ke parde mein chhupata hai, aur jaan boojh kar logon ki tanqeed ya mazaaq ko apni taraf kheenchta hai taake ird-gird ke logon ko ghaafil kar de.</p>
-        <p>Tanqeed ke waar muskurahat ke saath seh kar aur na-ahli ka dhong racha kar, woh khamoshi se badal deta hai ke doosre use kitna bara khatra samajhte hain. Yeh ehtiyaat se taraashi hui be-zarari use dushman mahaul mein be-daagh guzarne deti hai, aur samaji kasheedgi ko us ki chhupi hui hikmat-e-amali ka canvas bana deti hai.</p>
-        <p>Haqeeqi duniya ki sauda-baazi, siyasat aur nafsiyaat ke stage par, maskhare ki yeh hikmat-e-amali sochi samjhi kamzori dikhane ka shahkaar sabaq hai. Thaka dene wali taaqat ki kashmakash mein uljhne ke bajaye, maskhara insani ghuroor aur nafsiyati zid ko apne mukhalifeen ke khilaf hathiyar bana leta hai. Woh logon ko majboor karta hai ke use kam samjhein, aur jhooti kamzoriyan zahir karta hai jo hareefon ko ghalat mahaazon par uljha deti hain.</p>
-        <p>Jab us ke mukhalif ek be-waqoof par sathi fatah ka jashn manane mein masroof hote hain, maskhara khamoshi se maloomat jama kar raha hota hai, un ke asal iraade parakh raha hota hai, aur mehfil ka rukh apni pasand ke anjaam ki taraf mor raha hota hai.</p>
-        <p>Aakhirkaar, be-waqoof banna haar maanna nahin, balke mukammal control ki ek chaal hai. Riwayati sharaait par larne se inkaar kar ke, maskhara yaqeeni banata hai ke woh ghuroor se janam lene wale un jhagron par kabhi tawanai zaya na kare jin ka koi haqeeqi faida nahin. Woh un ittehadiyon ki mohabbat jeet leta hai jo use be-khatar samajhte hain, aur saath hi apne dushmanon ko qabil-e-peshgoi aur aasani se qaabu mein aane wala bana deta hai.</p>
-      </div>
-    </div>
-
-    <blockquote class="jst__verdict">
-      <span class="jst__vk">🔨 The verdict · فیصلہ · Faisla</span>
-      <p>In a world obsessed with broadcasting strength, the truest power belongs to the one who commands the room simply by knowing exactly when to lose.</p>
-      <p lang="ur" dir="rtl" class="jst__vur">ایک ایسی دنیا میں جو طاقت کی نمائش کی دیوانی ہے، اصل طاقت اُس کی ہے جو صرف یہ جان کر محفل پر حکم چلاتا ہے کہ کب ہارنا ہے۔</p>
-      <p class="jst__vro">Ek aisi duniya mein jo taaqat ki numaish ki deewani hai, asal taaqat us ki hai jo sirf yeh jaan kar mehfil par hukm chalata hai ke kab haarna hai.</p>
-    </blockquote>
-  </section>
 </div>
 <div class="fh-strip" data-featured="strip"></div>
 <div class="live" id="liveNow" role="status" aria-live="polite" hidden></div>
@@ -1992,6 +1951,71 @@ html{scroll-padding-top:70px}
 })();
 </script>
 
+<div class="jst-wrap jst-wrap--end">      <!-- ===== THE JESTER'S COURT ===== -->
+  <section class="jst reveal" id="jester" aria-labelledby="jstH">
+    <div class="jst__curtain jst__curtain--l" aria-hidden="true"></div><div class="jst__curtain jst__curtain--r" aria-hidden="true"></div>
+    <div class="jst__fog" aria-hidden="true"><i></i><i></i></div>
+    <p class="jst__k"><span>⚖️ The court is in session</span><span lang="ur" dir="rtl">عدالت جاری ہے</span><span>Adalat jaari hai ⚖️</span></p>
+    <div class="jst__crown" aria-hidden="true">👑</div>
+    <h3 id="jstH" class="jst__h">The Jester’s Court</h3>
+    <p class="jst__sub"><span lang="ur" dir="rtl">مسخرے کی عدالت</span> · <i>Maskhare ki Adalat</i></p>
+
+    <div class="jg" id="jg">
+      <canvas aria-label="The Jester's Court game: a scorpion facing the jester in a royal courtroom"></canvas>
+      <div class="jg__hud" hidden aria-live="off"></div>
+      <button type="button" class="jg__sting" hidden aria-label="Sting">🦂<small>Sting</small></button>
+      <div class="jg__ov"><div class="jg__card">
+        <b class="jg__t">🦂 You are the scorpion · 🃏 He is the jester</b>
+        <p>The jester rules this court. <b>Sting</b> him, catch his <b>💎 diamonds</b>, dodge his <b>🃏 cards</b>, and beware the <b>🎭 masks</b>: false weaknesses that flip your controls.</p>
+        <p class="jg__ur" lang="ur" dir="rtl">تم بچھو ہو، وہ مسخرہ ہے۔ کیا تم اسے ہرا سکتے ہو؟</p>
+        <p class="jg__keys">Drag to move · tap or 🦂 to sting · keyboard: ← → and Space</p>
+        <button type="button" class="jg__go">▶ Enter the court</button>
+      </div></div>
+    </div>
+    <p class="game-moral">📜 The moral: in a world obsessed with broadcasting strength, the truest power belongs to the one who knows exactly when to lose.</p>
+
+    <div class="jst__tabs" role="tablist" aria-label="Language">
+      <button type="button" role="tab" aria-selected="true" data-jl="en">English</button>
+      <button type="button" role="tab" aria-selected="false" data-jl="ur" lang="ur">اردو</button>
+      <button type="button" role="tab" aria-selected="false" data-jl="ro">Roman Urdu</button>
+    </div>
+
+    <div class="jst__scroll">
+      <div class="jst__t" data-jt="en" role="tabpanel">
+        <p class="jst__lead">You have to play the jester to win the favor of both your friends and your enemies.</p>
+        <p>A jester reserves the energy he’d have directed towards useless and unproductive fighting into productive planning. A jester masks his sharpest ambitions under a veneer of foolishness, deliberately drawing scrutiny or mockery to disarm those around him.</p>
+        <p>By absorbing the blows of criticism with a smile and feigning incompetence, he subtly alters how others perceive his threat level. This carefully cultivated harmlessness allows him to navigate hostile environments untouched, transforming social tension into a canvas for his own hidden strategy.</p>
+        <p>In the theater of real-world negotiation, politics, and psychology, this jester strategy operates as a masterclass in strategic vulnerability. Rather than engaging in exhausting power struggles, the jester weaponizes human pride and psychological reactance against his opponents. He pushes people to underestimate him, dropping false weaknesses that trick rivals into focusing on the wrong battles.</p>
+        <p>While his adversaries are busy celebrating a superficial victory over a fool, the jester is quietly gathering intelligence, observing their true motives and steering the room toward his preferred outcome.</p>
+        <p>Ultimately, playing the fool is not an act of submission, but a tactic of absolute control. By refusing to fight on conventional terms, the jester ensures he never wastes energy on pride-driven conflicts that yield no real value. He secures the affection of allies who find him unthreatening while simultaneously rendering his enemies predictable and easily manipulated.</p>
+      </div>
+      <div class="jst__t jst__t--ur" data-jt="ur" role="tabpanel" lang="ur" dir="rtl" hidden>
+        <p class="jst__lead">اپنے دوستوں اور دشمنوں، دونوں کی خوشنودی جیتنے کے لیے تمہیں مسخرے کا کردار ادا کرنا ہوگا۔</p>
+        <p>مسخرہ وہ توانائی جو فضول اور بے فائدہ لڑائیوں میں ضائع ہوتی، اسے بچا کر نتیجہ خیز منصوبہ بندی میں لگاتا ہے۔ مسخرہ اپنے سب سے تیز عزائم کو بے وقوفی کے پردے میں چھپاتا ہے، اور جان بوجھ کر لوگوں کی تنقید یا مذاق کو اپنی طرف کھینچتا ہے تاکہ اردگرد کے لوگوں کو غافل کر دے۔</p>
+        <p>تنقید کے وار مسکراہٹ کے ساتھ سہہ کر اور نااہلی کا ڈھونگ رچا کر، وہ خاموشی سے بدل دیتا ہے کہ دوسرے اسے کتنا بڑا خطرہ سمجھتے ہیں۔ یہ احتیاط سے تراشی ہوئی بے ضرری اسے دشمن ماحول میں بے داغ گزرنے دیتی ہے، اور سماجی کشیدگی کو اس کی چھپی ہوئی حکمتِ عملی کا کینوس بنا دیتی ہے۔</p>
+        <p>حقیقی دنیا کی سودے بازی، سیاست اور نفسیات کے اسٹیج پر، مسخرے کی یہ حکمتِ عملی سوچی سمجھی کمزوری دکھانے کا شاہکار سبق ہے۔ تھکا دینے والی طاقت کی کشمکش میں الجھنے کے بجائے، مسخرہ انسانی غرور اور نفسیاتی ضد کو اپنے مخالفین کے خلاف ہتھیار بنا لیتا ہے۔ وہ لوگوں کو مجبور کرتا ہے کہ اسے کم سمجھیں، اور جھوٹی کمزوریاں ظاہر کرتا ہے جو حریفوں کو غلط محاذوں پر الجھا دیتی ہیں۔</p>
+        <p>جب اس کے مخالف ایک بے وقوف پر سطحی فتح کا جشن منانے میں مصروف ہوتے ہیں، مسخرہ خاموشی سے معلومات جمع کر رہا ہوتا ہے، ان کے اصل ارادے پرکھ رہا ہوتا ہے، اور محفل کا رخ اپنی پسند کے انجام کی طرف موڑ رہا ہوتا ہے۔</p>
+        <p>آخرکار، بے وقوف بننا ہار ماننا نہیں، بلکہ مکمل کنٹرول کی ایک چال ہے۔ روایتی شرائط پر لڑنے سے انکار کر کے، مسخرہ یقینی بناتا ہے کہ وہ غرور سے جنم لینے والے اُن جھگڑوں پر کبھی توانائی ضائع نہ کرے جن کا کوئی حقیقی فائدہ نہیں۔ وہ اُن اتحادیوں کی محبت جیت لیتا ہے جو اسے بے خطر سمجھتے ہیں، اور ساتھ ہی اپنے دشمنوں کو قابلِ پیشگوئی اور آسانی سے قابو میں آنے والا بنا دیتا ہے۔</p>
+      </div>
+      <div class="jst__t" data-jt="ro" role="tabpanel" hidden>
+        <p class="jst__lead">Apne doston aur dushmanon, dono ki khushnoodi jeetne ke liye tumhein maskhare ka kirdaar ada karna hoga.</p>
+        <p>Maskhara woh tawanai jo fuzool aur be-faida laraiyon mein zaya hoti, use bacha kar natija-khez mansooba-bandi mein lagata hai. Maskhara apne sab se tez azaaim ko be-waqoofi ke parde mein chhupata hai, aur jaan boojh kar logon ki tanqeed ya mazaaq ko apni taraf kheenchta hai taake ird-gird ke logon ko ghaafil kar de.</p>
+        <p>Tanqeed ke waar muskurahat ke saath seh kar aur na-ahli ka dhong racha kar, woh khamoshi se badal deta hai ke doosre use kitna bara khatra samajhte hain. Yeh ehtiyaat se taraashi hui be-zarari use dushman mahaul mein be-daagh guzarne deti hai, aur samaji kasheedgi ko us ki chhupi hui hikmat-e-amali ka canvas bana deti hai.</p>
+        <p>Haqeeqi duniya ki sauda-baazi, siyasat aur nafsiyaat ke stage par, maskhare ki yeh hikmat-e-amali sochi samjhi kamzori dikhane ka shahkaar sabaq hai. Thaka dene wali taaqat ki kashmakash mein uljhne ke bajaye, maskhara insani ghuroor aur nafsiyati zid ko apne mukhalifeen ke khilaf hathiyar bana leta hai. Woh logon ko majboor karta hai ke use kam samjhein, aur jhooti kamzoriyan zahir karta hai jo hareefon ko ghalat mahaazon par uljha deti hain.</p>
+        <p>Jab us ke mukhalif ek be-waqoof par sathi fatah ka jashn manane mein masroof hote hain, maskhara khamoshi se maloomat jama kar raha hota hai, un ke asal iraade parakh raha hota hai, aur mehfil ka rukh apni pasand ke anjaam ki taraf mor raha hota hai.</p>
+        <p>Aakhirkaar, be-waqoof banna haar maanna nahin, balke mukammal control ki ek chaal hai. Riwayati sharaait par larne se inkaar kar ke, maskhara yaqeeni banata hai ke woh ghuroor se janam lene wale un jhagron par kabhi tawanai zaya na kare jin ka koi haqeeqi faida nahin. Woh un ittehadiyon ki mohabbat jeet leta hai jo use be-khatar samajhte hain, aur saath hi apne dushmanon ko qabil-e-peshgoi aur aasani se qaabu mein aane wala bana deta hai.</p>
+      </div>
+    </div>
+
+    <blockquote class="jst__verdict">
+      <span class="jst__vk">🔨 The verdict · فیصلہ · Faisla</span>
+      <p>In a world obsessed with broadcasting strength, the truest power belongs to the one who commands the room simply by knowing exactly when to lose.</p>
+      <p lang="ur" dir="rtl" class="jst__vur">ایک ایسی دنیا میں جو طاقت کی نمائش کی دیوانی ہے، اصل طاقت اُس کی ہے جو صرف یہ جان کر محفل پر حکم چلاتا ہے کہ کب ہارنا ہے۔</p>
+      <p class="jst__vro">Ek aisi duniya mein jo taaqat ki numaish ki deewani hai, asal taaqat us ki hai jo sirf yeh jaan kar mehfil par hukm chalata hai ke kab haarna hai.</p>
+    </blockquote>
+  </section>
+</div>
+<script src="coach/jestergame.js?v=3" defer></script>
 <footer>
   <p style="margin-bottom:.3rem"><svg class="ico" style="width:42px;height:42px" aria-hidden="true"><use href="#crescent"/></svg></p>
   <div data-eye="mini" style="margin:.4rem auto"></div>
@@ -2016,7 +2040,7 @@ html{scroll-padding-top:70px}
 <script src="coach/i18n.js?v=28"></script>
 <script src="coach/library.js?v=2"></script>
 <script src="coach/featured.js?v=2"></script>
-<script src="coach/popups.js?v=3"></script>
+<script src="coach/popups.js?v=4"></script>
 <script src="coach/exit.js?v=3"></script>
 <script src="coach/config.js?v=5"></script>
 <script src="coach/arab.js?v=1" defer></script>

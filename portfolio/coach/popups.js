@@ -56,6 +56,7 @@
     if (window.getSelection && String(window.getSelection()).length > 20) return "reading";
     if (inView("#scorpion-street-3d") && window.__g3 && window.__g3.st && window.__g3.st.playing) return "playing";
     if (inView("#scorpion-street")) return "playing";
+    if (window.__jg && window.__jg.playing && inView("#jg")) return "playing";
     if (popupOpen()) return "popup";
     return "";
   }
