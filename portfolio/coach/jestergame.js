@@ -24,6 +24,39 @@
   }
   size(); window.addEventListener("resize", function () { size(); if (!G.playing) draw(0); });
 
+  /* ---------- sound: tiny synth blips, no files ---------- */
+  var AC = null, muted = store("jg-mute") === "1";
+  function tone(f, d, type, vol, slide) {
+    if (muted) return;
+    try {
+      AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === "suspended") AC.resume();
+      var o = AC.createOscillator(), g = AC.createGain(), n = AC.currentTime; o.type = type || "sine"; o.frequency.setValueAtTime(f, n);
+      if (slide) o.frequency.exponentialRampToValueAtTime(slide, n + d);
+      g.gain.setValueAtTime(vol || 0.07, n); g.gain.exponentialRampToValueAtTime(0.0001, n + d); o.connect(g); g.connect(AC.destination); o.start(n); o.stop(n + d + 0.02);
+    } catch (e) {}
+  }
+  function seq(fs, gap, d, type, vol) { fs.forEach(function (f, i) { setTimeout(function () { tone(f, d, type, vol); }, i * gap); }); }
+  var SFX = {
+    gem: function (c) { tone(660 * Math.pow(1.06, Math.min(c, 14)), 0.12, "triangle", 0.07); },
+    sting: function () { tone(1000, 0.07, "square", 0.025, 350); },
+    hurt: function () { tone(170, 0.28, "sawtooth", 0.06, 70); },
+    hit: function () { tone(320, 0.14, "square", 0.045, 640); },
+    power: function () { seq([523, 659, 784, 1046], 60, 0.12, "triangle", 0.06); },
+    king: function () { seq([392, 523, 659, 784, 1046], 110, 0.22, "sawtooth", 0.04); },
+    manic: function () { seq([520, 620, 540, 700, 560, 760], 70, 0.07, "square", 0.035); },
+    lasso: function () { tone(760, 0.5, "sine", 0.06, 110); },
+    tick: function () { tone(440, 0.1, "triangle", 0.06); },
+    go: function () { tone(880, 0.25, "triangle", 0.07); },
+    gavel: function () { tone(130, 0.35, "square", 0.08, 55); }
+  };
+  var snd = document.createElement("button"), pz = document.createElement("button");
+  snd.type = pz.type = "button"; snd.className = "jg__btn jg__snd"; pz.className = "jg__btn jg__pz"; pz.hidden = true;
+  function paintSnd() { snd.textContent = muted ? "🔇" : "🔊"; snd.setAttribute("aria-label", muted ? "Turn sound on" : "Turn sound off"); }
+  pz.textContent = "⏸"; pz.setAttribute("aria-label", "Pause");
+  snd.onclick = function () { muted = !muted; store("jg-mute", muted ? "1" : "0"); paintSnd(); if (!muted) tone(660, 0.1, "triangle", 0.06); };
+  pz.onclick = function () { if (G.paused) resume(); else pause(); };
+  box.appendChild(snd); box.appendChild(pz); paintSnd();
+
   var HIT = ["Ouch! You got me 🤡", "Haaye, main haar gaya! 😵", "Too strong for me 🙈", "Wah! Kya baat hai! 👏", "Bas karo, I'm just a fool 🥴", "You win, you win! 🏳️", "Oh no, my hat! 🎩"];
   var TAUNT = ["Come on, hit the fool 🤡", "Catch my diamonds if you can 💎", "Am I a threat? Never 😇", "Mera mazaaq urao, I don't mind 🙃"];
   var MANIC = ["HAHAHAHA! 🤪", "Catch THIS! 🃏🃏🃏", "Hee hee hee! 😵‍💫", "Pagal ho gaya hoon! 🤪"];
@@ -35,6 +68,7 @@
     G.t = 0; G.left = 45; G.gems = 0; G.hits = 0; G.secrets = 0; G.conf = 0; G.shake = 0;
     G.px = W / 2; G.tx = W / 2; G.sx = []; G.drops = []; G.parts = []; G.bubbles = [];
     G.jx = W / 2; G.jv = 90; G.jflash = 0; G.jfall = 0; G.nextDrop = 0.8; G.nextTaunt = 3; G.cool = 0; G.end = null;
+    G.score = 0; G.combo = 0; G.comboT = 0; G.mag = 0; G.slow = 0; G.shield = 0; G.floats = []; G.count = 3.2; G.lastTick = 4;
     G.mode = "jester"; G.modeT = 0; G.nextManic = 6; G.nextKing = 13; G.slip = 0; G.lasso = 0; G.rope = 0; G.thrown = false; G.humil = 0; G.burstT = 0;
   }
   reset();
@@ -46,16 +80,24 @@
     if (!inView()) return;
     if (/^(ArrowLeft|ArrowRight|a|d|A|D)$/.test(e.key)) { keys[e.key.toLowerCase()] = 1; e.preventDefault(); }
     if (e.key === " " || e.key === "ArrowUp" || e.key === "w") { fire(); e.preventDefault(); }
+    if (e.key === "p" || e.key === "P" || e.key === "Escape") { pause(); e.preventDefault(); }
   });
   window.addEventListener("keyup", function (e) { delete keys[e.key.toLowerCase()]; });
+  window.addEventListener("keydown", function (e) { if ((e.key === "m" || e.key === "M") && inView() && !/INPUT|TEXTAREA/.test((document.activeElement || {}).tagName || "")) snd.onclick(); if (G.paused && (e.key === "p" || e.key === "P" || e.key === " ") && inView()) { resume(); e.preventDefault(); } });
+  var dragOff = 0;
   var downX = 0, downT = 0;
   cv.addEventListener("pointerdown", function (e) {
     if (!G.playing) return;
     if (G.paused) { resume(); return; }
-    var r = cv.getBoundingClientRect(); downX = e.clientX; downT = Date.now(); G.tx = e.clientX - r.left;
+    var r = cv.getBoundingClientRect(); downX = e.clientX; downT = Date.now();
+    if (e.pointerType === "mouse") G.tx = e.clientX - r.left; else dragOff = G.px - (e.clientX - r.left);   // fingers drag from wherever they land
     cv.setPointerCapture && cv.setPointerCapture(e.pointerId);
   });
-  cv.addEventListener("pointermove", function (e) { if (!G.playing || G.paused || !e.buttons && e.pointerType === "mouse") return; var r = cv.getBoundingClientRect(); G.tx = e.clientX - r.left; });
+  cv.addEventListener("pointermove", function (e) {
+    if (!G.playing || G.paused) return; var r = cv.getBoundingClientRect(), x = e.clientX - r.left;
+    if (e.pointerType === "mouse") G.tx = x;   // on a computer the scorpion simply follows the mouse
+    else if (e.buttons || e.pressure) G.tx = x + dragOff;
+  });
   cv.addEventListener("pointerup", function (e) { if (G.playing && !G.paused && Math.abs(e.clientX - downX) < 12 && Date.now() - downT < 300) fire(); });
   sting.addEventListener("pointerdown", function (e) { e.preventDefault(); if (G.paused) resume(); else fire(); });
   sting.addEventListener("click", function (e) { if (e.detail === 0) fire(); });
@@ -63,7 +105,8 @@
   function fire() {
     if (!G.playing || G.paused || G.cool > 0) return;
     if (G.lasso > 0) return;
-    G.cool = 0.28; G.sx.push({ x: G.px, y: H - 58 });
+    if (G.count > 0) return;
+    G.cool = 0.26; G.sx.push({ x: G.px, y: H - 58 }); SFX.sting();
     if (navigator.vibrate) try { navigator.vibrate(8); } catch (e) {}
   }
 
@@ -73,7 +116,10 @@
     raf = requestAnimationFrame(loop);
     var dt = Math.min(0.05, (ts - (last || ts)) / 1000); last = ts;
     if (!vis) return;
-    if (G.playing && !G.paused) { step(dt); draw(dt); }
+    if (G.playing && !G.paused) {
+      if (G.count > 0) { G.count -= dt; var c = Math.ceil(G.count); if (c !== G.lastTick && c > 0) { G.lastTick = c; SFX.tick(); } if (G.count <= 0) SFX.go(); G.px += (Math.max(24, Math.min(W - 24, G.tx)) - G.px) * Math.min(1, dt * 12); draw(dt); drawCount(); return; }
+      step(dt); draw(dt);
+    }
     else if (!G.playing && !G.end) draw(0);   // title screen: the court idles
   }
   function step(dt) {
@@ -84,17 +130,19 @@
     var target = G.conf > 0 && !k ? W - G.tx : G.tx;
     if (G.lasso > 0) { G.lasso -= dt; target = G.jx; G.tx = G.px; }
     G.px += (Math.max(24, Math.min(W - 24, target)) - G.px) * Math.min(1, dt * (G.lasso > 0 ? 3 : 12));
-    G.slip -= dt; G.rope -= dt;
+    G.slip -= dt; G.rope -= dt; G.mag -= dt; G.slow -= dt; G.comboT -= dt; if (G.comboT <= 0) G.combo = 0;
+    G.floats = G.floats.filter(function (f) { f.life -= dt; f.y -= 40 * dt; return f.life > 0; });
     // moods: the fool, the manic fool, and the King underneath
     if (G.mode === "jester") {
       G.nextManic -= dt; G.nextKing -= dt;
-      if (G.nextKing <= 0) { G.mode = "king"; G.modeT = 7; G.slip = 0.7; G.thrown = false; G.shake = 12; G.drops = []; say("…the suit slips! Behold, the King 👑", G.jx, H * 0.12); burst(G.jx, H * 0.3, "🃏", 6); burst(G.jx, H * 0.3, "✨", 6); }
-      else if (G.nextManic <= 0) { G.mode = "manic"; G.modeT = 2.8; G.burstT = 0; say(MANIC[Math.floor(Math.random() * MANIC.length)], G.jx, H * 0.06); }
+      if (G.nextKing <= 0) { G.mode = "king"; G.modeT = 7; G.slip = 0.7; G.thrown = false; G.shake = 12; G.drops = []; say("…the suit slips! Behold, the King 👑", G.jx, H * 0.12); SFX.king(); burst(G.jx, H * 0.3, "🃏", 6); burst(G.jx, H * 0.3, "✨", 6); }
+      else if (G.nextManic <= 0) { G.mode = "manic"; G.modeT = 2.8; G.burstT = 0; SFX.manic(); say(MANIC[Math.floor(Math.random() * MANIC.length)], G.jx, H * 0.06); }
     } else {
       G.modeT -= dt;
       if (G.mode === "king" && !G.thrown && G.modeT < 4.6) { G.thrown = true; G.rope = 0.5; }
-      if (G.mode === "king" && G.thrown && G.rope <= 0 && G.rope > -dt * 1.5 && G.lasso <= 0) {
-        G.lasso = 2.4; G.humil++; G.gems = Math.max(0, G.gems - 2); G.shake = 10;
+      if (G.mode === "king" && G.thrown === true && G.rope <= 0 && G.rope > -dt * 1.5 && G.lasso <= 0 && G.shield > 0) { G.shield = 0; G.thrown = "blocked"; say("🛡️ Your shield snapped the lasso!", G.px, H - 90, 1); SFX.power(); }
+      if (G.mode === "king" && G.thrown === true && G.rope <= 0 && G.rope > -dt * 1.5 && G.lasso <= 0) {
+        G.lasso = 2.4; G.combo = 0; SFX.lasso(); G.humil++; G.gems = Math.max(0, G.gems - 2); G.shake = 10;
         say("😳 Lassoed and humiliated! −2 💎", G.px, H - 90, 1); say(KINGL[G.humil % KINGL.length], G.jx, H * 0.2);
         if (navigator.vibrate) try { navigator.vibrate([80, 40, 160]); } catch (e) {}
       }
@@ -116,15 +164,15 @@
     if (G.mode === "jester") G.nextDrop -= dt;
     if (G.nextDrop <= 0) {
       G.nextDrop = Math.max(0.35, 1.1 - G.t / 60) * (0.6 + Math.random() * 0.8);
-      var r = Math.random(), type = r < 0.5 ? "gem" : r < 0.72 ? "card" : r < 0.92 ? "mask" : "crown";
-      G.drops.push({ x: G.jx + (Math.random() - 0.5) * js * 0.6, y: jy + js * 0.3, vy: 110 + Math.random() * 60 + G.t * 2.2, vx: (Math.random() - 0.5) * 60, type: type, rot: 0 });
+      var r = Math.random(), type = r < 0.07 ? ["magnet", "shield", "slow"][Math.floor(Math.random() * 3)] : r < 0.55 ? "gem" : r < 0.75 ? "card" : r < 0.92 ? "mask" : "crown";
+      G.drops.push({ x: Math.max(30, Math.min(W - 30, G.jx + (Math.random() - 0.5) * js * 0.6)), y: jy + js * 0.3, vy: 110 + Math.random() * 60 + G.t * 2.2, vx: (Math.random() - 0.5) * 60, type: type, rot: 0 });
     }
     // stingers
     for (var i = G.sx.length - 1; i >= 0; i--) {
       var s = G.sx[i]; s.y -= 520 * dt;
       if (Math.abs(s.x - G.jx) < js * 0.42 && Math.abs(s.y - jy) < js * 0.45) {
         G.sx.splice(i, 1);
-        if (G.mode === "king") { say("🛡️ Blocked by the King's shield", G.jx, jy - js * 0.7, 1); burst(s.x, s.y, "✨", 3); continue; } G.hits++; G.secrets += 3; G.jflash = 0.25; G.jfall = 0.6; G.shake = 6;
+        if (G.mode === "king") { say("🛡️ Blocked by the King's shield", G.jx, jy - js * 0.7, 1); burst(s.x, s.y, "✨", 3); continue; } G.hits++; G.secrets += 3; SFX.hit(); G.jflash = 0.25; G.jfall = 0.6; G.shake = 6;
         say(HIT[G.hits % HIT.length], G.jx, jy - js * 0.6);
         burst(G.jx, jy, "💎", 3);
         continue;
@@ -134,13 +182,26 @@
     // falling things
     var py = H - 40;
     for (i = G.drops.length - 1; i >= 0; i--) {
-      var d = G.drops[i]; d.y += d.vy * dt; d.x += d.vx * dt; d.rot += dt * 3;
-      if (Math.abs(d.x - G.px) < 30 && Math.abs(d.y - py) < 28) {
+      var d = G.drops[i], sl = G.slow > 0 ? 0.45 : 1; d.y += d.vy * dt * sl; d.x += d.vx * dt * sl; d.rot += dt * 3;
+      if (G.mag > 0 && (d.type === "gem" || d.type === "crown") && d.y > H * 0.35) d.x += (G.px - d.x) * Math.min(1, dt * 5);
+      if (Math.abs(d.x - G.px) < 36 && Math.abs(d.y - py) < 32) {
         G.drops.splice(i, 1);
-        if (d.type === "gem") { G.gems++; burst(d.x, d.y, "✦", 4); }
-        else if (d.type === "crown") { G.gems += 5; burst(d.x, d.y, "👑", 3); say("+5 💎 royal treasure!", d.x, d.y - 30, 1); }
-        else if (d.type === "card") { G.gems = Math.max(0, G.gems - 1); G.shake = 10; say("🃏 The card cut you! −1 💎", d.x, d.y - 30, 1); if (navigator.vibrate) try { navigator.vibrate(60); } catch (e) {} }
-        else { G.conf = 3; say("🎭 A false weakness! Controls flipped", d.x, d.y - 30, 1); }
+        if (d.type === "gem" || d.type === "crown") {
+          G.combo = G.comboT > 0 ? G.combo + 1 : 1; G.comboT = 2.6;
+          var mult = Math.min(5, 1 + Math.floor((G.combo - 1) / 3)), worth = d.type === "crown" ? 5 : 1;
+          G.gems += worth; G.score += worth * mult; SFX.gem(G.combo);
+          floatTxt("+" + worth * mult + (mult > 1 ? "  🔥×" + mult : ""), d.x, d.y - 20, mult > 1 ? "#ffb347" : "#bfe6ff");
+          burst(d.x, d.y, d.type === "crown" ? "👑" : "✦", 4); if (d.type === "crown") say("+5 💎 royal treasure!", d.x, d.y - 30, 1);
+          if (G.combo === 6 || G.combo === 12) say(G.combo === 6 ? "🔥 On fire! ×3" : "🔥🔥 Unstoppable! ×5", G.px, H - 100, 1);
+        }
+        else if (d.type === "card") {
+          if (G.shield > 0) { G.shield = 0; say("🛡️ Shield blocked the card", d.x, d.y - 30, 1); SFX.power(); }
+          else { G.gems = Math.max(0, G.gems - 1); G.combo = 0; G.shake = 10; SFX.hurt(); say("🃏 The card cut you! −1 💎", d.x, d.y - 30, 1); if (navigator.vibrate) try { navigator.vibrate(60); } catch (e) {} }
+        }
+        else if (d.type === "magnet") { G.mag = 6; SFX.power(); say("🧲 Magnet! Diamonds fly to you", d.x, d.y - 30, 1); }
+        else if (d.type === "shield") { G.shield = 1; SFX.power(); say("🛡️ Shield up: blocks one card or lasso", d.x, d.y - 30, 1); }
+        else if (d.type === "slow") { G.slow = 5; SFX.power(); say("⏳ Slow motion!", d.x, d.y - 30, 1); }
+        else { G.conf = 3; SFX.hurt(); say("🎭 A false weakness! Controls flipped", d.x, d.y - 30, 1); }
         continue;
       }
       if (d.y > H + 30) G.drops.splice(i, 1);
@@ -156,6 +217,13 @@
   function jyNow() { return G.mode === "king" ? H * 0.44 + Math.sin(G.t * 9) * 3 : H * 0.2 + Math.sin((G.t || 0) * 2) * 8; }
   function jsize() { return Math.min(W * 0.26, H * 0.3, 150); }
   function say(t, x, y, small) { G.bubbles = G.bubbles.filter(function (b) { return b.small !== !!small; }); /* one jester line and one game note at a time */ G.bubbles.push({ t: t, x: x, y: y, life: 2, small: !!small }); }
+  function floatTxt(t, x, y, col) { G.floats.push({ t: t, x: x, y: y, life: 0.9, col: col }); }
+  function drawCount() {
+    var c = Math.ceil(G.count); ctx.save(); ctx.fillStyle = "rgba(5,2,6,.45)"; ctx.fillRect(0, 0, W, H);
+    ctx.font = "900 " + Math.round(Math.min(W, H) * 0.28) + "px 'Cinzel Decorative',Georgia,serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillStyle = "#ffe7a3"; ctx.shadowColor = "rgba(220,20,50,.9)"; ctx.shadowBlur = 30; var k = 1 + (G.count - Math.floor(G.count)) * 0.3; ctx.translate(W / 2, H * 0.45); ctx.scale(k, k); ctx.fillText(c > 0 ? String(c) : "GO!", 0, 0); ctx.restore();
+    ctx.save(); ctx.font = "700 14px system-ui,sans-serif"; ctx.fillStyle = "#f3eee3"; ctx.textAlign = "center"; ctx.fillText(window.matchMedia && matchMedia("(pointer:fine)").matches ? "Move the mouse · click or Space to sting" : "Drag anywhere to move · tap to sting", W / 2, H * 0.62); ctx.restore();
+  }
   function burst(x, y, ch, n) { for (var i = 0; i < n; i++) G.parts.push({ x: x, y: y, vx: (Math.random() - 0.5) * 220, vy: -80 - Math.random() * 160, life: 0.9, ch: ch }); }
 
   /* ---------- drawing ---------- */
@@ -213,13 +281,17 @@
       if (G.lasso > 0) { ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(G.px, H - 40, 30, 16, 0, 0, Math.PI * 2); ctx.stroke(); }
     }
     // falling things
-    (G.drops || []).forEach(function (d) { emoji({ gem: "💎", card: "🃏", mask: "🎭", crown: "👑" }[d.type], d.x, d.y, d.type === "crown" ? 26 : 24, d.type === "card" ? d.rot : 0); });
+    (G.drops || []).forEach(function (d) { var pw = d.type === "magnet" || d.type === "shield" || d.type === "slow"; if (pw) { ctx.fillStyle = "rgba(120,200,255,.25)"; ctx.beginPath(); ctx.arc(d.x, d.y, 19 + Math.sin(t * 8) * 2, 0, Math.PI * 2); ctx.fill(); }
+      emoji({ gem: "💎", card: "🃏", mask: "🎭", crown: "👑", magnet: "🧲", shield: "🛡️", slow: "⏳" }[d.type], d.x, d.y, d.type === "crown" ? 26 : 24, d.type === "card" ? d.rot : 0); });
     // stingers
     ctx.strokeStyle = "#ffe7a3"; ctx.lineWidth = 3; ctx.shadowColor = "#ffd77a"; ctx.shadowBlur = 10;
     (G.sx || []).forEach(function (s) { ctx.beginPath(); ctx.moveTo(s.x, s.y); ctx.lineTo(s.x, s.y + 14); ctx.stroke(); });
     ctx.shadowBlur = 0;
     // the scorpion
     if (G.playing || G.end) { ctx.save(); if (G.conf > 0) { ctx.globalAlpha = 0.7 + Math.sin(t * 20) * 0.3; } if (G.lasso > 0) { emoji("🦂", G.px, H - 40, 34, Math.PI + Math.sin(t * 14) * 0.3); ctx.restore(); emoji("😳", G.px, H - 76, 20); } else { emoji("🦂", G.px, H - 40, 40); ctx.restore(); } if (G.conf > 0) emoji("🎭", G.px + 22, H - 64, 16); }
+    if (G.playing && G.shield > 0) { ctx.strokeStyle = "rgba(140,210,255,.85)"; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(G.px, H - 40, 32 + Math.sin(t * 6) * 2, 0, Math.PI * 2); ctx.stroke(); }
+    if (G.playing && G.mag > 0) { ctx.strokeStyle = "rgba(255,90,90,.35)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(G.px, H - 40, 46 + (t * 60) % 40, 0, Math.PI * 2); ctx.stroke(); }
+    (G.floats || []).forEach(function (f) { ctx.globalAlpha = Math.min(1, f.life * 2); ctx.font = "900 16px system-ui,sans-serif"; ctx.textAlign = "center"; ctx.fillStyle = f.col; ctx.strokeStyle = "rgba(0,0,0,.7)"; ctx.lineWidth = 3; ctx.strokeText(f.t, f.x, f.y); ctx.fillText(f.t, f.x, f.y); }); ctx.globalAlpha = 1;
     // particles and speech
     (G.parts || []).forEach(function (p) { ctx.globalAlpha = Math.max(0, p.life); emoji(p.ch, p.x, p.y, 16); }); ctx.globalAlpha = 1;
     (G.bubbles || []).forEach(function (b) {
@@ -284,28 +356,31 @@
   function roundRect(x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
 
   function paintHud() {
-    hud.innerHTML = "<span>💎 <b>" + G.gems + "</b></span><span>🗡️ hits <b>" + G.hits + "</b></span><span>⏱ <b>" + Math.max(0, Math.ceil(G.left)) + "</b>s</span>" + (G.conf > 0 ? '<span class="jg__conf">🎭 flipped!</span>' : "") + (G.mode === "king" ? '<span class="jg__king">👑 KING MODE</span>' : G.mode === "manic" ? '<span class="jg__manic">🤪 MANIC</span>' : "") + (G.humil ? "<span>😳 lassoed <b>" + G.humil + "</b></span>" : "");
+    hud.innerHTML = "<span>⭐ <b>" + G.score + "</b></span>" + (G.combo >= 3 ? '<span class="jg__fire">🔥 ×' + Math.min(5, 1 + Math.floor((G.combo - 1) / 3)) + " combo " + G.combo + "</span>" : "") + (G.mag > 0 ? "<span>🧲 " + Math.ceil(G.mag) + "s</span>" : "") + (G.slow > 0 ? "<span>⏳ " + Math.ceil(G.slow) + "s</span>" : "") + (G.shield > 0 ? "<span>🛡️ ready</span>" : "") + "<span>💎 <b>" + G.gems + "</b></span><span>🗡️ hits <b>" + G.hits + "</b></span><span>⏱ <b>" + Math.max(0, Math.ceil(G.left)) + "</b>s</span>" + (G.conf > 0 ? '<span class="jg__conf">🎭 flipped!</span>' : "") + (G.mode === "king" ? '<span class="jg__king">👑 KING MODE</span>' : G.mode === "manic" ? '<span class="jg__manic">🤪 MANIC</span>' : "") + (G.humil ? "<span>😳 lassoed <b>" + G.humil + "</b></span>" : "");
   }
 
   /* ---------- start, pause, verdict ---------- */
   function start() {
-    reset(); G.end = null; G.playing = true; G.paused = false; ov.hidden = true; box.classList.add("on"); hud.hidden = false; sting.hidden = false;
+    reset(); G.end = null; G.playing = true; G.paused = false; ov.hidden = true; box.classList.add("on"); hud.hidden = false; sting.hidden = false; pz.hidden = false; pz.textContent = "⏸";
+    var rb = box.getBoundingClientRect(); if (rb.top < 0 || rb.bottom > innerHeight) box.scrollIntoView({ block: "center", behavior: reduce ? "auto" : "smooth" });
+    try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); AC.resume(); } catch (e) {}   // unlock sound on this tap
     paintHud(); last = 0; G.end = null;
   }
-  function pause() { if (!G.playing || G.paused) return; G.paused = true; show('<b class="jg__t">⏸ Court adjourned</b><p>Tap to resume.</p>', "▶ Resume", resume); }
-  function resume() { if (!G.paused) return; G.paused = false; ov.hidden = true; last = 0; }
+  function pause() { if (!G.playing || G.paused) return; G.paused = true; pz.textContent = "▶"; show('<b class="jg__t">⏸ Court adjourned</b><p>Press ▶, P or Space to resume.</p>', "▶ Resume", resume); }
+  function resume() { if (!G.paused) return; G.paused = false; ov.hidden = true; last = 0; pz.textContent = "⏸"; }
   function finish() {
-    G.playing = false; box.classList.remove("on"); sting.hidden = true;
-    var best = Number(store("jg-best") || 0), won = G.hits === 0 && G.gems >= 10;
-    if (G.gems > best) { best = G.gems; store("jg-best", String(best)); }
+    G.playing = false; box.classList.remove("on"); sting.hidden = true; pz.hidden = true; SFX.gavel();
+    var best = Number(store("jg-best2") || 0), won = G.hits === 0 && G.gems >= 10, newBest = G.score > best;
+    if (newBest) { best = G.score; store("jg-best2", String(best)); }
+    var stars = G.score >= 45 ? 3 : G.score >= 25 ? 2 : G.score >= 10 ? 1 : 0;
     if (won) { var w = Number(store("jg-wins") || 0) + 1; store("jg-wins", String(w)); }
     G.end = true; draw(0);
-    var html = '<div class="jg__gavel" aria-hidden="true">🔨</div><b class="jg__t">⚖️ The Verdict · فیصلہ</b>';
+    var html = '<div class="jg__gavel" aria-hidden="true">🔨</div><b class="jg__t">⚖️ The Verdict · فیصلہ</b><div class="jg__stars" aria-label="' + stars + ' of 3 stars">' + [0, 1, 2].map(function (i) { return '<i class="' + (i < stars ? "on" : "") + '" style="animation-delay:' + (0.3 + i * 0.25) + 's">★</i>'; }).join("") + "</div>";
     if (won) html += "<p>👑 <b>You refused to fight on his terms.</b> You caught " + G.gems + " diamonds and never struck the fool. You beat the jester at his own game.</p><p class='jg__ur' lang='ur' dir='rtl'>تم نے اس کی شرطوں پر لڑنے سے انکار کیا، اور مسخرے کو اسی کے کھیل میں ہرا دیا۔</p>";
     else if (G.hits) html += "<p>You struck the jester <b>" + G.hits + "</b> " + (G.hits === 1 ? "time" : "times") + ", and he let you. While you celebrated, he quietly gathered <b>" + G.secrets + " secrets 💎</b> about you.</p><p><b>The jester wins.</b> 🤡</p><p class='jg__ur' lang='ur' dir='rtl'>تم جیت کا جشن مناتے رہے، اور مسخرہ خاموشی سے تمہارے راز جمع کرتا رہا۔</p><p class='jg__hint'>Hint: the truest power belongs to the one who knows exactly when to lose.</p>";
     else html += "<p>You held back and never struck him. Wise. But you caught only <b>" + G.gems + "</b> diamonds. Catch <b>10</b> without striking the fool to win.</p>";
     if (G.humil) html += "<p>🐎 The King rode out on his black horse and lassoed you <b>" + G.humil + "</b> " + (G.humil === 1 ? "time" : "times") + ", in front of his four queens. 😳</p>";
-    html += "<p class='jg__best'>💎 This round " + G.gems + " · best " + best + "</p>";
+    html += "<p class='jg__best'>⭐ Score <b>" + G.score + "</b>" + (newBest ? " · 🏆 new best!" : " · best " + best) + " · 💎 " + G.gems + " diamonds</p>";
     show(html, "↻ Play again", start);
   }
   function show(html, label, fn) {
@@ -316,7 +391,7 @@
 
   // pause when the game scrolls away or the tab is hidden
   function inView() { var r = box.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight; }
-  if ("IntersectionObserver" in window) new IntersectionObserver(function (es) { vis = es[0].isIntersecting; if (!vis) pause(); }, { threshold: 0.2 }).observe(box);
+  if ("IntersectionObserver" in window) new IntersectionObserver(function (es) { vis = es[0].isIntersecting; if (!vis) setTimeout(function () { if (!inView()) pause(); }, 700); }, { threshold: 0.2 }).observe(box);   /* ignore brief layout shifts */
   else vis = true;
   document.addEventListener("visibilitychange", function () { if (document.hidden) pause(); });
   img.onload = function () { if (!G.playing) draw(0); };
