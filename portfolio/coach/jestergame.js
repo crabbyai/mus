@@ -26,6 +26,8 @@
 
   var HIT = ["Ouch! You got me 🤡", "Haaye, main haar gaya! 😵", "Too strong for me 🙈", "Wah! Kya baat hai! 👏", "Bas karo, I'm just a fool 🥴", "You win, you win! 🏳️", "Oh no, my hat! 🎩"];
   var TAUNT = ["Come on, hit the fool 🤡", "Catch my diamonds if you can 💎", "Am I a threat? Never 😇", "Mera mazaaq urao, I don't mind 🙃"];
+  var MANIC = ["HAHAHAHA! 🤪", "Catch THIS! 🃏🃏🃏", "Hee hee hee! 😵‍💫", "Pagal ho gaya hoon! 🤪"];
+  var KINGL = ["Kneel before the King 👑", "Bow, little scorpion ⚔️", "The fool was only a costume 🛡️"];
   var G = { playing: false, paused: false };
   window.__jg = G;
 
@@ -33,6 +35,7 @@
     G.t = 0; G.left = 45; G.gems = 0; G.hits = 0; G.secrets = 0; G.conf = 0; G.shake = 0;
     G.px = W / 2; G.tx = W / 2; G.sx = []; G.drops = []; G.parts = []; G.bubbles = [];
     G.jx = W / 2; G.jv = 90; G.jflash = 0; G.jfall = 0; G.nextDrop = 0.8; G.nextTaunt = 3; G.cool = 0; G.end = null;
+    G.mode = "jester"; G.modeT = 0; G.nextManic = 6; G.nextKing = 13; G.slip = 0; G.lasso = 0; G.rope = 0; G.thrown = false; G.humil = 0; G.burstT = 0;
   }
   reset();
 
@@ -59,6 +62,7 @@
 
   function fire() {
     if (!G.playing || G.paused || G.cool > 0) return;
+    if (G.lasso > 0) return;
     G.cool = 0.28; G.sx.push({ x: G.px, y: H - 58 });
     if (navigator.vibrate) try { navigator.vibrate(8); } catch (e) {}
   }
@@ -78,14 +82,38 @@
     var k = (keys.arrowleft || keys.a ? -1 : 0) + (keys.arrowright || keys.d ? 1 : 0);
     if (k) G.tx = G.px + k * 400 * dt * (G.conf > 0 ? -1 : 1);
     var target = G.conf > 0 && !k ? W - G.tx : G.tx;
-    G.px += (Math.max(24, Math.min(W - 24, target)) - G.px) * Math.min(1, dt * 12);
+    if (G.lasso > 0) { G.lasso -= dt; target = G.jx; G.tx = G.px; }
+    G.px += (Math.max(24, Math.min(W - 24, target)) - G.px) * Math.min(1, dt * (G.lasso > 0 ? 3 : 12));
+    G.slip -= dt; G.rope -= dt;
+    // moods: the fool, the manic fool, and the King underneath
+    if (G.mode === "jester") {
+      G.nextManic -= dt; G.nextKing -= dt;
+      if (G.nextKing <= 0) { G.mode = "king"; G.modeT = 7; G.slip = 0.7; G.thrown = false; G.shake = 12; G.drops = []; say("…the suit slips! Behold, the King 👑", G.jx, H * 0.12); burst(G.jx, H * 0.3, "🃏", 6); burst(G.jx, H * 0.3, "✨", 6); }
+      else if (G.nextManic <= 0) { G.mode = "manic"; G.modeT = 2.8; G.burstT = 0; say(MANIC[Math.floor(Math.random() * MANIC.length)], G.jx, H * 0.06); }
+    } else {
+      G.modeT -= dt;
+      if (G.mode === "king" && !G.thrown && G.modeT < 4.6) { G.thrown = true; G.rope = 0.5; }
+      if (G.mode === "king" && G.thrown && G.rope <= 0 && G.rope > -dt * 1.5 && G.lasso <= 0) {
+        G.lasso = 2.4; G.humil++; G.gems = Math.max(0, G.gems - 2); G.shake = 10;
+        say("😳 Lassoed and humiliated! −2 💎", G.px, H - 90, 1); say(KINGL[G.humil % KINGL.length], G.jx, H * 0.2);
+        if (navigator.vibrate) try { navigator.vibrate([80, 40, 160]); } catch (e) {}
+      }
+      if (G.modeT <= 0) {
+        if (G.mode === "king") { G.slip = 0.6; G.nextKing = 15 + Math.random() * 6; say("…and back into the fool's suit 🤡", G.jx, H * 0.12); burst(G.jx, H * 0.3, "👑", 4); }
+        else G.nextManic = 6 + Math.random() * 4;
+        G.mode = "jester";
+      }
+    }
     // jester glides and dodges a little
     var js = jsize(), lvl = 1 + G.t / 20;
-    G.jx += G.jv * lvl * dt; if (G.jx < js * 0.6 || G.jx > W - js * 0.6) { G.jv *= -1; G.jx = Math.max(js * 0.6, Math.min(W - js * 0.6, G.jx)); }
-    if (Math.random() < dt * 0.6) G.jv *= -1;
-    var jy = H * 0.2 + Math.sin(G.t * 2) * 8;
+    var spd = G.mode === "manic" ? 2.6 : G.mode === "king" ? 0.7 : 1;
+    G.jx += G.jv * lvl * spd * dt; if (G.jx < js * 0.6 || G.jx > W - js * 0.6) { G.jv *= -1; G.jx = Math.max(js * 0.6, Math.min(W - js * 0.6, G.jx)); }
+    if (Math.random() < dt * (G.mode === "manic" ? 3 : 0.6)) G.jv *= -1;
+    if (G.mode === "king") { var kl = Math.min(W / 2, js * 1.45); if (G.jx < kl || G.jx > W - kl) { G.jx = Math.max(kl, Math.min(W - kl, G.jx)); G.jv = (G.jx < W / 2 ? 1 : -1) * Math.abs(G.jv); } }   /* room for his four wives */
+    var jy = jyNow();
+    if (G.mode === "manic") { G.burstT -= dt; if (G.burstT <= 0) { G.burstT = 0.28; for (var q = -1; q <= 1; q++) G.drops.push({ x: G.jx, y: jy + js * 0.3, vy: 170 + G.t * 2, vx: q * 90 + (Math.random() - 0.5) * 30, type: Math.random() < 0.75 ? "card" : "gem", rot: 0 }); } }
     // drops
-    G.nextDrop -= dt;
+    if (G.mode === "jester") G.nextDrop -= dt;
     if (G.nextDrop <= 0) {
       G.nextDrop = Math.max(0.35, 1.1 - G.t / 60) * (0.6 + Math.random() * 0.8);
       var r = Math.random(), type = r < 0.5 ? "gem" : r < 0.72 ? "card" : r < 0.92 ? "mask" : "crown";
@@ -95,7 +123,8 @@
     for (var i = G.sx.length - 1; i >= 0; i--) {
       var s = G.sx[i]; s.y -= 520 * dt;
       if (Math.abs(s.x - G.jx) < js * 0.42 && Math.abs(s.y - jy) < js * 0.45) {
-        G.sx.splice(i, 1); G.hits++; G.secrets += 3; G.jflash = 0.25; G.jfall = 0.6; G.shake = 6;
+        G.sx.splice(i, 1);
+        if (G.mode === "king") { say("🛡️ Blocked by the King's shield", G.jx, jy - js * 0.7, 1); burst(s.x, s.y, "✨", 3); continue; } G.hits++; G.secrets += 3; G.jflash = 0.25; G.jfall = 0.6; G.shake = 6;
         say(HIT[G.hits % HIT.length], G.jx, jy - js * 0.6);
         burst(G.jx, jy, "💎", 3);
         continue;
@@ -124,6 +153,7 @@
     paintHud();
     if (G.left <= 0) finish();
   }
+  function jyNow() { return G.mode === "king" ? H * 0.44 + Math.sin(G.t * 9) * 3 : H * 0.2 + Math.sin((G.t || 0) * 2) * 8; }
   function jsize() { return Math.min(W * 0.26, H * 0.3, 150); }
   function say(t, x, y, small) { G.bubbles = G.bubbles.filter(function (b) { return b.small !== !!small; }); /* one jester line and one game note at a time */ G.bubbles.push({ t: t, x: x, y: y, life: 2, small: !!small }); }
   function burst(x, y, ch, n) { for (var i = 0; i < n; i++) G.parts.push({ x: x, y: y, vx: (Math.random() - 0.5) * 220, vy: -80 - Math.random() * 160, life: 0.9, ch: ch }); }
@@ -155,17 +185,33 @@
     ctx.globalAlpha = fl; emoji("🕯️", W * 0.08, H * 0.6, 22); emoji("🕯️", W * 0.92, H * 0.6, 22); ctx.globalAlpha = 1;
     emoji("⚖️", W * 0.08, H * 0.12, 24, Math.sin(t * 1.7) * 0.15); emoji("⚖️", W * 0.92, H * 0.12, 24, -Math.sin(t * 1.7) * 0.15);
     // the jester, diamonds circling him (one for each secret he gathers)
-    var js = jsize(), jy = H * 0.2 + Math.sin(t * 2) * 8, jx = G.playing || G.end ? G.jx : W / 2;
-    var spot = ctx.createLinearGradient(0, 0, 0, jy + js); spot.addColorStop(0, "rgba(255,240,200,.25)"); spot.addColorStop(1, "rgba(255,240,200,0)");
-    ctx.fillStyle = spot; ctx.beginPath(); ctx.moveTo(jx - 14, 0); ctx.lineTo(jx + 14, 0); ctx.lineTo(jx + js * 0.8, jy + js * 0.7); ctx.lineTo(jx - js * 0.8, jy + js * 0.7); ctx.fill();
-    var orbit = Math.min(14, 4 + Math.floor((G.secrets || 0) / 2));
-    for (var o = 0; o < orbit; o++) { var a = t * 1.4 + o / orbit * Math.PI * 2; emoji("💎", jx + Math.cos(a) * js * 0.62, jy + Math.sin(a) * js * 0.5, 13 + (G.secrets > 20 ? 4 : 0)); }
-    ctx.save(); ctx.translate(jx, jy);
-    var fall = G.jfall > 0 ? Math.sin((0.6 - G.jfall) / 0.6 * Math.PI) : 0;
-    ctx.rotate(Math.sin(t * 2.6) * 0.08 + fall * 0.5); ctx.translate(0, fall * 10);
-    if (img.complete && img.naturalWidth) { ctx.imageSmoothingEnabled = false; ctx.shadowColor = G.jflash > 0 ? "rgba(255,60,60,.95)" : "rgba(180,90,255,.8)"; ctx.shadowBlur = 18; ctx.drawImage(img, -js / 2, -js / 2, js, js * img.naturalHeight / img.naturalWidth); }
-    else emoji("🃏", 0, 0, js * 0.7);
-    ctx.restore();
+    var js = jsize(), jx = G.playing || G.end ? G.jx : W / 2, king = G.mode === "king" && (G.playing || G.end), manic = G.mode === "manic";
+    var jy = G.playing || G.end ? jyNow() : H * 0.2 + Math.sin(t * 2) * 8;
+    var spot = ctx.createLinearGradient(0, 0, 0, jy + js); spot.addColorStop(0, king ? "rgba(255,215,120,.32)" : manic ? "rgba(255,60,60,.3)" : "rgba(255,240,200,.25)"); spot.addColorStop(1, "rgba(255,240,200,0)");
+    ctx.fillStyle = spot; ctx.beginPath(); ctx.moveTo(jx - 14, 0); ctx.lineTo(jx + 14, 0); ctx.lineTo(jx + js * 0.9, jy + js * 0.7); ctx.lineTo(jx - js * 0.9, jy + js * 0.7); ctx.fill();
+    if (king) drawKing(jx, jy, js, t);
+    else {
+      var orbit = Math.min(14, 4 + Math.floor((G.secrets || 0) / 2));
+      for (var o = 0; o < orbit; o++) { var a = t * (manic ? 4 : 1.4) + o / orbit * Math.PI * 2; emoji("💎", jx + Math.cos(a) * js * 0.62, jy + Math.sin(a) * js * 0.5, 13 + (G.secrets > 20 ? 4 : 0)); }
+      ctx.save(); ctx.translate(jx, jy);
+      var fall = G.jfall > 0 ? Math.sin((0.6 - G.jfall) / 0.6 * Math.PI) : 0;
+      if (manic && !reduce) { ctx.translate((Math.random() - 0.5) * 8, (Math.random() - 0.5) * 8); ctx.rotate(Math.sin(t * 30) * 0.25); ctx.scale(1 + Math.sin(t * 18) * 0.06, 1 + Math.cos(t * 18) * 0.06); }
+      else ctx.rotate(Math.sin(t * 2.6) * 0.08 + fall * 0.5);
+      ctx.translate(0, fall * 10);
+      if (img.complete && img.naturalWidth) { ctx.imageSmoothingEnabled = false; ctx.shadowColor = manic || G.jflash > 0 ? "rgba(255,40,40,.95)" : "rgba(180,90,255,.8)"; ctx.shadowBlur = manic ? 28 : 18; ctx.drawImage(img, -js / 2, -js / 2, js, js * img.naturalHeight / img.naturalWidth); ctx.shadowBlur = 0; }
+      else emoji("🃏", 0, 0, js * 0.7);
+      drawArms(js, t, manic);
+      ctx.restore();
+      if (manic) { ctx.globalAlpha = 0.9; ctx.font = "900 " + Math.round(js * 0.16) + "px system-ui,sans-serif"; ctx.fillStyle = "#ff3a4a"; ctx.textAlign = "center"; ctx.fillText("HA", jx - js * 0.55 + Math.sin(t * 20) * 4, jy - js * 0.45); ctx.fillText("HA", jx + js * 0.55 + Math.cos(t * 22) * 4, jy - js * 0.3); ctx.globalAlpha = 1; }
+    }
+    if (G.slip > 0) { ctx.globalAlpha = Math.min(1, G.slip * 1.6); var fg = ctx.createRadialGradient(jx, jy, 2, jx, jy, js * 1.4); fg.addColorStop(0, "rgba(255,250,230,.95)"); fg.addColorStop(1, "rgba(255,215,120,0)"); ctx.fillStyle = fg; ctx.fillRect(jx - js * 1.5, jy - js * 1.5, js * 3, js * 3); ctx.globalAlpha = 1; }
+    // the lasso
+    if (king && (G.rope > 0 || G.lasso > 0)) {
+      var hx = jx + (G.jv > 0 ? 1 : -1) * js * 0.35, hy = jy - js * 0.35, k2 = G.rope > 0 ? 1 - G.rope / 0.5 : 1;
+      var ex = hx + (G.px - hx) * k2, ey = hy + (H - 40 - hy) * k2;
+      ctx.strokeStyle = "#d8b27a"; ctx.lineWidth = 3; ctx.setLineDash([7, 4]); ctx.beginPath(); ctx.moveTo(hx, hy); ctx.quadraticCurveTo((hx + ex) / 2, Math.min(hy, ey) - 50, ex, ey); ctx.stroke(); ctx.setLineDash([]);
+      if (G.lasso > 0) { ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(G.px, H - 40, 30, 16, 0, 0, Math.PI * 2); ctx.stroke(); }
+    }
     // falling things
     (G.drops || []).forEach(function (d) { emoji({ gem: "💎", card: "🃏", mask: "🎭", crown: "👑" }[d.type], d.x, d.y, d.type === "crown" ? 26 : 24, d.type === "card" ? d.rot : 0); });
     // stingers
@@ -173,7 +219,7 @@
     (G.sx || []).forEach(function (s) { ctx.beginPath(); ctx.moveTo(s.x, s.y); ctx.lineTo(s.x, s.y + 14); ctx.stroke(); });
     ctx.shadowBlur = 0;
     // the scorpion
-    if (G.playing || G.end) { ctx.save(); if (G.conf > 0) { ctx.globalAlpha = 0.7 + Math.sin(t * 20) * 0.3; } emoji("🦂", G.px, H - 40, 40); ctx.restore(); if (G.conf > 0) emoji("🎭", G.px + 22, H - 64, 16); }
+    if (G.playing || G.end) { ctx.save(); if (G.conf > 0) { ctx.globalAlpha = 0.7 + Math.sin(t * 20) * 0.3; } if (G.lasso > 0) { emoji("🦂", G.px, H - 40, 34, Math.PI + Math.sin(t * 14) * 0.3); ctx.restore(); emoji("😳", G.px, H - 76, 20); } else { emoji("🦂", G.px, H - 40, 40); ctx.restore(); } if (G.conf > 0) emoji("🎭", G.px + 22, H - 64, 16); }
     // particles and speech
     (G.parts || []).forEach(function (p) { ctx.globalAlpha = Math.max(0, p.life); emoji(p.ch, p.x, p.y, 16); }); ctx.globalAlpha = 1;
     (G.bubbles || []).forEach(function (b) {
@@ -185,10 +231,60 @@
     }); ctx.globalAlpha = 1;
     ctx.restore();
   }
+  // his arms: right wrist a silver watch with a black dial, "13" inked on the arm and palm; left wrist silver with a blue dial, "15"
+  function drawArms(js, t, manic) {
+    [[-1, "#111318", "13", "#7b3fb8"], [1, "#1d4fd6", "15", "#e8892a"]].forEach(function (A) {
+      var sd = A[0], sw = manic ? Math.sin(t * 25 + sd) * 0.9 : Math.sin(t * 2.4 + sd) * 0.25;
+      ctx.save(); ctx.translate(sd * js * 0.36, js * 0.08); ctx.rotate(-sd * (0.75 + sw));
+      var L = js * 0.5, wdt = Math.max(11, js * 0.13);
+      ctx.fillStyle = A[3]; roundRect(-wdt / 2, 0, wdt, L * 0.45, wdt / 2); ctx.fill();   // sleeve
+      ctx.fillStyle = "#e9c6a0"; roundRect(-wdt * 0.42, L * 0.4, wdt * 0.84, L * 0.48, wdt * 0.4); ctx.fill();   // forearm
+      ctx.save(); ctx.translate(0, L * 0.6); ctx.rotate(sd * (0.75 + sw)); ctx.fillStyle = "#1a1a2a"; ctx.font = "800 " + Math.max(7, Math.round(js * 0.075)) + "px system-ui,sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(A[2], 0, 0); ctx.restore();   // arm tattoo
+      var wy = L * 0.82, band = ctx.createLinearGradient(-wdt, 0, wdt, 0); band.addColorStop(0, "#8d939c"); band.addColorStop(0.5, "#ffffff"); band.addColorStop(1, "#9aa1aa");
+      ctx.fillStyle = band; ctx.fillRect(-wdt * 0.6, wy - wdt * 0.25, wdt * 1.2, wdt * 0.5);   // silver bracelet
+      ctx.beginPath(); ctx.arc(0, wy, wdt * 0.62, 0, Math.PI * 2); ctx.fill();   // silver case
+      ctx.fillStyle = A[1]; ctx.beginPath(); ctx.arc(0, wy, wdt * 0.45, 0, Math.PI * 2); ctx.fill();   // dial
+      ctx.strokeStyle = "#fff"; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(0, wy); ctx.lineTo(Math.cos(t) * wdt * 0.35, wy + Math.sin(t) * wdt * 0.35); ctx.stroke();
+      ctx.fillStyle = "rgba(255,255,255,.9)"; ctx.beginPath(); ctx.arc(-wdt * 0.2, wy - wdt * 0.2, 1.2, 0, Math.PI * 2); ctx.fill();   // glint
+      ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(0, L + wdt * 0.2, wdt * 0.62, 0, Math.PI * 2); ctx.fill();   // open palm
+      ctx.fillStyle = "#1a1a2a"; ctx.font = "800 " + Math.max(6, Math.round(js * 0.06)) + "px system-ui,sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(A[2], 0, L + wdt * 0.2);   // palm tattoo
+      ctx.restore();
+    });
+  }
+  var horse = null;
+  function blackHorse() {
+    if (horse) return horse;
+    horse = document.createElement("canvas"); horse.width = horse.height = 160; var h = horse.getContext("2d");
+    h.font = "130px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif"; h.textAlign = "center"; h.textBaseline = "middle"; h.fillText("🐎", 80, 86);
+    h.globalCompositeOperation = "source-atop"; var g = h.createLinearGradient(0, 20, 0, 150); g.addColorStop(0, "#3a3a46"); g.addColorStop(0.5, "#0e0e14"); g.addColorStop(1, "#050507"); h.fillStyle = g; h.fillRect(0, 0, 160, 160);
+    return horse;
+  }
+  function drawKing(x, y, js, t) {
+    var dir = G.jv > 0 ? 1 : -1, hs = js * 1.25, gal = Math.sin(t * 9);
+    // four wives, royal and happy, close beside him, hearts rising
+    var Q = ["👸🏻", "👸🏽", "👸🏾", "👸"], pos = [-1.2, -0.62, 0.62, 1.2];
+    function wives(inner) { pos.forEach(function (p, i) { if ((Math.abs(p) < 1) !== inner) return; var qx = Math.max(js * 0.18, Math.min(W - js * 0.18, x + p * js)), qy = y + js * 0.5 + Math.sin(t * 5 + i) * 3; emoji(Q[i], qx, qy, js * 0.3); emoji("💎", qx + js * 0.1, qy - js * 0.2, js * 0.1); var hh = (t * 0.8 + i * 0.25) % 1; ctx.globalAlpha = 1 - hh; emoji("💕", qx, qy - js * 0.25 - hh * js * 0.4, js * 0.13); ctx.globalAlpha = 1; }); }
+    wives(false);
+    // the black horse
+    ctx.save(); ctx.translate(x, y + js * 0.3 + gal * 2); ctx.scale(-dir, 1); ctx.rotate(gal * 0.05);
+    ctx.shadowColor = "rgba(255,215,120,.6)"; ctx.shadowBlur = 14; ctx.drawImage(blackHorse(), -hs / 2, -hs / 2, hs, hs); ctx.restore(); ctx.shadowBlur = 0;
+    // the armoured King
+    var ky = y - js * 0.12 + gal * 2;
+    ctx.fillStyle = "#8a0f1f"; ctx.beginPath(); ctx.moveTo(x - js * 0.16, ky); ctx.lineTo(x + js * 0.16, ky); ctx.lineTo(x - dir * js * 0.32, ky + js * 0.38); ctx.closePath(); ctx.fill();   // cape
+    var ar = ctx.createLinearGradient(x - js * 0.14, 0, x + js * 0.14, 0); ar.addColorStop(0, "#7d8590"); ar.addColorStop(0.5, "#f4f6fa"); ar.addColorStop(1, "#7d8590");
+    ctx.fillStyle = ar; roundRect(x - js * 0.14, ky - js * 0.04, js * 0.28, js * 0.3, js * 0.06); ctx.fill();   // breastplate
+    ctx.strokeStyle = "#c9a45c"; ctx.lineWidth = 1.5; ctx.stroke();
+    emoji("🤴", x, ky - js * 0.17, js * 0.32);
+    emoji("🛡️", x - dir * js * 0.22, ky + js * 0.1, js * 0.24);
+    emoji("🗡️", x + dir * js * 0.26, ky - js * 0.14, js * 0.24, dir * (-0.6 + Math.sin(t * 4) * 0.2));
+    wives(true);   // the two closest lean in against him
+    // rearing sparkle trail
+    for (var i = 0; i < 3; i++) { ctx.globalAlpha = 0.5 - i * 0.15; emoji("✨", x - dir * js * (0.6 + i * 0.2), y + js * 0.55, js * 0.12); } ctx.globalAlpha = 1;
+  }
   function roundRect(x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
 
   function paintHud() {
-    hud.innerHTML = "<span>💎 <b>" + G.gems + "</b></span><span>🗡️ hits <b>" + G.hits + "</b></span><span>⏱ <b>" + Math.max(0, Math.ceil(G.left)) + "</b>s</span>" + (G.conf > 0 ? '<span class="jg__conf">🎭 flipped!</span>' : "");
+    hud.innerHTML = "<span>💎 <b>" + G.gems + "</b></span><span>🗡️ hits <b>" + G.hits + "</b></span><span>⏱ <b>" + Math.max(0, Math.ceil(G.left)) + "</b>s</span>" + (G.conf > 0 ? '<span class="jg__conf">🎭 flipped!</span>' : "") + (G.mode === "king" ? '<span class="jg__king">👑 KING MODE</span>' : G.mode === "manic" ? '<span class="jg__manic">🤪 MANIC</span>' : "") + (G.humil ? "<span>😳 lassoed <b>" + G.humil + "</b></span>" : "");
   }
 
   /* ---------- start, pause, verdict ---------- */
@@ -208,6 +304,7 @@
     if (won) html += "<p>👑 <b>You refused to fight on his terms.</b> You caught " + G.gems + " diamonds and never struck the fool. You beat the jester at his own game.</p><p class='jg__ur' lang='ur' dir='rtl'>تم نے اس کی شرطوں پر لڑنے سے انکار کیا، اور مسخرے کو اسی کے کھیل میں ہرا دیا۔</p>";
     else if (G.hits) html += "<p>You struck the jester <b>" + G.hits + "</b> " + (G.hits === 1 ? "time" : "times") + ", and he let you. While you celebrated, he quietly gathered <b>" + G.secrets + " secrets 💎</b> about you.</p><p><b>The jester wins.</b> 🤡</p><p class='jg__ur' lang='ur' dir='rtl'>تم جیت کا جشن مناتے رہے، اور مسخرہ خاموشی سے تمہارے راز جمع کرتا رہا۔</p><p class='jg__hint'>Hint: the truest power belongs to the one who knows exactly when to lose.</p>";
     else html += "<p>You held back and never struck him. Wise. But you caught only <b>" + G.gems + "</b> diamonds. Catch <b>10</b> without striking the fool to win.</p>";
+    if (G.humil) html += "<p>🐎 The King rode out on his black horse and lassoed you <b>" + G.humil + "</b> " + (G.humil === 1 ? "time" : "times") + ", in front of his four queens. 😳</p>";
     html += "<p class='jg__best'>💎 This round " + G.gems + " · best " + best + "</p>";
     show(html, "↻ Play again", start);
   }
