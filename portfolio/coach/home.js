@@ -130,6 +130,29 @@
     setW(); window.addEventListener("resize", setW);
     var hp = 100, crab = 1, scale = 1, round = 0, boss = document.getElementById("boss"), bar = document.getElementById("bossHp"), win = document.getElementById("bossWin");
     var MAXCRAB = 4;   // keeps the crab on screen after a couple of doublings
+    var FINAL = 7;     // the game ends on round 7, and only then comes the Day of Judgement
+    var scorpStart = [].map.call(road.querySelectorAll(".scorp"), function (el) { return el.outerHTML; });
+    function restart2() {   // a fresh street after the ending
+      [].forEach.call(road.querySelectorAll(".scorp"), function (el) { el.remove(); });
+      scorpStart.forEach(function (h2) { boss.insertAdjacentHTML("beforebegin", h2); }); setW();
+      hp = 100; crab = 1; scale = 1; round = 0; mallLevel = 0; bar.style.width = "100%";
+      road.style.setProperty("--cs", 1); boss.style.setProperty("--cs", 1); road.style.removeProperty("--rh"); boss.style.removeProperty("--cr");
+      var cr = document.getElementById("bossCrown"); if (cr) cr.classList.remove("on");
+      var fin = document.getElementById("bossEnd"); if (fin) fin.remove();
+      win.hidden = true;
+    }
+    function ending2() {   // waits until the street is on screen and no other scene is playing
+      var rr = road.getBoundingClientRect();
+      if (!(rr.bottom > 0 && rr.top < innerHeight) || (window.coachCourt && window.coachCourt.busy()) || !window.coachQiyamah) { setTimeout(ending2, 1000); return; }
+      window.coachQiyamah.play(function () {
+        var fin = document.getElementById("bossEnd") || document.createElement("div");
+        fin.id = "bossEnd"; fin.className = "street__end";
+        fin.innerHTML = '<b>🏁 The End · <span lang="ur">ختم</span></b><span>The Day of Judgement has come. Seven rounds, and the crab still stands, by Allah\'s will.</span><button type="button" class="pray2">↻ Play again</button>';
+        win.parentNode.insertBefore(fin, win.nextSibling);
+        fin.querySelector("button").onclick = restart2;
+        fin.scrollIntoView({ block: "center", behavior: "smooth" });
+      });
+    }
     function pop(text, near, kind, sub) {
       var el = document.createElement("span"), r = road.getBoundingClientRect(), n = near.getBoundingClientRect();
       el.className = "dmg2 dmg2--" + kind; el.textContent = text;
@@ -353,6 +376,7 @@
       hp = Math.max(0, hp - 100 / 7);
       bar.style.width = hp + "%";
       if (hp > 0) return;
+      if (round >= FINAL) return;   // the game is over until Play again
       // "Nice try": the crab doubles, one scorpion leaves, the rest shrink 34%, a new one is born
       round++;
       crab = Math.min(MAXCRAB, crab * 2);
@@ -376,11 +400,12 @@
       win.hidden = false;
       if (round >= 2) setTimeout(geminiReveal, 2400);
       // the shopping-spree joke: a bigger mall every round
-      setTimeout(function () { var rr = road.getBoundingClientRect(); if (!(rr.bottom > 0 && rr.top < innerHeight) || (window.coachCourt && window.coachCourt.busy())) return;
-        if (round % 3 === 0 && window.coachQiyamah) window.coachQiyamah.play();          // every third round: the Day of Judgement and Jannat al-Firdaus
-        else if (window.coachMall && (!window.coachPop || window.coachPop.cutsceneOk())) window.coachMall.play(mallLevel++); }, 1400);
+      if (round >= FINAL) setTimeout(ending2, 1400);   // the final round: the Day of Judgement and Jannat al-Firdaus, only here
+      else setTimeout(function () { var rr = road.getBoundingClientRect(); if (!(rr.bottom > 0 && rr.top < innerHeight) || (window.coachCourt && window.coachCourt.busy())) return;
+        if (window.coachMall && (!window.coachPop || window.coachPop.cutsceneOk())) window.coachMall.play(mallLevel++); }, 1400);
       setTimeout(function () { if (window.coachAyah) window.coachAyah(street); }, 600);
-      setTimeout(function () { hp = 100; bar.style.width = "100%"; }, 700);
+      pop(round >= FINAL ? "FINAL ROUND" : "ROUND " + round + " / " + FINAL, boss, "crab");
+      setTimeout(function () { hp = round >= FINAL ? 0 : 100; bar.style.width = hp + "%"; }, 700);
     });
   }
   /* ---- Scorpion Street: now and then the crab pulls out a sword or a gun ---- */
