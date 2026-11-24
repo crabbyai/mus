@@ -1,0 +1,13 @@
+/* The same site switcher as the coach page: Coach · Realtor · Actor · Play.
+   A slim bar pinned to the top; the page's own nav sits just below it. */
+.sitebar{position:fixed;top:0;left:0;right:0;z-index:950;height:38px;display:flex;align-items:center;justify-content:center;background:rgba(8,12,26,.94);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,164,92,.28)}
+.sitebar .sites{display:flex;gap:.25rem;padding:.18rem;border:1px solid rgba(201,164,92,.35);border-radius:999px}
+.sitebar .sites a{padding:.26rem .8rem;border-radius:999px;font:500 .76rem/1.2 "Manrope",system-ui,sans-serif;letter-spacing:.02em;color:#b9b2a2;white-space:nowrap;text-decoration:none;transition:background .25s,color .25s}
+.sitebar .sites a:hover{color:#f3eee3}
+.sitebar .sites a[aria-current]{background:#c9a45c;color:#0a0f1e;font-weight:700}
+.sitebar .sites .nav-play{background:linear-gradient(135deg,#bfe9ff,#7cc8ff);color:#14104a;font-weight:800;box-shadow:0 0 12px rgba(170,90,255,.5)}
+.nav{top:38px!important}
+@media(max-width:380px){.sitebar .sites a{padding:.26rem .55rem;font-size:.72rem}}
+/* brighter gold headlines ("The face", "MBA", and the rest) */
+.gold-italic{background:linear-gradient(100deg,#f2d38c 15%,#ffe9b3 40%,#fffaf0 50%,#ffe9b3 60%,#f2d38c 85%)!important;background-size:220% 100%!important;-webkit-background-clip:text!important;background-clip:text!important;-webkit-text-fill-color:transparent}
+.hero__stat strong{color:#f5d998}
