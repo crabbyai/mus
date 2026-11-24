@@ -238,31 +238,45 @@
     document.body.appendChild(box);
     var sc = box.querySelectorAll(".ct__scene"), timer;
     var bubs = box.querySelectorAll(".ml__bub"), bi = -1, ended = false, wait = 0, startedAt = 0;
-    // Each line stays up long enough to read: at least 4 s, longer for longer lines.
-    function readTime(el) { return Math.max(4000, 1800 + el.textContent.length * 75); }
+    // Each line types out slowly, then stays up long enough to read: at least 5.5 s, longer for longer lines.
+    function readTime(el) { return Math.max(5500, 2600 + el.textContent.length * 95); }
+    var typing = 0, shownAt = 0, typeEl = null, typeFull = "";
+    [].forEach.call(bubs, function (b) { b.setAttribute("data-full", b.textContent); });
+    function typeOut(el, then) {
+      clearInterval(typing); typeEl = el; typeFull = el.getAttribute("data-full"); var n = 0, chars = Array.from(typeFull);
+      el.textContent = ""; el.setAttribute("aria-label", typeFull);
+      typing = setInterval(function () { n++; el.textContent = chars.slice(0, n).join(""); if (n >= chars.length) { clearInterval(typing); typing = 0; then(); } }, 45);
+    }
+    function finishTyping() { clearInterval(typing); typing = 0; if (typeEl) typeEl.textContent = typeFull; arm(nextBub, readTime(typeEl)); }
+    // a stray tap (people are usually tapping the crab when this opens) must not skip a line
+    function advance() {
+      if (Date.now() - shownAt < 1500) return;
+      if (typing) { finishTyping(); return; }
+      ended ? finish() : nextBub();
+    }
     function arm(fn, ms) { clearTimeout(timer); wait = ms; startedAt = Date.now(); timer = setTimeout(fn, ms); }
-    function toEnd() { if (ended) return; ended = true; if (bi >= 0 && bubs[bi]) bubs[bi].classList.remove("on"); sc[0].classList.remove("on"); sc[1].classList.add("on"); arm(finish, 5500); }
+    function toEnd() { if (ended) return; ended = true; clearInterval(typing); typing = 0; shownAt = Date.now(); if (bi >= 0 && bubs[bi]) bubs[bi].classList.remove("on"); sc[0].classList.remove("on"); sc[1].classList.add("on"); arm(finish, 9000); }
     function nextBub() {
       if (ended) return;
       if (bi >= 0) bubs[bi].classList.remove("on");
       bi++;
       if (bi >= bubs.length) { arm(toEnd, 1200); return; }
-      bubs[bi].classList.add("on");
-      arm(nextBub, readTime(bubs[bi]));
+      bubs[bi].classList.add("on"); shownAt = Date.now(); clearTimeout(timer);
+      var el = bubs[bi]; typeOut(el, function () { arm(nextBub, readTime(el)); });
     }
-    function finish() { clearTimeout(timer); box.remove(); busy = false; document.removeEventListener("keydown", onKey); document.removeEventListener("visibilitychange", onVis); if (done) done(); }
+    function finish() { clearTimeout(timer); clearInterval(typing); box.remove(); busy = false; document.removeEventListener("keydown", onKey); document.removeEventListener("visibilitychange", onVis); if (done) done(); }
     function onKey(e) {
       if (e.key === "Escape") finish();
-      else if (e.key === " " || e.key === "Enter" || e.key === "ArrowRight") { if (document.activeElement && document.activeElement.classList.contains("ct__skip") && e.key !== "ArrowRight") return; e.preventDefault(); ended ? finish() : nextBub(); }
+      else if (e.key === " " || e.key === "Enter" || e.key === "ArrowRight") { if (document.activeElement && document.activeElement.classList.contains("ct__skip") && e.key !== "ArrowRight") return; e.preventDefault(); advance(); }
     }
     // Switching away pauses the scene; coming back resumes the current line.
     function onVis() {
       if (document.hidden) { clearTimeout(timer); wait = Math.max(1500, wait - (Date.now() - startedAt)); }
-      else arm(ended ? finish : (bi >= bubs.length ? toEnd : nextBub), wait);
+      else if (!typing) arm(ended ? finish : (bi >= bubs.length ? toEnd : nextBub), wait);
     }
-    box.addEventListener("click", function (e) { if (e.target.closest(".ct__skip")) return; ended ? finish() : nextBub(); });
+    box.addEventListener("click", function (e) { if (e.target.closest(".ct__skip")) return; advance(); });
     box.querySelector(".ct__skip").addEventListener("click", finish); document.addEventListener("keydown", onKey); document.addEventListener("visibilitychange", onVis); box.querySelector(".ct__skip").focus();
-    arm(nextBub, 1000);
+    shownAt = Date.now(); arm(nextBub, 1600);
   }
 
   /* ---- the crab's whisper of hope, after the horror numbers ---- */
