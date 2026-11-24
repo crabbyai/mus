@@ -1,13 +1,29 @@
 /* The same site switcher as the coach page: Coach · Realtor · Actor · Play.
    A slim bar pinned to the top; the page's own nav sits just below it. */
-.sitebar{position:fixed;top:0;left:0;right:0;z-index:950;height:38px;display:flex;align-items:center;justify-content:center;background:rgba(8,12,26,.94);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,164,92,.28)}
+.sitebar{position:fixed;top:0;left:0;right:0;z-index:950;height:76px;padding:0 12px;display:flex;align-items:center;justify-content:center;background:rgba(8,12,26,.94);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid rgba(201,164,92,.28)}
 .sitebar .sites{display:flex;gap:.25rem;padding:.18rem;border:1px solid rgba(201,164,92,.35);border-radius:999px}
 .sitebar .sites a{padding:.26rem .8rem;border-radius:999px;font:500 .76rem/1.2 "Manrope",system-ui,sans-serif;letter-spacing:.02em;color:#b9b2a2;white-space:nowrap;text-decoration:none;transition:background .25s,color .25s}
 .sitebar .sites a:hover{color:#f3eee3}
 .sitebar .sites a[aria-current]{background:#c9a45c;color:#0a0f1e;font-weight:700}
 .sitebar .sites .nav-play{background:linear-gradient(135deg,#bfe9ff,#7cc8ff);color:#14104a;font-weight:800;box-shadow:0 0 12px rgba(170,90,255,.5)}
-.nav{top:38px!important}
+.nav{top:76px!important}
+@media(max-width:560px){.sitebar{height:62px}.nav{top:62px!important}}
 @media(max-width:380px){.sitebar .sites a{padding:.26rem .55rem;font-size:.72rem}}
 /* brighter gold headlines ("The face", "MBA", and the rest) */
 .gold-italic{background:linear-gradient(100deg,#f2d38c 15%,#ffe9b3 40%,#fffaf0 50%,#ffe9b3 60%,#f2d38c 85%)!important;background-size:220% 100%!important;-webkit-background-clip:text!important;background-clip:text!important;-webkit-text-fill-color:transparent}
 .hero__stat strong{color:#f5d998}
+
+/* ===== big glowing site buttons: Coach · Realtor · Actor ===== */
+.sites{gap:.7rem!important;padding:0!important;border:0!important;justify-content:center}
+.sites a{display:inline-flex;align-items:center;gap:.45rem;padding:.72rem 1.55rem!important;border-radius:999px!important;font:800 1.12rem/1.1 system-ui,sans-serif!important;letter-spacing:.04em;color:#fff3d6!important;text-decoration:none;
+  border:2px solid rgba(232,200,126,.8);background:linear-gradient(180deg,rgba(232,200,126,.2),rgba(10,15,30,.65));text-shadow:0 0 10px rgba(255,220,140,.7);
+  box-shadow:0 0 14px rgba(232,200,126,.5),inset 0 0 12px rgba(232,200,126,.15);animation:siteGlow 2.2s ease-in-out infinite alternate;transition:transform .2s}
+.sites a:nth-child(2){animation-delay:-.7s}.sites a:nth-child(3){animation-delay:-1.4s}
+.sites a:hover,.sites a:focus-visible{transform:translateY(-2px) scale(1.06)}
+.sites a[data-ic]::before{content:attr(data-ic);font-size:1.15em;text-shadow:none}
+.sites a[aria-current]{background:linear-gradient(135deg,#fff0c2,#e8c87e 45%,#c9a45c)!important;color:#1a1206!important;text-shadow:none;border-color:#fff3d6}
+.sites .nav-play{border-color:#bfe9ff!important;background:linear-gradient(135deg,#d6f2ff,#7cc8ff)!important;color:#14104a!important;text-shadow:none;animation:sitePlay 1.8s ease-in-out infinite alternate!important}
+@keyframes siteGlow{to{box-shadow:0 0 26px rgba(232,200,126,.95),0 0 52px rgba(232,200,126,.4),inset 0 0 16px rgba(232,200,126,.3)}}
+@keyframes sitePlay{to{box-shadow:0 0 26px rgba(150,200,255,.95),0 0 52px rgba(170,90,255,.5)}}
+@media(max-width:560px){.sites{gap:.35rem!important;width:100%}.sites a{flex:1;justify-content:center;gap:.25rem;padding:.62rem .3rem!important;font-size:.9rem!important;letter-spacing:0}.sites a[data-ic]::before{font-size:1.05em}}
+@media(prefers-reduced-motion:reduce){.sites a{animation:none!important}}
