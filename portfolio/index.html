@@ -1133,7 +1133,11 @@ html{scroll-padding-top:70px}
 /* jester's court game */
 .jg{position:relative;max-width:820px;margin:1rem auto .4rem;border-radius:18px;overflow:hidden;border:2px solid rgba(201,164,92,.6);box-shadow:0 0 0 4px rgba(120,10,30,.35),0 20px 50px -20px rgba(0,0,0,.9);touch-action:none;user-select:none;-webkit-user-select:none;background:#0b0309}
 .jg canvas{display:block}
-.jg__hud{position:absolute;left:10px;bottom:10px;display:flex;flex-direction:column;align-items:flex-start;gap:.3rem;pointer-events:none}
+.jg__hud{position:absolute;left:10px;top:10px;display:flex;flex-direction:column;align-items:flex-start;gap:.3rem;pointer-events:none;transform:scale(.92);transform-origin:top left}
+.jg__pad{position:absolute;left:10px;bottom:10px;display:flex;gap:10px;z-index:3}.jg__pad[hidden]{display:none}
+.jg__pad button{width:62px;height:62px;border-radius:50%;border:2px solid rgba(232,200,126,.75);background:rgba(10,4,8,.7);color:#ffe7a3;font-size:1.5rem;cursor:pointer;touch-action:none;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+.jg__pad button.on{background:rgba(232,200,126,.35);transform:scale(.94)}
+@media(pointer:fine){.jg:not(.touch) .jg__pad{display:none!important}}
 .jg__hud span{padding:.2rem .6rem;border-radius:999px;background:rgba(0,0,0,.6);border:1px solid rgba(201,164,92,.5);color:#ffe7a3;font:700 .78rem system-ui,sans-serif}
 .jg__hud b{color:#fff}.jg__hud .jg__conf{border-color:#c48bff;color:#e6c8ff}.jg__hud .jg__king{border-color:#ffd77a;color:#fff3c8;background:rgba(90,60,10,.75)}.jg__hud .jg__manic{border-color:#ff3a4a;color:#ffb0b6;background:rgba(90,0,10,.75)}
 .jg__sting{position:absolute;right:10px;bottom:10px;width:62px;height:62px;border-radius:50%;border:2px solid #e8c87e;background:radial-gradient(circle at 35% 30%,#5a1020,#1a0408);color:#fff;font-size:1.6rem;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;cursor:pointer;touch-action:manipulation;box-shadow:0 0 16px rgba(232,200,126,.4)}
@@ -1150,6 +1154,7 @@ html{scroll-padding-top:70px}
 .jg__go{margin-top:.4rem;padding:.6rem 1.4rem;border:0;border-radius:999px;background:linear-gradient(135deg,#ffe7a3,#c9a45c);color:#1a0608;font:900 .95rem system-ui,sans-serif;cursor:pointer;box-shadow:0 0 20px rgba(232,200,126,.45)}
 .jg__gavel{font-size:2rem;transform-origin:80% 80%;animation:jstGavel .6s cubic-bezier(.5,0,.8,.4) .1s both}
 .jst-wrap--end{margin:2.4rem auto 1.6rem}
+.jg-playing .fab-wa,.jg-playing .tsb-fab,.jg-playing .dock,.jg-playing .arv{display:none!important}
 .jg__btn{position:absolute;top:8px;width:36px;height:36px;border-radius:50%;border:1px solid rgba(201,164,92,.6);background:rgba(0,0,0,.55);color:#fff;font-size:1rem;cursor:pointer;z-index:3;display:grid;place-items:center}
 .jg__snd{right:8px}.jg__pz{right:52px}.jg__btn[hidden]{display:none}
 .jg__hud .jg__fire{border-color:#ff8a3a;color:#ffd0a0;background:rgba(90,30,0,.75);animation:jgPulse .6s ease-in-out infinite alternate}
@@ -1981,7 +1986,7 @@ html{scroll-padding-top:70px}
         <p class="jg__ur" lang="ur" dir="rtl">تم بچھو ہو، وہ مسخرہ ہے۔ کیا تم اسے ہرا سکتے ہو؟</p>
         <p>Watch his wrists: a silver watch with a <b>black dial</b> and <b>13</b> inked on his arm and palm, another with a <b>blue dial</b> and <b>15</b>. He goes <b>🤪 manic</b> when he attacks, and every so often the fool's suit slips to reveal the <b>👑 armoured King</b> on his black horse, with his four queens. Then he lassoes you.</p>
         <p>Chain catches for 🔥 combos (up to ×5). Grab power-ups: 🧲 magnet, 🛡️ shield, ⏳ slow motion.</p>
-        <p class="jg__keys">🖱️ Computer: move the mouse, click or Space to sting, P to pause, M for sound · 📱 Phone: drag anywhere, tap to sting</p>
+        <p class="jg__keys">🖱️ Computer: move the mouse, click or Space to sting, P to pause, M for sound · 📱 Phone: drag anywhere or hold ◀ ▶, tap 🦂 to sting</p>
         <button type="button" class="jg__go">▶ Enter the court</button>
       </div></div>
     </div>
@@ -2028,7 +2033,7 @@ html{scroll-padding-top:70px}
     </blockquote>
   </section>
 </div>
-<script src="coach/jestergame.js?v=8" defer></script>
+<script src="coach/jestergame.js?v=12" defer></script>
 <footer>
   <p style="margin-bottom:.3rem"><svg class="ico" style="width:42px;height:42px" aria-hidden="true"><use href="#crescent"/></svg></p>
   <div data-eye="mini" style="margin:.4rem auto"></div>

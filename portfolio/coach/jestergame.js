@@ -101,12 +101,24 @@
   cv.addEventListener("pointerup", function (e) { if (G.playing && !G.paused && Math.abs(e.clientX - downX) < 12 && Date.now() - downT < 300) fire(); });
   sting.addEventListener("pointerdown", function (e) { e.preventDefault(); if (G.paused) resume(); else fire(); });
   sting.addEventListener("click", function (e) { if (e.detail === 0) fire(); });
+  // phones: hold ◀ ▶ to walk
+  var pad = document.createElement("div"); pad.className = "jg__pad"; pad.hidden = true;
+  pad.innerHTML = '<button type="button" data-dir="arrowleft" aria-label="Move left">◀</button><button type="button" data-dir="arrowright" aria-label="Move right">▶</button>';
+  box.appendChild(pad);
+  if (navigator.maxTouchPoints > 0 || "ontouchstart" in window) box.classList.add("touch");   /* show ◀ ▶ on touch screens */
+  [].forEach.call(pad.querySelectorAll("button"), function (b) {
+    var k2 = b.getAttribute("data-dir");
+    function on(e) { e.preventDefault(); if (G.paused) return; keys[k2] = 1; b.classList.add("on"); }
+    function off() { delete keys[k2]; b.classList.remove("on"); }
+    b.addEventListener("pointerdown", on); ["pointerup", "pointerleave", "pointercancel", "lostpointercapture"].forEach(function (ev) { b.addEventListener(ev, off); });
+    b.addEventListener("contextmenu", function (e) { e.preventDefault(); });
+  });
 
   function fire() {
     if (!G.playing || G.paused || G.cool > 0) return;
     if (G.lasso > 0) return;
     if (G.count > 0) return;
-    G.cool = 0.26; G.sx.push({ x: G.px, y: H - 58 }); SFX.sting();
+    G.cool = 0.26; G.sx.push({ x: G.px, y: (PY() - 18) }); SFX.sting();
     if (navigator.vibrate) try { navigator.vibrate(8); } catch (e) {}
   }
 
@@ -126,10 +138,10 @@
     G.t += dt; G.left -= dt; G.cool -= dt; G.conf -= dt; G.jflash -= dt; G.jfall -= dt; G.shake = Math.max(0, G.shake - dt * 30);
     // player
     var k = (keys.arrowleft || keys.a ? -1 : 0) + (keys.arrowright || keys.d ? 1 : 0);
-    if (k) G.tx = G.px + k * 400 * dt * (G.conf > 0 ? -1 : 1);
+    if (k) G.tx = G.px + k * 680 * dt * (G.conf > 0 ? -1 : 1);
     var target = G.conf > 0 && !k ? W - G.tx : G.tx;
     if (G.lasso > 0) { G.lasso -= dt; target = G.jx; G.tx = G.px; }
-    G.px += (Math.max(24, Math.min(W - 24, target)) - G.px) * Math.min(1, dt * (G.lasso > 0 ? 3 : 12));
+    G.px += (Math.max(24, Math.min(W - 24, target)) - G.px) * Math.min(1, dt * (G.lasso > 0 ? 3 : 24));   /* snappy: the scorpion goes where you point */
     G.slip -= dt; G.rope -= dt; G.mag -= dt; G.slow -= dt; G.comboT -= dt; if (G.comboT <= 0) G.combo = 0;
     G.floats = G.floats.filter(function (f) { f.life -= dt; f.y -= 40 * dt; return f.life > 0; });
     // moods: the fool, the manic fool, and the King underneath
@@ -140,10 +152,10 @@
     } else {
       G.modeT -= dt;
       if (G.mode === "king" && !G.thrown && G.modeT < 4.6) { G.thrown = true; G.rope = 0.5; }
-      if (G.mode === "king" && G.thrown === true && G.rope <= 0 && G.rope > -dt * 1.5 && G.lasso <= 0 && G.shield > 0) { G.shield = 0; G.thrown = "blocked"; say("🛡️ Your shield snapped the lasso!", G.px, H - 90, 1); SFX.power(); }
+      if (G.mode === "king" && G.thrown === true && G.rope <= 0 && G.rope > -dt * 1.5 && G.lasso <= 0 && G.shield > 0) { G.shield = 0; G.thrown = "blocked"; say("🛡️ Your shield snapped the lasso!", G.px, (PY() - 50), 1); SFX.power(); }
       if (G.mode === "king" && G.thrown === true && G.rope <= 0 && G.rope > -dt * 1.5 && G.lasso <= 0) {
         G.lasso = 2.4; G.combo = 0; SFX.lasso(); G.humil++; G.gems = Math.max(0, G.gems - 2); G.shake = 10;
-        say("😳 Lassoed and humiliated! −2 💎", G.px, H - 90, 1); say(KINGL[G.humil % KINGL.length], G.jx, H * 0.2);
+        say("😳 Lassoed and humiliated! −2 💎", G.px, (PY() - 50), 1); say(KINGL[G.humil % KINGL.length], G.jx, H * 0.2);
         if (navigator.vibrate) try { navigator.vibrate([80, 40, 160]); } catch (e) {}
       }
       if (G.modeT <= 0) {
@@ -180,11 +192,11 @@
       if (s.y < -10) G.sx.splice(i, 1);
     }
     // falling things
-    var py = H - 40;
+    var py = PY();
     for (i = G.drops.length - 1; i >= 0; i--) {
       var d = G.drops[i], sl = G.slow > 0 ? 0.45 : 1; d.y += d.vy * dt * sl; d.x += d.vx * dt * sl; d.rot += dt * 3;
       if (G.mag > 0 && (d.type === "gem" || d.type === "crown") && d.y > H * 0.35) d.x += (G.px - d.x) * Math.min(1, dt * 5);
-      if (Math.abs(d.x - G.px) < 36 && Math.abs(d.y - py) < 32) {
+      if (Math.abs(d.x - G.px) < 42 && Math.abs(d.y - py) < 34) {
         G.drops.splice(i, 1);
         if (d.type === "gem" || d.type === "crown") {
           G.combo = G.comboT > 0 ? G.combo + 1 : 1; G.comboT = 2.6;
@@ -192,7 +204,7 @@
           G.gems += worth; G.score += worth * mult; SFX.gem(G.combo);
           floatTxt("+" + worth * mult + (mult > 1 ? "  🔥×" + mult : ""), d.x, d.y - 20, mult > 1 ? "#ffb347" : "#bfe6ff");
           burst(d.x, d.y, d.type === "crown" ? "👑" : "✦", 4); if (d.type === "crown") say("+5 💎 royal treasure!", d.x, d.y - 30, 1);
-          if (G.combo === 6 || G.combo === 12) say(G.combo === 6 ? "🔥 On fire! ×3" : "🔥🔥 Unstoppable! ×5", G.px, H - 100, 1);
+          if (G.combo === 6 || G.combo === 12) say(G.combo === 6 ? "🔥 On fire! ×3" : "🔥🔥 Unstoppable! ×5", G.px, (PY() - 60), 1);
         }
         else if (d.type === "card") {
           if (G.shield > 0) { G.shield = 0; say("🛡️ Shield blocked the card", d.x, d.y - 30, 1); SFX.power(); }
@@ -201,7 +213,7 @@
         else if (d.type === "magnet") { G.mag = 6; SFX.power(); say("🧲 Magnet! Diamonds fly to you", d.x, d.y - 30, 1); }
         else if (d.type === "shield") { G.shield = 1; SFX.power(); say("🛡️ Shield up: blocks one card or lasso", d.x, d.y - 30, 1); }
         else if (d.type === "slow") { G.slow = 5; SFX.power(); say("⏳ Slow motion!", d.x, d.y - 30, 1); }
-        else { G.conf = 3; SFX.hurt(); say("🎭 A false weakness! Controls flipped", d.x, d.y - 30, 1); }
+        else { G.conf = 2; SFX.hurt(); say("🎭 A false weakness! Controls flipped", d.x, d.y - 30, 1); }
         continue;
       }
       if (d.y > H + 30) G.drops.splice(i, 1);
@@ -214,6 +226,7 @@
     paintHud();
     if (G.left <= 0) finish();
   }
+  function PY() { return box.classList.contains("touch") ? H - 108 : H - 40; }   /* above the ◀ ▶ and Sting buttons on touch screens */
   function jyNow() { return G.mode === "king" ? H * 0.44 + Math.sin(G.t * 9) * 3 : H * 0.2 + Math.sin((G.t || 0) * 2) * 8; }
   function jsize() { return Math.min(W * 0.26, H * 0.3, 150); }
   function say(t, x, y, small) { G.bubbles = G.bubbles.filter(function (b) { return b.small !== !!small; }); /* one jester line and one game note at a time */ G.bubbles.push({ t: t, x: x, y: y, life: 2, small: !!small }); }
@@ -276,9 +289,9 @@
     // the lasso
     if (king && (G.rope > 0 || G.lasso > 0)) {
       var hx = jx + (G.jv > 0 ? 1 : -1) * js * 0.35, hy = jy - js * 0.35, k2 = G.rope > 0 ? 1 - G.rope / 0.5 : 1;
-      var ex = hx + (G.px - hx) * k2, ey = hy + (H - 40 - hy) * k2;
+      var ex = hx + (G.px - hx) * k2, ey = hy + (PY() - hy) * k2;
       ctx.strokeStyle = "#d8b27a"; ctx.lineWidth = 3; ctx.setLineDash([7, 4]); ctx.beginPath(); ctx.moveTo(hx, hy); ctx.quadraticCurveTo((hx + ex) / 2, Math.min(hy, ey) - 50, ex, ey); ctx.stroke(); ctx.setLineDash([]);
-      if (G.lasso > 0) { ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(G.px, H - 40, 30, 16, 0, 0, Math.PI * 2); ctx.stroke(); }
+      if (G.lasso > 0) { ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(G.px, PY(), 30, 16, 0, 0, Math.PI * 2); ctx.stroke(); }
     }
     // falling things
     (G.drops || []).forEach(function (d) { var pw = d.type === "magnet" || d.type === "shield" || d.type === "slow"; if (pw) { ctx.fillStyle = "rgba(120,200,255,.25)"; ctx.beginPath(); ctx.arc(d.x, d.y, 19 + Math.sin(t * 8) * 2, 0, Math.PI * 2); ctx.fill(); }
@@ -288,9 +301,9 @@
     (G.sx || []).forEach(function (s) { ctx.beginPath(); ctx.moveTo(s.x, s.y); ctx.lineTo(s.x, s.y + 14); ctx.stroke(); });
     ctx.shadowBlur = 0;
     // the scorpion
-    if (G.playing || G.end) { ctx.save(); if (G.conf > 0) { ctx.globalAlpha = 0.7 + Math.sin(t * 20) * 0.3; } if (G.lasso > 0) { emoji("🦂", G.px, H - 40, 34, Math.PI + Math.sin(t * 14) * 0.3); ctx.restore(); emoji("😳", G.px, H - 76, 20); } else { emoji("🦂", G.px, H - 40, 40); ctx.restore(); } if (G.conf > 0) emoji("🎭", G.px + 22, H - 64, 16); }
-    if (G.playing && G.shield > 0) { ctx.strokeStyle = "rgba(140,210,255,.85)"; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(G.px, H - 40, 32 + Math.sin(t * 6) * 2, 0, Math.PI * 2); ctx.stroke(); }
-    if (G.playing && G.mag > 0) { ctx.strokeStyle = "rgba(255,90,90,.35)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(G.px, H - 40, 46 + (t * 60) % 40, 0, Math.PI * 2); ctx.stroke(); }
+    if (G.playing || G.end) { ctx.save(); if (G.conf > 0) { ctx.globalAlpha = 0.7 + Math.sin(t * 20) * 0.3; } if (G.lasso > 0) { emoji("🦂", G.px, PY(), 34, Math.PI + Math.sin(t * 14) * 0.3); ctx.restore(); emoji("😳", G.px, (PY() - 36), 20); } else { emoji("🦂", G.px, PY(), 40); ctx.restore(); } if (G.conf > 0) emoji("🎭", G.px + 22, (PY() - 24), 16); }
+    if (G.playing && G.shield > 0) { ctx.strokeStyle = "rgba(140,210,255,.85)"; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(G.px, PY(), 32 + Math.sin(t * 6) * 2, 0, Math.PI * 2); ctx.stroke(); }
+    if (G.playing && G.mag > 0) { ctx.strokeStyle = "rgba(255,90,90,.35)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(G.px, PY(), 46 + (t * 60) % 40, 0, Math.PI * 2); ctx.stroke(); }
     (G.floats || []).forEach(function (f) { ctx.globalAlpha = Math.min(1, f.life * 2); ctx.font = "900 16px system-ui,sans-serif"; ctx.textAlign = "center"; ctx.fillStyle = f.col; ctx.strokeStyle = "rgba(0,0,0,.7)"; ctx.lineWidth = 3; ctx.strokeText(f.t, f.x, f.y); ctx.fillText(f.t, f.x, f.y); }); ctx.globalAlpha = 1;
     // particles and speech
     (G.parts || []).forEach(function (p) { ctx.globalAlpha = Math.max(0, p.life); emoji(p.ch, p.x, p.y, 16); }); ctx.globalAlpha = 1;
@@ -361,7 +374,7 @@
 
   /* ---------- start, pause, verdict ---------- */
   function start() {
-    reset(); G.end = null; G.playing = true; G.paused = false; ov.hidden = true; box.classList.add("on"); hud.hidden = false; sting.hidden = false; pz.hidden = false; pz.textContent = "⏸";
+    reset(); G.end = null; G.playing = true; G.paused = false; ov.hidden = true; box.classList.add("on"); hud.hidden = false; sting.hidden = false; pz.hidden = false; pad.hidden = false; document.body.classList.add("jg-playing"); pz.textContent = "⏸";
     var rb = box.getBoundingClientRect(); if (rb.top < 0 || rb.bottom > innerHeight) box.scrollIntoView({ block: "center", behavior: reduce ? "auto" : "smooth" });
     try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); AC.resume(); } catch (e) {}   // unlock sound on this tap
     paintHud(); last = 0; G.end = null;
@@ -369,7 +382,7 @@
   function pause() { if (!G.playing || G.paused) return; G.paused = true; pz.textContent = "▶"; show('<b class="jg__t">⏸ Court adjourned</b><p>Press ▶, P or Space to resume.</p>', "▶ Resume", resume); }
   function resume() { if (!G.paused) return; G.paused = false; ov.hidden = true; last = 0; pz.textContent = "⏸"; }
   function finish() {
-    G.playing = false; box.classList.remove("on"); sting.hidden = true; pz.hidden = true; SFX.gavel();
+    G.playing = false; box.classList.remove("on"); document.body.classList.remove("jg-playing"); sting.hidden = true; pz.hidden = true; pad.hidden = true; keys = {}; SFX.gavel();
     var best = Number(store("jg-best2") || 0), won = G.hits === 0 && G.gems >= 10, newBest = G.score > best;
     if (newBest) { best = G.score; store("jg-best2", String(best)); }
     var stars = G.score >= 45 ? 3 : G.score >= 25 ? 2 : G.score >= 10 ? 1 : 0;
