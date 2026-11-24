@@ -60,6 +60,9 @@ h1 em{color:var(--gold)}
 .pkgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
 .pkgrid h3{margin:.2rem 0 .4rem;font:700 .78rem system-ui;letter-spacing:.08em;text-transform:uppercase;color:#bfe9cc}
 .hours-l{display:flex;justify-content:space-between;color:var(--muted);font-size:.72rem}
+.h72{gap:1px;height:140px}.h72 div.mid{box-shadow:-2px 0 0 rgba(255,231,163,.6)}.h72 div.u{background:linear-gradient(0deg,#1d7a3a,#3dff7a)}
+.d3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}.d3 div{padding:8px;border-radius:12px;background:rgba(255,255,255,.04);text-align:center;font-size:.8rem;color:var(--muted)}.d3 b{display:block;font-size:1.3rem;color:var(--cream)}
+.heat{display:grid;grid-template-columns:repeat(24,1fr);gap:2px}.heat i{aspect-ratio:1;border-radius:3px;background:rgba(232,200,126,.08)}.heat-l{display:flex;justify-content:space-between;color:var(--muted);font-size:.68rem;margin-top:3px}
 .list{list-style:none;margin:0;padding:0;max-height:360px;overflow:auto}
 .list li{display:flex;flex-wrap:wrap;gap:.2rem .6rem;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:.88rem}
 .list li em{color:var(--muted);font-style:normal;margin-left:auto}
@@ -153,12 +156,27 @@ coachLock(document.getElementById("app"), function () {
     var tday = V.filter(function (v) { return v.t >= today0; }).length, yday = V.filter(function (v) { return v.t >= today0 - 864e5 && v.t < today0; }).length;
     var trend = yday ? Math.round((tday - yday) / yday * 100) : (tday ? 100 : 0);
     var hrs = new Array(24).fill(0); V.forEach(function (v) { hrs[new Date(v.t).getHours()]++; }); var peak = hrs.indexOf(Math.max.apply(null, hrs));
+    // the last 3 days, hour by hour (unique devices) and day by day
+    var uniq = function (arr) { var o = {}; arr.forEach(function (v) { o[v.p || ("t" + v.t)] = 1; }); return Object.keys(o).length; };
+    var h72 = []; for (var hh = 71; hh >= 0; hh--) { var a0 = now - (hh + 1) * 36e5, a1 = now - hh * 36e5; h72.push({ n: uniq(V.filter(function (v) { return v.t >= a0 && v.t < a1; })), mid: new Date(a0).getHours() === 0, l: new Date(a0).toLocaleString([], { weekday: "short", hour: "numeric" }) }); }
+    var h72max = Math.max(1, Math.max.apply(null, h72.map(function (x) { return x.n; })));
+    var d3 = [2, 1, 0].map(function (k) { var s0 = today0 - k * 864e5, inD = V.filter(function (v) { return v.t >= s0 && v.t < s0 + 864e5; }); return { l: k === 0 ? "Today" : k === 1 ? "Yesterday" : new Date(s0).toLocaleDateString([], { weekday: "long" }), v: inD.length, u: uniq(inD), pk: uniq(inD.filter(function (v) { return v.c === "PK"; })) }; });
+    var V3 = V.filter(function (v) { return now - v.t < 3 * 864e5; });
+    var tapTot = function (k) { return V.reduce(function (s2, v) { return s2 + ((v.ck && +v.ck[k]) || 0); }, 0); };
+    var withSd = V.filter(function (v) { return v.sd != null; }), avgSd = withSd.length ? Math.round(withSd.reduce(function (s2, v) { return s2 + v.sd; }, 0) / withSd.length) : 0;
+    var secCount = {}; V.forEach(function (v) { (v.sc || "").split(",").forEach(function (x) { if (x) secCount[x] = (secCount[x] || 0) + 1; }); });
+    var secRows = Object.keys(secCount).map(function (k) { return [k, secCount[k]]; }).sort(function (a, b) { return b[1] - a[1]; });
+    var localH = new Array(24).fill(0); V.forEach(function (v) { if (v.lh != null) localH[v.lh]++; }); var lhMax = Math.max(1, Math.max.apply(null, localH));
+    function more(v) { return (v.pg && v.pg !== "coach" ? ' <span class="tag">📄 ' + esc(v.pg) + "</span>" : "") + (v.sp > 1 ? ' <span class="tag">📑 ' + v.sp + " pages</span>" : "") + (v.vc > 1 ? ' <span class="tag">#' + v.vc + " visit</span>" : "") + (v.sd != null ? ' <span class="tag">📜 ' + v.sd + "%</span>" : "") + (v.md ? ' <span class="tag">' + esc(v.md) + "</span>" : "") + (v.net ? ' <span class="tag">📶 ' + esc(v.net) + "</span>" : "") + (v.src ? ' <span class="tag">🔗 ' + esc(v.src) + "</span>" : "") + (v.lh != null ? ' <span class="tag">🕐 ' + ((v.lh % 12) || 12) + (v.lh < 12 ? "am" : "pm") + " their time</span>" : "") + (v.ck && v.ck.wa ? " 💬×" + v.ck.wa : "") + (v.ck && v.ck.pp ? " 💳" : "") + (v.jg ? " 🃏" + v.jg : ""); }
     var totalPrayers = Object.keys(prayTotals).reduce(function (s2, k) { return s2 + (+prayTotals[k] || 0); }, 0);
     app.innerHTML =
       '<div class="kpis">' +
         '<div class="kpi kpi--live"><b>' + live + '</b><span>Viewing now</span></div>' +
         '<div class="kpi"><b>' + day.length + '</b><span>Visits · 24 h</span></div>' +
         '<div class="kpi"><b>' + V.length + '</b><span>Visits · 7 days</span></div>' +
+        '<div class="kpi"><b>' + uniq(V3) + '</b><span>Unique visitors · 3 days</span></div>' +
+        '<div class="kpi"><b>💬 ' + tapTot("wa") + '</b><span>WhatsApp taps · 7 days</span></div>' +
+        '<div class="kpi"><b>' + avgSd + '%</b><span>Avg scroll depth</span></div>' +
         '<div class="kpi"><b>' + countries.filter(function (r) { return r[0] !== "Unknown"; }).length + '</b><span>Countries · 7 days</span></div>' +
         '<div class="kpi"><b>' + dur(avg) + '</b><span>Avg time on site</span></div>' +
         '<div class="kpi"><b>' + pct(V.filter(function (v) { return v.rt; }).length, V.length) + '</b><span>Returning visitors</span></div>' +
@@ -169,8 +187,10 @@ coachLock(document.getElementById("app"), function () {
       '</div>' +
       '<div class="grid">' +
         '<div class="card full nowcard"><h2><span class="pulse"></span> Live right now · ' + live + (live === 1 ? " viewer" : " viewers") + '</h2>' + (live ? '<ul class="list">' + liveRows.map(function (v) { return "<li>" + who(v) + (DOING[v.x] ? ' <span class="doing">' + DOING[v.x] + "</span>" : ' <span class="doing">👀 browsing</span>') + "<em>online</em></li>"; }).join("") + "</ul>" : '<p class="empty">Nobody else is on the site this moment.</p>') + '</div>' +
-        '<div class="card full"><h2>📅 Today\'s visitors · ' + tday + '</h2>' + (tday ? '<ul class="list">' + V.filter(function (v) { return v.t >= today0; }).sort(function (a, b) { return b.t - a.t; }).map(function (v) { return "<li>" + who(v) + (v.g ? " 🎮 played" : "") + (v.an ? " ✦ angel numbers" : "") + (v.ct ? " 💬 contacted" : "") + (v.rt ? ' <span class="tag">returning</span>' : ' <span class="tag">new</span>') + " · " + dur(v.du || 0) + "<em>" + new Date(v.t).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) + "</em></li>"; }).join("") + "</ul>" : '<p class="empty">No visits yet today.</p>') + '</div>' +
+        '<div class="card full"><h2>📅 Today\'s visitors · ' + tday + '</h2>' + (tday ? '<ul class="list">' + V.filter(function (v) { return v.t >= today0; }).sort(function (a, b) { return b.t - a.t; }).map(function (v) { return "<li>" + who(v) + (v.g ? " 🎮 played" : "") + (v.an ? " ✦ angel numbers" : "") + (v.ct ? " 💬 contacted" : "") + (v.rt ? ' <span class="tag">returning</span>' : ' <span class="tag">new</span>') + more(v) + " · " + dur(v.du || 0) + "<em>" + new Date(v.t).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) + "</em></li>"; }).join("") + "</ul>" : '<p class="empty">No visits yet today.</p>') + '</div>' +
         '<div class="card full"><h2>Visits in the last 24 hours</h2><div class="hours">' + hours.map(function (n) { return '<div data-n="' + n + '" style="height:' + (n / hmax * 100) + '%"></div>'; }).join("") + '</div><div class="hours-l"><span>24 h ago</span><span>12 h ago</span><span>now</span></div></div>' +
+        '<div class="card full"><h2>Visitors in the last 3 days · hour by hour</h2><div class="hours h72">' + h72.map(function (x) { return '<div class="u' + (x.mid ? " mid" : "") + '" data-n="' + x.l + ": " + x.n + '" style="height:' + (x.n / h72max * 100) + '%"></div>'; }).join("") + '</div><div class="hours-l"><span>3 days ago</span><span>2 days ago</span><span>yesterday</span><span>now</span></div>' +
+          '<div class="d3">' + d3.map(function (x) { return "<div><b>" + x.u + "</b>" + esc(x.l) + "<br>" + x.v + " visits · 🇵🇰 " + x.pk + "</div>"; }).join("") + "</div></div>" +
         '<div class="card full"><h2>Visits in the last 7 days</h2><div class="week">' + week.map(function (w) { return '<div><b>' + w.n + '</b><i data-h="' + (w.n / wmax * 100) + '"><i class="pk" data-h="' + (w.n ? w.pk / w.n * 100 : 0) + '"></i></i><small>' + w.l + '</small></div>'; }).join("") + '</div><div class="legend"><span>All visits</span><span class="pk">From Pakistan</span></div></div>' +
         pkCard +
         '<div class="card"><h2>Countries</h2>' + bars(countries, function (c) { return flag(c) + " " + esc(cname(c)); }, 10) + '</div>' +
@@ -186,9 +206,19 @@ coachLock(document.getElementById("app"), function () {
           '<div class="bar"><span>✦ Explored angel numbers</span><small>' + pct(V.filter(function (v) { return v.an; }).length, V.length) + '</small><i style="width:' + Math.max(3, V.filter(function (v) { return v.an; }).length / Math.max(1, V.length) * 100) + '%"></i></div>' +
           '<div class="bar"><span>💬 Contacted / opened a form</span><small>' + pct(V.filter(function (v) { return v.ct; }).length, V.length) + '</small><i style="width:' + Math.max(3, V.filter(function (v) { return v.ct; }).length / Math.max(1, V.length) * 100) + '%"></i></div>' +
         '</div>' +
+        '<div class="card"><h2>Pages visited</h2>' + bars(count(V, function (v) { return v.pg || "coach"; })) + '</div>' +
+        '<div class="card"><h2>Landing page</h2>' + bars(count(V, function (v) { return v.en || v.pg || "coach"; })) + '</div>' +
+        '<div class="card"><h2>Campaigns &amp; ads</h2>' + bars(count(V.filter(function (v) { return v.src; }), "src")) + '</div>' +
+        '<div class="card"><h2>Taps · 7 days</h2><div class="bar"><span>💬 WhatsApp</span><small>' + tapTot("wa") + '</small></div><div class="bar"><span>💳 PayPal</span><small>' + tapTot("pp") + '</small></div><div class="bar"><span>✉️ Email</span><small>' + tapTot("em") + '</small></div><div class="bar"><span>📞 Call / SMS</span><small>' + tapTot("tel") + '</small></div><div class="bar"><span>📲 Social links</span><small>' + tapTot("soc") + '</small></div><div class="bar"><span>🎮 Game buttons</span><small>' + tapTot("game") + '</small></div></div>' +
+        '<div class="card"><h2>How far they scrolled</h2>' + bars(count(withSd, function (v) { return v.sd >= 90 ? "90–100% (read it all)" : v.sd >= 50 ? "50–89%" : v.sd >= 20 ? "20–49%" : "under 20%"; })) + '</div>' +
+        '<div class="card"><h2>Sections people reached</h2>' + bars(secRows, function (k) { return "#" + esc(k); }, 12) + '</div>' +
+        '<div class="card"><h2>Phone &amp; computer models</h2>' + bars(count(V.filter(function (v) { return v.md; }), "md"), null, 10) + '</div>' +
+        '<div class="card"><h2>Connection speed</h2>' + bars(count(V.filter(function (v) { return v.net; }), "net")) + '</div>' +
+        '<div class="card"><h2>Visit number on their device</h2>' + bars(count(V.filter(function (v) { return v.vc; }), function (v) { return v.vc === 1 ? "1st visit" : v.vc <= 3 ? "2nd–3rd visit" : v.vc <= 10 ? "4th–10th visit" : "10+ visits (fan)"; })) + '</div>' +
+        '<div class="card"><h2>Their local time of day</h2><div class="heat">' + localH.map(function (n, i) { return '<i title="' + ((i % 12) || 12) + (i < 12 ? "am" : "pm") + ": " + n + '" style="background:rgba(232,200,126,' + (0.08 + n / lhMax * 0.9).toFixed(2) + ')"></i>'; }).join("") + '</div><div class="heat-l"><span>12am</span><span>6am</span><span>12pm</span><span>6pm</span><span>11pm</span></div></div>' +
         '<div class="card"><h2>Screen sizes</h2>' + bars(count(V, function (v) { return !v.sw ? "Unknown" : v.sw < 480 ? "Small phone" : v.sw < 800 ? "Large phone / tablet" : v.sw < 1400 ? "Laptop" : "Large screen"; })) + '</div>' +
         '<div class="card full"><h2>Recent visits</h2><ul class="list">' + V.slice().sort(function (a, b) { return b.t - a.t; }).slice(0, 40).map(function (v) {
-          return "<li>" + flag(v.c) + " " + esc(v.z ? v.z + " area" : cname(v.c)) + ' <span class="tag">' + esc(v.d || "") + " · " + esc(v.os || "") + " · " + esc(v.br || "") + "</span>" + (v.a ? ' <span class="tag">via ' + esc(v.a) + "</span>" : "") + (v.r ? ' <span class="tag">from ' + esc(v.r) + "</span>" : "") + (v.g ? " 🎮" : "") + (v.ct ? " 💬" : "") + " · " + dur(v.du || 0) + "<em>" + ago(now - v.t) + "</em></li>"; }).join("") + "</ul></div>" +
+          return "<li>" + flag(v.c) + " " + esc(v.z ? v.z + " area" : cname(v.c)) + ' <span class="tag">' + esc(v.d || "") + " · " + esc(v.os || "") + " · " + esc(v.br || "") + "</span>" + (v.a ? ' <span class="tag">via ' + esc(v.a) + "</span>" : "") + (v.r ? ' <span class="tag">from ' + esc(v.r) + "</span>" : "") + (v.g ? " 🎮" : "") + (v.ct ? " 💬" : "") + more(v) + " · " + dur(v.du || 0) + "<em>" + ago(now - v.t) + "</em></li>"; }).join("") + "</ul></div>" +
         '<div class="card full"><h2>🤲 Prayers made for Adeel Ahmed Rahman</h2>' + (totalPrayers ? bars(PRAYERS.map(function (t, i) { return [i, +prayTotals[i] || 0]; }).filter(function (r) { return r[1]; }).sort(function (a, b) { return b[1] - a[1]; }), function (i) { return esc(shortP(i)); }, 10) : '<p class="empty">No prayers yet. Be the first to make dua for Adeel below.</p>') + '</div>' +
         '<div class="card full" id="guest"><div class="duahead"><span class="duahands">🤲</span><div><b>Make dua for Adeel</b><span>Pick a dua, say Ameen, and join everyone praying for him</span><span class="duacount">🤲 ' + totalPrayers + (totalPrayers === 1 ? ' dua' : ' duas') + ' made so far</span></div></div><h2>📍 Guest check-ins · last 72 hours ' + (multan ? '<span class="tag tag--mx">🥭 ' + multan + " from Multan</span>" : "") + '</h2>' +
           '<form id="gform"><p class="empty">Check in, pick a dua for Adeel Ahmed Rahman, and make it yourself. Your city, region, internet provider, device and the dua you chose are shown here for 72 hours. Your email and WhatsApp are private: only Adeel can see them, and they are never shown on this page.</p>' +

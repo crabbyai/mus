@@ -989,7 +989,7 @@ html{scroll-padding-top:70px}
 .lv__badge{display:inline-flex;align-items:center;gap:.4rem;padding:.2rem .6rem;border-radius:999px;background:rgba(255,40,60,.18);border:1px solid rgba(255,80,90,.6);color:#ff8a94;font:900 .72rem system-ui,sans-serif;letter-spacing:.14em}
 .lv__badge .live__dot{background:#ff3b4a;box-shadow:0 0 0 0 rgba(255,59,74,.7)}
 .lv__big{font:900 clamp(2.2rem,6vw,3rem)/1 system-ui,sans-serif!important;color:#fff;text-shadow:0 0 22px rgba(61,255,122,.6)}
-.lv__kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;width:100%}
+.lv__kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;width:100%}
 .lv__kpis span{display:flex;flex-direction:column;align-items:center;padding:6px 4px;border-radius:12px;background:rgba(0,0,0,.3);border:1px solid rgba(110,230,140,.2);font-size:.68rem;color:#9fc8ad;text-transform:uppercase;letter-spacing:.06em;text-align:center}
 .lv__kpis b{font:900 1.05rem system-ui,sans-serif;color:#fff;letter-spacing:0;text-transform:none}
 .lv__p{flex-direction:row!important;align-items:flex-start;gap:10px!important;border-left:4px solid #5aa8ff!important;animation:lvIn .25s ease-out both}
@@ -1026,7 +1026,7 @@ html{scroll-padding-top:70px}
 .lv__chart svg,.lv__bars{height:60px!important;min-height:0!important;max-height:none!important;flex:none!important}
 @media(min-width:981px){.lv__side{align-items:center}}
 @media(max-width:980px){.live{grid-template-columns:1fr 1fr!important}}
-@media(max-width:560px){.live{grid-template-columns:1fr 1fr!important}.lv__kpis{grid-template-columns:repeat(5,minmax(0,1fr))!important}.lv__kpis span{font-size:.5rem}.lv__chart svg,.lv__bars{height:44px!important}.lv__chart>b{font-size:.52rem!important}}
+@media(max-width:560px){.live{grid-template-columns:1fr 1fr!important}.lv__kpis{grid-template-columns:repeat(3,minmax(0,1fr))!important}.lv__kpis span{font-size:.5rem}.lv__chart svg,.lv__bars{height:44px!important}.lv__chart>b{font-size:.52rem!important}}
 
 /* live panel: last 3 hours list */
 .live .lv__l3h{font-size:.66rem!important;font-weight:800!important}.live .lv__l3 em{font-family:system-ui,sans-serif}
@@ -1164,6 +1164,12 @@ html{scroll-padding-top:70px}
 .jg__stars i.on{color:#ffd23a;text-shadow:0 0 14px rgba(255,210,60,.9);animation:jgStar .45s cubic-bezier(.3,1.6,.5,1) both}
 @keyframes jgStar{from{transform:scale(0) rotate(-90deg)}}
 
+
+/* live panel: 3-day chart */
+.lv__bars--72{gap:1px!important}
+.lv__bars--72 i.mid{box-shadow:-2px 0 0 rgba(255,231,163,.55)}
+.lv__days{display:flex;justify-content:space-between;font-size:.6rem;color:#9fc8ad;margin-top:2px}
+.lv__days b{color:#fff}
 .g3__flash{position:absolute;inset:0;z-index:2;pointer-events:none;background:#eaf4ff;opacity:0}
 .g3__flash.on{animation:g3flash .8s steps(1) forwards}
 @keyframes g3flash{0%{opacity:.95}8%{opacity:.05}16%{opacity:.85}26%{opacity:.1}36%{opacity:.7}50%{opacity:0}62%{opacity:.45}74%{opacity:0}84%{opacity:.25}100%{opacity:0}}
@@ -2063,7 +2069,7 @@ html{scroll-padding-top:70px}
 <script src="coach/config.js?v=5"></script>
 <script src="coach/arab.js?v=1" defer></script>
 <script src="coach/lock.js?v=7"></script>
-<script src="coach/live.js?v=15" defer></script>
+<script src="coach/live.js?v=16" defer></script>
 <script src="coach/chat.js?v=1"></script>
 <script src="coach/reminder.js?v=4"></script>
 <script src="coach/numbers.js?v=3"></script>
