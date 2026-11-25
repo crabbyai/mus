@@ -7,8 +7,12 @@ var EDIT_LINK = "https://docs.google.com/forms/d/1Tvv9mUXohStLWzDVn8xtmyZLsviNMz
 
 function renameMangoForm() {
   var form = FormApp.openByUrl(EDIT_LINK);
-  form.setTitle("Multani Mangoes @PakistaniMangoes on WhatsApp (0016134083945 / 1 613 408 3945)");
-  form.setDescription("🥭 ORDER NOW · ابھی آرڈر کریں\nTakes 1 minute. Pickup at 2045 Carling Avenue, Ottawa (lobby). Pay by Interac e-Transfer to siradeelahmedrahman@yahoo.ca.\n\n" + form.getDescription().replace(/^🥭 ORDER NOW[\s\S]*?\n\n/, ""));
+  // Google shows the title in a very large font on phones, so a long title (and the single long word
+  // "@PakistaniMangoes") gets chopped mid-word. A short title + the handle on the first description line fixes it.
+  form.setTitle("Multani Mangoes 🥭");
+  var rest = form.getDescription().replace(/^📱 WhatsApp[\s\S]*?\n\n/, "").replace(/^🥭 ORDER NOW[\s\S]*?\n\n/, "");
+  form.setDescription("📱 WhatsApp @PakistaniMangoes\n0016134083945 / +1 613 408 3945\n\n" +
+    "🥭 ORDER NOW · ابھی آرڈر کریں\nTakes 1 minute. Pickup at 2045 Carling Avenue, Ottawa (lobby). Pay by Interac e-Transfer to siradeelahmedrahman@yahoo.ca.\n\n" + rest);
   form.setConfirmationMessage("JazakAllah khair! 🥭 Your order is in. Please send your Interac e-Transfer to siradeelahmedrahman@yahoo.ca. Adeel will confirm on WhatsApp (+1 613 408 3945). Tell a friend: https://pakistani.luxury/mangoes/");
   form.setShowLinkToRespondAgain(true);
   Logger.log("Done: " + form.getTitle());
