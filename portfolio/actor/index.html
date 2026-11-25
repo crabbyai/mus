@@ -64,7 +64,8 @@
 <link rel="stylesheet" href="../css/enhance.css" />
 <link rel="stylesheet" href="../css/upgrade.css?v=3" />
 <link rel="stylesheet" href="css/dramas.css?v=14" />
-<link rel="stylesheet" href="../css/sites.css?v=6">
+<link rel="stylesheet" href="css/favourites.css?v=3" />
+<link rel="stylesheet" href="../css/sites.css?v=7">
 </head>
 <body class="sb-pad">
 
@@ -185,6 +186,42 @@
       <span>Drama Serials ✦ Film ✦ TVCs ✦ Web Series ✦ Theatre ✦ Voice-over ✦ Karachi ✦ Lahore ✦</span>
     </div>
   </div>
+
+  <!-- ======= ADEEL'S FAVOURITE DRAMAS & CELEBRITY CRUSHES ======= -->
+  <section class="favs" id="favourites" aria-labelledby="favsTitle">
+    <div class="favs__wrap">
+      <div class="favs__head">
+        <p class="section-eyebrow" data-reveal>💜 Adeel's favourites</p>
+        <h2 class="section-title" id="favsTitle" data-reveal>The dramas Adeel <em class="gold-italic">can't stop watching</em></h2>
+      </div>
+      <div class="favs__grid">
+        <a class="afav" data-adeelfav="Meri Zindagi Hai Tu" href="https://www.youtube.com/@ARYDigitalasia/search?query=Meri%20Zindagi%20Hai%20Tu%20Episode" target="_blank" rel="noopener">
+          <span class="afav__img"><span class="afav__rank">#1 FAVOURITE</span></span>
+          <span class="afav__body"><span class="afav__ch">ARY Digital</span><span class="afav__t">Meri Zindagi Hai Tu</span><span class="afav__cast">Bilal Abbas Khan · Hania Aamir</span><span class="afav__why">Watch every episode free, right here.</span></span>
+        </a>
+        <a class="afav" data-adeelfav="Kabhi Main Kabhi Tum" href="#watch/ary-kabhimainkabhitum/1">
+          <span class="afav__img"><span class="afav__rank">#2 FAVOURITE</span></span>
+          <span class="afav__body"><span class="afav__ch">ARY Digital</span><span class="afav__t">Kabhi Main Kabhi Tum</span><span class="afav__cast">Fahad Mustafa · Hania Aamir</span><span class="afav__why">All episodes, start from episode 1.</span></span>
+        </a>
+        <a class="afav" data-adeelfav="Parizaad" href="#watch/hum-parizaad/1">
+          <span class="afav__img"><span class="afav__rank">#3 FAVOURITE</span></span>
+          <span class="afav__body"><span class="afav__ch">HUM TV</span><span class="afav__t">Parizaad</span><span class="afav__cast">Ahmed Ali Akbar · Yumna Zaidi</span><span class="afav__why">All episodes, start from episode 1.</span></span>
+        </a>
+      </div>
+
+      <div class="crush" data-reveal>
+        <p class="section-eyebrow" style="justify-content:center">😍 Celebrity crushes</p>
+        <h3>Adeel's celebrity crushes</h3>
+        <p class="crush__sub">A few of the stars Adeel admires most. And yes, he has many more.</p>
+        <div class="crush__list">
+          <div class="crush__p"><span class="crush__av" aria-hidden="true">HA</span><span class="crush__n">Hania Aamir</span><span class="crush__d">Watch her in <a href="#favourites">Meri Zindagi Hai Tu</a>, <a href="#watch/ary-kabhimainkabhitum/1">Kabhi Main Kabhi Tum</a> and <a href="#watch/ary-merehumsafar/1">Mere Humsafar</a></span></div>
+          <div class="crush__p"><span class="crush__av" aria-hidden="true">AK</span><span class="crush__n">Aena Khan</span><span class="crush__d">One of Adeel's favourite faces on screen</span></div>
+          <div class="crush__p"><span class="crush__av" aria-hidden="true">NZ</span><span class="crush__n">Noor Zafar Khan</span><span class="crush__d">One of Adeel's favourite faces on screen</span></div>
+        </div>
+        <p class="crush__more">💕 …and many, many more.</p>
+      </div>
+    </div>
+  </section>
 
   <!-- ======= LIVE DRAMA WATCH (data/dramas.json, rebuilt hourly) ======= -->
   <section class="marketwatch" id="watch" hidden>
@@ -970,7 +1007,26 @@
 <script src="js/vendor/qrcode.js"></script>
 <script src="js/site.js?v=12"></script>
 <script src="../shared/inbox.js?v=2" defer></script>
-<script src="js/dramas.js?v=4" defer></script>
+<script src="js/dramas.js?v=5" defer></script>
+<script>
+/* Favourite dramas: real thumbnails from the feed, and play in the site's own player once a drama is in the feed */
+(function () {
+  fetch("data/dramas.json", { cache: "no-cache" }).then(function (r) { return r.json(); }).then(function (data) {
+    var list = (data && data.dramas) || [];
+    [].forEach.call(document.querySelectorAll("[data-adeelfav]"), function (a) {
+      var d = list.filter(function (x) { return x.title.toLowerCase() === a.getAttribute("data-adeelfav").toLowerCase(); })[0];
+      if (!d || !d.episodes || !d.episodes.length) return;
+      var e = d.episodes[0];
+      a.querySelector(".afav__img").style.backgroundImage = "url(https://i.ytimg.com/vi/" + e.id + "/hqdefault.jpg)";
+      a.href = "#watch/" + d.id + "/" + e.n; a.removeAttribute("target");
+      var why = a.querySelector(".afav__why"); if (why) why.textContent = d.episodes.length + " episodes · start from episode " + e.n + ".";
+    });
+    var mz = list.filter(function (x) { return /meri zindagi hai tu/i.test(x.title); })[0];
+    var hl = document.querySelector('.crush__d a[href="#favourites"]'); if (mz && hl) hl.href = "#watch/" + mz.id + "/1";
+  }).catch(function () {});
+})();
+</script>
+
 <script>
   if ("serviceWorker" in navigator) {
     addEventListener("load", function () {

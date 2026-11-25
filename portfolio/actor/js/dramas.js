@@ -24,6 +24,7 @@
 
   const el = (id) => document.getElementById(id);
   const watchSec = el("watch"), feedGrid = el("feedGrid"), feedUpdated = el("feedUpdated"), feedMore = el("feedMore");
+  const ADEEL_FAVS = ["meri zindagi hai tu", "kabhi main kabhi tum", "parizaad"];   // always shown first
   const spotSec = el("featured"), spotStage = el("spotStage");
   const stamp = el("dramaStamp"), search = el("dramaSearch"), chips = el("dramaChips"), empty = el("dramaEmpty");
   const player = el("dramaPlayer"), frame = el("dramaFrame");
@@ -206,7 +207,7 @@
       ${favBtn(d, "dcard__fav")}
       <a class="dcard__link" href="${esc(href)}" data-drama="${esc(d.id)}"${idx}>
         <span class="dcard__thumb"><img src="${thumb(cover.id)}" alt="" loading="lazy" decoding="async" width="320" height="180" />
-          ${d.status === "on-air" ? '<span class="dcard__tag">On air</span>' : (d.complete ? '<span class="dcard__tag dcard__tag--gold">Complete</span>' : "")}</span>
+          ${ADEEL_FAVS.indexOf(d.title.toLowerCase()) > -1 ? '<span class="dcard__tag dcard__tag--fav">💜 Adeel\'s favourite</span>' : ""}${d.status === "on-air" ? '<span class="dcard__tag">On air</span>' : (d.complete ? '<span class="dcard__tag dcard__tag--gold">Complete</span>' : "")}</span>
         <span class="dcard__body"><span class="dcard__title">${esc(d.title)}</span>
           <span class="dcard__ep">${esc(line)}</span>
           <span class="dcard__meta">${esc(chName(d))}${d.cast ? " · " + esc(d.cast) : ""}</span>
@@ -234,7 +235,8 @@
       least: (a, b) => a.episodes.length - b.episodes.length
     }[sort];
     const onAir = list.filter((d) => d.status === "on-air");
-    const lib = list.filter((d) => d.status !== "on-air").sort((a, b) => (b.pick - a.pick) || a.title.localeCompare(b.title));
+    const favRank = (d) => { const i = ADEEL_FAVS.indexOf(d.title.toLowerCase()); return i < 0 ? 99 : i; };
+    const lib = list.filter((d) => d.status !== "on-air").sort((a, b) => (favRank(a) - favRank(b)) || (b.pick - a.pick) || a.title.localeCompare(b.title));
     if (order) { onAir.sort(order); lib.sort(order); }
     el("dramaRandom").disabled = !list.length;
     hub._visible = list;

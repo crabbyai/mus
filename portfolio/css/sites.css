@@ -34,3 +34,5 @@
 /* keep the Urdu button clear of the tasbih beads (both sit bottom-left) */
 .langorb{bottom:206px!important}
 @media(max-width:899px){.langorb{bottom:160px!important}}
+/* phones: the back-to-top arrow moves to the right so it never sits on the tasbih */
+@media(max-width:899px){.to-top{left:auto!important;right:1rem!important}}
