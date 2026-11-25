@@ -15,7 +15,7 @@
 <meta property="og:url" content="https://crabbyai.github.io/mus/mangoes/" />
 <meta name="cf-beacon-token" content="4330d6b7cb40476e8495fe81a3a61c58" />
 <link rel="stylesheet" href="../css/fonts.css" />
-<link rel="stylesheet" href="mangoes.css?v=2" />
+<link rel="stylesheet" href="mangoes.css?v=3" />
 <script type="application/ld+json">
 { "@context": "https://schema.org", "@type": "Product", "name": "Multani mangoes — export boxes",
   "description": "Chaunsa, Anwar Ratol, Sindhri and Langra mangoes from Multan, Pakistan, shipped to Canada, the USA, the UK, Australia and the UAE.",
@@ -265,7 +265,7 @@
 <!-- anonymous visit stats (same as the coach page) -->
 <script src="../coach/config.js?v=5"></script>
 <script src="../coach/live.js?v=16" defer></script>
-<script src="../coach/extras.js?v=2" defer></script>
+<script src="../coach/extras.js?v=3" defer></script>
 <script>
 /* The mango video: always playing on a loop. Phones only allow sound after a tap, so the first tap anywhere turns it on.
    When you scroll past it, it keeps playing in a small corner player. */
@@ -277,7 +277,16 @@
   function play() { var p = v.play(); if (p && p.catch) p.catch(function () {}); }
   function unmute() { if (!wantSound) return; v.muted = false; v.volume = 1; var p = v.play(); if (p && p.catch) p.catch(function () { v.muted = true; paint(); }); paint(); }
   v.muted = false; var tryLoud = v.play();   // some browsers allow sound straight away
-  if (tryLoud && tryLoud.catch) tryLoud.catch(function () { v.muted = true; play(); paint(); });
+  if (tryLoud && tryLoud.catch) tryLoud.catch(function () { v.muted = true; play(); paint(); gate(); });
+  // Browsers never start sound by themselves: a one-tap welcome screen gives them the tap they need.
+  function gate() {
+    if (document.getElementById("mgate")) return;
+    var g = document.createElement("button"); g.type = "button"; g.id = "mgate"; g.className = "mgate";
+    g.innerHTML = '<span class="mgate__e" aria-hidden="true">🥭✨</span><b>Multani Mangoes</b><span>Tap anywhere to enter with sound 🔊</span>';
+    document.body.appendChild(g); g.focus();
+    function enter() { unmute(); g.classList.add("out"); setTimeout(function () { g.remove(); }, 450); }
+    g.addEventListener("click", enter); g.addEventListener("keydown", function (e) { if (e.key === "Escape") enter(); });
+  }
   paint();
   ["pointerdown", "keydown", "touchend"].forEach(function (ev) { window.addEventListener(ev, function first(e) { if (e.target === snd || e.target === x) return; if (v.muted) unmute(); window.removeEventListener(ev, first, true); }, true); });
   snd.addEventListener("click", function () { if (v.muted) { wantSound = true; unmute(); } else { v.muted = true; wantSound = false; paint(); } });

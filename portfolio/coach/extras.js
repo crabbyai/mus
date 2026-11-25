@@ -52,6 +52,47 @@
     "@media(prefers-reduced-motion:reduce){.tsb__card,.arv,.tsb-fab{animation:none}}";
   document.head.appendChild(css);
 
+  /* ---------- 0. Site-wide: one big WhatsApp button, a reading-progress bar, no sideways wobble ---------- */
+  (function () {
+    var css2 = document.createElement("style");
+    css2.textContent =
+      "html,body{overflow-x:clip}" +
+      ".fab-wa,.wa-fab,.float-wa,.whatsapp-fab{display:none!important}" +
+      ".wab{position:fixed;z-index:940;right:16px;bottom:calc(18px + var(--wab-lift,0px) + env(safe-area-inset-bottom));display:flex;align-items:center;gap:.6rem;padding:.75rem 1.25rem .75rem .85rem;border-radius:999px;background:linear-gradient(135deg,#2be06f,#128c4a);color:#fff!important;text-decoration:none;font:800 1.08rem/1 system-ui,sans-serif;box-shadow:0 14px 34px -10px rgba(0,0,0,.7),0 0 0 3px rgba(255,255,255,.18);animation:wabPulse 2.4s ease-in-out infinite;transition:transform .2s}" +
+      ".wab:hover{transform:translateY(-3px) scale(1.04)}" +
+      ".wab svg{width:36px;height:36px;flex:none;fill:#fff}" +
+      ".wab small{display:block;font:600 .68rem system-ui,sans-serif;opacity:.9;margin-top:2px}" +
+      ".wab i{position:absolute;top:-3px;right:-3px;width:14px;height:14px;border-radius:50%;background:#ff3b4a;border:2px solid #fff;animation:wabDot 1.4s ease-in-out infinite}" +
+      "@keyframes wabPulse{0%,100%{box-shadow:0 14px 34px -10px rgba(0,0,0,.7),0 0 0 0 rgba(43,224,111,.55)}50%{box-shadow:0 14px 34px -10px rgba(0,0,0,.7),0 0 0 14px rgba(43,224,111,0)}}" +
+      "@keyframes wabDot{50%{transform:scale(1.25)}}" +
+      "@media(max-width:700px){.wab{padding:.7rem;right:12px}.wab span{display:none}.wab svg{width:40px;height:40px}}" +
+      ".jg-playing .wab{display:none!important}" +
+      ".sprog{position:fixed;left:0;top:0;height:3px;width:100%;z-index:960;transform-origin:0 50%;transform:scaleX(0);background:linear-gradient(90deg,#c9a45c,#ffe7a3,#c48bff);pointer-events:none}" +
+      "@media(prefers-reduced-motion:reduce){.wab,.wab i{animation:none}}";
+    document.head.appendChild(css2);
+    var old = document.querySelector(".whatsapp-fab,.wa-fab,.fab-wa,.float-wa");
+    var a = document.createElement("a");
+    a.className = "wab"; a.target = "_blank"; a.rel = "noopener"; a.setAttribute("aria-label", "Chat with Adeel on WhatsApp");
+    a.href = (old && old.getAttribute("href")) || "https://wa.me/16134083945?text=" + encodeURIComponent("Assalam-o-alaikum Adeel, I found your website.");
+    if (old) { var keepSync = function () { var h = old.getAttribute("href"); if (h && h !== a.href) a.href = h; }; setTimeout(keepSync, 1500); }   // pages that build a message in the visitor's language
+    a.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2s.2-1.1.1-1.2-.2-.2-.5-.3Z"/></svg><span>WhatsApp<small>+1 613 408 3945</small></span><i aria-hidden="true"></i>';
+    document.body.appendChild(a);
+    // stay above any bar fixed along the bottom of the screen (the phone CTA rails)
+    function lift() {
+      var h = 0; [].forEach.call(document.body.children, function (el) {
+        if (el === a || el.classList.contains("tsb") || el.classList.contains("tsb-fab")) return;
+        var cs = getComputedStyle(el); if (cs.position !== "fixed" || cs.display === "none" || cs.visibility === "hidden") return;
+        var r = el.getBoundingClientRect(); if (r.width > innerWidth * 0.8 && r.bottom >= innerHeight - 2 && r.height < 140 && r.height > 20) h = Math.max(h, r.height);
+      });
+      a.style.setProperty("--wab-lift", h + "px");
+    }
+    lift(); setTimeout(lift, 1200); setTimeout(lift, 4000); addEventListener("resize", lift); addEventListener("scroll", function () { clearTimeout(lift.t); lift.t = setTimeout(lift, 300); }, { passive: true });
+    // thin reading-progress bar across the very top
+    var bar = document.createElement("div"); bar.className = "sprog"; bar.setAttribute("aria-hidden", "true"); document.body.appendChild(bar);
+    function prog() { var m = document.documentElement.scrollHeight - innerHeight; bar.style.transform = "scaleX(" + (m > 0 ? Math.min(1, scrollY / m) : 0) + ")"; }
+    addEventListener("scroll", prog, { passive: true }); prog();
+  })();
+
   /* ---------- 1. Hijri date ---------- */
   (function () {
     var strip = document.querySelector(".fh-strip"); if (!strip) return;
