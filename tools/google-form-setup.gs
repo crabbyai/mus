@@ -10,7 +10,7 @@
  *     Send the share link to Claude to put it on pakistani.luxury.
  */
 function createMangoForm() {
-  var form = FormApp.create("Multani Mangoes by @PakistaniMangoes on WhatsApp (0016134083945 / 1 613 408 3945)");
+  var form = FormApp.create("Multani Mangoes @PakistaniMangoes on WhatsApp (0016134083945 / 1 613 408 3945)");
   form.setDescription(
     "Premium quality Chaunsa, Sindhri, Dasehri, Langra, Anwar Ratol, Falsa and Jamun, plus Pakistani vegetables.\n\n" +
     "GUARANTEE OF\n" +

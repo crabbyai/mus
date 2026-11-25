@@ -15,7 +15,7 @@
 <meta property="og:url" content="https://crabbyai.github.io/mus/mangoes/" />
 <meta name="cf-beacon-token" content="4330d6b7cb40476e8495fe81a3a61c58" />
 <link rel="stylesheet" href="../css/fonts.css" />
-<link rel="stylesheet" href="mangoes.css?v=7" />
+<link rel="stylesheet" href="mangoes.css?v=9" />
 <script type="application/ld+json">
 { "@context": "https://schema.org", "@type": "Product", "name": "Multani mangoes — export boxes",
   "description": "Chaunsa, Anwar Ratol, Sindhri and Langra mangoes from Multan, Pakistan, shipped to Canada, the USA, the UK, Australia and the UAE.",
@@ -37,7 +37,7 @@
     <a href="#how">How it works</a>
     <a href="#faq">FAQ</a>
   </nav>
-  <a class="btn btn--mango btn--sm" href="#order">Pre-order</a>
+  <a class="btn btn--mango btn--sm" href="#order">🥭 Order now</a>
 </header>
 
 <main id="top">
@@ -49,7 +49,8 @@
       <p class="lead">Chaunsa, Anwar Ratol, Sindhri and Langra — Pakistan's most loved mangoes, picked in season and shipped to
       <strong>Canada, the USA, the UK, Australia and Dubai.</strong> The taste of home summers, wherever home is now.</p>
       <div class="hero__actions">
-        <a class="btn btn--mango" href="#order">Reserve boxes for summer 2027 →</a>
+        <a class="btn btn--mango btn--big" href="#order">🥭 Order your mango boxes →</a>
+        <a class="btn btn--gform" href="https://docs.google.com/forms/d/e/1FAIpQLSfzxeybD46j-29H6gwb4Xvv8elBTwpo3LaZfksBIRu7kAshJQ/viewform" target="_blank" rel="noopener">📝 Order on Google Form</a>
         <a class="btn btn--ghost" href="https://wa.me/16134083945?text=Assalam-o-alaikum%20Adeel%2C%20I%27m%20interested%20in%20Multani%20mangoes." target="_blank" rel="noopener">Ask on WhatsApp</a>
       </div>
       <div class="countdown" aria-live="polite">
@@ -265,10 +266,23 @@
     </div>
   </section>
 
+  <section class="sec" id="cta">
+    <div class="cta3">
+      <p class="eyebrow">Ready to order? · <span lang="ur">ابھی آرڈر کریں</span></p>
+      <h2>Pick the easiest way <em>for you</em></h2>
+      <div class="cta3__grid">
+        <a class="cta3__b cta3__b--site" href="#orderForm"><span class="cta3__i" aria-hidden="true">🥭</span><b>Order here</b><small>Quick form on this page, sent to Adeel on WhatsApp</small></a>
+        <a class="cta3__b cta3__b--gf" href="https://docs.google.com/forms/d/e/1FAIpQLSfzxeybD46j-29H6gwb4Xvv8elBTwpo3LaZfksBIRu7kAshJQ/viewform" target="_blank" rel="noopener"><span class="cta3__i" aria-hidden="true">📝</span><b>Google Form</b><small>The same order form on Google, if you prefer</small></a>
+        <a class="cta3__b cta3__b--wa" href="https://wa.me/16134083945?text=%F0%9F%A5%AD%20Assalam-o-alaikum%20Adeel%2C%20I%27d%20like%20to%20order%20mangoes." target="_blank" rel="noopener"><span class="cta3__i" aria-hidden="true">💬</span><b>WhatsApp Adeel</b><small>Just message: +1 613 408 3945</small></a>
+      </div>
+      <p class="cta3__pay">📍 Pickup 2045 Carling Ave, Ottawa (lobby) · 💳 Interac e-Transfer siradeelahmedrahman@yahoo.ca</p>
+    </div>
+  </section>
+
   <section class="sec order" id="order">
     <div class="order__card gform">
       <div class="gform__bar" aria-hidden="true"></div>
-      <h2 class="gform__t">Multani Mangoes by @PakistaniMangoes on WhatsApp <span>(0016134083945 / 1 613 408 3945)</span></h2>
+      <h2 class="gform__t">Multani Mangoes @PakistaniMangoes on WhatsApp <span>(0016134083945 / 1 613 408 3945)</span></h2>
       <div class="gform__desc">
         <p>Premium quality Chaunsa, Sindhri, Dasehri, Langra, Anwar Ratol, Falsa and Jamun, plus Pakistani vegetables.</p>
         <p><b>Guarantee of:</b> full traceability of mangoes right from the farms · organically ripened · no chemicals used · hand-picked for size &amp; quality · full weight. <span lang="ur">عام نہیں، خاص آم</span></p>
@@ -372,6 +386,12 @@
     b.addEventListener("click", function () { b.firstChild.textContent = "🥭✨🔒"; window.coachLock.open(function () { b.firstChild.textContent = "🥭🔓"; setTimeout(go, 400); }, function () { b.firstChild.textContent = "🥭🔒"; }); });
   });
 })();
+</script>
+<nav class="obar" aria-label="Order mangoes"><a href="#orderForm">🥭 Order now</a><a href="https://docs.google.com/forms/d/e/1FAIpQLSfzxeybD46j-29H6gwb4Xvv8elBTwpo3LaZfksBIRu7kAshJQ/viewform" target="_blank" rel="noopener">📝 Google Form</a></nav>
+<script>
+/* Show the order bar once the hero has scrolled away, hide it while the order form is on screen */
+(function(){var bar=document.querySelector(".obar"),hero=document.querySelector(".hero"),ord=document.getElementById("order");if(!bar||!("IntersectionObserver" in window))return;var heroOut=false,ordIn=false;function set(){bar.classList.toggle("on",heroOut&&!ordIn);}
+new IntersectionObserver(function(e){heroOut=!e[0].isIntersecting;set();}).observe(hero);new IntersectionObserver(function(e){ordIn=e[0].isIntersecting;set();},{threshold:.05}).observe(ord);})();
 </script>
 </body>
 </html>
