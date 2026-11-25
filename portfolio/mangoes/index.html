@@ -15,7 +15,7 @@
 <meta property="og:url" content="https://crabbyai.github.io/mus/mangoes/" />
 <meta name="cf-beacon-token" content="4330d6b7cb40476e8495fe81a3a61c58" />
 <link rel="stylesheet" href="../css/fonts.css" />
-<link rel="stylesheet" href="mangoes.css?v=6" />
+<link rel="stylesheet" href="mangoes.css?v=7" />
 <script type="application/ld+json">
 { "@context": "https://schema.org", "@type": "Product", "name": "Multani mangoes — export boxes",
   "description": "Chaunsa, Anwar Ratol, Sindhri and Langra mangoes from Multan, Pakistan, shipped to Canada, the USA, the UK, Australia and the UAE.",
@@ -69,6 +69,8 @@
       </div>
     </div>
   </section>
+
+  <div class="mlock-wrap"><button type="button" class="mlock" aria-label="Open the private mango list (passcode)"><span class="mlock__ic">🥭🔒</span></button></div>
 
   <!-- TRUST STRIP -->
   <ul class="strip" aria-label="At a glance">
@@ -312,6 +314,7 @@
 </main>
 
 <footer class="foot">
+  <div class="mlock-wrap"><button type="button" class="mlock" aria-label="Open the private mango list (passcode)"><span class="mlock__ic">🥭🔒</span></button></div>
   <p><strong>Multani Mangoes</strong> by Adeel Rahman · Multan, Pakistan → Canada · USA · UK · Australia · UAE</p>
   <p><a href="https://wa.me/16134083945" target="_blank" rel="noopener">WhatsApp +1 613 408 3945</a> · <a href="mailto:adeelahmedrahman@gmail.com">adeelahmedrahman@gmail.com</a></p>
   <p class="foot__fine">Seasons, varieties and availability depend on the harvest and each country's import rules. Prices and delivery windows are confirmed before you pay. Visits are counted with Cloudflare Web Analytics — no cookies, no personal data.</p>
@@ -323,7 +326,7 @@
 <script src="../shared/inbox.js?v=2" defer></script>
 <!-- anonymous visit stats (same as the coach page) -->
 <script src="../coach/config.js?v=5"></script>
-<script src="../coach/live.js?v=16" defer></script>
+<script src="../coach/live.js?v=17" defer></script>
 <script src="../coach/extras.js?v=3" defer></script>
 <script>
 /* The mango video: always playing on a loop. Phones only allow sound after a tap, so the first tap anywhere turns it on.
@@ -356,6 +359,18 @@
     box.classList.toggle("mini", out && !closed); x.hidden = !out;
   }, { threshold: 0.15 }).observe(box.parentNode);
   x.addEventListener("click", function () { closed = true; box.classList.remove("mini"); x.hidden = true; });
+})();
+</script>
+<script src="../coach/lock.js?v=7"></script>
+<script>
+/* 🥭🔒 opens the private mango list after the passcode (same keypad as the coach page) */
+(function () {
+  function go() { try { sessionStorage.setItem("ping-ok", String(Date.now())); } catch (e) {} location.href = "ping.html"; }
+  [].forEach.call(document.querySelectorAll(".mlock"), function (b) {
+    b.addEventListener("mouseenter", function () { b.firstChild.textContent = "🥭🔐"; });
+    b.addEventListener("mouseleave", function () { b.firstChild.textContent = "🥭🔒"; });
+    b.addEventListener("click", function () { b.firstChild.textContent = "🥭✨🔒"; window.coachLock.open(function () { b.firstChild.textContent = "🥭🔓"; setTimeout(go, 400); }, function () { b.firstChild.textContent = "🥭🔒"; }); });
+  });
 })();
 </script>
 </body>

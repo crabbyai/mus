@@ -207,3 +207,8 @@ em { font-style: italic; color: var(--mango-2); font-family: var(--serif); }
 .gf{margin-top:.8rem}.gf a{color:#ffd36b;text-decoration:underline}
 @media(max-width:700px){.join__f{grid-template-columns:1fr}}
 .join__f input{font:400 .98rem var(--sans,system-ui);color:var(--cream,#fff);background:var(--bg-2,#0d1f15);border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:.8rem .9rem}
+
+.mlock-wrap{display:flex;justify-content:center;margin:.6rem 0}
+.mlock{background:none;border:0;cursor:pointer;padding:.2rem .5rem;border-radius:10px;transition:transform .15s}
+.mlock:hover{transform:scale(1.08)}.mlock:focus-visible{outline:2px solid rgba(255,255,255,.5)}
+.mlock__ic{font-size:1.7rem;letter-spacing:.1em;filter:drop-shadow(0 0 10px rgba(245,181,46,.5))}

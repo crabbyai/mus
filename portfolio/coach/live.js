@@ -183,11 +183,12 @@
           return "<li>" + (r.live ? '<i class="lv__on" title="online now"></i>' : "") + flag(v.c) + " <b>" + esc(v.z ? v.z : (countryName(v.c) || "Somewhere")) + "</b>" + (r.me ? ' <span class="lv__me">you</span>' : "") +
             '<span class="lv__l3m">' + [({ phone: "📱", tablet: "📱", computer: "💻" }[v.d] || ""), v.a ? "via " + esc(v.a) : "", "⏱ " + dur(r.du), r.n > 1 ? r.n + " visits" : "", r.g ? "🎮" : "", r.an ? "✦" : "", r.ct ? "💬" : ""].filter(Boolean).join(" · ") + "</span>" +
             "<em>" + (r.live ? "online now" : ago(now - v.t)) + "</em></li>"; }).join("") + "</ul></div>" : "") +
-        '<span class="live__links"><a href="stats/">📊 Live stats</a><a href="stats/#guest">🤲 Make dua for Adeel</a></span></div>' +
+        '<span class="live__links"><a href="stats/">📊 Live stats</a><a href="stats/#guest">🤲 Make dua for Adeel</a><a href="mangoes/ping.html" data-pingok>🥭 Mango list</a></span></div>' +
       '<div class="lv__side">' + bars24(hrs, now) + "</div>";
     box.hidden = false;
   }
 
+  document.addEventListener("click", function (e) { if (e.target.closest && e.target.closest("[data-pingok]")) { try { sessionStorage.setItem("ping-ok", String(Date.now())); } catch (er) {} } });   // already unlocked here, so skip the second passcode
   var open = false;   // the panel stays behind the passcode lock until unlocked
   function start() { open = true; box.innerHTML = '<div class="lv__mid"><div class="lv__head"><span class="lv__badge"><span class="live__dot"></span>LIVE</span><span>Loading live visitors…</span></div></div>'; box.hidden = false; refresh(); setTimeout(refresh, 1200); timer = setInterval(refresh, 10000); }
   report();

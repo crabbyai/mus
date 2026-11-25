@@ -29,7 +29,7 @@ textarea{min-height:110px}
 </head>
 <body>
 <div class="pw">
-  <p class="k">🥭 Private · Adeel only</p>
+  <p class="k">🥭 Private · Adeel only · <a href="./" style="color:#ffd36b">← Mango page</a></p>
   <h1>Message your mango list</h1>
   <div id="app" hidden>
     <p class="note small">Only add people who said yes to hearing from you: everyone who joined the mango list on your site, ordered and ticked “message me about future shipments”, or asked you themselves on WhatsApp. This list is saved only in this browser on this device.</p>
@@ -108,7 +108,9 @@ textarea{min-height:110px}
     var csv = "name,number,sent\n" + list.map(function (p) { return '"' + (p.name || "").replace(/"/g, '""') + '",+' + p.num + "," + (p.sent ? "yes" : "no"); }).join("\n");
     var a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" })); a.download = "mango-list.csv"; a.click();
   };
-  coachLock(document.getElementById("app"), function () { document.getElementById("app").hidden = false; paint(); });
+  function show() { document.getElementById("app").hidden = false; paint(); }
+  var ok = 0; try { ok = +sessionStorage.getItem("ping-ok") || 0; sessionStorage.removeItem("ping-ok"); } catch (e) {}
+  if (Date.now() - ok < 60000) show(); else coachLock(document.getElementById("app"), show);
 })();
 </script>
 </body>
