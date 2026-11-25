@@ -27,7 +27,7 @@ function createMangoForm() {
     "Questions: WhatsApp Adeel Rahman, +1 613 408 3945\n\n" +
     "🥭 ORDER NOW · ابھی آرڈر کریں · takes 1 minute"
   );
-  form.setCollectEmail(false);
+  try { form.setCollectEmail(false); } catch (e) {}
   form.setConfirmationMessage("JazakAllah khair! Your order is in. Please send your Interac e-Transfer to siradeelahmedrahman@yahoo.ca, and Adeel will confirm on WhatsApp. 🥭");
 
   form.addTextItem().setTitle("Full name").setRequired(true);
@@ -56,9 +56,10 @@ function createMangoForm() {
   form.addMultipleChoiceItem().setTitle("Can Adeel message you on WhatsApp when the next shipment arrives?")
     .setChoiceValues(["Yes, message me about future shipments", "No thanks, just this order"]).setRequired(true);
 
-  form.setRequireLogin(false);          // customers don't need a Google account
-  form.setShowLinkToRespondAgain(true);
-  form.setAcceptingResponses(true);
+  // Optional settings: some Google accounts don't support all of them, so each one is skipped if not allowed
+  try { form.setRequireLogin(false); } catch (e) {}
+  try { form.setShowLinkToRespondAgain(true); } catch (e) {}
+  try { form.setAcceptingResponses(true); } catch (e) {}
   form.setConfirmationMessage("JazakAllah khair! 🥭 Your order is in. Please send your Interac e-Transfer to siradeelahmedrahman@yahoo.ca. Adeel will confirm on WhatsApp (+1 613 408 3945). Tell a friend: https://pakistani.luxury/mangoes/");
 
   var sheet = SpreadsheetApp.create("Multani Mangoes orders");
@@ -68,7 +69,7 @@ function createMangoForm() {
   var published = false;
   try { form.setPublished(true); published = form.isPublished(); } catch (e) {}
   Logger.log(published ? "PUBLISHED ✓ Customers can order now." : "Almost done: open the EDIT link below and press the purple 'Publish' button (top right).");
+  Logger.log("EDIT the form here (tap to open it): " + form.getEditUrl());
   Logger.log("SHARE this link with customers: " + form.getPublishedUrl());
-  Logger.log("EDIT the form here: " + form.getEditUrl());
   Logger.log("ANSWERS go to this sheet: " + sheet.getUrl());
 }
