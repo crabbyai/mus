@@ -15,7 +15,7 @@
 <meta property="og:url" content="https://crabbyai.github.io/mus/mangoes/" />
 <meta name="cf-beacon-token" content="4330d6b7cb40476e8495fe81a3a61c58" />
 <link rel="stylesheet" href="../css/fonts.css" />
-<link rel="stylesheet" href="mangoes.css?v=12" />
+<link rel="stylesheet" href="mangoes.css?v=13" />
 <script type="application/ld+json">
 { "@context": "https://schema.org", "@type": "Product", "name": "Multani mangoes — export boxes",
   "description": "Chaunsa, Anwar Ratol, Sindhri and Langra mangoes from Multan, Pakistan, shipped to Canada, the USA, the UK, Australia and the UAE.",
@@ -35,6 +35,9 @@
     <a href="#season">Season</a>
     <a href="#ship">We ship to</a>
     <a href="#how">How it works</a>
+    <a href="#match">Mango match</a>
+    <a href="#recipes">Recipes</a>
+    <a href="#pickup">Pickup</a>
     <a href="#faq">FAQ</a>
   </nav>
   <a class="btn btn--mango btn--sm" href="https://docs.google.com/forms/d/e/1FAIpQLSdWAiKkY7q-NzLqMld_HdATqTAQWF40WOIyvBtUOb5VgLFTFg/viewform" target="_blank" rel="noopener">📝 Order form</a>
@@ -252,6 +255,64 @@
   </section>
 
   <!-- ORDER -->
+  <!-- MANGO MATCH QUIZ -->
+  <section class="sec sec--tint" id="match">
+    <div class="sec__head"><p class="eyebrow">Mango match · <span lang="ur">آپ کا آم</span></p><h2>Which mango is <em>yours?</em></h2><p>Three quick taps and we'll match you to your perfect variety.</p></div>
+    <div class="mq" id="mq">
+      <div class="mq__q" data-q="0"><p>How do you like your sweetness?</p><button data-a="Chaunsa Sindhri">🍯 Super sweet</button><button data-a="Langra Falsa">🍋 Sweet with a tang</button><button data-a="Anwar Ratol Jamun">🌸 Rich and fragrant</button></div>
+      <div class="mq__q" data-q="1" hidden><p>How will you eat them?</p><button data-a="Chaunsa Anwar Ratol">🥭 Sucked straight from the skin</button><button data-a="Sindhri Dasehri">🔪 Sliced into cubes</button><button data-a="Falsa Jamun Langra">🥤 Sharbat, lassi or chaat</button></div>
+      <div class="mq__q" data-q="2" hidden><p>When do you want them?</p><button data-a="Sindhri Falsa">🌅 Earliest in the season</button><button data-a="Anwar Ratol Langra Dasehri Jamun">☀️ Peak of summer</button><button data-a="Chaunsa">🌇 Late summer, the grand finale</button></div>
+      <div class="mq__r" hidden><p class="mq__k">Your mango match</p><h3 id="mqName"></h3><p id="mqWhy"></p><div class="mq__act"><a class="btn btn--gform btn--big" href="https://docs.google.com/forms/d/e/1FAIpQLSdWAiKkY7q-NzLqMld_HdATqTAQWF40WOIyvBtUOb5VgLFTFg/viewform" target="_blank" rel="noopener">📝 Order it now →</a><button class="btn btn--ghost" id="mqAgain" type="button">↻ Try again</button></div></div>
+      <div class="mq__dots" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
+    </div>
+  </section>
+
+  <!-- RECIPES -->
+  <section class="sec" id="recipes">
+    <div class="sec__head"><p class="eyebrow">From Ammi's kitchen</p><h2>Five ways to enjoy <em>every box</em></h2></div>
+    <div class="rc__tabs" role="tablist">
+      <button role="tab" aria-selected="true" data-r="0">🥛 Mango lassi</button><button role="tab" aria-selected="false" data-r="1">🥣 Aam ras</button><button role="tab" aria-selected="false" data-r="2">🍹 Falsa sharbat</button><button role="tab" aria-selected="false" data-r="3">🫐 Jamun chaat</button><button role="tab" aria-selected="false" data-r="4">🍨 Mango kulfi</button>
+    </div>
+    <div class="rc">
+      <article data-rp="0"><h3>Mango lassi <small>· 5 min · 2 glasses</small></h3><ol><li>Blend 2 ripe Chaunsa or Sindhri (flesh only) with 1 cup chilled yoghurt.</li><li>Add ½ cup cold milk, 2 tsp sugar and a pinch of crushed cardamom.</li><li>Blend until frothy, pour over ice and top with chopped pistachios.</li></ol></article>
+      <article data-rp="1" hidden><h3>Aam ras <small>· 10 min · 4 bowls</small></h3><ol><li>Squeeze 4 soft Chaunsa or Anwar Ratol into a bowl and mash the pulp smooth.</li><li>Stir in a little sugar if needed, a pinch of cardamom and saffron soaked in milk.</li><li>Chill and serve with hot puris or parathas.</li></ol></article>
+      <article data-rp="2" hidden><h3>Falsa sharbat <small>· 10 min · 4 glasses</small></h3><ol><li>Mash 2 cups falsa with ½ cup sugar and leave for 10 minutes.</li><li>Add 4 cups cold water, a pinch of black salt and roasted cumin, then strain.</li><li>Serve over ice with a squeeze of lemon and fresh mint.</li></ol></article>
+      <article data-rp="3" hidden><h3>Jamun chaat <small>· 5 min · 2 plates</small></h3><ol><li>Wash a bowl of jamun and pat dry.</li><li>Toss with chaat masala, black salt and a squeeze of lemon.</li><li>Cover the bowl and shake well. Let it rest 5 minutes, then enjoy.</li></ol></article>
+      <article data-rp="4" hidden><h3>Mango kulfi <small>· 15 min + overnight · 8 kulfis</small></h3><ol><li>Simmer 2 cups milk with ½ cup condensed milk until slightly thick, then cool.</li><li>Stir in 1½ cups Chaunsa pulp, cardamom and chopped pistachios.</li><li>Pour into kulfi moulds or cups and freeze overnight.</li></ol></article>
+    </div>
+  </section>
+
+  <!-- PICKUP -->
+  <section class="sec sec--tint" id="pickup">
+    <div class="pk2">
+      <div class="pk2__info">
+        <p class="eyebrow">📍 Pickup in Ottawa</p>
+        <h2>2045 Carling Avenue <em>· in the lobby</em></h2>
+        <p>Pickup times are sent on WhatsApp before each shipment. Bring your order name, and pay by Interac e-Transfer to <b>siradeelahmedrahman@yahoo.ca</b> before pickup.</p>
+        <div class="pk2__act">
+          <a class="btn btn--mango" href="https://www.google.com/maps/dir/?api=1&amp;destination=2045+Carling+Avenue,+Ottawa,+ON" target="_blank" rel="noopener">🧭 Get directions</a>
+          <a class="btn btn--ghost" href="https://maps.apple.com/?daddr=2045+Carling+Avenue,+Ottawa,+ON" target="_blank" rel="noopener">🍎 Apple Maps</a>
+          <button class="btn btn--ghost" type="button" id="copyAddr">📋 Copy address</button>
+        </div>
+      </div>
+      <div class="pk2__card" aria-hidden="true"><span class="pk2__pin">📍</span><b>2045 Carling Ave</b><span>Ottawa, ON · Lobby</span><span class="pk2__box">📦🥭📦</span></div>
+    </div>
+  </section>
+
+  <!-- SHARE -->
+  <section class="sec" id="share">
+    <div class="sh">
+      <p class="eyebrow">Mangoes are better shared</p>
+      <h2>Send this to <em>family &amp; friends</em></h2>
+      <p>Split a box with your neighbours, or let the family group chat know mangoes are coming. 🥭</p>
+      <div class="sh__act">
+        <a class="btn btn--wa" id="shWa" target="_blank" rel="noopener" href="#">💬 Share on WhatsApp</a>
+        <button class="btn btn--ghost" type="button" id="shNative">📤 Share</button>
+        <button class="btn btn--ghost" type="button" id="shCopy">🔗 Copy link</button>
+      </div>
+    </div>
+  </section>
+
   <section class="sec" id="join">
     <div class="join">
       <p class="eyebrow">🥭 The mango list</p>
@@ -390,6 +451,36 @@
   });
 })();
 </script>
-<nav class="obar on" aria-label="Order mangoes"><a class="obar__main" href="https://docs.google.com/forms/d/e/1FAIpQLSdWAiKkY7q-NzLqMld_HdATqTAQWF40WOIyvBtUOb5VgLFTFg/viewform" target="_blank" rel="noopener">📝 Order form</a><a href="#orderForm">🥭 This page</a></nav>
+<nav class="obar on" aria-label="Order mangoes"><a class="obar__main" href="https://docs.google.com/forms/d/e/1FAIpQLSdWAiKkY7q-NzLqMld_HdATqTAQWF40WOIyvBtUOb5VgLFTFg/viewform" target="_blank" rel="noopener"><span class="obar__e" aria-hidden="true">🥭</span><span class="obar__t"><b>Order your mangoes</b><small>1-minute form · pickup at 2045 Carling Ave</small></span><span class="obar__go" aria-hidden="true">→</span></a></nav>
+<script>
+/* mango match, recipes, pickup and share */
+(function () {
+  var GF = "https://docs.google.com/forms/d/e/1FAIpQLSdWAiKkY7q-NzLqMld_HdATqTAQWF40WOIyvBtUOb5VgLFTFg/viewform";
+  var WHY = { "Chaunsa": "Multan's pride: rich, aromatic and almost fibre-free. The one most people mean when they say Pakistani mango.", "Sindhri": "Large, smooth and honey-sweet, the mango that opens the season.", "Anwar Ratol": "Small, fragrant and intensely sweet. The connoisseur's favourite, and it sells out fast.", "Langra": "Green even when ripe, with a bright tangy sweetness and its own perfume.", "Dasehri": "Long, slim and fibre-free with soft, sugary flesh. Perfect for slicing.", "Falsa": "Tiny tangy-sweet berries: make the famous falsa sharbat.", "Jamun": "Deep-purple Java plums, sweet and tart. Best with chaat masala." };
+  var box = document.getElementById("mq");
+  if (box) {
+    var score = {}, step = 0, qs = box.querySelectorAll(".mq__q"), dots = box.querySelectorAll(".mq__dots i");
+    box.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-a]"); if (!b) return;
+      b.getAttribute("data-a").replace("Anwar Ratol", "Anwar_Ratol").split(" ").forEach(function (k) { k = k.replace("_", " "); score[k] = (score[k] || 0) + 1; });
+      qs[step].hidden = true; step++;
+      if (step < qs.length) { qs[step].hidden = false; dots[step].classList.add("on"); return; }
+      var best = Object.keys(score).sort(function (a, b2) { return score[b2] - score[a] || (b2 === "Chaunsa") - (a === "Chaunsa"); })[0];
+      document.getElementById("mqName").textContent = "🥭 " + best;
+      document.getElementById("mqWhy").textContent = WHY[best] || "";
+      box.querySelector(".mq__r").hidden = false; box.querySelector(".mq__dots").hidden = true;
+    });
+    document.getElementById("mqAgain").addEventListener("click", function () { score = {}; step = 0; box.querySelector(".mq__r").hidden = true; box.querySelector(".mq__dots").hidden = false; [].forEach.call(qs, function (q, i) { q.hidden = i > 0; }); [].forEach.call(dots, function (d, i) { d.classList.toggle("on", i === 0); }); });
+  }
+  var tabs = document.querySelectorAll(".rc__tabs [data-r]");
+  [].forEach.call(tabs, function (t) { t.addEventListener("click", function () { [].forEach.call(tabs, function (x) { x.setAttribute("aria-selected", x === t ? "true" : "false"); }); [].forEach.call(document.querySelectorAll(".rc [data-rp]"), function (a) { a.hidden = a.getAttribute("data-rp") !== t.getAttribute("data-r"); }); }); });
+  function copy(text, btn, label) { (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () { btn.textContent = "✓ Copied"; setTimeout(function () { btn.textContent = label; }, 1600); }).catch(function () { prompt("Copy this:", text); }); }
+  var ca = document.getElementById("copyAddr"); if (ca) ca.addEventListener("click", function () { copy("2045 Carling Avenue, Ottawa, ON (lobby)", ca, "📋 Copy address"); });
+  var url = "https://pakistani.luxury/mangoes/", msg = "🥭 Multani mangoes are coming to Ottawa! Chaunsa, Sindhri, Anwar Ratol and more. Pickup at 2045 Carling Ave. Order here: " + GF + " (more info: " + url + ")";
+  var wa = document.getElementById("shWa"); if (wa) wa.href = "https://wa.me/?text=" + encodeURIComponent(msg);
+  var sn = document.getElementById("shNative"); if (sn) { if (!navigator.share) sn.hidden = true; else sn.addEventListener("click", function () { navigator.share({ title: "Multani Mangoes", text: msg, url: url }).catch(function () {}); }); }
+  var sc = document.getElementById("shCopy"); if (sc) sc.addEventListener("click", function () { copy(url, sc, "🔗 Copy link"); });
+})();
+</script>
 </body>
 </html>
