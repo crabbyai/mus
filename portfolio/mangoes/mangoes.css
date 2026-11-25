@@ -237,3 +237,7 @@ em { font-style: italic; color: var(--mango-2); font-family: var(--serif); }
 @media(prefers-reduced-motion:reduce){.btn--big{animation:none}}
 @media(max-width:860px){.mv.mini{bottom:170px;width:96px}}
 @media(min-width:861px){.mv.mini{bottom:110px}}
+/* Google Form buttons hidden until the form is published (remove this rule to show them again) */
+a[href*="docs.google.com/forms"]{display:none!important}
+.cta3__grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:760px){.cta3__grid{grid-template-columns:1fr}}
