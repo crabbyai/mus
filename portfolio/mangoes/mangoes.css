@@ -144,3 +144,24 @@ em { font-style: italic; color: var(--mango-2); font-family: var(--serif); }
   .duo, .form__grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 520px) { .vars, .steps, .tips { grid-template-columns: 1fr; } }
+
+/* hero: the mango video with plain 🥭✨ emojis */
+.hero__art{position:relative}
+.mv{position:relative;width:min(320px,80vw);margin:0 auto}
+.mv__frame{position:relative;aspect-ratio:9/16;border-radius:28px;overflow:hidden;border:3px solid rgba(245,181,46,.7);box-shadow:0 30px 70px -20px rgba(0,0,0,.7),0 0 50px rgba(245,181,46,.35);background:#0d1f15}
+.mv video{width:100%;height:100%;object-fit:cover;display:block}
+.mv__snd{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);padding:.5rem 1rem;border-radius:999px;border:1px solid rgba(255,230,160,.8);background:rgba(0,0,0,.6);color:#fff;font:700 .85rem system-ui,sans-serif;cursor:pointer;white-space:nowrap;animation:mvPulse 1.6s ease-in-out infinite alternate}
+.mv__snd.on{animation:none;opacity:.75}
+@keyframes mvPulse{to{box-shadow:0 0 18px rgba(255,200,80,.9)}}
+.mv__x{position:absolute;top:6px;right:6px;width:28px;height:28px;border-radius:50%;border:0;background:rgba(0,0,0,.65);color:#fff;font-size:1.1rem;cursor:pointer}
+.mv__x[hidden]{display:none}
+.mv__emo{position:absolute;z-index:2;font-size:clamp(2rem,6vw,3.2rem);filter:drop-shadow(0 6px 12px rgba(0,0,0,.5));animation:mvFloat 4s ease-in-out infinite;pointer-events:none}
+.mv__emo--1{top:-6%;left:-14%}.mv__emo--2{top:8%;right:-16%;animation-delay:-1s;font-size:2rem}.mv__emo--3{bottom:12%;left:-18%;animation-delay:-2s}.mv__emo--4{bottom:-4%;right:-10%;animation-delay:-3s;font-size:1.8rem}.mv__emo--5{top:44%;right:-20%;animation-delay:-1.5s;font-size:2.2rem}
+@keyframes mvFloat{50%{transform:translateY(-12px) rotate(8deg)}}
+/* mini player while scrolling the rest of the page */
+.mv.mini{position:fixed;z-index:60;right:14px;bottom:90px;width:130px;margin:0}
+.mv.mini .mv__emo{display:none}
+.mv.mini .mv__frame{border-radius:16px;border-width:2px}
+.mv.mini .mv__snd{font-size:.62rem;padding:.3rem .5rem;bottom:6px}
+@media(max-width:860px){.mv{width:min(260px,72vw)}.mv.mini{width:110px}}
+@media(prefers-reduced-motion:reduce){.mv__emo,.mv__snd{animation:none}}

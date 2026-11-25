@@ -15,7 +15,7 @@
 <meta property="og:url" content="https://crabbyai.github.io/mus/mangoes/" />
 <meta name="cf-beacon-token" content="4330d6b7cb40476e8495fe81a3a61c58" />
 <link rel="stylesheet" href="../css/fonts.css" />
-<link rel="stylesheet" href="mangoes.css?v=1" />
+<link rel="stylesheet" href="mangoes.css?v=2" />
 <script type="application/ld+json">
 { "@context": "https://schema.org", "@type": "Product", "name": "Multani mangoes — export boxes",
   "description": "Chaunsa, Anwar Ratol, Sindhri and Langra mangoes from Multan, Pakistan, shipped to Canada, the USA, the UK, Australia and the UAE.",
@@ -58,21 +58,15 @@
         <span class="countdown__note">Season usually runs late May to early September, variety by variety.</span>
       </div>
     </div>
-    <div class="hero__art" aria-hidden="true">
-      <svg viewBox="0 0 400 400" class="mango-art">
-        <defs>
-          <radialGradient id="mg" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#ffe27a"/><stop offset=".55" stop-color="#f5b52e"/><stop offset="1" stop-color="#e07b12"/></radialGradient>
-          <radialGradient id="mg2" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#fff0a8"/><stop offset=".6" stop-color="#ffc83d"/><stop offset="1" stop-color="#d9890f"/></radialGradient>
-          <linearGradient id="lf" x1="0" x2="1"><stop offset="0" stop-color="#2f8f46"/><stop offset="1" stop-color="#6cc35a"/></linearGradient>
-        </defs>
-        <circle cx="200" cy="210" r="170" fill="#173a26"/>
-        <path d="M120 120c-6-30 18-62 52-64-4 30-24 56-52 64z" fill="url(#lf)"/>
-        <path d="M205 92c66 2 116 64 104 146-10 70-72 108-140 98-66-10-100-70-84-140 13-58 56-106 120-104z" fill="url(#mg)"/>
-        <path d="M206 92c4-20 22-34 44-32-4 20-22 32-44 32z" fill="url(#lf)"/>
-        <ellipse cx="170" cy="160" rx="34" ry="20" fill="#fff" opacity=".28" transform="rotate(-30 170 160)"/>
-        <path d="M268 250c40 4 66 40 58 84-8 38-44 54-80 46-34-8-50-40-40-76 8-30 32-56 62-54z" fill="url(#mg2)"/>
-        <ellipse cx="258" cy="280" rx="16" ry="9" fill="#fff" opacity=".3" transform="rotate(-30 258 280)"/>
-      </svg>
+    <div class="hero__art">
+      <div class="mv" id="mv">
+        <span class="mv__emo mv__emo--1" aria-hidden="true">🥭</span><span class="mv__emo mv__emo--2" aria-hidden="true">✨</span><span class="mv__emo mv__emo--3" aria-hidden="true">🥭</span><span class="mv__emo mv__emo--4" aria-hidden="true">✨</span><span class="mv__emo mv__emo--5" aria-hidden="true">🥭</span>
+        <div class="mv__frame">
+          <video id="mangoVid" src="mango-video.mp4" poster="mango-video.jpg" autoplay muted loop playsinline preload="auto" aria-label="Fresh Multani mangoes being cut"></video>
+          <button type="button" class="mv__snd" id="mvSnd" aria-label="Turn sound on">🔇 Tap for sound</button>
+          <button type="button" class="mv__x" id="mvX" aria-label="Close mini player" hidden>×</button>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -272,5 +266,29 @@
 <script src="../coach/config.js?v=5"></script>
 <script src="../coach/live.js?v=16" defer></script>
 <script src="../coach/extras.js?v=2" defer></script>
+<script>
+/* The mango video: always playing on a loop. Phones only allow sound after a tap, so the first tap anywhere turns it on.
+   When you scroll past it, it keeps playing in a small corner player. */
+(function () {
+  var v = document.getElementById("mangoVid"), box = document.getElementById("mv"), snd = document.getElementById("mvSnd"), x = document.getElementById("mvX");
+  if (!v) return;
+  var wantSound = true, closed = false;
+  function paint() { snd.textContent = v.muted ? "🔇 Tap for sound" : "🔊 Sound on"; snd.setAttribute("aria-label", v.muted ? "Turn sound on" : "Turn sound off"); snd.classList.toggle("on", !v.muted); }
+  function play() { var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+  function unmute() { if (!wantSound) return; v.muted = false; v.volume = 1; var p = v.play(); if (p && p.catch) p.catch(function () { v.muted = true; paint(); }); paint(); }
+  v.muted = false; var tryLoud = v.play();   // some browsers allow sound straight away
+  if (tryLoud && tryLoud.catch) tryLoud.catch(function () { v.muted = true; play(); paint(); });
+  paint();
+  ["pointerdown", "keydown", "touchend"].forEach(function (ev) { window.addEventListener(ev, function first(e) { if (e.target === snd || e.target === x) return; if (v.muted) unmute(); window.removeEventListener(ev, first, true); }, true); });
+  snd.addEventListener("click", function () { if (v.muted) { wantSound = true; unmute(); } else { v.muted = true; wantSound = false; paint(); } });
+  v.addEventListener("pause", function () { if (!document.hidden) play(); });
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) play(); });
+  if ("IntersectionObserver" in window) new IntersectionObserver(function (es) {
+    var out = !es[0].isIntersecting && es[0].boundingClientRect.top < 0;
+    box.classList.toggle("mini", out && !closed); x.hidden = !out;
+  }, { threshold: 0.15 }).observe(box.parentNode);
+  x.addEventListener("click", function () { closed = true; box.classList.remove("mini"); x.hidden = true; });
+})();
+</script>
 </body>
 </html>

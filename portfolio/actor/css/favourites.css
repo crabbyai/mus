@@ -20,7 +20,7 @@
 .crush h3{font-family:var(--serif);font-size:clamp(1.6rem,4vw,2.3rem);margin:.2rem 0 .3rem}
 .crush__sub{color:#cdb6d8;margin:0 auto 1.3rem;max-width:560px}
 .crush__list{display:flex;flex-wrap:wrap;justify-content:center;gap:1rem}
-.crush__p{display:flex;flex-direction:column;align-items:center;gap:.45rem;width:min(210px,44%);padding:1rem .8rem;border-radius:20px;background:rgba(255,255,255,.04);border:1px solid rgba(255,160,210,.3)}
+.crush__p{display:flex;flex-direction:column;align-items:center;gap:.45rem;width:min(260px,100%);padding:1rem .8rem;border-radius:20px;background:rgba(255,255,255,.04);border:1px solid rgba(255,160,210,.3)}
 .crush__av{width:78px;height:78px;border-radius:50%;display:grid;place-items:center;font:700 1.6rem var(--serif);color:#fff;background:linear-gradient(135deg,#ff7ac0,#9b5cff);box-shadow:0 0 0 3px rgba(255,255,255,.15),0 0 26px rgba(255,110,190,.55);animation:crushBeat 2.2s ease-in-out infinite}
 .crush__p:nth-child(2) .crush__av{animation-delay:-.7s;background:linear-gradient(135deg,#ffb36b,#ff5fa2)}
 .crush__p:nth-child(3) .crush__av{animation-delay:-1.4s;background:linear-gradient(135deg,#7ad7ff,#9b5cff)}
@@ -32,3 +32,9 @@
 .dcard__tag--fav{background:linear-gradient(135deg,#9b5cff,#5a1fb3);color:#fff;border:0}
 @media(max-width:860px){.favs__grid{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){.crush__av{animation:none}}
+.crush__ph{position:relative;display:block;width:100%;aspect-ratio:3/4;border-radius:18px;overflow:hidden;cursor:pointer;background:#1a0d22;box-shadow:0 0 0 2px rgba(255,160,210,.45),0 0 30px rgba(255,110,190,.4)}
+.crush__ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 25%;opacity:0;transform:scale(1.04);transition:opacity .9s ease,transform 4s ease}
+.crush__ph img.on{opacity:1;transform:scale(1)}
+.crush__ct{position:absolute;right:8px;bottom:8px;padding:.1rem .45rem;border-radius:999px;background:rgba(0,0,0,.55);color:#fff;font:700 .68rem system-ui,sans-serif;font-style:normal}
+.crush__ph::after{content:"💕";position:absolute;left:8px;top:6px;font-size:1.1rem;animation:crushBeat 2.2s ease-in-out infinite}
+@media(max-width:720px){.crush__list{flex-direction:column;align-items:center}.crush__p{width:min(320px,100%)}}

@@ -64,7 +64,7 @@
 <link rel="stylesheet" href="../css/enhance.css" />
 <link rel="stylesheet" href="../css/upgrade.css?v=3" />
 <link rel="stylesheet" href="css/dramas.css?v=14" />
-<link rel="stylesheet" href="css/favourites.css?v=3" />
+<link rel="stylesheet" href="css/favourites.css?v=4" />
 <link rel="stylesheet" href="../css/sites.css?v=7">
 </head>
 <body class="sb-pad">
@@ -212,11 +212,11 @@
       <div class="crush" data-reveal>
         <p class="section-eyebrow" style="justify-content:center">😍 Celebrity crushes</p>
         <h3>Adeel's celebrity crushes</h3>
-        <p class="crush__sub">A few of the stars Adeel admires most. And yes, he has many more.</p>
+        <p class="crush__sub">A few of the stars Adeel admires most. Tap a photo to see more. And yes, he has many more.</p>
         <div class="crush__list">
-          <div class="crush__p"><span class="crush__av" aria-hidden="true">HA</span><span class="crush__n">Hania Aamir</span><span class="crush__d">Watch her in <a href="#favourites">Meri Zindagi Hai Tu</a>, <a href="#watch/ary-kabhimainkabhitum/1">Kabhi Main Kabhi Tum</a> and <a href="#watch/ary-merehumsafar/1">Mere Humsafar</a></span></div>
-          <div class="crush__p"><span class="crush__av" aria-hidden="true">AK</span><span class="crush__n">Aena Khan</span><span class="crush__d">One of Adeel's favourite faces on screen</span></div>
-          <div class="crush__p"><span class="crush__av" aria-hidden="true">NZ</span><span class="crush__n">Noor Zafar Khan</span><span class="crush__d">One of Adeel's favourite faces on screen</span></div>
+          <div class="crush__p"><span class="crush__ph" role="button" tabindex="0" aria-label="Next photo"><img src="assets/crush/hania-1.jpg" alt="Hania Aamir" class="on" loading="lazy" decoding="async"><img src="assets/crush/hania-2.jpg" alt="Hania Aamir" loading="lazy" decoding="async"><img src="assets/crush/hania-3.jpg" alt="Hania Aamir" loading="lazy" decoding="async"><img src="assets/crush/hania-4.jpg" alt="Hania Aamir" loading="lazy" decoding="async"><i class="crush__ct">1/4</i></span><span class="crush__n">Hania Aamir</span><span class="crush__d">Watch her in <a href="#favourites">Meri Zindagi Hai Tu</a>, <a href="#watch/ary-kabhimainkabhitum/1">Kabhi Main Kabhi Tum</a> and <a href="#watch/ary-merehumsafar/1">Mere Humsafar</a></span></div>
+          <div class="crush__p"><span class="crush__ph" role="button" tabindex="0" aria-label="Next photo"><img src="assets/crush/aena-1.jpg" alt="Aena Khan" class="on" loading="lazy" decoding="async"><img src="assets/crush/aena-2.jpg" alt="Aena Khan" loading="lazy" decoding="async"><img src="assets/crush/aena-3.jpg" alt="Aena Khan" loading="lazy" decoding="async"><img src="assets/crush/aena-4.jpg" alt="Aena Khan" loading="lazy" decoding="async"><img src="assets/crush/aena-5.jpg" alt="Aena Khan" loading="lazy" decoding="async"><img src="assets/crush/aena-6.jpg" alt="Aena Khan" loading="lazy" decoding="async"><i class="crush__ct">1/6</i></span><span class="crush__n">Aena Khan</span><span class="crush__d">One of Adeel's favourite faces on screen</span></div>
+          <div class="crush__p"><span class="crush__ph" role="button" tabindex="0" aria-label="Next photo"><img src="assets/crush/noor-1.jpg" alt="Noor Zafar Khan" class="on" loading="lazy" decoding="async"><img src="assets/crush/noor-2.jpg" alt="Noor Zafar Khan" loading="lazy" decoding="async"><img src="assets/crush/noor-3.jpg" alt="Noor Zafar Khan" loading="lazy" decoding="async"><i class="crush__ct">1/3</i></span><span class="crush__n">Noor Zafar Khan</span><span class="crush__d">One of Adeel's favourite faces on screen</span></div>
         </div>
         <p class="crush__more">💕 …and many, many more.</p>
       </div>
@@ -1008,6 +1008,18 @@
 <script src="js/site.js?v=12"></script>
 <script src="../shared/inbox.js?v=2" defer></script>
 <script src="js/dramas.js?v=5" defer></script>
+<script>
+/* Celebrity crush photos: each card slowly cycles through its photos; tap to skip ahead */
+(function () {
+  [].forEach.call(document.querySelectorAll(".crush__ph"), function (ph, n) {
+    var imgs = ph.querySelectorAll("img"), ct = ph.querySelector(".crush__ct"), i = 0;
+    function go() { imgs[i].classList.remove("on"); i = (i + 1) % imgs.length; imgs[i].classList.add("on"); ct.textContent = (i + 1) + "/" + imgs.length; }
+    ph.addEventListener("click", go); ph.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
+    if (!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches)) setTimeout(function () { setInterval(go, 3800); }, n * 1200);
+  });
+})();
+</script>
+
 <script>
 /* Favourite dramas: real thumbnails from the feed, and play in the site's own player once a drama is in the feed */
 (function () {
