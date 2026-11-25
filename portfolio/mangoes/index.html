@@ -15,7 +15,7 @@
 <meta property="og:url" content="https://crabbyai.github.io/mus/mangoes/" />
 <meta name="cf-beacon-token" content="4330d6b7cb40476e8495fe81a3a61c58" />
 <link rel="stylesheet" href="../css/fonts.css" />
-<link rel="stylesheet" href="mangoes.css?v=3" />
+<link rel="stylesheet" href="mangoes.css?v=5" />
 <script type="application/ld+json">
 { "@context": "https://schema.org", "@type": "Product", "name": "Multani mangoes — export boxes",
   "description": "Chaunsa, Anwar Ratol, Sindhri and Langra mangoes from Multan, Pakistan, shipped to Canada, the USA, the UK, Australia and the UAE.",
@@ -82,8 +82,8 @@
   <section class="sec" id="varieties">
     <div class="sec__head">
       <p class="eyebrow">The Varieties</p>
-      <h2>Four mangoes, <em>four summers</em></h2>
-      <p>Each variety has its own short window. Tap one to pick it for your pre-order.</p>
+      <h2>Premium mangoes, <em>Pakistani summers</em></h2>
+      <p>Chaunsa, Sindhri, Dasehri, Langra, Anwar Ratol, Falsa and Jamun, plus Pakistani vegetables. Tap one to add it to your order.</p>
     </div>
     <div class="vars" id="vars">
       <article class="var" data-var="Sindhri">
@@ -114,6 +114,44 @@
         <p>Rich, aromatic and almost fibre-free — the mango Multan is famous for, and the one most people mean when they say "Pakistani mango".</p>
         <button type="button" class="var__pick" data-pick="Chaunsa">Choose Chaunsa</button>
       </article>
+      <article class="var" data-var="Dasehri">
+        <span class="var__tag">Slender &amp; sweet</span>
+        <h3>Dasehri</h3>
+        <p class="var__when">June – July</p>
+        <p>Long, slim and fibre-free with a soft, sugary flesh. A North Indian and Punjabi classic.</p>
+        <button type="button" class="var__pick" data-pick="Dasehri">Choose Dasehri</button>
+      </article>
+      <article class="var" data-var="Jamun">
+        <span class="var__tag">Summer berry</span>
+        <h3>Jamun</h3>
+        <p class="var__when">June – July</p>
+        <p>The deep-purple Java plum: sweet, tart and a little astringent. Best with a pinch of chaat masala.</p>
+        <button type="button" class="var__pick" data-pick="Jamun">Choose Jamun</button>
+      </article>
+      <article class="var" data-var="Falsa">
+        <span class="var__tag">Rare treat</span>
+        <h3>Falsa</h3>
+        <p class="var__when">May – June</p>
+        <p>Tiny, tangy-sweet berries for the famous falsa sharbat. A taste of Pakistani summers you can't find in Canada.</p>
+        <button type="button" class="var__pick" data-pick="Falsa">Choose Falsa</button>
+      </article>
+      <article class="var" data-var="Pakistani vegetables">
+        <span class="var__tag">Fresh from home</span>
+        <h3>Pakistani vegetables</h3>
+        <p class="var__when">With each shipment</p>
+        <p>Seasonal desi vegetables flown in alongside the fruit. Ask on WhatsApp what's coming in the next shipment.</p>
+        <button type="button" class="var__pick" data-pick="Pakistani vegetables">Add vegetables</button>
+      </article>
+    </div>
+    <div class="guar">
+      <p class="eyebrow">Our guarantee · <span lang="ur">عام نہیں، خاص آم</span></p>
+      <ul>
+        <li>🌱 Full traceability, from the farms in Pakistan to your hands</li>
+        <li>☀️ Organically ripened</li>
+        <li>🚫 No chemicals used</li>
+        <li>✋ Hand-picked for size &amp; quality</li>
+        <li>⚖️ Honest, full weight in every box</li>
+      </ul>
     </div>
   </section>
 
@@ -211,42 +249,47 @@
 
   <!-- ORDER -->
   <section class="sec order" id="order">
-    <div class="order__card">
-      <p class="eyebrow">Pre-order · Summer 2027</p>
-      <h2>Reserve your <em>mango boxes</em></h2>
-      <p class="order__sub">No payment now. We'll send prices and your delivery window before the season starts.</p>
-      <form class="form" id="orderForm" data-inbox="mangoes:preorder" novalidate>
-        <div class="form__grid">
-          <label>Full name<input name="name" required autocomplete="name" /></label>
-          <label>WhatsApp / phone<input name="phone" type="tel" required autocomplete="tel" placeholder="+1 …" /></label>
-          <label>Email (optional)<input name="email" type="email" autocomplete="email" /></label>
-          <label>Country
-            <select name="country" id="fCountry" required>
-              <option>Canada</option><option>USA</option><option>UK</option><option>Australia</option><option>UAE (Dubai)</option>
-            </select>
-          </label>
-          <label>City<input name="city" required autocomplete="address-level2" placeholder="e.g. Toronto" /></label>
-          <label>Order type
-            <select name="type" id="fType">
-              <option>For my family</option><option>Gift</option><option>Wholesale / business</option>
-            </select>
-          </label>
-          <fieldset class="form__wide form__vars">
-            <legend>Varieties you'd like</legend>
-            <label><input type="checkbox" name="variety" value="Chaunsa" checked /> Chaunsa</label>
-            <label><input type="checkbox" name="variety" value="Anwar Ratol" /> Anwar Ratol</label>
-            <label><input type="checkbox" name="variety" value="Sindhri" /> Sindhri</label>
-            <label><input type="checkbox" name="variety" value="Langra" /> Langra</label>
-            <label><input type="checkbox" name="variety" value="Mixed box" /> Mixed box</label>
-          </fieldset>
-          <label>How many boxes?
-            <span class="qty"><button type="button" data-q="-1" aria-label="One fewer box">−</button><input name="boxes" id="fBoxes" type="number" min="1" max="500" value="2" inputmode="numeric" /><button type="button" data-q="1" aria-label="One more box">+</button></span>
-          </label>
-          <label class="form__wide">Notes — gift message, delivery wishes, weekly volume for shops<textarea name="notes" rows="3"></textarea></label>
+    <div class="order__card gform">
+      <div class="gform__bar" aria-hidden="true"></div>
+      <h2 class="gform__t">Multani Mangoes by @PakistaniMangoes on WhatsApp <span>(0016134083945 / 1 613 408 3945)</span></h2>
+      <div class="gform__desc">
+        <p>Premium quality Chaunsa, Sindhri, Dasehri, Langra, Anwar Ratol, Falsa and Jamun, plus Pakistani vegetables.</p>
+        <p><b>Guarantee of:</b> full traceability of mangoes right from the farms · organically ripened · no chemicals used · hand-picked for size &amp; quality · full weight. <span lang="ur">عام نہیں، خاص آم</span></p>
+        <p>📦 <b>Next shipment:</b> summer 2027 insha Allah. The exact date is announced on WhatsApp.</p>
+        <p>📍 <b>Pickup:</b> 2045 Carling Avenue, Ottawa, in the lobby. Pickup times are sent on WhatsApp before each shipment.</p>
+        <p>💳 <b>Payment:</b> Interac e-Transfer to <a href="mailto:siradeelahmedrahman@yahoo.ca">siradeelahmedrahman@yahoo.ca</a></p>
+        <p>💬 Questions: WhatsApp <a href="https://wa.me/16134083945" target="_blank" rel="noopener">Adeel Rahman · +1 613 408 3945</a></p>
+        <p class="gform__req">* Required</p>
+      </div>
+      <form class="form" id="orderForm" data-inbox="mangoes:order" novalidate>
+        <div class="gq"><label>Full name *<input name="name" required autocomplete="name" placeholder="Your answer" /></label></div>
+        <div class="gq"><label>WhatsApp / phone number *<input name="phone" type="tel" required autocomplete="tel" placeholder="+1 613 …" /></label></div>
+        <div class="gq"><label>Email<input name="email" type="email" autocomplete="email" placeholder="Your answer" /></label></div>
+        <div class="gq"><p class="gq__l">How many boxes would you like? *</p><p class="gq__h">Prices per box are confirmed on WhatsApp before the shipment.</p>
+          <div class="oq">
+            <div class="oq__row" data-item="Chaunsa"><span class="oq__n">Chaunsa <small>Multan's pride</small></span><span class="qty"><button type="button" data-iq="-1" aria-label="One fewer box of Chaunsa">−</button><input name="q_0" type="number" min="0" max="200" value="0" inputmode="numeric" aria-label="Boxes of Chaunsa" /><button type="button" data-iq="1" aria-label="One more box of Chaunsa">+</button></span></div>
+            <div class="oq__row" data-item="Sindhri"><span class="oq__n">Sindhri <small>earliest</small></span><span class="qty"><button type="button" data-iq="-1" aria-label="One fewer box of Sindhri">−</button><input name="q_1" type="number" min="0" max="200" value="0" inputmode="numeric" aria-label="Boxes of Sindhri" /><button type="button" data-iq="1" aria-label="One more box of Sindhri">+</button></span></div>
+            <div class="oq__row" data-item="Dasehri"><span class="oq__n">Dasehri</span><span class="qty"><button type="button" data-iq="-1" aria-label="One fewer box of Dasehri">−</button><input name="q_2" type="number" min="0" max="200" value="0" inputmode="numeric" aria-label="Boxes of Dasehri" /><button type="button" data-iq="1" aria-label="One more box of Dasehri">+</button></span></div>
+            <div class="oq__row" data-item="Langra"><span class="oq__n">Langra</span><span class="qty"><button type="button" data-iq="-1" aria-label="One fewer box of Langra">−</button><input name="q_3" type="number" min="0" max="200" value="0" inputmode="numeric" aria-label="Boxes of Langra" /><button type="button" data-iq="1" aria-label="One more box of Langra">+</button></span></div>
+            <div class="oq__row" data-item="Anwar Ratol"><span class="oq__n">Anwar Ratol <small>small & intense</small></span><span class="qty"><button type="button" data-iq="-1" aria-label="One fewer box of Anwar Ratol">−</button><input name="q_4" type="number" min="0" max="200" value="0" inputmode="numeric" aria-label="Boxes of Anwar Ratol" /><button type="button" data-iq="1" aria-label="One more box of Anwar Ratol">+</button></span></div>
+            <div class="oq__row" data-item="Falsa"><span class="oq__n">Falsa</span><span class="qty"><button type="button" data-iq="-1" aria-label="One fewer box of Falsa">−</button><input name="q_5" type="number" min="0" max="200" value="0" inputmode="numeric" aria-label="Boxes of Falsa" /><button type="button" data-iq="1" aria-label="One more box of Falsa">+</button></span></div>
+            <div class="oq__row" data-item="Jamun"><span class="oq__n">Jamun</span><span class="qty"><button type="button" data-iq="-1" aria-label="One fewer box of Jamun">−</button><input name="q_6" type="number" min="0" max="200" value="0" inputmode="numeric" aria-label="Boxes of Jamun" /><button type="button" data-iq="1" aria-label="One more box of Jamun">+</button></span></div>
+            <div class="oq__row" data-item="Pakistani vegetables"><span class="oq__n">Pakistani vegetables <small>seasonal</small></span><span class="qty"><button type="button" data-iq="-1" aria-label="One fewer box of Pakistani vegetables">−</button><input name="q_7" type="number" min="0" max="200" value="0" inputmode="numeric" aria-label="Boxes of Pakistani vegetables" /><button type="button" data-iq="1" aria-label="One more box of Pakistani vegetables">+</button></span></div>
+          </div>
+          <p class="oq__tot">Total: <b id="oqTot">0</b> boxes</p>
         </div>
+        <div class="gq"><p class="gq__l">Pickup location *</p>
+          <label class="gq__opt"><input type="radio" name="pickup" value="2045 Carling Avenue, Ottawa (lobby)" checked required /> 2045 Carling Avenue, Ottawa · in the lobby</label>
+        </div>
+        <div class="gq"><p class="gq__l">Payment *</p>
+          <label class="gq__opt"><input type="radio" name="pay" value="Interac e-Transfer" checked required /> Interac e-Transfer to siradeelahmedrahman@yahoo.ca</label>
+          <label>e-Transfer reference / name the payment is from (if already sent)<input name="ref" placeholder="Your answer" /></label>
+        </div>
+        <div class="gq"><label>Notes (special requests, gift message, etc.)<textarea name="notes" rows="3" placeholder="Your answer"></textarea></label></div>
+        <div class="gq"><label class="gq__opt"><input type="checkbox" name="ok" required /> I understand my order is confirmed once the e-Transfer is received, and I'll pick up at the time shared on WhatsApp. *</label></div>
         <p class="form__err" id="formErr" role="alert" hidden></p>
-        <button type="submit" class="btn btn--mango btn--block">Reserve on WhatsApp →</button>
-        <p class="form__ok" id="formOk" role="status" hidden>✓ Reserved. We've opened WhatsApp with your order — press send there too, and we'll be in touch.</p>
+        <div class="gform__act"><button type="submit" class="btn btn--mango">Submit order</button><button type="reset" class="gform__clear">Clear form</button></div>
+        <p class="form__ok" id="formOk" role="status" hidden>✓ Your order is in. WhatsApp has opened with your order: press send there too. Then send your Interac e-Transfer to siradeelahmedrahman@yahoo.ca. JazakAllah khair! 🥭</p>
       </form>
     </div>
   </section>
@@ -260,7 +303,7 @@
 
 <a class="wa-fab" href="https://wa.me/16134083945?text=Assalam-o-alaikum%20Adeel%2C%20I%27m%20interested%20in%20Multani%20mangoes." target="_blank" rel="noopener" aria-label="Chat on WhatsApp">💬</a>
 
-<script src="mangoes.js?v=1"></script>
+<script src="mangoes.js?v=2"></script>
 <script src="../shared/inbox.js?v=2" defer></script>
 <!-- anonymous visit stats (same as the coach page) -->
 <script src="../coach/config.js?v=5"></script>

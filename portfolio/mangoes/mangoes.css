@@ -170,3 +170,32 @@ em { font-style: italic; color: var(--mango-2); font-family: var(--serif); }
 .mgate__e{font-size:4.5rem;animation:mvFloat 2.4s ease-in-out infinite}
 .mgate b{font:500 clamp(2rem,7vw,3rem) var(--serif,Georgia,serif);color:#ffd36b}
 .mgate span:last-child{padding:.7rem 1.4rem;border-radius:999px;background:#f5b52e;color:#1a1206;font-weight:800;animation:mvPulse 1.4s ease-in-out infinite alternate}
+
+/* guarantee strip */
+.guar{max-width:900px;margin:2.2rem auto 0;padding:1.3rem 1.5rem;border-radius:20px;border:1px solid var(--line,rgba(245,181,46,.3));background:rgba(245,181,46,.06);text-align:center}
+.guar ul{list-style:none;margin:.6rem 0 0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem .9rem}
+.guar li{padding:.4rem .8rem;border-radius:999px;background:rgba(0,0,0,.25);font-size:.92rem}
+/* Google-Forms-style order card */
+.gform{max-width:760px;margin:0 auto;padding:0!important;overflow:hidden;text-align:left}
+.gform__bar{height:10px;background:linear-gradient(90deg,#f5b52e,#f08a1c)}
+.gform__t{margin:1.4rem 1.5rem .4rem!important;font-size:clamp(1.5rem,4vw,2.1rem)!important;line-height:1.2}
+.gform__t span{display:block;font-size:.55em;color:#f5b52e;margin-top:.3rem;font-family:system-ui,sans-serif}
+.gform__desc{padding:0 1.5rem 1rem;border-bottom:1px solid rgba(255,255,255,.08);font-size:.95rem}
+.gform__desc p{margin:.45rem 0}.gform__desc a{color:#ffd36b;text-decoration:underline}
+.gform__req{color:#ff8a7a;font-size:.85rem}
+.gform .form{padding:1rem 1.5rem 1.6rem}
+.gq{padding:1rem 1.1rem;margin-bottom:.8rem;border-radius:14px;background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.07)}
+.gq label{display:flex;flex-direction:column;gap:.4rem;font-weight:600}
+.gq input:not([type=radio]):not([type=checkbox]),.gq textarea{width:100%}
+.gq__l{margin:0;font-weight:700}.gq__h{margin:.2rem 0 .7rem;font-size:.82rem;opacity:.75}
+.gq__opt{flex-direction:row!important;align-items:flex-start;gap:.55rem!important;font-weight:500!important;margin:.35rem 0}
+.gq__opt input{margin-top:.2rem;accent-color:#f5b52e}
+.oq{display:grid;gap:.45rem}
+.oq__row{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.45rem .6rem;border-radius:12px;border:1px solid rgba(255,255,255,.06)}
+.oq__row.on{border-color:#f5b52e;background:rgba(245,181,46,.12)}
+.oq__n small{display:inline-block;margin-left:.35rem;font-size:.72rem;opacity:.7}
+.oq__row .qty input{width:3.2rem;text-align:center}
+.oq__tot{margin:.7rem 0 0;font-weight:700}.oq__tot b{color:#ffd36b;font-size:1.15rem}
+.gform__act{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-top:1rem}
+.gform__clear{background:none;border:0;color:#ffd36b;font-weight:700;cursor:pointer}
+.gq__opt{text-transform:none!important;letter-spacing:normal!important;font-size:.98rem!important;color:inherit!important;line-height:1.45}

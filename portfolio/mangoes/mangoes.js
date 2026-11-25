@@ -36,33 +36,37 @@
     var t;
     if ((t = e.target.closest("[data-pick]"))) {
       var v = t.dataset.pick;
-      document.querySelectorAll('input[name="variety"]').forEach(function (c) { if (c.value === v) c.checked = true; });
       t.classList.add("is-on"); t.textContent = "✓ Added to your order";
     }
-    if ((t = e.target.closest("[data-country-pick]"))) $("fCountry").value = t.dataset.countryPick;
-    if ((t = e.target.closest("[data-type]"))) $("fType").value = t.dataset.type;
-    if ((t = e.target.closest("[data-q]"))) {
-      var q = $("fBoxes"); q.value = Math.min(500, Math.max(1, (parseInt(q.value, 10) || 1) + Number(t.dataset.q)));
-    }
+
   });
 
-  /* Pre-order: validate, open WhatsApp with the order (the inbox connector saves a copy). */
+  /* Order form: boxes per item, validate, save a private copy, open WhatsApp with the order. */
   var form = $("orderForm");
+  function total() { var t = 0; form.querySelectorAll(".oq input").forEach(function (i) { t += Math.max(0, parseInt(i.value, 10) || 0); }); $("oqTot").textContent = t; return t; }
+  function addBox(item, n) { var row = form.querySelector('.oq__row[data-item="' + item + '"]'); if (!row) return; var i = row.querySelector("input"); i.value = Math.min(200, Math.max(0, (parseInt(i.value, 10) || 0) + n)); row.classList.toggle("on", +i.value > 0); total(); }
+  form.addEventListener("click", function (e) { var b = e.target.closest("[data-iq]"); if (b) addBox(b.closest(".oq__row").dataset.item, Number(b.dataset.iq)); });
+  form.addEventListener("input", function (e) { if (e.target.closest(".oq")) { e.target.closest(".oq__row").classList.toggle("on", +e.target.value > 0); total(); } });
+  form.addEventListener("reset", function () { setTimeout(function () { form.querySelectorAll(".oq__row").forEach(function (r) { r.classList.remove("on"); }); total(); $("formOk").hidden = true; }, 0); });
+  document.addEventListener("click", function (e) { var t = e.target.closest("[data-pick]"); if (t) { var row = form.querySelector('.oq__row[data-item="' + t.dataset.pick + '"]'); if (row && !(+row.querySelector("input").value)) addBox(t.dataset.pick, 1); } });
   form.addEventListener("submit", function (e) {
     e.preventDefault();
     var err = $("formErr"), bad = [];
-    form.querySelectorAll("[required]").forEach(function (f) { var ok = f.value.trim() !== ""; f.setAttribute("aria-invalid", !ok); if (!ok) bad.push(f); });
-    var vars = Array.prototype.map.call(form.querySelectorAll('input[name="variety"]:checked'), function (c) { return c.value; });
-    if (!vars.length) bad.push(form.querySelector('input[name="variety"]'));
-    if (bad.length) { err.textContent = !vars.length && bad.length === 1 ? "Pick at least one variety." : "Please fill in your name, phone, country and city."; err.hidden = false; bad[0].focus(); return; }
+    form.querySelectorAll("input[required]:not([type=radio]),textarea[required]").forEach(function (f) { var ok = f.type === "checkbox" ? f.checked : f.value.trim() !== ""; f.setAttribute("aria-invalid", !ok); if (!ok) bad.push(f); });
+    var lines = []; form.querySelectorAll(".oq__row").forEach(function (r) { var n = parseInt(r.querySelector("input").value, 10) || 0; if (n > 0) lines.push(r.dataset.item + " × " + n); });
+    if (bad.length || !lines.length) { err.textContent = !lines.length && !bad.length ? "Add at least one box." : "Please fill in the required fields (*)" + (lines.length ? "." : " and add at least one box."); err.hidden = false; (bad[0] || form.querySelector(".oq input")).focus(); return; }
     err.hidden = true;
     var f = new FormData(form);
-    var msg = ["Assalam-o-alaikum Adeel — mango pre-order for summer 2027",
-      "Name: " + f.get("name"), "Phone: " + f.get("phone"), f.get("email") ? "Email: " + f.get("email") : "",
-      "Deliver to: " + f.get("city") + ", " + f.get("country"), "Order: " + f.get("type"),
-      "Varieties: " + vars.join(", "), "Boxes: " + f.get("boxes"), f.get("notes") ? "Notes: " + f.get("notes") : ""].filter(Boolean).join("\n");
+    var msg = ["Assalam-o-alaikum Adeel Rahman — Multani Mangoes order 🥭",
+      "Name: " + f.get("name"), "WhatsApp: " + f.get("phone"), f.get("email") ? "Email: " + f.get("email") : "",
+      "Order:", lines.map(function (l) { return "• " + l + " box(es)"; }).join("\n"), "Total: " + total() + " boxes",
+      "Pickup: " + f.get("pickup"), "Payment: Interac e-Transfer to siradeelahmedrahman@yahoo.ca" + (f.get("ref") ? " (ref: " + f.get("ref") + ")" : ""),
+      f.get("notes") ? "Notes: " + f.get("notes") : ""].filter(Boolean).join("\n");
+    // a private copy, readable only by Adeel (same write-only store as the site's contacts)
+    var DB = ((window.COACH && window.COACH.live && window.COACH.live.databaseURL) || "").replace(/\/+$/, "");
+    if (DB) fetch(DB + "/contacts/o" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6) + ".json", { method: "PUT", body: JSON.stringify({ kind: "mango-order", n: String(f.get("name")).slice(0, 80), w: String(f.get("phone")).slice(0, 20), e: String(f.get("email") || "").slice(0, 80), items: lines.join("; ").slice(0, 400), ref: String(f.get("ref") || "").slice(0, 80), note: String(f.get("notes") || "").slice(0, 500), t: { ".sv": "timestamp" } }) }).catch(function () {});
     window.open("https://wa.me/16134083945?text=" + encodeURIComponent(msg), "_blank", "noopener");
-    $("formOk").hidden = false;
+    $("formOk").hidden = false; $("formOk").scrollIntoView({ block: "center", behavior: "smooth" });
   });
 
   /* Private visit counting (Cloudflare Web Analytics, no cookies). */
