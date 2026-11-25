@@ -42,7 +42,7 @@ textarea{min-height:110px}
 
     <div class="card">
       <h2>2 · Add people</h2>
-      <div class="row" style="margin:0 0 .6rem"><a class="b b--o" href="https://docs.google.com/spreadsheets/d/14wvlntcQyIkopGFi6iYuivTInrTa1JbCkScJS5nIJ6Y/edit" target="_blank" rel="noopener">📊 Open your Google Sheet of orders</a></div>
+      <div class="row" style="margin:0 0 .6rem"><a class="b" href="https://docs.google.com/spreadsheets/d/1cP2y2GmeXTxGQTotGKDYtnrXji-UGC8HXp5Ej_LT7xg/edit" target="_blank" rel="noopener">📊 Orders sheet</a><a class="b b--o" href="https://docs.google.com/forms/d/1bFa9VQ_VhaiisYJlNLo27YCv64kBbgC-Fl2oIIEi5Sk/edit" target="_blank" rel="noopener">✏️ Edit the form</a><a class="b b--o" href="https://docs.google.com/forms/d/e/1FAIpQLSdWAiKkY7q-NzLqMld_HdATqTAQWF40WOIyvBtUOb5VgLFTFg/viewform" target="_blank" rel="noopener">📝 Customer form</a></div>
       <p class="small">Paste one per line: <b>Name, number</b>. You can also paste rows copied from your Google Sheet of orders: only rows that say “Yes, message me” are added.</p>
       <textarea id="paste" placeholder="Ayesha, +1 613 555 0100&#10;Bilal 6135550101"></textarea>
       <div class="row"><button class="b" id="add">Add to list</button><span class="small" id="addMsg"></span></div>
@@ -60,7 +60,7 @@ textarea{min-height:110px}
 <script>
 (function () {
   var KEY = "mango-list-v1", TKEY = "mango-tpl-v1";
-  var DEF = "Assalam-o-alaikum {name}! 🥭 Adeel Rahman here, Multani Mangoes. The next shipment is coming: Chaunsa, Sindhri, Anwar Ratol and more. Pickup at 2045 Carling Avenue, Ottawa (lobby). Want me to save boxes for you? Order here: https://pakistani.luxury/mangoes/#order or on Google Forms: https://docs.google.com/forms/d/e/1FAIpQLSfzxeybD46j-29H6gwb4Xvv8elBTwpo3LaZfksBIRu7kAshJQ/viewform";
+  var DEF = "Assalam-o-alaikum {name}! 🥭 Adeel Rahman here, Multani Mangoes. The next shipment is coming: Chaunsa, Sindhri, Anwar Ratol and more. Pickup at 2045 Carling Avenue, Ottawa (lobby). Want me to save boxes for you? Order here: https://pakistani.luxury/mangoes/#order or on Google Forms: https://docs.google.com/forms/d/e/1FAIpQLSdWAiKkY7q-NzLqMld_HdATqTAQWF40WOIyvBtUOb5VgLFTFg/viewform";
   function load() { try { return JSON.parse(localStorage.getItem(KEY) || "[]"); } catch (e) { return []; } }
   function save(l) { try { localStorage.setItem(KEY, JSON.stringify(l)); } catch (e) {} }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }

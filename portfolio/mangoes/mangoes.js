@@ -70,7 +70,7 @@
   });
 
   /* The mango list: opt-in only. The WhatsApp message itself is the record of their yes. */
-  var GOOGLE_FORM = "https://docs.google.com/forms/d/e/1FAIpQLSfzxeybD46j-29H6gwb4Xvv8elBTwpo3LaZfksBIRu7kAshJQ/viewform";   // paste your Google Form share link here and a "Prefer Google Forms?" link appears
+  var GOOGLE_FORM = "https://docs.google.com/forms/d/e/1FAIpQLSdWAiKkY7q-NzLqMld_HdATqTAQWF40WOIyvBtUOb5VgLFTFg/viewform";   // paste your Google Form share link here and a "Prefer Google Forms?" link appears
   if (GOOGLE_FORM) { $("gfA").href = GOOGLE_FORM; $("gfLink").hidden = false; }
   var jf = $("joinForm");
   if (jf) jf.addEventListener("submit", function (e) {
