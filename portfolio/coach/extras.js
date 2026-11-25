@@ -45,7 +45,11 @@
     ".arv.out{opacity:0;transform:translate(-50%,-8px);transition:opacity .3s,transform .3s}" +
     ".arv i{width:8px;height:8px;border-radius:50%;background:#3dff7a;box-shadow:0 0 8px #3dff7a;flex:none}" +
     "@keyframes arvIn{from{opacity:0;transform:translate(-50%,-10px)}}" +
-    "@media(prefers-reduced-motion:reduce){.tsb__card,.arv{animation:none}}";
+    /* big beads button on computers, the same on every page */
+    "@media(min-width:900px){.tsb-fab{width:78px;height:78px;font-size:2.4rem;inset-inline-start:24px;bottom:calc(96px + env(safe-area-inset-bottom));box-shadow:0 16px 40px -10px rgba(0,0,0,.75),0 0 28px rgba(232,200,126,.45);animation:tsbGlow 2.4s ease-in-out infinite alternate}.tsb-fab b{min-width:24px;font-size:.72rem;line-height:22px}}" +
+    "@keyframes tsbGlow{to{box-shadow:0 16px 40px -10px rgba(0,0,0,.75),0 0 44px rgba(232,200,126,.8)}}" +
+    ".tsb-fab::after{content:'Tasbih';position:absolute;left:50%;bottom:-1.35em;transform:translateX(-50%);font:700 .62rem system-ui,sans-serif;letter-spacing:.08em;color:#e8c87e;text-transform:uppercase;white-space:nowrap;pointer-events:none}" +
+    "@media(prefers-reduced-motion:reduce){.tsb__card,.arv,.tsb-fab{animation:none}}";
   document.head.appendChild(css);
 
   /* ---------- 1. Hijri date ---------- */
@@ -133,7 +137,7 @@
   /* ---------- 3. Arrival notices ---------- */
   (function () {
     var DB = ((window.COACH && window.COACH.live && window.COACH.live.databaseURL) || "").replace(/\/+$/, "");
-    if (!DB || !window.fetch) return;
+    if (!DB || !window.fetch || !document.getElementById("liveNow")) return;   // the coach page only
     var known = null, shown = 0, MAX = 4, offset = 0;   // newest entry stands in for the server clock
     function flag(c) { return c && /^[A-Z]{2}$/.test(c) ? c.replace(/./g, function (ch) { return String.fromCodePoint(127397 + ch.charCodeAt(0)); }) : "🌍"; }
     function cname(c) { try { return new Intl.DisplayNames(["en"], { type: "region" }).of(c); } catch (e) { return c; } }

@@ -1171,21 +1171,6 @@ html{scroll-padding-top:70px}
 .lv__days{display:flex;justify-content:space-between;font-size:.6rem;color:#9fc8ad;margin-top:2px}
 .lv__days b{color:#fff}
 
-/* ===== big glowing site buttons: Coach · Realtor · Actor ===== */
-.sites{gap:.7rem!important;padding:0!important;border:0!important;justify-content:center}
-.sites a{display:inline-flex;align-items:center;gap:.45rem;padding:.72rem 1.55rem!important;border-radius:999px!important;font:800 1.12rem/1.1 system-ui,sans-serif!important;letter-spacing:.04em;color:#fff3d6!important;text-decoration:none;
-  border:2px solid rgba(232,200,126,.8);background:linear-gradient(180deg,rgba(232,200,126,.2),rgba(10,15,30,.65));text-shadow:0 0 10px rgba(255,220,140,.7);
-  box-shadow:0 0 14px rgba(232,200,126,.5),inset 0 0 12px rgba(232,200,126,.15);animation:siteGlow 2.2s ease-in-out infinite alternate;transition:transform .2s}
-.sites a:nth-child(2){animation-delay:-.7s}.sites a:nth-child(3){animation-delay:-1.4s}
-.sites a:hover,.sites a:focus-visible{transform:translateY(-2px) scale(1.06)}
-.sites a[data-ic]::before{content:attr(data-ic);font-size:1.15em;text-shadow:none}
-.sites a[aria-current]{background:linear-gradient(135deg,#fff0c2,#e8c87e 45%,#c9a45c)!important;color:#1a1206!important;text-shadow:none;border-color:#fff3d6}
-.sites .nav-play{border-color:#bfe9ff!important;background:linear-gradient(135deg,#d6f2ff,#7cc8ff)!important;color:#14104a!important;text-shadow:none;animation:sitePlay 1.8s ease-in-out infinite alternate!important}
-@keyframes siteGlow{to{box-shadow:0 0 26px rgba(232,200,126,.95),0 0 52px rgba(232,200,126,.4),inset 0 0 16px rgba(232,200,126,.3)}}
-@keyframes sitePlay{to{box-shadow:0 0 26px rgba(150,200,255,.95),0 0 52px rgba(170,90,255,.5)}}
-@media(max-width:560px){.sites{gap:.35rem!important;width:100%}.sites a{flex:1;justify-content:center;gap:.25rem;padding:.62rem .3rem!important;font-size:.9rem!important;letter-spacing:0}.sites a[data-ic]::before{font-size:1.05em}}
-@media(prefers-reduced-motion:reduce){.sites a{animation:none!important}}
-.topbar__in{flex-wrap:wrap}.topbar .sites{order:3;flex-basis:100%;padding:.25rem 0 .45rem!important}
 .g3__flash{position:absolute;inset:0;z-index:2;pointer-events:none;background:#eaf4ff;opacity:0}
 .g3__flash.on{animation:g3flash .8s steps(1) forwards}
 @keyframes g3flash{0%{opacity:.95}8%{opacity:.05}16%{opacity:.85}26%{opacity:.1}36%{opacity:.7}50%{opacity:0}62%{opacity:.45}74%{opacity:0}84%{opacity:.25}100%{opacity:0}}
@@ -1299,6 +1284,7 @@ html{scroll-padding-top:70px}
 @media(prefers-reduced-motion:reduce){.love2,.orbit2,.petal2,.rose2,.g3__love,.road .scorp.dizzy i{animation:none!important}.petal2,.orbit2{display:none}}
 .road::before{display:none}
 </style>
+<link rel="stylesheet" href="css/sites.css?v=5">
 </head>
 <body>
 
@@ -1379,11 +1365,8 @@ html{scroll-padding-top:70px}
 <header class="topbar">
   <div class="topbar__in">
     <a class="brand" href="./"><svg class="ico" aria-hidden="true"><use href="#crescent"/></svg><b>Adeel Ahmed Rahman</b> · 622</a>
-    <nav class="sites" aria-label="My sites">
-      <a href="./" aria-current="page" data-ic="🕌" data-i18n="nav.coach">Coach</a>
-      <a href="realtor/" data-ic="🏡" data-i18n="nav.realtor">Realtor</a>
-      <a href="actor/" data-ic="🎬" data-i18n="nav.actor">Actor</a>
-      <a href="#scorpion-street-3d" class="nav-play" data-i18n="nav.play">🎮 Play</a>
+    <nav class="sites sites--main" aria-label="My sites">
+      <a href="./" data-ic="🕌" aria-current="page" data-i18n="nav.coach">Coach</a><a href="actor/" class="s-actor" data-ic="🎬" data-i18n="nav.actor">Actor</a><a href="realtor/" data-ic="🏡" data-i18n="nav.realtor">Realtor</a><a href="mangoes/" class="s-mango" data-ic="🥭">Mangoes</a><a href="#scorpion-street-3d" class="nav-play" data-i18n="nav.play">🎮 Play</a>
     </nav>
     <div class="lang">
       <button type="button" id="langBtn" aria-haspopup="true" aria-expanded="false" aria-controls="langMenu" aria-label="Language">
@@ -2092,7 +2075,7 @@ html{scroll-padding-top:70px}
 <script src="coach/eye.js?v=1"></script>
 <script src="coach/court.js?v=15" defer></script>
 <script src="coach/home.js?v=30"></script>
-<script src="coach/extras.js?v=1" defer></script>
+<script src="coach/extras.js?v=2" defer></script>
 <script>
 /* sparkles around each angel number */
 (function(){[].forEach.call(document.querySelectorAll("#angel-numbers .an__card"),function(c){if(c.querySelector(".an__spk"))return;var s=document.createElement("span");s.className="an__spk";s.setAttribute("aria-hidden","true");s.innerHTML="<i>✦</i><i>✧</i><i>✦</i><i>✧</i><i>✦</i>";c.insertBefore(s,c.firstChild);var n=c.querySelector(".an__n");if(n&&!n.parentNode.classList.contains("an__w")){var w=document.createElement("span");w.className="an__w";n.parentNode.insertBefore(w,n);var wing=function(side){var i=document.createElement("i");i.className="an__wg an__wg--"+side;i.setAttribute("aria-hidden","true");i.innerHTML='<img src="coach/assets/wing.svg" alt="">';return i;};w.appendChild(wing("l"));w.appendChild(n);w.appendChild(wing("r"));}});})();
