@@ -15,7 +15,7 @@
 <meta property="og:url" content="https://crabbyai.github.io/mus/mangoes/" />
 <meta name="cf-beacon-token" content="4330d6b7cb40476e8495fe81a3a61c58" />
 <link rel="stylesheet" href="../css/fonts.css" />
-<link rel="stylesheet" href="mangoes.css?v=5" />
+<link rel="stylesheet" href="mangoes.css?v=6" />
 <script type="application/ld+json">
 { "@context": "https://schema.org", "@type": "Product", "name": "Multani mangoes — export boxes",
   "description": "Chaunsa, Anwar Ratol, Sindhri and Langra mangoes from Multan, Pakistan, shipped to Canada, the USA, the UK, Australia and the UAE.",
@@ -248,6 +248,21 @@
   </section>
 
   <!-- ORDER -->
+  <section class="sec" id="join">
+    <div class="join">
+      <p class="eyebrow">🥭 The mango list</p>
+      <h2>Get a WhatsApp message <em>when mangoes land</em></h2>
+      <p>No spam: one message per shipment, from Adeel Rahman. Reply STOP any time.</p>
+      <form class="join__f" id="joinForm" novalidate>
+        <input name="name" placeholder="Your name" required autocomplete="name">
+        <input name="phone" type="tel" placeholder="WhatsApp number" required autocomplete="tel">
+        <button class="btn btn--mango" type="submit">Join the mango list</button>
+      </form>
+      <p class="form__ok" id="joinOk" role="status" hidden>✓ You're on the list. WhatsApp has opened: press send so Adeel can save your number. 🥭</p>
+      <p class="gf" id="gfLink" hidden>Prefer Google Forms? <a id="gfA" href="#" target="_blank" rel="noopener">Order with our Google Form →</a></p>
+    </div>
+  </section>
+
   <section class="sec order" id="order">
     <div class="order__card gform">
       <div class="gform__bar" aria-hidden="true"></div>
@@ -286,6 +301,7 @@
           <label>e-Transfer reference / name the payment is from (if already sent)<input name="ref" placeholder="Your answer" /></label>
         </div>
         <div class="gq"><label>Notes (special requests, gift message, etc.)<textarea name="notes" rows="3" placeholder="Your answer"></textarea></label></div>
+        <div class="gq"><label class="gq__opt"><input type="checkbox" name="optin" checked /> Yes, message me on WhatsApp when the next shipment arrives</label></div>
         <div class="gq"><label class="gq__opt"><input type="checkbox" name="ok" required /> I understand my order is confirmed once the e-Transfer is received, and I'll pick up at the time shared on WhatsApp. *</label></div>
         <p class="form__err" id="formErr" role="alert" hidden></p>
         <div class="gform__act"><button type="submit" class="btn btn--mango">Submit order</button><button type="reset" class="gform__clear">Clear form</button></div>
@@ -303,7 +319,7 @@
 
 <a class="wa-fab" href="https://wa.me/16134083945?text=Assalam-o-alaikum%20Adeel%2C%20I%27m%20interested%20in%20Multani%20mangoes." target="_blank" rel="noopener" aria-label="Chat on WhatsApp">💬</a>
 
-<script src="mangoes.js?v=2"></script>
+<script src="mangoes.js?v=3"></script>
 <script src="../shared/inbox.js?v=2" defer></script>
 <!-- anonymous visit stats (same as the coach page) -->
 <script src="../coach/config.js?v=5"></script>

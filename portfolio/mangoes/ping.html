@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Mango list · message your buyers</title>
+<link rel="stylesheet" href="mangoes.css?v=5">
+<style>
+body{background:#0b1a12;color:#f3eee3;font-family:system-ui,sans-serif;margin:0}
+.pw{max-width:820px;margin:0 auto;padding:24px 16px 120px}
+h1{font-family:Georgia,serif;font-weight:500;font-size:clamp(1.8rem,5vw,2.4rem);margin:.2rem 0}
+.k{color:#f5b52e;letter-spacing:.18em;font-size:.72rem;text-transform:uppercase;font-weight:700}
+.card{background:rgba(255,255,255,.04);border:1px solid rgba(245,181,46,.25);border-radius:18px;padding:16px;margin:14px 0}
+.card h2{font-size:1.05rem;margin:0 0 .5rem}
+textarea,input{width:100%;box-sizing:border-box;background:#06110b;border:1px solid rgba(255,255,255,.15);border-radius:12px;color:#fff;padding:.7rem .8rem;font:inherit}
+textarea{min-height:110px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.b{border:0;border-radius:999px;padding:.6rem 1.1rem;font:700 .9rem system-ui;cursor:pointer;background:#f5b52e;color:#1a1206}
+.b--g{background:#25d366;color:#04210f}.b--o{background:none;border:1px solid rgba(245,181,46,.6);color:#ffd36b}
+.small{font-size:.82rem;color:#bdb39c}
+.list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.list li{display:flex;align-items:center;gap:10px;padding:.55rem .7rem;border-radius:12px;background:rgba(0,0,0,.25)}
+.list li.sent{opacity:.55}.list li .nm{flex:1;min-width:0}.list li .nm small{display:block;color:#bdb39c}
+.list .x{background:none;border:0;color:#ff8a7a;font-size:1.1rem;cursor:pointer}
+.stat{display:flex;gap:10px;flex-wrap:wrap;font-weight:700}.stat span{padding:.3rem .7rem;border-radius:999px;background:rgba(245,181,46,.15)}
+.note{border-left:3px solid #25d366;padding:.4rem .8rem;background:rgba(37,211,102,.08);border-radius:8px}
+</style>
+</head>
+<body>
+<div class="pw">
+  <p class="k">🥭 Private · Adeel only</p>
+  <h1>Message your mango list</h1>
+  <div id="app" hidden>
+    <p class="note small">Only add people who said yes to hearing from you: everyone who joined the mango list on your site, ordered and ticked “message me about future shipments”, or asked you themselves on WhatsApp. This list is saved only in this browser on this device.</p>
+
+    <div class="card">
+      <h2>1 · Your message</h2>
+      <textarea id="tpl"></textarea>
+      <p class="small">Use <b>{name}</b> for their first name.</p>
+    </div>
+
+    <div class="card">
+      <h2>2 · Add people</h2>
+      <p class="small">Paste one per line: <b>Name, number</b>. You can also paste rows copied from your Google Sheet of orders: only rows that say “Yes, message me” are added.</p>
+      <textarea id="paste" placeholder="Ayesha, +1 613 555 0100&#10;Bilal 6135550101"></textarea>
+      <div class="row"><button class="b" id="add">Add to list</button><span class="small" id="addMsg"></span></div>
+    </div>
+
+    <div class="card">
+      <h2>3 · Send, one tap each</h2>
+      <div class="stat"><span id="sTot">0 people</span><span id="sDone">0 sent</span></div>
+      <div class="row"><button class="b b--g" id="next">💬 Message the next person</button><button class="b b--o" id="reset">Mark all unsent</button><button class="b b--o" id="csv">Download list (CSV)</button></div>
+      <ul class="list" id="list"></ul>
+    </div>
+  </div>
+</div>
+<script src="../coach/lock.js?v=7"></script>
+<script>
+(function () {
+  var KEY = "mango-list-v1", TKEY = "mango-tpl-v1";
+  var DEF = "Assalam-o-alaikum {name}! 🥭 Adeel Rahman here, Multani Mangoes. The next shipment is coming: Chaunsa, Sindhri, Anwar Ratol and more. Pickup at 2045 Carling Avenue, Ottawa (lobby). Want me to save boxes for you? Order here: https://pakistani.luxury/mangoes/#order";
+  function load() { try { return JSON.parse(localStorage.getItem(KEY) || "[]"); } catch (e) { return []; } }
+  function save(l) { try { localStorage.setItem(KEY, JSON.stringify(l)); } catch (e) {} }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function clean(n) { var d = String(n).replace(/[^\d+]/g, ""); if (d.indexOf("00") === 0) d = "+" + d.slice(2); var digits = d.replace(/\D/g, ""); if (digits.length === 10) digits = "1" + digits; return digits.length >= 10 && digits.length <= 15 ? digits : ""; }
+  var tpl = document.getElementById("tpl"), list = load();
+  tpl.value = localStorage.getItem(TKEY) || DEF;
+  tpl.addEventListener("input", function () { try { localStorage.setItem(TKEY, tpl.value); } catch (e) {} });
+  function link(p) { var first = (p.name || "").trim().split(/\s+/)[0] || ""; return "https://wa.me/" + p.num + "?text=" + encodeURIComponent(tpl.value.replace(/\{name\}/g, first).replace(/\s+!/, "!")); }
+  function paint() {
+    var ul = document.getElementById("list"), done = list.filter(function (p) { return p.sent; }).length;
+    document.getElementById("sTot").textContent = list.length + (list.length === 1 ? " person" : " people");
+    document.getElementById("sDone").textContent = done + " sent";
+    ul.innerHTML = list.map(function (p, i) {
+      return '<li class="' + (p.sent ? "sent" : "") + '"><span class="nm">' + esc(p.name || "No name") + "<small>+" + esc(p.num) + (p.sent ? " · sent ✓" : "") + '</small></span><a class="b b--g" data-i="' + i + '" href="' + link(p) + '" target="_blank" rel="noopener">💬 Send</a><button class="x" data-del="' + i + '" aria-label="Remove">✕</button></li>';
+    }).join("") || '<li class="small">No one yet. Add people above.</li>';
+  }
+  document.getElementById("add").onclick = function () {
+    var added = 0, skipped = 0, have = {};
+    list.forEach(function (p) { have[p.num] = 1; });
+    document.getElementById("paste").value.split(/\n+/).forEach(function (line) {
+      if (!line.trim()) return;
+      if (/\t/.test(line) && !/yes,?\s*message me/i.test(line)) { skipped++; return; }   // a Google Sheet row without the yes answer
+      var m = line.match(/(\+?\d[\d\s().-]{8,}\d)/); if (!m) { skipped++; return; }
+      var num = clean(m[1]); if (!num || have[num]) { skipped++; return; }
+      var name = /\t/.test(line)
+        ? (line.split("\t").filter(function (c) { c = c.trim(); return c && /[A-Za-z\u0600-\u06FF]/.test(c) && !/\d/.test(c) && !/^timestamp$/i.test(c); })[0] || "")   // Google Sheet row: skip the timestamp column
+        : line.replace(m[1], "").replace(/^[\t ,;:-]+|[\t ,;:-]+$/g, "");
+      name = name.trim();
+      if (/^\d/.test(name)) name = "";
+      list.push({ name: name.slice(0, 60), num: num, sent: false }); have[num] = 1; added++;
+    });
+    save(list); paint(); document.getElementById("paste").value = "";
+    document.getElementById("addMsg").textContent = added + " added" + (skipped ? ", " + skipped + " skipped" : "");
+  };
+  document.getElementById("list").addEventListener("click", function (e) {
+    var a = e.target.closest("[data-i]"); if (a) { list[+a.dataset.i].sent = true; save(list); setTimeout(paint, 300); }
+    var d = e.target.closest("[data-del]"); if (d) { list.splice(+d.dataset.del, 1); save(list); paint(); }
+  });
+  document.getElementById("next").onclick = function () {
+    var i = list.findIndex(function (p) { return !p.sent; }); if (i < 0) { alert("Everyone has been messaged. ✓"); return; }
+    window.open(link(list[i]), "_blank", "noopener"); list[i].sent = true; save(list); paint();
+  };
+  document.getElementById("reset").onclick = function () { list.forEach(function (p) { p.sent = false; }); save(list); paint(); };
+  document.getElementById("csv").onclick = function () {
+    var csv = "name,number,sent\n" + list.map(function (p) { return '"' + (p.name || "").replace(/"/g, '""') + '",+' + p.num + "," + (p.sent ? "yes" : "no"); }).join("\n");
+    var a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" })); a.download = "mango-list.csv"; a.click();
+  };
+  coachLock(document.getElementById("app"), function () { document.getElementById("app").hidden = false; paint(); });
+})();
+</script>
+</body>
+</html>

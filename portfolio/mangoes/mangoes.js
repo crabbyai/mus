@@ -61,12 +61,23 @@
       "Name: " + f.get("name"), "WhatsApp: " + f.get("phone"), f.get("email") ? "Email: " + f.get("email") : "",
       "Order:", lines.map(function (l) { return "• " + l + " box(es)"; }).join("\n"), "Total: " + total() + " boxes",
       "Pickup: " + f.get("pickup"), "Payment: Interac e-Transfer to siradeelahmedrahman@yahoo.ca" + (f.get("ref") ? " (ref: " + f.get("ref") + ")" : ""),
-      f.get("notes") ? "Notes: " + f.get("notes") : ""].filter(Boolean).join("\n");
+      f.get("notes") ? "Notes: " + f.get("notes") : "", f.get("optin") ? "✅ OK to message me about future shipments" : "❌ Please don't message me about future shipments"].filter(Boolean).join("\n");
     // a private copy, readable only by Adeel (same write-only store as the site's contacts)
     var DB = ((window.COACH && window.COACH.live && window.COACH.live.databaseURL) || "").replace(/\/+$/, "");
     if (DB) fetch(DB + "/contacts/o" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6) + ".json", { method: "PUT", body: JSON.stringify({ kind: "mango-order", n: String(f.get("name")).slice(0, 80), w: String(f.get("phone")).slice(0, 20), e: String(f.get("email") || "").slice(0, 80), items: lines.join("; ").slice(0, 400), ref: String(f.get("ref") || "").slice(0, 80), note: String(f.get("notes") || "").slice(0, 500), t: { ".sv": "timestamp" } }) }).catch(function () {});
     window.open("https://wa.me/16134083945?text=" + encodeURIComponent(msg), "_blank", "noopener");
     $("formOk").hidden = false; $("formOk").scrollIntoView({ block: "center", behavior: "smooth" });
+  });
+
+  /* The mango list: opt-in only. The WhatsApp message itself is the record of their yes. */
+  var GOOGLE_FORM = "";   // paste your Google Form share link here and a "Prefer Google Forms?" link appears
+  if (GOOGLE_FORM) { $("gfA").href = GOOGLE_FORM; $("gfLink").hidden = false; }
+  var jf = $("joinForm");
+  if (jf) jf.addEventListener("submit", function (e) {
+    e.preventDefault(); var n = jf.name.value.trim(), p = jf.phone.value.trim();
+    if (!n || p.replace(/\D/g, "").length < 7) { (n ? jf.phone : jf.name).focus(); return; }
+    window.open("https://wa.me/16134083945?text=" + encodeURIComponent("Assalam-o-alaikum Adeel 🥭 Please add me to your mango list and message me when the next shipment arrives.\nName: " + n + "\nWhatsApp: " + p), "_blank", "noopener");
+    $("joinOk").hidden = false; jf.reset();
   });
 
   /* Private visit counting (Cloudflare Web Analytics, no cookies). */

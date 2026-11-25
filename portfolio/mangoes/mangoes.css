@@ -199,3 +199,11 @@ em { font-style: italic; color: var(--mango-2); font-family: var(--serif); }
 .gform__act{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-top:1rem}
 .gform__clear{background:none;border:0;color:#ffd36b;font-weight:700;cursor:pointer}
 .gq__opt{text-transform:none!important;letter-spacing:normal!important;font-size:.98rem!important;color:inherit!important;line-height:1.45}
+
+.join{max-width:760px;margin:0 auto;text-align:center;padding:1.6rem 1.4rem;border-radius:24px;border:1px solid rgba(37,211,102,.45);background:radial-gradient(circle at 50% 0%,rgba(37,211,102,.14),transparent 60%),rgba(0,0,0,.2)}
+.join h2{margin:.3rem 0 .4rem}
+.join__f{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-top:1rem}
+.join__f input{width:100%;box-sizing:border-box}
+.gf{margin-top:.8rem}.gf a{color:#ffd36b;text-decoration:underline}
+@media(max-width:700px){.join__f{grid-template-columns:1fr}}
+.join__f input{font:400 .98rem var(--sans,system-ui);color:var(--cream,#fff);background:var(--bg-2,#0d1f15);border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:.8rem .9rem}
