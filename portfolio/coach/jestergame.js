@@ -98,30 +98,40 @@
     if (e.pointerType === "mouse") G.tx = x;   // on a computer the scorpion simply follows the mouse
     else if (e.buttons || e.pressure) G.tx = x + dragOff;
   });
-  cv.addEventListener("pointerup", function (e) { if (e.pointerType === "mouse" && G.playing && !G.paused && Math.abs(e.clientX - downX) < 12 && Date.now() - downT < 300) fire(); });   /* on phones only the Sting button stings, so moving never fires by mistake */
-  var auto = 0;
-  sting.addEventListener("pointerdown", function (e) { e.preventDefault(); e.stopPropagation(); if (G.paused) { resume(); return; } fire(); sting.classList.add("on"); clearInterval(auto); auto = setInterval(fire, 280); if (sting.setPointerCapture) try { sting.setPointerCapture(e.pointerId); } catch (er) {} });   /* hold to keep stinging */
-  ["pointerup", "pointercancel", "lostpointercapture"].forEach(function (ev) { sting.addEventListener(ev, function () { clearInterval(auto); sting.classList.remove("on"); }); });
-  sting.addEventListener("contextmenu", function (e) { e.preventDefault(); });
+  cv.addEventListener("pointerup", function (e) { if (G.playing && !G.paused && Math.abs(e.clientX - downX) < 12 && Date.now() - downT < 300) fire(); });
+  sting.addEventListener("pointerdown", function (e) { e.preventDefault(); if (G.paused) resume(); else fire(); });
   sting.addEventListener("click", function (e) { if (e.detail === 0) fire(); });
-  // phones: hold ◀ ▶ to walk
-  var pad = document.createElement("div"); pad.className = "jg__pad"; pad.hidden = true;
-  pad.innerHTML = '<button type="button" data-dir="arrowleft" aria-label="Move left">◀</button><button type="button" data-dir="arrowright" aria-label="Move right">▶</button>';
+  // phones: a joystick under the left thumb. Slide left/right to walk, push up to keep stinging.
+  var pad = document.createElement("div"); pad.className = "jg__joy"; pad.hidden = true;
+  pad.innerHTML = '<span class="jg__knob"></span><i class="jg__jl">◀</i><i class="jg__jr">▶</i><i class="jg__ju">🦂</i>';
+  pad.setAttribute("aria-label", "Joystick: slide to move, push up to sting");
   box.appendChild(pad);
-  if (navigator.maxTouchPoints > 0 || "ontouchstart" in window) box.classList.add("touch");   /* show ◀ ▶ on touch screens */
-  [].forEach.call(pad.querySelectorAll("button"), function (b) {
-    var k2 = b.getAttribute("data-dir");
-    function on(e) { e.preventDefault(); if (G.paused) return; keys[k2] = 1; b.classList.add("on"); }
-    function off() { delete keys[k2]; b.classList.remove("on"); }
-    b.addEventListener("pointerdown", on); ["pointerup", "pointerleave", "pointercancel", "lostpointercapture"].forEach(function (ev) { b.addEventListener(ev, off); });
-    b.addEventListener("contextmenu", function (e) { e.preventDefault(); });
-  });
+  if (navigator.maxTouchPoints > 0 || "ontouchstart" in window) box.classList.add("touch");
+  var knob = pad.querySelector(".jg__knob"), joyId = null, jcx = 0, jcy = 0, upFire = 0;
+  G.joy = 0;
+  function joyMove(e) {
+    var dx = e.clientX - jcx, dy = e.clientY - jcy, R2 = pad.offsetWidth * 0.36, d = Math.min(1, Math.hypot(dx, dy) / R2), a = Math.atan2(dy, dx);
+    var kx = Math.cos(a) * d * R2, ky = Math.sin(a) * d * R2; knob.style.transform = "translate(" + kx + "px," + ky + "px)";
+    G.joy = Math.abs(kx / R2) < 0.12 ? 0 : kx / R2;
+    var up = ky / R2 < -0.45; pad.classList.toggle("fire", up);
+    if (up && !upFire) { fire(); upFire = setInterval(fire, 240); } else if (!up && upFire) { clearInterval(upFire); upFire = 0; }
+  }
+  function joyEnd() { joyId = null; G.joy = 0; knob.style.transform = ""; pad.classList.remove("on", "fire"); clearInterval(upFire); upFire = 0; }
+  pad.addEventListener("pointerdown", function (e) { e.preventDefault(); e.stopPropagation(); if (G.paused) { resume(); return; } joyId = e.pointerId; var r = pad.getBoundingClientRect(); jcx = r.left + r.width / 2; jcy = r.top + r.height / 2; pad.classList.add("on"); try { pad.setPointerCapture(e.pointerId); } catch (er) {} joyMove(e); });
+  pad.addEventListener("pointermove", function (e) { if (e.pointerId === joyId) { e.preventDefault(); joyMove(e); } });
+  ["pointerup", "pointercancel", "lostpointercapture"].forEach(function (ev) { pad.addEventListener(ev, function (e) { if (e.pointerId === joyId) joyEnd(); }); });
+  pad.addEventListener("contextmenu", function (e) { e.preventDefault(); });
+  // the Sting button: hold it to keep stinging
+  var holdFire = 0;
+  sting.addEventListener("pointerdown", function (e) { if (G.paused) return; clearInterval(holdFire); holdFire = setInterval(fire, 240); sting.classList.add("on"); try { sting.setPointerCapture(e.pointerId); } catch (er) {} });
+  ["pointerup", "pointercancel", "lostpointercapture"].forEach(function (ev) { sting.addEventListener(ev, function () { clearInterval(holdFire); sting.classList.remove("on"); }); });
+  sting.addEventListener("contextmenu", function (e) { e.preventDefault(); });
 
   function fire() {
     if (!G.playing || G.paused || G.cool > 0) return;
     if (G.lasso > 0) return;
     if (G.count > 0) return;
-    G.cool = 0.26; G.sx.push({ x: G.px, y: (PY() - 18) }); SFX.sting();
+    G.cool = 0.2; G.sx.push({ x: G.px, y: (PY() - 18) }); SFX.sting();
     if (navigator.vibrate) try { navigator.vibrate(8); } catch (e) {}
   }
 
@@ -142,6 +152,7 @@
     // player
     var k = (keys.arrowleft || keys.a ? -1 : 0) + (keys.arrowright || keys.d ? 1 : 0);
     if (k) G.tx = G.px + k * 680 * dt * (G.conf > 0 ? -1 : 1);
+    else if (G.joy) G.tx = G.px + G.joy * 760 * dt * (G.conf > 0 ? -1 : 1);   /* joystick: the further you push, the faster */
     var target = G.conf > 0 && !k ? W - G.tx : G.tx;
     if (G.lasso > 0) { G.lasso -= dt; target = G.jx; G.tx = G.px; }
     G.px += (Math.max(24, Math.min(W - 24, target)) - G.px) * Math.min(1, dt * (G.lasso > 0 ? 3 : 24));   /* snappy: the scorpion goes where you point */
@@ -185,7 +196,8 @@
     // stingers
     for (var i = G.sx.length - 1; i >= 0; i--) {
       var s = G.sx[i]; s.y -= 520 * dt;
-      if (Math.abs(s.x - G.jx) < js * 0.42 && Math.abs(s.y - jy) < js * 0.45) {
+      s.x += (G.jx - s.x) * Math.min(1, dt * 2.2);   /* stings curve gently toward the jester */
+      if (Math.abs(s.x - G.jx) < js * 0.55 && Math.abs(s.y - jy) < js * 0.55) {
         G.sx.splice(i, 1);
         if (G.mode === "king") { say("🛡️ Blocked by the King's shield", G.jx, jy - js * 0.7, 1); burst(s.x, s.y, "✨", 3); continue; } G.hits++; G.secrets += 3; SFX.hit(); G.jflash = 0.25; G.jfall = 0.6; G.shake = 6;
         say(HIT[G.hits % HIT.length], G.jx, jy - js * 0.6);
@@ -199,7 +211,7 @@
     for (i = G.drops.length - 1; i >= 0; i--) {
       var d = G.drops[i], sl = G.slow > 0 ? 0.45 : 1; d.y += d.vy * dt * sl; d.x += d.vx * dt * sl; d.rot += dt * 3;
       if (G.mag > 0 && (d.type === "gem" || d.type === "crown") && d.y > H * 0.35) d.x += (G.px - d.x) * Math.min(1, dt * 5);
-      if (Math.abs(d.x - G.px) < 48 && Math.abs(d.y - py) < 40) {
+      if (Math.abs(d.x - G.px) < 42 && Math.abs(d.y - py) < 34) {
         G.drops.splice(i, 1);
         if (d.type === "gem" || d.type === "crown") {
           G.combo = G.comboT > 0 ? G.combo + 1 : 1; G.comboT = 2.6;
@@ -229,7 +241,7 @@
     paintHud();
     if (G.left <= 0) finish();
   }
-  function PY() { return box.classList.contains("touch") ? H - 140 : H - 50; }   /* above the ◀ ▶ and Sting buttons on touch screens */
+  function PY() { return box.classList.contains("touch") ? H - 135 : H - 40; }   /* above the ◀ ▶ and Sting buttons on touch screens */
   function jyNow() { return G.mode === "king" ? H * 0.44 + Math.sin(G.t * 9) * 3 : H * 0.2 + Math.sin((G.t || 0) * 2) * 8; }
   function jsize() { return Math.min(W * 0.26, H * 0.3, 150); }
   function say(t, x, y, small) { G.bubbles = G.bubbles.filter(function (b) { return b.small !== !!small; }); /* one jester line and one game note at a time */ G.bubbles.push({ t: t, x: x, y: y, life: 2, small: !!small }); }
@@ -243,9 +255,7 @@
   function burst(x, y, ch, n) { for (var i = 0; i < n; i++) G.parts.push({ x: x, y: y, vx: (Math.random() - 0.5) * 220, vy: -80 - Math.random() * 160, life: 0.9, ch: ch }); }
 
   /* ---------- drawing ---------- */
-  function emoji(ch, x, y, s, rot) {
-    var ai = window.appleEmoji && window.appleEmoji(ch);
-    if (ai) { ctx.save(); ctx.translate(x, y); if (rot) ctx.rotate(rot); ctx.drawImage(ai, -s * 0.56, -s * 0.56, s * 1.12, s * 1.12); ctx.restore(); return; } ctx.save(); ctx.translate(x, y); if (rot) ctx.rotate(rot); ctx.font = s + "px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(ch, 0, 0); ctx.restore(); }
+  function emoji(ch, x, y, s, rot) { ctx.save(); ctx.translate(x, y); if (rot) ctx.rotate(rot); ctx.font = s + "px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(ch, 0, 0); ctx.restore(); }
   function draw() {
     var t = G.t || performance.now() / 1000;
     ctx.save();
@@ -306,7 +316,7 @@
     (G.sx || []).forEach(function (s) { ctx.beginPath(); ctx.moveTo(s.x, s.y); ctx.lineTo(s.x, s.y + 14); ctx.stroke(); });
     ctx.shadowBlur = 0;
     // the scorpion
-    if (G.playing || G.end) { ctx.save(); if (G.conf > 0) { ctx.globalAlpha = 0.7 + Math.sin(t * 20) * 0.3; } if (G.lasso > 0) { drawScorp(G.px, PY(), 54, Math.PI + Math.sin(t * 14) * 0.3); ctx.restore(); emoji("😳", G.px, (PY() - 36), 20); } else { drawScorp(G.px, PY(), 64); ctx.restore(); } if (G.conf > 0) emoji("🎭", G.px + 22, (PY() - 24), 16); }
+    if (G.playing || G.end) { ctx.save(); if (G.conf > 0) { ctx.globalAlpha = 0.7 + Math.sin(t * 20) * 0.3; } if (G.lasso > 0) { emoji("🦂", G.px, PY(), 34, Math.PI + Math.sin(t * 14) * 0.3); ctx.restore(); emoji("😳", G.px, (PY() - 36), 20); } else { emoji("🦂", G.px, PY(), 40); ctx.restore(); } if (G.conf > 0) emoji("🎭", G.px + 22, (PY() - 24), 16); }
     if (G.playing && G.shield > 0) { ctx.strokeStyle = "rgba(140,210,255,.85)"; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(G.px, PY(), 32 + Math.sin(t * 6) * 2, 0, Math.PI * 2); ctx.stroke(); }
     if (G.playing && G.mag > 0) { ctx.strokeStyle = "rgba(255,90,90,.35)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(G.px, PY(), 46 + (t * 60) % 40, 0, Math.PI * 2); ctx.stroke(); }
     (G.floats || []).forEach(function (f) { ctx.globalAlpha = Math.min(1, f.life * 2); ctx.font = "900 16px system-ui,sans-serif"; ctx.textAlign = "center"; ctx.fillStyle = f.col; ctx.strokeStyle = "rgba(0,0,0,.7)"; ctx.lineWidth = 3; ctx.strokeText(f.t, f.x, f.y); ctx.fillText(f.t, f.x, f.y); }); ctx.globalAlpha = 1;
@@ -341,22 +351,11 @@
       ctx.restore();
     });
   }
-  var scorp = null;
-  function purpleScorpion() {   // the scorpion emoji tinted royal purple, keeping its shading
-    var src = window.appleEmoji && window.appleEmoji("🦂");
-    if (scorp && (scorp._apple || !src)) return scorp;
-    scorp = document.createElement("canvas"); scorp.width = scorp.height = 160; var c = scorp.getContext("2d");
-    c.font = "130px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif"; c.textAlign = "center"; c.textBaseline = "middle"; if (src) { c.drawImage(src, 8, 8, 144, 144); scorp._apple = 1; } else c.fillText("🦂", 80, 86);
-    c.globalCompositeOperation = "source-atop"; var g = c.createLinearGradient(0, 0, 160, 160); g.addColorStop(0, "rgba(200,120,255,.78)"); g.addColorStop(1, "rgba(110,40,200,.78)"); c.fillStyle = g; c.fillRect(0, 0, 160, 160);
-    return scorp;
-  }
-  function drawScorp(x, y, size, rot) { ctx.save(); ctx.translate(x, y); if (rot) ctx.rotate(rot); ctx.shadowColor = "rgba(190,110,255,.9)"; ctx.shadowBlur = 16; ctx.drawImage(purpleScorpion(), -size / 2, -size / 2, size, size); ctx.restore(); }
   var horse = null;
   function blackHorse() {
-    var srcH = window.appleEmoji && window.appleEmoji("🐎");
-    if (horse && (horse._apple || !srcH)) return horse;
+    if (horse) return horse;
     horse = document.createElement("canvas"); horse.width = horse.height = 160; var h = horse.getContext("2d");
-    h.font = "130px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif"; h.textAlign = "center"; h.textBaseline = "middle"; if (srcH) { h.drawImage(srcH, 8, 8, 144, 144); horse._apple = 1; } else h.fillText("🐎", 80, 86);
+    h.font = "130px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif"; h.textAlign = "center"; h.textBaseline = "middle"; h.fillText("🐎", 80, 86);
     h.globalCompositeOperation = "source-atop"; var g = h.createLinearGradient(0, 20, 0, 150); g.addColorStop(0, "#3a3a46"); g.addColorStop(0.5, "#0e0e14"); g.addColorStop(1, "#050507"); h.fillStyle = g; h.fillRect(0, 0, 160, 160);
     return horse;
   }
@@ -364,18 +363,7 @@
     var dir = G.jv > 0 ? 1 : -1, hs = js * 1.25, gal = Math.sin(t * 9);
     // four wives, royal and happy, close beside him, hearts rising
     var Q = ["👸🏻", "👸🏽", "👸🏾", "👸"], pos = [-1.2, -0.62, 0.62, 1.2];
-    var GOWN = [["#ff6fae", "#b0145e"], ["#6fc7ff", "#1e5fb0"], ["#ffd36b", "#c07a10"], ["#b98cff", "#5a2bb0"]];
-    function wives(inner) { pos.forEach(function (p, i) { if ((Math.abs(p) < 1) !== inner) return;
-      var hs2 = js * 0.36, qx = Math.max(js * 0.24, Math.min(W - js * 0.24, x + p * js)), qy = y + js * 0.32 + Math.sin(t * 5 + i) * 3;
-      // royal gown (full figure, not just a face)
-      var gw = hs2 * 1.25, gh = hs2 * 1.35, top = qy + hs2 * 0.32, gg = ctx.createLinearGradient(0, top, 0, top + gh); gg.addColorStop(0, GOWN[i][0]); gg.addColorStop(1, GOWN[i][1]);
-      ctx.save(); ctx.shadowColor = "rgba(255,230,170,.75)"; ctx.shadowBlur = 14; ctx.fillStyle = gg;
-      ctx.beginPath(); ctx.moveTo(qx - gw * 0.22, top); ctx.lineTo(qx + gw * 0.22, top); ctx.quadraticCurveTo(qx + gw * 0.3, top + gh * 0.5, qx + gw * 0.55, top + gh); ctx.lineTo(qx - gw * 0.55, top + gh); ctx.quadraticCurveTo(qx - gw * 0.3, top + gh * 0.5, qx - gw * 0.22, top); ctx.fill(); ctx.restore();
-      ctx.strokeStyle = "#ffe7a3"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(qx - gw * 0.55, top + gh - 3); ctx.lineTo(qx + gw * 0.55, top + gh - 3); ctx.stroke();   // gold hem
-      ctx.beginPath(); ctx.moveTo(qx - gw * 0.18, top + gh * 0.22); ctx.lineTo(qx + gw * 0.18, top + gh * 0.22); ctx.stroke();   // gold sash
-      ctx.save(); ctx.globalAlpha = 0.9; var lg = ctx.createRadialGradient(qx, qy, 1, qx, qy, hs2 * 0.75); lg.addColorStop(0, "rgba(255,248,225,.95)"); lg.addColorStop(1, "rgba(255,248,225,0)"); ctx.fillStyle = lg; ctx.beginPath(); ctx.arc(qx, qy, hs2 * 0.75, 0, Math.PI * 2); ctx.fill(); ctx.restore();   // soft light on her face
-      emoji(Q[i], qx, qy, hs2); emoji("💎", qx, top + gh * 0.22, hs2 * 0.28);
-      var hh = (t * 0.8 + i * 0.25) % 1; ctx.globalAlpha = 1 - hh; emoji("💕", qx + hs2 * 0.45, qy - hs2 * 0.5 - hh * js * 0.4, js * 0.13); ctx.globalAlpha = 1; }); }
+    function wives(inner) { pos.forEach(function (p, i) { if ((Math.abs(p) < 1) !== inner) return; var qx = Math.max(js * 0.18, Math.min(W - js * 0.18, x + p * js)), qy = y + js * 0.5 + Math.sin(t * 5 + i) * 3; emoji(Q[i], qx, qy, js * 0.3); emoji("💎", qx + js * 0.1, qy - js * 0.2, js * 0.1); var hh = (t * 0.8 + i * 0.25) % 1; ctx.globalAlpha = 1 - hh; emoji("💕", qx, qy - js * 0.25 - hh * js * 0.4, js * 0.13); ctx.globalAlpha = 1; }); }
     wives(false);
     // the black horse
     ctx.save(); ctx.translate(x, y + js * 0.3 + gal * 2); ctx.scale(-dir, 1); ctx.rotate(gal * 0.05);
@@ -401,7 +389,7 @@
 
   /* ---------- start, pause, verdict ---------- */
   function start() {
-    reset(); G.end = null; G.playing = true; G.paused = false; ov.hidden = true; box.classList.add("on"); hud.hidden = false; sting.hidden = false; pz.hidden = false; pad.hidden = false; document.body.classList.add("jg-playing"); pz.textContent = "⏸";
+    reset(); G.end = null; G.playing = true; G.paused = false; ov.hidden = true; box.classList.add("on"); hud.hidden = false; sting.hidden = false; pz.hidden = false; pad.hidden = false; joyEnd(); document.body.classList.add("jg-playing"); pz.textContent = "⏸";
     var rb = box.getBoundingClientRect(); if (rb.top < 0 || rb.bottom > innerHeight) box.scrollIntoView({ block: "center", behavior: reduce ? "auto" : "smooth" });
     try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); AC.resume(); } catch (e) {}   // unlock sound on this tap
     paintHud(); last = 0; G.end = null;
