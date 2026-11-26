@@ -243,7 +243,9 @@
   function burst(x, y, ch, n) { for (var i = 0; i < n; i++) G.parts.push({ x: x, y: y, vx: (Math.random() - 0.5) * 220, vy: -80 - Math.random() * 160, life: 0.9, ch: ch }); }
 
   /* ---------- drawing ---------- */
-  function emoji(ch, x, y, s, rot) { ctx.save(); ctx.translate(x, y); if (rot) ctx.rotate(rot); ctx.font = s + "px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(ch, 0, 0); ctx.restore(); }
+  function emoji(ch, x, y, s, rot) {
+    var ai = window.appleEmoji && window.appleEmoji(ch);
+    if (ai) { ctx.save(); ctx.translate(x, y); if (rot) ctx.rotate(rot); ctx.drawImage(ai, -s * 0.56, -s * 0.56, s * 1.12, s * 1.12); ctx.restore(); return; } ctx.save(); ctx.translate(x, y); if (rot) ctx.rotate(rot); ctx.font = s + "px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(ch, 0, 0); ctx.restore(); }
   function draw() {
     var t = G.t || performance.now() / 1000;
     ctx.save();
@@ -341,18 +343,20 @@
   }
   var scorp = null;
   function purpleScorpion() {   // the scorpion emoji tinted royal purple, keeping its shading
-    if (scorp) return scorp;
+    var src = window.appleEmoji && window.appleEmoji("🦂");
+    if (scorp && (scorp._apple || !src)) return scorp;
     scorp = document.createElement("canvas"); scorp.width = scorp.height = 160; var c = scorp.getContext("2d");
-    c.font = "130px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif"; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText("🦂", 80, 86);
+    c.font = "130px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif"; c.textAlign = "center"; c.textBaseline = "middle"; if (src) { c.drawImage(src, 8, 8, 144, 144); scorp._apple = 1; } else c.fillText("🦂", 80, 86);
     c.globalCompositeOperation = "source-atop"; var g = c.createLinearGradient(0, 0, 160, 160); g.addColorStop(0, "rgba(200,120,255,.78)"); g.addColorStop(1, "rgba(110,40,200,.78)"); c.fillStyle = g; c.fillRect(0, 0, 160, 160);
     return scorp;
   }
   function drawScorp(x, y, size, rot) { ctx.save(); ctx.translate(x, y); if (rot) ctx.rotate(rot); ctx.shadowColor = "rgba(190,110,255,.9)"; ctx.shadowBlur = 16; ctx.drawImage(purpleScorpion(), -size / 2, -size / 2, size, size); ctx.restore(); }
   var horse = null;
   function blackHorse() {
-    if (horse) return horse;
+    var srcH = window.appleEmoji && window.appleEmoji("🐎");
+    if (horse && (horse._apple || !srcH)) return horse;
     horse = document.createElement("canvas"); horse.width = horse.height = 160; var h = horse.getContext("2d");
-    h.font = "130px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif"; h.textAlign = "center"; h.textBaseline = "middle"; h.fillText("🐎", 80, 86);
+    h.font = "130px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif"; h.textAlign = "center"; h.textBaseline = "middle"; if (srcH) { h.drawImage(srcH, 8, 8, 144, 144); horse._apple = 1; } else h.fillText("🐎", 80, 86);
     h.globalCompositeOperation = "source-atop"; var g = h.createLinearGradient(0, 20, 0, 150); g.addColorStop(0, "#3a3a46"); g.addColorStop(0.5, "#0e0e14"); g.addColorStop(1, "#050507"); h.fillStyle = g; h.fillRect(0, 0, 160, 160);
     return horse;
   }

@@ -52,6 +52,11 @@
     "@media(prefers-reduced-motion:reduce){.tsb__card,.arv,.tsb-fab{animation:none}}";
   document.head.appendChild(css);
 
+  (function () {   // Apple-style emojis on every device
+    var me = document.querySelector('script[src*="coach/extras.js"]'); if (!me || document.querySelector('script[src*="apple-emoji.js"]')) return;
+    var s = document.createElement("script"); s.src = me.src.replace(/extras\.js.*$/, "apple-emoji.js?v=1"); document.head.appendChild(s);
+  })();
+
   /* ---------- 0. Site-wide: one big WhatsApp button, a reading-progress bar, no sideways wobble ---------- */
   (function () {
     var css2 = document.createElement("style");
