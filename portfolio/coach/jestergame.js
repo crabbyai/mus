@@ -98,8 +98,11 @@
     if (e.pointerType === "mouse") G.tx = x;   // on a computer the scorpion simply follows the mouse
     else if (e.buttons || e.pressure) G.tx = x + dragOff;
   });
-  cv.addEventListener("pointerup", function (e) { if (G.playing && !G.paused && Math.abs(e.clientX - downX) < 12 && Date.now() - downT < 300) fire(); });
-  sting.addEventListener("pointerdown", function (e) { e.preventDefault(); if (G.paused) resume(); else fire(); });
+  cv.addEventListener("pointerup", function (e) { if (e.pointerType === "mouse" && G.playing && !G.paused && Math.abs(e.clientX - downX) < 12 && Date.now() - downT < 300) fire(); });   /* on phones only the Sting button stings, so moving never fires by mistake */
+  var auto = 0;
+  sting.addEventListener("pointerdown", function (e) { e.preventDefault(); e.stopPropagation(); if (G.paused) { resume(); return; } fire(); sting.classList.add("on"); clearInterval(auto); auto = setInterval(fire, 280); if (sting.setPointerCapture) try { sting.setPointerCapture(e.pointerId); } catch (er) {} });   /* hold to keep stinging */
+  ["pointerup", "pointercancel", "lostpointercapture"].forEach(function (ev) { sting.addEventListener(ev, function () { clearInterval(auto); sting.classList.remove("on"); }); });
+  sting.addEventListener("contextmenu", function (e) { e.preventDefault(); });
   sting.addEventListener("click", function (e) { if (e.detail === 0) fire(); });
   // phones: hold ◀ ▶ to walk
   var pad = document.createElement("div"); pad.className = "jg__pad"; pad.hidden = true;
@@ -196,7 +199,7 @@
     for (i = G.drops.length - 1; i >= 0; i--) {
       var d = G.drops[i], sl = G.slow > 0 ? 0.45 : 1; d.y += d.vy * dt * sl; d.x += d.vx * dt * sl; d.rot += dt * 3;
       if (G.mag > 0 && (d.type === "gem" || d.type === "crown") && d.y > H * 0.35) d.x += (G.px - d.x) * Math.min(1, dt * 5);
-      if (Math.abs(d.x - G.px) < 42 && Math.abs(d.y - py) < 34) {
+      if (Math.abs(d.x - G.px) < 48 && Math.abs(d.y - py) < 40) {
         G.drops.splice(i, 1);
         if (d.type === "gem" || d.type === "crown") {
           G.combo = G.comboT > 0 ? G.combo + 1 : 1; G.comboT = 2.6;
@@ -226,7 +229,7 @@
     paintHud();
     if (G.left <= 0) finish();
   }
-  function PY() { return box.classList.contains("touch") ? H - 108 : H - 40; }   /* above the ◀ ▶ and Sting buttons on touch screens */
+  function PY() { return box.classList.contains("touch") ? H - 140 : H - 50; }   /* above the ◀ ▶ and Sting buttons on touch screens */
   function jyNow() { return G.mode === "king" ? H * 0.44 + Math.sin(G.t * 9) * 3 : H * 0.2 + Math.sin((G.t || 0) * 2) * 8; }
   function jsize() { return Math.min(W * 0.26, H * 0.3, 150); }
   function say(t, x, y, small) { G.bubbles = G.bubbles.filter(function (b) { return b.small !== !!small; }); /* one jester line and one game note at a time */ G.bubbles.push({ t: t, x: x, y: y, life: 2, small: !!small }); }
@@ -301,7 +304,7 @@
     (G.sx || []).forEach(function (s) { ctx.beginPath(); ctx.moveTo(s.x, s.y); ctx.lineTo(s.x, s.y + 14); ctx.stroke(); });
     ctx.shadowBlur = 0;
     // the scorpion
-    if (G.playing || G.end) { ctx.save(); if (G.conf > 0) { ctx.globalAlpha = 0.7 + Math.sin(t * 20) * 0.3; } if (G.lasso > 0) { emoji("🦂", G.px, PY(), 34, Math.PI + Math.sin(t * 14) * 0.3); ctx.restore(); emoji("😳", G.px, (PY() - 36), 20); } else { emoji("🦂", G.px, PY(), 40); ctx.restore(); } if (G.conf > 0) emoji("🎭", G.px + 22, (PY() - 24), 16); }
+    if (G.playing || G.end) { ctx.save(); if (G.conf > 0) { ctx.globalAlpha = 0.7 + Math.sin(t * 20) * 0.3; } if (G.lasso > 0) { drawScorp(G.px, PY(), 54, Math.PI + Math.sin(t * 14) * 0.3); ctx.restore(); emoji("😳", G.px, (PY() - 36), 20); } else { drawScorp(G.px, PY(), 64); ctx.restore(); } if (G.conf > 0) emoji("🎭", G.px + 22, (PY() - 24), 16); }
     if (G.playing && G.shield > 0) { ctx.strokeStyle = "rgba(140,210,255,.85)"; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(G.px, PY(), 32 + Math.sin(t * 6) * 2, 0, Math.PI * 2); ctx.stroke(); }
     if (G.playing && G.mag > 0) { ctx.strokeStyle = "rgba(255,90,90,.35)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(G.px, PY(), 46 + (t * 60) % 40, 0, Math.PI * 2); ctx.stroke(); }
     (G.floats || []).forEach(function (f) { ctx.globalAlpha = Math.min(1, f.life * 2); ctx.font = "900 16px system-ui,sans-serif"; ctx.textAlign = "center"; ctx.fillStyle = f.col; ctx.strokeStyle = "rgba(0,0,0,.7)"; ctx.lineWidth = 3; ctx.strokeText(f.t, f.x, f.y); ctx.fillText(f.t, f.x, f.y); }); ctx.globalAlpha = 1;
@@ -336,6 +339,15 @@
       ctx.restore();
     });
   }
+  var scorp = null;
+  function purpleScorpion() {   // the scorpion emoji tinted royal purple, keeping its shading
+    if (scorp) return scorp;
+    scorp = document.createElement("canvas"); scorp.width = scorp.height = 160; var c = scorp.getContext("2d");
+    c.font = "130px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif"; c.textAlign = "center"; c.textBaseline = "middle"; c.fillText("🦂", 80, 86);
+    c.globalCompositeOperation = "source-atop"; var g = c.createLinearGradient(0, 0, 160, 160); g.addColorStop(0, "rgba(200,120,255,.78)"); g.addColorStop(1, "rgba(110,40,200,.78)"); c.fillStyle = g; c.fillRect(0, 0, 160, 160);
+    return scorp;
+  }
+  function drawScorp(x, y, size, rot) { ctx.save(); ctx.translate(x, y); if (rot) ctx.rotate(rot); ctx.shadowColor = "rgba(190,110,255,.9)"; ctx.shadowBlur = 16; ctx.drawImage(purpleScorpion(), -size / 2, -size / 2, size, size); ctx.restore(); }
   var horse = null;
   function blackHorse() {
     if (horse) return horse;
@@ -348,7 +360,18 @@
     var dir = G.jv > 0 ? 1 : -1, hs = js * 1.25, gal = Math.sin(t * 9);
     // four wives, royal and happy, close beside him, hearts rising
     var Q = ["👸🏻", "👸🏽", "👸🏾", "👸"], pos = [-1.2, -0.62, 0.62, 1.2];
-    function wives(inner) { pos.forEach(function (p, i) { if ((Math.abs(p) < 1) !== inner) return; var qx = Math.max(js * 0.18, Math.min(W - js * 0.18, x + p * js)), qy = y + js * 0.5 + Math.sin(t * 5 + i) * 3; emoji(Q[i], qx, qy, js * 0.3); emoji("💎", qx + js * 0.1, qy - js * 0.2, js * 0.1); var hh = (t * 0.8 + i * 0.25) % 1; ctx.globalAlpha = 1 - hh; emoji("💕", qx, qy - js * 0.25 - hh * js * 0.4, js * 0.13); ctx.globalAlpha = 1; }); }
+    var GOWN = [["#ff6fae", "#b0145e"], ["#6fc7ff", "#1e5fb0"], ["#ffd36b", "#c07a10"], ["#b98cff", "#5a2bb0"]];
+    function wives(inner) { pos.forEach(function (p, i) { if ((Math.abs(p) < 1) !== inner) return;
+      var hs2 = js * 0.36, qx = Math.max(js * 0.24, Math.min(W - js * 0.24, x + p * js)), qy = y + js * 0.32 + Math.sin(t * 5 + i) * 3;
+      // royal gown (full figure, not just a face)
+      var gw = hs2 * 1.25, gh = hs2 * 1.35, top = qy + hs2 * 0.32, gg = ctx.createLinearGradient(0, top, 0, top + gh); gg.addColorStop(0, GOWN[i][0]); gg.addColorStop(1, GOWN[i][1]);
+      ctx.save(); ctx.shadowColor = "rgba(255,230,170,.75)"; ctx.shadowBlur = 14; ctx.fillStyle = gg;
+      ctx.beginPath(); ctx.moveTo(qx - gw * 0.22, top); ctx.lineTo(qx + gw * 0.22, top); ctx.quadraticCurveTo(qx + gw * 0.3, top + gh * 0.5, qx + gw * 0.55, top + gh); ctx.lineTo(qx - gw * 0.55, top + gh); ctx.quadraticCurveTo(qx - gw * 0.3, top + gh * 0.5, qx - gw * 0.22, top); ctx.fill(); ctx.restore();
+      ctx.strokeStyle = "#ffe7a3"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(qx - gw * 0.55, top + gh - 3); ctx.lineTo(qx + gw * 0.55, top + gh - 3); ctx.stroke();   // gold hem
+      ctx.beginPath(); ctx.moveTo(qx - gw * 0.18, top + gh * 0.22); ctx.lineTo(qx + gw * 0.18, top + gh * 0.22); ctx.stroke();   // gold sash
+      ctx.save(); ctx.globalAlpha = 0.9; var lg = ctx.createRadialGradient(qx, qy, 1, qx, qy, hs2 * 0.75); lg.addColorStop(0, "rgba(255,248,225,.95)"); lg.addColorStop(1, "rgba(255,248,225,0)"); ctx.fillStyle = lg; ctx.beginPath(); ctx.arc(qx, qy, hs2 * 0.75, 0, Math.PI * 2); ctx.fill(); ctx.restore();   // soft light on her face
+      emoji(Q[i], qx, qy, hs2); emoji("💎", qx, top + gh * 0.22, hs2 * 0.28);
+      var hh = (t * 0.8 + i * 0.25) % 1; ctx.globalAlpha = 1 - hh; emoji("💕", qx + hs2 * 0.45, qy - hs2 * 0.5 - hh * js * 0.4, js * 0.13); ctx.globalAlpha = 1; }); }
     wives(false);
     // the black horse
     ctx.save(); ctx.translate(x, y + js * 0.3 + gal * 2); ctx.scale(-dir, 1); ctx.rotate(gal * 0.05);
