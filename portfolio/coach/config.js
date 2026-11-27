@@ -24,5 +24,9 @@ window.COACH = {
   // Live viewer count ("12 people viewing now · 🇵🇰 Pakistan 5 · 🇨🇦 Canada 3").
   // Create a free Firebase Realtime Database (steps in HOSTING.md) and paste its link here,
   // e.g. "https://your-project-default-rtdb.firebaseio.com". Leave blank to keep it hidden.
-  live: { databaseURL: "https://minder-faa09-default-rtdb.firebaseio.com" }
+  live: { databaseURL: "https://minder-faa09-default-rtdb.firebaseio.com" },
+
+  // Google Analytics 4: paste your Measurement ID here (looks like "G-ABC123XYZ").
+  // analytics.google.com → Admin → Data streams → your website. Leave blank to keep it off.
+  googleAnalytics: ""
 };

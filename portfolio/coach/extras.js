@@ -52,6 +52,28 @@
     "@media(prefers-reduced-motion:reduce){.tsb__card,.arv,.tsb-fab{animation:none}}";
   document.head.appendChild(css);
 
+  (function () {   // Google Analytics 4 on every page, plus the actions that matter as events
+    var GA = ((window.COACH && window.COACH.googleAnalytics) || "").trim();
+    if (!/^G-[A-Z0-9]{4,}$/i.test(GA) || window.__gaOn) return; window.__gaOn = 1;
+    if (/bot|crawl|spider|headless|lighthouse/i.test(navigator.userAgent || "")) return;
+    var s = document.createElement("script"); s.async = true; s.src = "https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(GA); document.head.appendChild(s);
+    window.dataLayer = window.dataLayer || []; window.gtag = function () { window.dataLayer.push(arguments); };
+    var owner = false; try { owner = localStorage.getItem("coach-owner") === "1"; } catch (e) {}
+    gtag("js", new Date()); gtag("config", GA, { anonymize_ip: true, traffic_type: owner ? "internal" : undefined });
+    function ev(name, p) { try { gtag("event", name, p || {}); } catch (e) {} }
+    document.addEventListener("click", function (e) {
+      var a = e.target.closest && e.target.closest("a[href],button"); if (!a) return;
+      var h = a.getAttribute("href") || "";
+      if (/wa\.me|whatsapp/i.test(h)) ev("whatsapp_click", { link_text: (a.textContent || "").trim().slice(0, 60) });
+      else if (/docs\.google\.com\/forms/.test(h)) ev("order_form_click", { link_text: (a.textContent || "").trim().slice(0, 60) });
+      else if (/paypal\.me/i.test(h)) ev("paypal_click", { value: Number((h.match(/(\d+)USD/) || [])[1] || 0), currency: "USD" });
+      else if (/^mailto:/i.test(h)) ev("email_click");
+      else if (/^tel:|^sms:/i.test(h)) ev("call_click");
+      else if (a.matches(".jg__go,.playcta__btn,.g3__go")) ev("game_start", { game: a.matches(".jg__go") ? "jester" : "scorpion_street" });
+    }, true);
+    document.addEventListener("submit", function (e) { var f = e.target; if (f && f.id) ev(f.id === "orderForm" ? "mango_order_submit" : f.id === "joinForm" ? "mango_list_join" : "form_submit", { form_id: f.id }); }, true);
+  })();
+
   (function () {   // Apple-style emojis on every device
     var me = document.querySelector('script[src*="coach/extras.js"]'); if (!me || document.querySelector('script[src*="apple-emoji.js"]')) return;
     var s = document.createElement("script"); s.src = me.src.replace(/extras\.js.*$/, "apple-emoji.js?v=1"); document.head.appendChild(s);
