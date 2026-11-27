@@ -2080,15 +2080,15 @@ html{scroll-padding-top:70px}
 <script src="coach/exit.js?v=3"></script>
 <script src="coach/config.js?v=5"></script>
 <script src="coach/arab.js?v=1" defer></script>
-<script src="coach/lock.js?v=7"></script>
-<script src="coach/live.js?v=18" defer></script>
+<script src="coach/lock.js?v=8"></script>
+<script src="coach/live.js?v=22" defer></script>
 <script src="coach/chat.js?v=1"></script>
 <script src="coach/reminder.js?v=4"></script>
 <script src="coach/numbers.js?v=3"></script>
 <script src="coach/eye.js?v=1"></script>
 <script src="coach/court.js?v=17" defer></script>
 <script src="coach/home.js?v=30"></script>
-<script src="coach/extras.js?v=4" defer></script>
+<script src="coach/extras.js?v=5" defer></script>
 <script>
 /* sparkles around each angel number */
 (function(){[].forEach.call(document.querySelectorAll("#angel-numbers .an__card"),function(c){if(c.querySelector(".an__spk"))return;var s=document.createElement("span");s.className="an__spk";s.setAttribute("aria-hidden","true");s.innerHTML="<i>✦</i><i>✧</i><i>✦</i><i>✧</i><i>✦</i>";c.insertBefore(s,c.firstChild);var n=c.querySelector(".an__n");if(n&&!n.parentNode.classList.contains("an__w")){var w=document.createElement("span");w.className="an__w";n.parentNode.insertBefore(w,n);var wing=function(side){var i=document.createElement("i");i.className="an__wg an__wg--"+side;i.setAttribute("aria-hidden","true");i.innerHTML='<img src="coach/assets/wing.svg" alt="">';return i;};w.appendChild(wing("l"));w.appendChild(n);w.appendChild(wing("r"));}});})();

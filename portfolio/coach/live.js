@@ -17,7 +17,8 @@
   var cfg = (window.COACH && window.COACH.live) || {};
   var DB = (cfg.databaseURL || "").replace(/\/+$/, "");
   var box = document.getElementById("liveNow");
-  if (!DB || !window.fetch) return;   // with no #liveNow panel (other pages) it still records the visit
+  if (!DB || !window.fetch) return;
+  if (/bot|crawl|spider|slurp|headless|lighthouse|preview|facebookexternalhit|whatsapp\/|telegrambot|discordbot|embedly|pingdom|uptime/i.test(navigator.userAgent || "") || navigator.webdriver) return;   // robots and link previews aren't people   // with no #liveNow panel (other pages) it still records the visit
 
   var TZ = { "Asia/Karachi": "PK", "Asia/Kolkata": "IN", "Asia/Calcutta": "IN", "Asia/Dubai": "AE", "Asia/Riyadh": "SA", "Asia/Qatar": "QA", "Asia/Kuwait": "KW",
     "Asia/Bahrain": "BH", "Asia/Muscat": "OM", "Asia/Dhaka": "BD", "Asia/Jakarta": "ID", "Asia/Kuala_Lumpur": "MY", "Asia/Singapore": "SG", "Asia/Tehran": "IR",
@@ -33,6 +34,17 @@
   var langRegion = ((navigator.languages && navigator.languages.join(",")) || navigator.language || "").match(/-([A-Z]{2})\b/);
   var cc = TZ[tz] || (langRegion ? langRegion[1] : "");
   var zone = generic ? "" : (tz.split("/").pop() || "").replace(/_/g, " ").slice(0, 30);   // e.g. "Karachi", "Toronto"
+  /* Real city: a time zone only says "Toronto" for all of Ontario, so look the city up once a day
+     (city, region, country and internet provider only; the IP address itself is never stored). */
+  var geo = {}; try { geo = JSON.parse(localStorage.getItem("coach-geo") || "{}") || {}; } catch (e) {}
+  function useGeo() { if (geo.cc) cc = geo.cc; }
+  useGeo();
+  if (!geo.t || Date.now() - geo.t > 864e5) fetch("https://get.geojs.io/v1/ip/geo.json").then(function (r) { return r.json(); }).then(function (g) {
+    geo = { ci: String(g.city || "").slice(0, 40), rg: String(g.region || "").slice(0, 40), cc: String(g.country_code || "").slice(0, 2).toUpperCase(), isp: String(g.organization_name || "").replace(/^AS\d+\s*/, "").slice(0, 40), t: Date.now() };
+    try { localStorage.setItem("coach-geo", JSON.stringify(geo)); } catch (e) {}
+    useGeo(); if (typeof report === "function") report();
+  }).catch(function () {});
+  var owner = false; try { owner = localStorage.getItem("coach-owner") === "1"; } catch (e) {}   // Adeel's own devices (set when the passcode is entered)
   var ua = navigator.userAgent || "", dev = /iPad|Tablet/i.test(ua) ? "tablet" : /Mobi|Android|iPhone/i.test(ua) ? "phone" : "computer";
   var app = /Instagram/i.test(ua) ? "Instagram" : /FBAN|FBAV/i.test(ua) ? "Facebook" : /TikTok|musical_ly|BytedanceWebview/i.test(ua) ? "TikTok" : /Snapchat/i.test(ua) ? "Snapchat" : /WhatsApp/i.test(ua) ? "WhatsApp" : "";
   // what this visitor is really doing right now
@@ -53,6 +65,7 @@
   window.__coachPid = pid;
   var offset = 0, timer = 0, beat = 0;
 
+function place(v) { var ci = v.ci || ""; return ci ? ci + (v.rg && v.rg !== ci ? ", " + v.rg : "") : v.z ? v.z + " area" : ""; }
   function flag(code) { return code ? code.replace(/./g, function (ch) { return String.fromCodePoint(127397 + ch.charCodeAt(0)); }) : "🌍"; }
   function countryName(code) {
     if (!code) return "";
@@ -92,7 +105,7 @@
   function visit() {
     var a2 = activity(); if (a2 === "game") seen.g = 1; if (a2 === "angel") seen.an = 1; if (a2 === "contact") seen.ct = 1;
     onScroll();
-    var body = { c: cc, z: zone, d: dev, a: app, os: osName, br: brName, r: refHost.slice(0, 40), lg: (navigator.language || "").slice(0, 8), sw: screen.width || 0, rt: returning ? 1 : 0, p: pid,
+    var body = { c: cc, z: zone, ci: geo.ci || "", rg: geo.rg || "", isp: geo.isp || "", o: owner ? 1 : 0, d: dev, a: app, os: osName, br: brName, r: refHost.slice(0, 40), lg: (navigator.language || "").slice(0, 8), sw: screen.width || 0, rt: returning ? 1 : 0, p: pid,
       pg: pg, en: entry, sp: sp, vc: vc, fs: Number(fs), src: src, md: md.slice(0, 30), net: net, tz: tz.slice(0, 40), lh: new Date().getHours(), wd: new Date().getDay(),
       vw: innerWidth + "x" + innerHeight, sh: screen.height || 0, dk: window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? 1 : 0,
       sd: sd, sc: sec.join(",").slice(0, 400), ck: clicks, jg: Number(ls("jg-best2") || 0), du: Math.round((Date.now() - started) / 1000), g: seen.g, an: seen.an, ct: seen.ct, t: { ".sv": "timestamp" } };
@@ -102,7 +115,7 @@
   function report() {
     visit();
     if (document.hidden) return;
-    fetch(DB + "/presence/" + pid + ".json", { method: "PUT", body: JSON.stringify({ vid: id, c: cc, z: zone, d: dev, a: app, os: osName, br: brName, r: refHost.slice(0, 40), x: activity(), t: { ".sv": "timestamp" } }) })
+    fetch(DB + "/presence/" + pid + ".json", { method: "PUT", body: JSON.stringify({ vid: id, c: cc, z: zone, ci: geo.ci || "", rg: geo.rg || "", isp: geo.isp || "", o: owner ? 1 : 0, d: dev, a: app, os: osName, br: brName, r: refHost.slice(0, 40), x: activity(), t: { ".sv": "timestamp" } }) })
       .then(function (r) { return r.json(); })
       .then(function (v) { if (v && typeof v.t === "number") offset = v.t - Date.now(); })   // server clock minus ours
       .catch(function () {});
@@ -114,19 +127,20 @@
       var now = Date.now() + offset, live = [], by = {}, stale = {}, recent = [], acts = { game: 0, contact: 0, angel: 0 };
       Object.keys(all).forEach(function (k) {
         var v = all[k] || {}, age = now - (v.t || 0), vi = visits[v.vid || k] || {};
+        if (v.o) return;   // Adeel's own devices aren't visitors (not counted, not listed)
         if (age < 70000) { live.push({ v: v, vi: vi, me: k === pid }); var c = v.c || ""; by[c] = (by[c] || 0) + 1; if (acts[v.x] !== undefined) acts[v.x]++; }
         else if (age < 86400000) recent.push({ c: v.c || "", z: /^(UTC|GMT|Universal|Zulu)$/i.test(v.z || "") ? "" : (v.z || ""), d: v.d || "", a: v.a || "", age: age });
         else stale[k] = null;   // forget visits older than a day
       });
       if (Object.keys(stale).length) fetch(DB + "/presence.json", { method: "PATCH", body: JSON.stringify(stale) }).catch(function () {});
       // viewers per minute over the last hour, and visits per hour over the last day
-      var V = Object.keys(visits).map(function (k) { return visits[k] || {}; }).filter(function (v) { return v.t && now - v.t < 3 * 864e5; });   // three days of visits
+      var V = Object.keys(visits).map(function (k) { return visits[k] || {}; }).filter(function (v) { return !v.o && v.t && now - v.t < 3 * 864e5; });   // three days of visits
       var V1 = V.filter(function (v) { return now - v.t < 864e5; });
       // viewers in 5-minute steps over the last 3 hours (one per device)
       var mins = []; for (var m = 35; m >= 0; m--) { var b0 = now - (m + 1) * 3e5, b1 = now - m * 3e5, seenP = {}; V.forEach(function (v) { if (v.t <= b1 && v.t + Math.max(60, v.du || 0) * 1000 >= b0) seenP[v.p || v.t] = 1; }); mins.push(Object.keys(seenP).length); }
       mins[35] = Math.max(mins[35], live.length);
       // everyone from the last 3 hours, newest first, one row per device
-      var liveP = {}; Object.keys(all).forEach(function (k) { if (now - ((all[k] || {}).t || 0) < 70000) liveP[k] = 1; });
+      var liveP = {}; Object.keys(all).forEach(function (k) { if (!(all[k] || {}).o && now - ((all[k] || {}).t || 0) < 70000) liveP[k] = 1; });
       var last3 = [], gotP = {}; V.filter(function (v) { return now - v.t < 108e5; }).sort(function (a, b) { return b.t - a.t; }).forEach(function (v) {
         var key = v.p || ("t" + v.t); if (gotP[key]) { gotP[key].n++; gotP[key].du += v.du || 0; gotP[key].g |= v.g; gotP[key].an |= v.an; gotP[key].ct |= v.ct; return; }
         gotP[key] = { v: v, n: 1, du: v.du || 0, g: v.g, an: v.an, ct: v.ct, live: !!liveP[v.p], me: v.p === pid }; last3.push(gotP[key]); });
@@ -168,8 +182,8 @@
     acts = acts || {}; var doing = [acts.game ? "🎮 " + acts.game + " playing the game" : "", acts.contact ? "💬 " + acts.contact + " on WhatsApp or the contact form" : "", acts.angel ? "✦ " + acts.angel + " exploring angel numbers" : ""].filter(Boolean);
     var n = live.length;
     var people = live.map(function (o) { var v = o.v, vi = o.vi;
-      return '<li class="lv__p lv__p--' + (v.x || "browse") + '"><span class="lv__av" aria-hidden="true">' + flag(v.c) + '</span><div class="lv__pb"><span class="lv__who"><b>' + esc(v.z ? v.z + " area" : (countryName(v.c) || "Somewhere")) + "</b>" + (v.c ? ", " + esc(countryName(v.c)) : "") + (o.me ? ' <span class="lv__me">you</span>' : "") + "</span>" +
-        '<span class="lv__tags">' + [DEV[v.d] || "", v.os || vi.os || "", v.br || vi.br || "", (v.a || vi.a) ? "via " + (v.a || vi.a) : "", (v.r || vi.r) ? "from " + (v.r || vi.r) : "direct", vi.lg ? "🗣 " + vi.lg : "", vi.sw ? "🖥 " + vi.sw + "px" : "", vi.rt ? "↩ returning" : "✨ new visitor", vi.t ? "⏱ " + dur((now - vi.t) / 1000) + " on site" : "", vi.pg && vi.pg !== "coach" ? "📄 " + vi.pg + " page" : "", vi.sp > 1 ? "📑 " + vi.sp + " pages" : "", vi.vc > 1 ? "#" + vi.vc + " visit" : "", vi.lh != null ? "🕐 their time " + ((vi.lh % 12) || 12) + (vi.lh < 12 ? "am" : "pm") : "", vi.sd ? "📜 scrolled " + vi.sd + "%" : "", vi.md ? "📱 " + vi.md : "", vi.net ? "📶 " + vi.net : "", vi.src ? "🔗 " + vi.src : "", vi.ck && vi.ck.wa ? "💬 tapped WhatsApp ×" + vi.ck.wa : "", vi.ck && vi.ck.pp ? "💳 tapped PayPal" : "", vi.jg ? "🃏 jester best " + vi.jg : ""].filter(Boolean).map(function (t2) { return "<i>" + esc(t2) + "</i>"; }).join("") + "</span>" +
+      return '<li class="lv__p lv__p--' + (v.x || "browse") + '"><span class="lv__av" aria-hidden="true">' + flag(v.c) + '</span><div class="lv__pb"><span class="lv__who"><b>' + esc(place(v) ? place(v) : (countryName(v.c) || "Somewhere")) + "</b>" + (v.c ? ", " + esc(countryName(v.c)) : "") + (o.me ? ' <span class="lv__me">you</span>' : "") + "</span>" +
+        '<span class="lv__tags">' + [DEV[v.d] || "", v.os || vi.os || "", v.br || vi.br || "", (v.a || vi.a) ? "via " + (v.a || vi.a) : "", (v.r || vi.r) ? "from " + (v.r || vi.r) : "direct", vi.lg ? "🗣 " + vi.lg : "", vi.sw ? "🖥 " + vi.sw + "px" : "", vi.rt ? "↩ returning" : "✨ new visitor", vi.t ? "⏱ " + dur((now - vi.t) / 1000) + " on site" : "", vi.pg && vi.pg !== "coach" ? "📄 " + vi.pg + " page" : "", vi.sp > 1 ? "📑 " + vi.sp + " pages" : "", vi.vc > 1 ? "#" + vi.vc + " visit" : "", vi.lh != null ? "🕐 their time " + ((vi.lh % 12) || 12) + (vi.lh < 12 ? "am" : "pm") : "", vi.sd ? "📜 scrolled " + vi.sd + "%" : "", vi.md ? "📱 " + vi.md : "", vi.net ? "📶 " + vi.net : "", (v.isp || vi.isp) ? "🌐 " + (v.isp || vi.isp) : "", vi.src ? "🔗 " + vi.src : "", vi.ck && vi.ck.wa ? "💬 tapped WhatsApp ×" + vi.ck.wa : "", vi.ck && vi.ck.pp ? "💳 tapped PayPal" : "", vi.jg ? "🃏 jester best " + vi.jg : ""].filter(Boolean).map(function (t2) { return "<i>" + esc(t2) + "</i>"; }).join("") + "</span>" +
         '<span class="lv__doing">' + (DOING[v.x] || "👀 browsing") + (vi.g ? " · played the game" : "") + (vi.an ? " · saw angel numbers" : "") + (vi.ct ? " · contacted" : "") + "</span></div></li>"; }).join("");
     box.innerHTML =
       '<div class="lv__side">' + spark(mins, now, "Viewers · last 3 hours", 3e5) + "</div>" +
@@ -180,7 +194,7 @@
         '<span class="live__where">' + top.map(function (c) { return '<span title="' + (countryName(c) || "Elsewhere") + '">' + flag(c) + " " + (countryName(c) || "Elsewhere") + " " + by[c] + "</span>"; }).join("") + "</span>" +
         (n ? '<ul class="lv__people">' + people + "</ul>" : "") +
         (recent.length ? '<div class="lv__l3"><b class="lv__l3h">🕒 Last 3 hours · ' + recent.length + (recent.length === 1 ? " visitor" : " visitors") + '</b><ul>' + recent.map(function (r) { var v = r.v;
-          return "<li>" + (r.live ? '<i class="lv__on" title="online now"></i>' : "") + flag(v.c) + " <b>" + esc(v.z ? v.z : (countryName(v.c) || "Somewhere")) + "</b>" + (r.me ? ' <span class="lv__me">you</span>' : "") +
+          return "<li>" + (r.live ? '<i class="lv__on" title="online now"></i>' : "") + flag(v.c) + " <b>" + esc(place(v) || countryName(v.c) || "Somewhere") + "</b>" + (r.me ? ' <span class="lv__me">you</span>' : "") +
             '<span class="lv__l3m">' + [({ phone: "📱", tablet: "📱", computer: "💻" }[v.d] || ""), v.a ? "via " + esc(v.a) : "", "⏱ " + dur(r.du), r.n > 1 ? r.n + " visits" : "", r.g ? "🎮" : "", r.an ? "✦" : "", r.ct ? "💬" : ""].filter(Boolean).join(" · ") + "</span>" +
             "<em>" + (r.live ? "online now" : ago(now - v.t)) + "</em></li>"; }).join("") + "</ul></div>" : "") +
         '<span class="live__links"><a href="stats/">📊 Live stats</a><a href="stats/#guest">🤲 Make dua for Adeel</a><a href="mangoes/ping.html" data-pingok>🥭 Mango list</a></span></div>' +
@@ -190,7 +204,7 @@
 
   document.addEventListener("click", function (e) { if (e.target.closest && e.target.closest("[data-pingok]")) { try { sessionStorage.setItem("ping-ok", String(Date.now())); } catch (er) {} } });   // already unlocked here, so skip the second passcode
   var open = false;   // the panel stays behind the passcode lock until unlocked
-  function start() { open = true; box.innerHTML = '<div class="lv__mid"><div class="lv__head"><span class="lv__badge"><span class="live__dot"></span>LIVE</span><span>Loading live visitors…</span></div></div>'; box.hidden = false; refresh(); setTimeout(refresh, 1200); timer = setInterval(refresh, 10000); }
+  function start() { try { owner = localStorage.getItem("coach-owner") === "1"; } catch (e) {} report(); open = true; box.innerHTML = '<div class="lv__mid"><div class="lv__head"><span class="lv__badge"><span class="live__dot"></span>LIVE</span><span>Loading live visitors…</span></div></div>'; box.hidden = false; refresh(); setTimeout(refresh, 1200); timer = setInterval(refresh, 10000); }
   report();
   beat = setInterval(report, 25000);
   if (box && window.coachLock) window.coachLock(box, start);

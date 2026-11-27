@@ -51,7 +51,8 @@
     var dots = o.querySelector(".lko__dots"), kb = o.querySelector(".lko__kb"), inp = kb.querySelector("input");
     function paint() { [].forEach.call(dots.children, function (d, i) { d.classList.toggle("on", i < code.length); }); }
     function fail(el) { el.classList.remove("bad"); void el.offsetWidth; el.classList.add("bad"); if (navigator.vibrate) navigator.vibrate(200); }
-    function win() { var i2 = o.querySelector(".lko__ic"); i2.textContent = "👁️🔓"; i2.classList.add("yes"); setTimeout(function () { close(); done(); }, 380); }
+    function win() { try { localStorage.setItem("coach-owner", "1"); } catch (e) {}   /* this device is Adeel's: leave it out of the visitor counts */
+    var i2 = o.querySelector(".lko__ic"); i2.textContent = "👁️🔓"; i2.classList.add("yes"); setTimeout(function () { close(); done(); }, 380); }
     function close(cancelled) { document.removeEventListener("keydown", onKey, true); o.remove(); if (last && last.focus) last.focus(); if (cancelled && onCancel) onCancel(); }
     function press(d) {
       if (code.length >= 6) return;

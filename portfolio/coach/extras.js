@@ -206,7 +206,7 @@
         live.forEach(function (k) {
           if (known[k]) return; known[k] = 1;
           if (k === me || shown >= MAX) return;
-          var v = all[k], where = v.z ? esc(v.z) + (v.c ? ", " + esc(cname(v.c)) : "") : (v.c ? esc(cname(v.c)) : "somewhere");
+          var v = all[k]; if (v.o) return; var where = v.ci ? esc(v.ci) + (v.c ? ", " + esc(cname(v.c)) : "") : v.z ? esc(v.z) + (v.c ? ", " + esc(cname(v.c)) : "") : (v.c ? esc(cname(v.c)) : "somewhere");
           if (toast(flag(v.c) + " Someone from " + where + " just arrived · " + live.length + " online")) shown++;
         });
       }).catch(function () {});

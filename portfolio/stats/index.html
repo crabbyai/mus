@@ -97,7 +97,7 @@ h1 em{color:var(--gold)}
   <div id="app" hidden><p class="off">Loading…</p></div>
 </div>
 <script src="../coach/config.js"></script>
-<script src="../coach/lock.js?v=7"></script>
+<script src="../coach/lock.js?v=8"></script>
 <script>
 coachLock(document.getElementById("app"), function () {
   document.getElementById("app").hidden = false;
@@ -127,12 +127,13 @@ coachLock(document.getElementById("app"), function () {
   }
   function render(visits, presence, guests) {
     var now = Date.now() + offset, V = [], old = {}, oldG = {};
-    Object.keys(visits).forEach(function (k) { var v = visits[k] || {}; if (!v.t) return; if (now - v.t > 7 * 864e5) old[k] = null; else V.push(v); });
+    Object.keys(visits).forEach(function (k) { var v = visits[k] || {}; if (!v.t || v.o) return; if (now - v.t > 7 * 864e5) old[k] = null; else V.push(v); });
     if (Object.keys(old).length) fetch(DB + "/visits.json", { method: "PATCH", body: JSON.stringify(old) }).catch(function () {});
-    var liveRows = Object.keys(presence).map(function (k) { return presence[k] || {}; }).filter(function (v) { return now - (v.t || 0) < 70000; });
+    var liveRows = Object.keys(presence).map(function (k) { return presence[k] || {}; }).filter(function (v) { return !v.o && now - (v.t || 0) < 70000; });
     var live = liveRows.length;
     var DOING = { game: "🎮 playing the game", contact: "💬 on WhatsApp / contact form", angel: "✦ exploring angel numbers" };
-    function who(v) { return flag(v.c) + " <b>" + esc(v.z ? v.z + " area" : cname(v.c)) + "</b>" + (v.c ? ' <span class="tag">' + esc(cname(v.c)) + "</span>" : "") + ' <span class="tag">' + esc(({ phone: "📱 phone", tablet: "📱 tablet", computer: "💻 computer" }[v.d]) || v.d || "") + (v.os ? " · " + esc(v.os) : "") + (v.br ? " · " + esc(v.br) : "") + "</span>" + (v.a ? ' <span class="tag">via ' + esc(v.a) + "</span>" : "") + (v.r ? ' <span class="tag">from ' + esc(v.r) + "</span>" : ""); }
+    function place(v) { var ci = v.ci || ""; return ci ? ci + (v.rg && v.rg !== ci ? ", " + v.rg : "") : v.z ? v.z + " area" : ""; }
+    function who(v) { return flag(v.c) + " <b>" + esc(place(v) || cname(v.c)) + "</b>" + (v.c ? ' <span class="tag">' + esc(cname(v.c)) + "</span>" : "") + ' <span class="tag">' + esc(({ phone: "📱 phone", tablet: "📱 tablet", computer: "💻 computer" }[v.d]) || v.d || "") + (v.os ? " · " + esc(v.os) : "") + (v.br ? " · " + esc(v.br) : "") + "</span>" + (v.a ? ' <span class="tag">via ' + esc(v.a) + "</span>" : "") + (v.r ? ' <span class="tag">from ' + esc(v.r) + "</span>" : ""); }
     var day = V.filter(function (v) { return now - v.t < 864e5; });
     var G = []; Object.keys(guests).forEach(function (k) { var g = guests[k] || {}; if (now - (g.t || 0) > 72 * 36e5) oldG[k] = null; else G.push(g); });
     if (Object.keys(oldG).length) fetch(DB + "/guests.json", { method: "PATCH", body: JSON.stringify(oldG) }).catch(function () {});
@@ -150,9 +151,9 @@ coachLock(document.getElementById("app"), function () {
       '<div><h3>Came from</h3>' + bars(count(P, function (v) { return v.r || "Direct / shared link"; }), null, 6) + '</div>' +
       '<div><h3>Cities (guest check-ins)</h3>' + bars(count(PG, function (g) { return (/multan/i.test(g.city || "") ? "🥭 " : "") + (g.city || "Unknown"); }), null, 8) + '</div>' +
       '</div><h3 style="margin-top:12px">Recent visits from Pakistan</h3><ul class="list">' + P.slice().sort(function (a, b) { return b.t - a.t; }).slice(0, 25).map(function (v) {
-        return "<li>🇵🇰 " + esc(v.z ? v.z + " area" : "Pakistan") + ' <span class="tag">' + esc(v.d || "") + " · " + esc(v.os || "") + " · " + esc(v.br || "") + "</span>" + (v.a ? ' <span class="tag">via ' + esc(v.a) + "</span>" : "") + (v.r ? ' <span class="tag">from ' + esc(v.r) + "</span>" : "") + (v.g ? " 🎮 played" : "") + (v.an ? " ✦ angel numbers" : "") + (v.ct ? " 💬 contacted" : "") + " · " + dur(v.du || 0) + "<em>" + ago(now - v.t) + "</em></li>"; }).join("") + "</ul>"
+        return "<li>🇵🇰 " + esc(place(v) || "Pakistan") + ' <span class="tag">' + esc(v.d || "") + " · " + esc(v.os || "") + " · " + esc(v.br || "") + "</span>" + (v.a ? ' <span class="tag">via ' + esc(v.a) + "</span>" : "") + (v.r ? ' <span class="tag">from ' + esc(v.r) + "</span>" : "") + (v.g ? " 🎮 played" : "") + (v.an ? " ✦ angel numbers" : "") + (v.ct ? " 💬 contacted" : "") + " · " + dur(v.du || 0) + "<em>" + ago(now - v.t) + "</em></li>"; }).join("") + "</ul>"
       : '<p class="empty">No visitors from Pakistan in the last 7 days yet.</p>') + "</div>";
-    var countries = count(V, "c"), cities = count(V.filter(function (v) { return v.z; }), function (v) { return v.z + "|" + v.c; });
+    var countries = count(V, "c"), cities = count(V.filter(function (v) { return v.ci || v.z; }), function (v) { return (v.ci || v.z) + "|" + v.c; });
     var multan = G.filter(function (g) { return /multan/i.test(g.city || ""); }).length;
     var pk = V.filter(function (v) { return v.c === "PK"; }).length;
     var today0 = new Date(now); today0.setHours(0, 0, 0, 0); today0 = today0.getTime();
@@ -197,7 +198,7 @@ coachLock(document.getElementById("app"), function () {
         '<div class="card full"><h2>Visits in the last 7 days</h2><div class="week">' + week.map(function (w) { return '<div><b>' + w.n + '</b><i data-h="' + (w.n / wmax * 100) + '"><i class="pk" data-h="' + (w.n ? w.pk / w.n * 100 : 0) + '"></i></i><small>' + w.l + '</small></div>'; }).join("") + '</div><div class="legend"><span>All visits</span><span class="pk">From Pakistan</span></div></div>' +
         pkCard +
         '<div class="card"><h2>Countries</h2>' + bars(countries, function (c) { return flag(c) + " " + esc(cname(c)); }, 10) + '</div>' +
-        '<div class="card"><h2>Cities (time zone)</h2>' + bars(cities, function (k) { var p = k.split("|"); return flag(p[1]) + " " + esc(p[0]) + " area"; }, 10) + '</div>' +
+        '<div class="card"><h2>Cities</h2>' + bars(cities, function (k) { var p = k.split("|"); return flag(p[1]) + " " + esc(p[0]); }, 10) + '</div>' +
         '<div class="card"><h2>Devices</h2>' + bars(count(V, "d"), function (d) { return ({ phone: "📱 Phone", tablet: "📱 Tablet", computer: "💻 Computer" }[d] || esc(d)); }) + '</div>' +
         '<div class="card"><h2>Operating systems</h2>' + bars(count(V, "os")) + '</div>' +
         '<div class="card"><h2>Browsers</h2>' + bars(count(V, "br")) + '</div>' +
@@ -216,12 +217,13 @@ coachLock(document.getElementById("app"), function () {
         '<div class="card"><h2>How far they scrolled</h2>' + bars(count(withSd, function (v) { return v.sd >= 90 ? "90–100% (read it all)" : v.sd >= 50 ? "50–89%" : v.sd >= 20 ? "20–49%" : "under 20%"; })) + '</div>' +
         '<div class="card"><h2>Sections people reached</h2>' + bars(secRows, function (k) { return "#" + esc(k); }, 12) + '</div>' +
         '<div class="card"><h2>Phone &amp; computer models</h2>' + bars(count(V.filter(function (v) { return v.md; }), "md"), null, 10) + '</div>' +
+        '<div class="card"><h2>Internet providers</h2>' + bars(count(V.filter(function (v) { return v.isp; }), "isp"), null, 10) + '</div>' +
         '<div class="card"><h2>Connection speed</h2>' + bars(count(V.filter(function (v) { return v.net; }), "net")) + '</div>' +
         '<div class="card"><h2>Visit number on their device</h2>' + bars(count(V.filter(function (v) { return v.vc; }), function (v) { return v.vc === 1 ? "1st visit" : v.vc <= 3 ? "2nd–3rd visit" : v.vc <= 10 ? "4th–10th visit" : "10+ visits (fan)"; })) + '</div>' +
         '<div class="card"><h2>Their local time of day</h2><div class="heat">' + localH.map(function (n, i) { return '<i title="' + ((i % 12) || 12) + (i < 12 ? "am" : "pm") + ": " + n + '" style="background:rgba(232,200,126,' + (0.08 + n / lhMax * 0.9).toFixed(2) + ')"></i>'; }).join("") + '</div><div class="heat-l"><span>12am</span><span>6am</span><span>12pm</span><span>6pm</span><span>11pm</span></div></div>' +
         '<div class="card"><h2>Screen sizes</h2>' + bars(count(V, function (v) { return !v.sw ? "Unknown" : v.sw < 480 ? "Small phone" : v.sw < 800 ? "Large phone / tablet" : v.sw < 1400 ? "Laptop" : "Large screen"; })) + '</div>' +
         '<div class="card full"><h2>Recent visits</h2><ul class="list">' + V.slice().sort(function (a, b) { return b.t - a.t; }).slice(0, 40).map(function (v) {
-          return "<li>" + flag(v.c) + " " + esc(v.z ? v.z + " area" : cname(v.c)) + ' <span class="tag">' + esc(v.d || "") + " · " + esc(v.os || "") + " · " + esc(v.br || "") + "</span>" + (v.a ? ' <span class="tag">via ' + esc(v.a) + "</span>" : "") + (v.r ? ' <span class="tag">from ' + esc(v.r) + "</span>" : "") + (v.g ? " 🎮" : "") + (v.ct ? " 💬" : "") + more(v) + " · " + dur(v.du || 0) + "<em>" + ago(now - v.t) + "</em></li>"; }).join("") + "</ul></div>" +
+          return "<li>" + flag(v.c) + " " + esc(place(v) || cname(v.c)) + ' <span class="tag">' + esc(v.d || "") + " · " + esc(v.os || "") + " · " + esc(v.br || "") + "</span>" + (v.a ? ' <span class="tag">via ' + esc(v.a) + "</span>" : "") + (v.r ? ' <span class="tag">from ' + esc(v.r) + "</span>" : "") + (v.g ? " 🎮" : "") + (v.ct ? " 💬" : "") + more(v) + " · " + dur(v.du || 0) + "<em>" + ago(now - v.t) + "</em></li>"; }).join("") + "</ul></div>" +
         '<div class="card full"><h2>🤲 Prayers made for Adeel Ahmed Rahman</h2>' + (totalPrayers ? bars(PRAYERS.map(function (t, i) { return [i, +prayTotals[i] || 0]; }).filter(function (r) { return r[1]; }).sort(function (a, b) { return b[1] - a[1]; }), function (i) { return esc(shortP(i)); }, 10) : '<p class="empty">No prayers yet. Be the first to make dua for Adeel below.</p>') + '</div>' +
         '<div class="card full" id="guest"><div class="duahead"><span class="duahands">🤲</span><div><b>Make dua for Adeel</b><span>Pick a dua, say Ameen, and join everyone praying for him</span><span class="duacount">🤲 ' + totalPrayers + (totalPrayers === 1 ? ' dua' : ' duas') + ' made so far</span></div></div><h2>📍 Guest check-ins · last 72 hours ' + (multan ? '<span class="tag tag--mx">🥭 ' + multan + " from Multan</span>" : "") + '</h2>' +
           '<form id="gform"><p class="empty">Check in, pick a dua for Adeel Ahmed Rahman, and make it yourself. Your city, region, internet provider, device and the dua you chose are shown here for 72 hours. Your email and WhatsApp are private: only Adeel can see them, and they are never shown on this page.</p>' +
@@ -264,6 +266,6 @@ coachLock(document.getElementById("app"), function () {
   load(); setInterval(load, 20000);
 });
 </script>
-<script src="../coach/extras.js?v=4" defer></script>
+<script src="../coach/extras.js?v=5" defer></script>
 </body>
 </html>
